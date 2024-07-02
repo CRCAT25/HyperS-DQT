@@ -1,1 +1,41 @@
-<p>admin010-detail-cart works!</p>
+<div class="bg-detail-cart">
+    <div class="component-detail-cart">
+        <div class="header-detail">
+            <i id="icon-back" class="fa-solid fa-angles-left"></i>
+            <p>Chi tiết hóa đơn</p>
+        </div>
+
+        <div class="body-detail">
+            <div class="box-info">
+                <div>
+                    <div class="codeBill">Mã đơn 01</div>
+                    <div class="createAtBill">25/05/2024</div>
+                </div>
+                <div class="box Name">
+                    <div class="label Name">Họ tên khách hàng</div>
+                    <div class="nameBill">Đỗ Quốc Thành</div>
+                </div>
+                <div class="box PhoneNumber">
+                    <div class="label PhoneNumber">Số điện thoại</div>
+                    <div class="phoneNumberBill">0855280747</div>
+                </div>
+                <div class="box Status">
+                    <div class="label Status">Trạng thái</div>
+                    <div class="statusBill">Chờ xác nhận</div>  
+                </div>
+                <div class="box Address">
+                    <div class="label Address">Địa chỉ</div>
+                    <div class="addressBill">265/Nguyễn Tri Phương, Phường Long Thạnh, thị xã Tân Châu, tỉnh An Giang</div>  
+                </div>
+            </div>
+
+            <div class="showListDetail">
+                <div class="grid-custom-detail">
+                    <kendo-grid [pageable]="true" [data]="">
+                    <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+                </kendo-grid>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
