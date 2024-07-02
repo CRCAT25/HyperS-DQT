@@ -73,91 +73,18 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   ];
   listSize: DTOSize[];
   listSizeHandle: DTOSize[];
-  listSizeDefault: DTOSize[] = [
-    {
-      Code: 0,
-      Size: 35,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 1,
-      Size: 36,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 2,
-      Size: 37,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 3,
-      Size: 38,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 4,
-      Size: 39,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 5,
-      Size: 40,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 6,
-      Size: 41,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 7,
-      Size: 42,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 8,
-      Size: 43,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 9,
-      Size: 44,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 10,
-      Size: 45,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 11,
-      Size: 46,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 12,
-      Size: 47,
-      Stock: 0,
-      Sold: 0
-    },
-    {
-      Code: 13,
-      Size: 48,
-      Stock: 0,
-      Sold: 0
-    }
+  listSizeDefault: DTOSize[] = listSize;
+  listPropertiesUpdate: string[] = [
+    'IdProduct',
+    'Name',
+    'Price',
+    'Description',
+    'CodeProductType',
+    'ProductType',
+    'CodeBrand',
+    'BrandName',
+    'Gender',
+    'Color',
   ]
 
   // variable ViewChilds
@@ -210,19 +137,19 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   }
 
   // Cật nhật trạng thái sản phẩm
-  updateStatusProduct(product: DTOProduct, obj: any) {
+  updateProduct(product: DTOProduct, obj: any, properties: string[], action: string) {
     if (obj.value >= 0) {
       product.Status = obj.value;
       const request: DTOUpdateProductRequest = {
         Product: product,
-        Properties: ["Status"]
+        Properties: properties
       }
+      console.log(request);
       this.productAdminService.updateProduct(request).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.getProductSelected();
-          this.notiService.Show("Cập nhật trạng thái thành công", "success");
-        }
+        this.notiService.Show(action + " thành công", "success");
+        this.getProductSelected();
       }, error => {
+        this.notiService.Show(action + " thất bại", "error");
         console.error('Error:', error);
       });
     }
@@ -256,92 +183,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     // reset hình ảnh
     this.childListImage.clearListImage();
     // reset danh sách size
-    this.listSizeHandle = [
-      {
-        Code: 0,
-        Size: 35,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 1,
-        Size: 36,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 2,
-        Size: 37,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 3,
-        Size: 38,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 4,
-        Size: 39,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 5,
-        Size: 40,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 6,
-        Size: 41,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 7,
-        Size: 42,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 8,
-        Size: 43,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 9,
-        Size: 44,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 10,
-        Size: 45,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 11,
-        Size: 46,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 12,
-        Size: 47,
-        Stock: 0,
-        Sold: 0
-      },
-      {
-        Code: 13,
-        Size: 48,
-        Stock: 0,
-        Sold: 0
-      }
-    ];
+    this.listSizeHandle = listSize;
     this.notiService.Show("Đã xóa toàn bộ thông tin", "success");
   }
 
@@ -375,7 +217,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Lấy danh sách hình ảnh sản phẩm
   getListImage(res: any) {
-    console.log(res);
+    // console.log(res);
   }
 
   // Lấy danh sách số lượng sản phẩm dựa trên size của sản phẩm
@@ -395,17 +237,13 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     return updatedList;
   }
 
-  updateProduct() {
-
-  }
-
   // Hàm chạy sau khi nhập input size bất kỳ và blur ra
   updateStock(res: any, size: DTOSize) {
     console.log(this.listSizeHandle);
   }
 
   // Thêm sản phẩm mới
-  addProduct(res: any) {
+  addProduct(res: any, type: string) {
     const product: DTOProduct = {
       Code: 0,
       IdProduct: this.childId.valueTextBox,
@@ -426,13 +264,55 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       ThumbnailImg: ''
     }
     this.checkIdProduct(this.productSelected.Code, isDifferent => {
-      if (!isDifferent) {
+      if (!isDifferent && type === 'add') {
         this.notiService.Show("IdProduct đã có", "error");
+        return;
+      }
+      if (type === 'update') {
+        if(!isDifferent && this.childId.valueTextBox !== this.productSelected.IdProduct){
+          this.notiService.Show("IdProduct đã có", "error");
+          return;
+        }
       }
     });
     if (!product.IdProduct) {
       this.notiService.Show("IdProduct chưa được nhập", "error");
       return;
+    }
+    if (!product.Name) {
+      this.notiService.Show("Vui lòng nhập tên sản phẩm", "error");
+      return;
+    }
+    if (product.Color === '-- Màu sắc --') {
+      this.notiService.Show("Vui lòng chọn màu sắc", "error");
+      return;
+    }
+    if (product.CodeBrand === -1) {
+      this.notiService.Show("Vui lòng chọn thương hiệu", "error");
+      return;
+    }
+    if (product.CodeProductType === -1) {
+      this.notiService.Show("Vui lòng chọn loại sản phẩm", "error");
+      return;
+    }
+    if (product.Gender === -1) {
+      this.notiService.Show("Vui lòng chọn giới tính", "error");
+      return;
+    }
+    if (product.Price === 0) {
+      this.notiService.Show("Vui lòng nhập giá sản phẩm", "error");
+      return;
+    }
+    if (product.ListOfImage.length === 0) {
+      this.notiService.Show("Vui lòng thêm ảnh sản phẩm", "error");
+      return;
+    }
+    if(type === 'add'){
+      this.updateProduct(product, { value: 0 }, [], 'Thêm mới');
+      this.clearDetailProduct(null);
+    }
+    if(type === 'update'){
+      this.updateProduct(product, { value: 0 }, this.listPropertiesUpdate, 'Cập nhật');
     }
   }
 
@@ -447,8 +327,6 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-
 
   ngOnDestroy(): void {
     this.destroy.next();

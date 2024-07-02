@@ -39,12 +39,13 @@ export class ImportMultiImageComponent implements OnInit {
     if (this.selectedFile) {
       this.uploadImageService.uploadImage(this.selectedFile).subscribe(
         (response) => {
+          const isThumbnail = this.listImageHandler.length === 0;
           this.listImageHandler.push({
             "Code": 0,
             "IdImage": null,
             "ImgUrl": response.data.url,
-            IsThumbnail: false
-          })
+            "IsThumbnail": isThumbnail
+          });
         },
         (error) => {
           console.error('Error uploading image:', error);
@@ -56,7 +57,7 @@ export class ImportMultiImageComponent implements OnInit {
   // Xóa ảnh trong list
   deleteImageFromList(image: DTOImageProduct) {
     this.listImageHandler = this.listImageHandler.filter(img => img !== image);
-    if(image.IsThumbnail){
+    if (image.IsThumbnail && this.listImageHandler.length > 0) {
       this.listImageHandler[0].IsThumbnail = true;
     }
   }

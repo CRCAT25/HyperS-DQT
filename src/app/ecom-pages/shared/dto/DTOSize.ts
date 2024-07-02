@@ -7,85 +7,85 @@ export class DTOSize {
 
 export const listSize: DTOSize[] = [
     {
-        Code: 0,
+        Code: 1,
         Size: 35,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 1,
+        Code: 2,
         Size: 36,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 2,
+        Code: 3,
         Size: 37,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 3,
+        Code: 4,
         Size: 38,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 4,
+        Code: 5,
         Size: 39,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 5,
+        Code: 6,
         Size: 40,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 6,
+        Code: 7,
         Size: 41,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 7,
+        Code: 8,
         Size: 42,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 8,
+        Code: 9,
         Size: 43,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 9,
+        Code: 10,
         Size: 44,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 10,
+        Code: 11,
         Size: 45,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 11,
+        Code: 12,
         Size: 46,
         Stock: 0,
         Sold: 0
     },
     {
-        Code: 12,
+        Code: 13,
         Size: 47,
         Stock: 0,
         Sold: 0
-    },
+    }, 
     {
-        Code: 13,
+        Code: 14,
         Size: 48,
         Stock: 0,
         Sold: 0

@@ -41,12 +41,12 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
 
   // variable
   isLoading: boolean = true;
-  pageSize: number = 4;
+  pageSize: number = 15;
   valueSearch: string;
   codeProductSelected: number;
 
   // variable list
-  listPageSize: number[] = [1, 2, 3, 4];
+  listPageSize: number[] = [15, 25, 50];
   listRangePrice: DropDownPrice[] = [
     {
       Code: 0,
@@ -540,6 +540,10 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
     this.gridState.skip = value.skip;
     this.gridState.take = value.take;
     this.getListProduct();
+  }
+
+  goToDetail(res: any){
+    
   }
 
   ngOnDestroy(): void {

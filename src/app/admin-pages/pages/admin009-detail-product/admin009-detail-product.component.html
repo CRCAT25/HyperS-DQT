@@ -7,14 +7,14 @@
             <!-- Button ngừng hoạt động -->
             <ng-container *ngIf="productSelected.Status === 0">
                 <component-button class="button-disable" [borderWidth]="2" color="#FF1D1D" borderColor="#FF1D1D"
-                    borderStyle="solid" [value]="1" (sendValue)="updateStatusProduct(productSelected, $event)"
+                    borderStyle="solid" [value]="1" (sendValue)="updateProduct(productSelected, $event, ['Status'], 'Cập nhật')"
                     classIconFontAwesome="fa-circle-minus" bgColor="#fff" text="Ngừng hoạt động"></component-button>
             </ng-container>
 
             <!-- Button kích hoạt -->
             <ng-container *ngIf="productSelected.Status === 1">
                 <component-button class="button-active" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                    borderStyle="solid" [value]="0" (sendValue)="updateStatusProduct(productSelected, $event)"
+                    borderStyle="solid" [value]="0" (sendValue)="updateProduct(productSelected, $event, ['Status'], 'Cập nhật')"
                     classIconFontAwesome="fa-circle-check" bgColor="#fff" text="Kích hoạt"></component-button>
             </ng-container>
         </ng-container>
@@ -106,12 +106,12 @@
     <div class="button-action-container">
         <!-- Button thêm mới -->
         <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E" borderStyle="solid"
-            [value]="1" (sendValue)="addProduct($event)" classIconFontAwesome="fa-plus" bgColor="#fff"
+            [value]="1" (sendValue)="addProduct($event, 'add')" classIconFontAwesome="fa-plus" bgColor="#fff"
             text="Thêm mới"></component-button>
 
         <!-- Button cập nhật -->
         <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
-            borderStyle="solid" [value]="1" (sendValue)="clearDetailProduct($event)"
+            borderStyle="solid" [value]="1" (sendValue)="addProduct($event, 'update')"
             classIconFontAwesome="fa-floppy-disk" bgColor="#fff" text="Cập nhật"></component-button>
 
         <!-- Button xóa toàn nội dung -->
