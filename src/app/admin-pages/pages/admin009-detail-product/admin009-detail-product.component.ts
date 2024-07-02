@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ProductAdminService } from '../../shared/service/productAdmin.service';
 import { DTOProduct } from 'src/app/ecom-pages/shared/dto/DTOProduct';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
@@ -27,7 +27,7 @@ interface Gender {
   templateUrl: './admin009-detail-product.component.html',
   styleUrls: ['./admin009-detail-product.component.scss']
 })
-export class Admin009DetailProductComponent implements OnInit {
+export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   // variables object
   productSelected: DTOProduct;
   defaultProductType: DTOProductType = {
@@ -71,7 +71,94 @@ export class Admin009DetailProductComponent implements OnInit {
       IsChecked: false
     }
   ];
-  listSize: DTOSize[] = listSize;
+  listSize: DTOSize[];
+  listSizeHandle: DTOSize[];
+  listSizeDefault: DTOSize[] = [
+    {
+      Code: 0,
+      Size: 35,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 1,
+      Size: 36,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 2,
+      Size: 37,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 3,
+      Size: 38,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 4,
+      Size: 39,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 5,
+      Size: 40,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 6,
+      Size: 41,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 7,
+      Size: 42,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 8,
+      Size: 43,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 9,
+      Size: 44,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 10,
+      Size: 45,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 11,
+      Size: 46,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 12,
+      Size: 47,
+      Stock: 0,
+      Sold: 0
+    },
+    {
+      Code: 13,
+      Size: 48,
+      Stock: 0,
+      Sold: 0
+    }
+  ]
 
   // variable ViewChilds
   @ViewChild('id') childId!: TextInputComponent;
@@ -97,8 +184,10 @@ export class Admin009DetailProductComponent implements OnInit {
   // Lấy sản phẩm được chọn
   getProductSelected() {
     const code = localStorage.getItem('productSelected');
-    this.productAdminService.getProductById(parseInt(code)).subscribe((product: DTOResponse) => {
+    this.productAdminService.getProductById(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
       this.productSelected = product.ObjectReturn.Data[0];
+      this.listSize = this.updateListSize(this.listSizeDefault, this.productSelected.ListOfSize);
+      this.listSizeHandle = [...this.listSize];
     });
   }
 
@@ -139,39 +228,121 @@ export class Admin009DetailProductComponent implements OnInit {
     }
   }
 
+  // Xóa toàn bộ thông tin sản phẩm
   clearDetailProduct(res: any) {
     // reset id sản phẩm
     this.childId.resetValue();
-
     // reset tên sản phẩm
     this.childName.resetValue();
-
     // reset màu sắc sản phẩm
     this.childColor.resetValue();
-
     // reset loại sản phẩm
     this.childType.resetValue();
-
     // reset thương hiệu
     this.childBrand.resetValue();
-
     // reset giới tính
     this.childGender.resetValue();
-
     // reset giá sản phẩm
     this.childPrice.resetValue();
-
+    this.childPrice.valueTextBox = '0';
     // reset tồn kho
     this.childStock.resetValue();
-
+    this.childStock.valueTextBox = '0';
     // reset số lượng đã bán
     this.childSold.resetValue();
-
+    this.childSold.valueTextBox = '0';
     // reset mô tả
     this.childDescription.resetValue();
-
     // reset hình ảnh
     this.childListImage.clearListImage();
+    // reset danh sách size
+    this.listSizeHandle = [
+      {
+        Code: 0,
+        Size: 35,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 1,
+        Size: 36,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 2,
+        Size: 37,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 3,
+        Size: 38,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 4,
+        Size: 39,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 5,
+        Size: 40,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 6,
+        Size: 41,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 7,
+        Size: 42,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 8,
+        Size: 43,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 9,
+        Size: 44,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 10,
+        Size: 45,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 11,
+        Size: 46,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 12,
+        Size: 47,
+        Stock: 0,
+        Sold: 0
+      },
+      {
+        Code: 13,
+        Size: 48,
+        Stock: 0,
+        Sold: 0
+      }
+    ];
+    this.notiService.Show("Đã xóa toàn bộ thông tin", "success");
   }
 
   // Kiểm tra trạng thái hiện tại của sản phẩm
@@ -198,6 +369,8 @@ export class Admin009DetailProductComponent implements OnInit {
     this.childSold.valueTextBox = (this.productSelected.Sold).toString();
     this.childListImage.listImageHandler = this.productSelected.ListOfImage;
     this.childDescription.value = this.productSelected.Description;
+    this.getProductSelected();
+    this.notiService.Show("Khôi phục thành công", "success");
   }
 
   // Lấy danh sách hình ảnh sản phẩm
@@ -205,12 +378,80 @@ export class Admin009DetailProductComponent implements OnInit {
     console.log(res);
   }
 
-  // Lấy số lượng sản phẩm dựa trên size của sản phẩm
-  getQuantityOfSize(size: number){
-    const product = this.productSelected.ListOfSize.find(item => item.Size === size);
-    if(product){
-      return product.Stock;
+  // Lấy danh sách số lượng sản phẩm dựa trên size của sản phẩm
+  updateListSize(list1: DTOSize[], list2: DTOSize[]): DTOSize[] {
+    const updatedList = list1.map(item1 => {
+      const foundItem = list2.find(item2 => item2.Size === item1.Size);
+      if (foundItem) {
+        return {
+          Code: item1.Code,
+          Size: item1.Size,
+          Stock: foundItem.Stock,
+          Sold: foundItem.Sold
+        };
+      }
+      return item1;
+    });
+    return updatedList;
+  }
+
+  updateProduct() {
+
+  }
+
+  // Hàm chạy sau khi nhập input size bất kỳ và blur ra
+  updateStock(res: any, size: DTOSize) {
+    console.log(this.listSizeHandle);
+  }
+
+  // Thêm sản phẩm mới
+  addProduct(res: any) {
+    const product: DTOProduct = {
+      Code: 0,
+      IdProduct: this.childId.valueTextBox,
+      Name: this.childName.valueTextBox,
+      Price: parseInt(this.childPrice.valueTextBox),
+      Description: this.childDescription.value,
+      ListOfSize: this.listSizeHandle,
+      ListOfImage: this.childListImage.listImageHandler,
+      CodeProductType: this.childType.value.Code,
+      ProductType: this.childType.value.Name,
+      CodeBrand: this.childBrand.value.Code,
+      BrandName: this.childBrand.value.Name,
+      Color: this.childColor.value.Color,
+      Stock: 0,
+      Sold: 0,
+      Gender: this.childGender.value.Code,
+      Status: 0,
+      ThumbnailImg: ''
     }
-    return 0;
+    this.checkIdProduct(this.productSelected.Code, isDifferent => {
+      if (!isDifferent) {
+        this.notiService.Show("IdProduct đã có", "error");
+      }
+    });
+    if (!product.IdProduct) {
+      this.notiService.Show("IdProduct chưa được nhập", "error");
+      return;
+    }
+  }
+
+  // Kiểm tra idproduct có trùng hay không
+  checkIdProduct(code: number, callback: (isDifferent: boolean) => void) {
+    this.productAdminService.getProductById(code).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      const product: DTOProduct = res.ObjectReturn.Data[0];
+      if (product) {
+        callback(product.IdProduct !== this.childId.valueTextBox);
+      } else {
+        callback(false);
+      }
+    });
+  }
+
+
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

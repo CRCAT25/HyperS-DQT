@@ -79,10 +79,12 @@
                     </div>
                 </div>
                 <div style="display: flex; gap: 90px;">
-                    <component-text-area #desciption [value]="productSelected.Description" [maxlength]="200" [widthBox]="802" [width]="918" [fontsize]="13"></component-text-area>
+                    <component-text-area #desciption [value]="productSelected.Description" [maxlength]="200"
+                        [height]="151" [widthBox]="802" [width]="918" [fontsize]="13"></component-text-area>
                     <div class="size-container">
-                        <div class="size" *ngFor="let size of listSize">
-                            <component-text-input [value]="getQuantityOfSize(size.Size)" [typeValue]="'number'" [widthBlock]="70" [widthTextBox]="50" [label]="size.Size.toString()"></component-text-input>
+                        <div class="size" *ngFor="let size of listSizeHandle">
+                            <component-text-input (getValue)="updateStock($event, size)" [value]="size.Stock" [typeValue]="'number'" [widthBlock]="100"
+                                [widthTextBox]="45" [label]="'Size ' + size.Size.toString()"></component-text-input>
                         </div>
                     </div>
                 </div>
@@ -104,7 +106,7 @@
     <div class="button-action-container">
         <!-- Button thêm mới -->
         <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E" borderStyle="solid"
-            [value]="1" (sendValue)="clearDetailProduct($event)" classIconFontAwesome="fa-plus" bgColor="#fff"
+            [value]="1" (sendValue)="addProduct($event)" classIconFontAwesome="fa-plus" bgColor="#fff"
             text="Thêm mới"></component-button>
 
         <!-- Button cập nhật -->

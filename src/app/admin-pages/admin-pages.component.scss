@@ -21,6 +21,8 @@
         .content{
             padding: 10px 20px 0 20px;
             height: calc(100vh - 60px);
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
             position: relative;
             font-size: 13px;
         }

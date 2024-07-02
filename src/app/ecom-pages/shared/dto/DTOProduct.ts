@@ -9,8 +9,8 @@ export class DTOProduct {
     Description: string = "";
     ListOfSize: DTOSize[] = [];
     ListOfImage: DTOImageProduct[] = [];
-    Discount: number = 0;
-    PriceAfterDiscount: number = 0;
+    Discount?: number = 0;
+    PriceAfterDiscount?: number = 0;
     CodeProductType: number = 0;
     ProductType: string = "";
     CodeBrand: number = 0;
