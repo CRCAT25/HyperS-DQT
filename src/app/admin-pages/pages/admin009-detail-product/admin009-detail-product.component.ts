@@ -72,7 +72,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     }
   ];
   listSize: DTOSize[];
-  listSizeHandle: DTOSize[];
+  listSizeHandle: DTOSize[] = listSize;
   listSizeDefault: DTOSize[] = listSize;
   listPropertiesUpdate: string[] = [
     'IdProduct',
@@ -111,11 +111,20 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   // Lấy sản phẩm được chọn
   getProductSelected() {
     const code = localStorage.getItem('productSelected');
-    this.productAdminService.getProductById(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
-      this.productSelected = product.ObjectReturn.Data[0];
-      this.listSize = this.updateListSize(this.listSizeDefault, this.productSelected.ListOfSize);
-      this.listSizeHandle = [...this.listSize];
-    });
+    if (parseInt(code) === 0) {
+      this.productSelected = new DTOProduct;
+      this.childGender.resetValue();
+      this.childColor.resetValue();
+      this.childType.resetValue();
+      this.childBrand.resetValue();
+    }
+    else {
+      this.productAdminService.getProductById(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
+        this.productSelected = product.ObjectReturn.Data[0];
+        this.listSize = this.updateListSize(this.listSizeDefault, this.productSelected.ListOfSize);
+        this.listSizeHandle = [...this.listSize];
+      });
+    }
   }
 
   // Lấy danh sách các product type
@@ -239,7 +248,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Hàm chạy sau khi nhập input size bất kỳ và blur ra
   updateStock(res: any, size: DTOSize) {
-    console.log(this.listSizeHandle);
+    size.Stock = parseInt(res);
   }
 
   // Thêm sản phẩm mới
@@ -269,7 +278,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
         return;
       }
       if (type === 'update') {
-        if(!isDifferent && this.childId.valueTextBox !== this.productSelected.IdProduct){
+        if (!isDifferent && this.childId.valueTextBox !== this.productSelected.IdProduct) {
           this.notiService.Show("IdProduct đã có", "error");
           return;
         }
@@ -307,11 +316,12 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       this.notiService.Show("Vui lòng thêm ảnh sản phẩm", "error");
       return;
     }
-    if(type === 'add'){
+    if (type === 'add') {
       this.updateProduct(product, { value: 0 }, [], 'Thêm mới');
       this.clearDetailProduct(null);
     }
-    if(type === 'update'){
+    if (type === 'update') {
+      product.Code = this.productSelected.Code;
       this.updateProduct(product, { value: 0 }, this.listPropertiesUpdate, 'Cập nhật');
     }
   }

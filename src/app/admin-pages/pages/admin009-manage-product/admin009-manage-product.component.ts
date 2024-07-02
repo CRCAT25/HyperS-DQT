@@ -504,11 +504,9 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
 
   // Cật nhật trạng thái sản phẩm
   updateStatusProduct(product: DTOProduct, obj: any) {
-    console.log(obj);
     if (obj.value === -1) {
-      localStorage.setItem('productSelected', product.Code + '');
       this.setLayoutStorage('Quản lý sản phẩm/Chi tiết sản phẩm', 'admin/detail-product')
-      this.router.navigate(['admin/detail-product']);
+      this.goToDetail(null, product.Code);
     }
     if (obj.value >= 0) {
       product.Status = obj.value;
@@ -542,8 +540,9 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
     this.getListProduct();
   }
 
-  goToDetail(res: any){
-    
+  goToDetail(res: any, code: number){
+    localStorage.setItem('productSelected', code + '');
+    this.router.navigate(['admin/detail-product']);
   }
 
   ngOnDestroy(): void {
