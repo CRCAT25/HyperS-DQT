@@ -56,6 +56,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   listBillNew: DTOBill[];
   statusCounts: { [key: number]: number } = {};
   listBillPageAllStatus: GridDataResult;
+  reasonFail: string;
+  isDetail: boolean = true;
 
 
   // defaultItemStatusBill: DTOStatus = {
@@ -303,6 +305,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.billService.getListBill(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listBillPage = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      console.log(this.listBillPage.data);
       this.isLoading = false;
     })
     // console.log(this.gridState)
@@ -462,24 +465,31 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.itemBill = item;
     this.objItemStatus = value
     if (this.objItemStatus.value == 1) {
-        alert('a')
-        localStorage.setItem('billSelected', item.Code + '');
-        this.setLayoutStorage('Đơn hàng/Chi tiết đơn hàng', 'admin/detail-cart')
-        this.router.navigate(['admin/detail-cart']);
+        this.isDetail = !this.isDetail;
+        // localStorage.setItem('billSelected', item.Code + '');
+        // this.setLayoutStorage('Đơn hàng/Chi tiết đơn hàng', 'admin/detail-cart')
+        // this.router.navigate(['admin/detail-cart']);
+
     } else{
       this.isShowAlert = !this.isShowAlert
     }
   }
 
+  //Nhận text của text-area
+  receive(value: any){
+    this.reasonFail = value;
+  }
+
   // Update status bill
   updateStatusBill(bill: DTOBill, obj: any) {
+    console.log(obj);
     if (obj.value >= 2) {
       bill.Status = obj.value;
       const request: DTOUpdateBillRequest = {
         CodeBill: bill.Code,
         Status: obj.value,
         ListOfBillInfo: bill.ListBillInfo,
-        Note: ''
+        Note: this.reasonFail,
       }
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
         if (res.StatusCode === 0) {

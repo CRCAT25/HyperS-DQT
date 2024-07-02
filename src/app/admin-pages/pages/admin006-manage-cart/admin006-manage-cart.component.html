@@ -71,10 +71,13 @@
                     </div>
                 </ng-template>
             </kendo-grid-column>
-            <kendo-grid-column field="Status" title="Trạng thái" [width]="140">
+            <kendo-grid-column title="Trạng thái" [width]="140">
                 <ng-template kendoGridCellTemplate let-dataItem>
-                    <div class="column-Status" [style.color]="formatStatus(dataItem.Status) | statusColor">
-                        {{formatStatus(dataItem.Status)}}
+                    <div class="column-Status">
+                        <div [style.color]="formatStatus(dataItem.Status) | statusColor">
+                            {{formatStatus(dataItem.Status)}}
+                        </div>
+                        <div *ngIf="dataItem.PhoneNumber !== ''">{{dataItem.PhoneNumber}}</div>
                     </div>
                 </ng-template>
             </kendo-grid-column>
@@ -113,10 +116,13 @@
 </div>
 <div *ngIf="isShowAlert" class="popUp">
     <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="objItemStatus.icon"
-        [text]="objItemStatus.text" (sendValue)="updateStatusBill(itemBill,$event)" (noChange)="clickNoChange()"
+        [text]="objItemStatus.text" (sendValue)="updateStatusBill(itemBill,$event)" (noChange)="clickNoChange()" (sendReason)="receive($event)"
         [value]="objItemStatus.value"></component-popup-confirm>
 </div>
 
+<ng-container *ngIf="isDetail">
+    <app-admin010-detail-cart></app-admin010-detail-cart>
+</ng-container>
 <!-- <component-text-area [label]="'Lí do hủy đơn:'"
 [labelWidth]="100"
 [height]="47"
