@@ -11,6 +11,10 @@
         background-color: #fff;
     }
 
+    th.k-grid-header-sticky{
+        background: none !important;
+    }
+
     kendo-grid.k-grid .k-table-row.k-selected:hover .k-grid-content-sticky::before,
     kendo-grid.k-grid .k-table-row.k-selected.k-hover .k-grid-content-sticky::before,
     kendo-grid.k-grid .k-selected.k-grid-row-sticky:hover td::before,

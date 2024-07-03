@@ -113,13 +113,13 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     const code = localStorage.getItem('productSelected');
     if (parseInt(code) === 0) {
       this.productSelected = new DTOProduct;
-      this.childGender.resetValue();
-      this.childColor.resetValue();
-      this.childType.resetValue();
-      this.childBrand.resetValue();
+      this.productSelected.Gender = -1;
+      this.productSelected.Color = '-- Màu sắc --';
+      this.productSelected.CodeBrand = -1;
+      this.productSelected.CodeProductType = -1;
     }
     else {
-      this.productAdminService.getProductById(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
+      this.productAdminService.getProductByCode(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
         this.productSelected = product.ObjectReturn.Data[0];
         this.listSize = this.updateListSize(this.listSizeDefault, this.productSelected.ListOfSize);
         this.listSizeHandle = [...this.listSize];
@@ -272,18 +272,14 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       Status: 0,
       ThumbnailImg: ''
     }
-    this.checkIdProduct(this.productSelected.Code, isDifferent => {
-      if (!isDifferent && type === 'add') {
-        this.notiService.Show("IdProduct đã có", "error");
-        return;
-      }
-      if (type === 'update') {
-        if (!isDifferent && this.childId.valueTextBox !== this.productSelected.IdProduct) {
+    if(type === 'add'){
+      this.checkIdProduct(this.productSelected.Code, isDifferent => {
+        if (!isDifferent) {
           this.notiService.Show("IdProduct đã có", "error");
           return;
         }
-      }
-    });
+      });
+    }
     if (!product.IdProduct) {
       this.notiService.Show("IdProduct chưa được nhập", "error");
       return;
@@ -328,7 +324,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Kiểm tra idproduct có trùng hay không
   checkIdProduct(code: number, callback: (isDifferent: boolean) => void) {
-    this.productAdminService.getProductById(code).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+    this.productAdminService.getProductByCode(code).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
       const product: DTOProduct = res.ObjectReturn.Data[0];
       if (product) {
         callback(product.IdProduct !== this.childId.valueTextBox);
@@ -336,6 +332,43 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
         callback(false);
       }
     });
+  }
+
+  // Kiểm tra đầu vào sản phẩm có nhập đầy đủ hay không
+  checkInputProduct(product: DTOProduct){
+    if (!product.IdProduct) {
+      this.notiService.Show("IdProduct chưa được nhập", "error");
+      return false;
+    }
+    if (!product.Name) {
+      this.notiService.Show("Vui lòng nhập tên sản phẩm", "error");
+      return false;
+    }
+    if (product.Color === '-- Màu sắc --') {
+      this.notiService.Show("Vui lòng chọn màu sắc", "error");
+      return false;
+    }
+    if (product.CodeBrand === -1) {
+      this.notiService.Show("Vui lòng chọn thương hiệu", "error");
+      return false;
+    }
+    if (product.CodeProductType === -1) {
+      this.notiService.Show("Vui lòng chọn loại sản phẩm", "error");
+      return false;
+    }
+    if (product.Gender === -1) {
+      this.notiService.Show("Vui lòng chọn giới tính", "error");
+      return false;
+    }
+    if (product.Price === 0) {
+      this.notiService.Show("Vui lòng nhập giá sản phẩm", "error");
+      return false;
+    }
+    if (product.ListOfImage.length === 0) {
+      this.notiService.Show("Vui lòng thêm ảnh sản phẩm", "error");
+      return false;
+    }
+    return true;
   }
 
   ngOnDestroy(): void {
