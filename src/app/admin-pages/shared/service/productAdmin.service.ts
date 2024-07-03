@@ -14,7 +14,7 @@ export class ProductAdminService {
     private direct = 'https://hypersapi.onrender.com';
 
     private urlGetListProduct = this.direct + "/api/Product/GetListProduct";
-    private urlGetProductByID = this.direct + "/api/Product/GetProduct";
+    private urlGetProduct = this.direct + "/api/Product/GetProduct";
     private urlGetListProductType = this.direct + "/api/Product/GetListProductType";
     private urlGetListBrand = this.direct + "/api/Brand/GetAllBrands";
     private urlUpdateProduct = this.direct + "/api/Product/UpdateProduct";
@@ -40,12 +40,12 @@ export class ProductAdminService {
             );
     }
 
-    getProductById(id: number): Observable<DTOResponse> {
+    getProductByCode(code: number): Observable<DTOResponse> {
         const httpOptions = this.getHttpOptions();
         const body = {
-            'Code': id
+            'Code': code
         }
-        return this.httpClient.post<DTOResponse>(this.urlGetProductByID, body, httpOptions)
+        return this.httpClient.post<DTOResponse>(this.urlGetProduct, body, httpOptions)
             .pipe();
     }
 
