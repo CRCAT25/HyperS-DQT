@@ -14,6 +14,7 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { ImportMultiImageComponent } from '../../shared/component/import-multi-image/import-multi-image.component';
 import { TextAreaComponent } from 'src/app/shared/component/text-area/text-area.component';
 import { DTOSize, listSize } from 'src/app/ecom-pages/shared/dto/DTOSize';
+import { Router } from '@angular/router';
 
 interface Gender {
   Code: number
@@ -105,7 +106,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   @ViewChild('listimage') childListImage!: ImportMultiImageComponent;
   @ViewChild('desciption') childDescription!: TextAreaComponent;
 
-  constructor(private productAdminService: ProductAdminService, private notiService: NotiService) { }
+  constructor(private productAdminService: ProductAdminService, private notiService: NotiService, private router: Router) { }
 
   ngOnInit(): void {
     this.getProductSelected();
@@ -118,6 +119,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     const code = localStorage.getItem('productSelected');
     if (parseInt(code) === 0) {
       this.productSelected = new DTOProduct;
+      this.getListProductType();
+      this.getListBrand();
       this.productSelected.Gender = -1;
       this.productSelected.Color = '-- Màu sắc --';
       this.productSelected.CodeBrand = -1;
@@ -167,9 +170,9 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
         Product: product,
         Properties: properties
       }
-      console.log(request);
       this.productAdminService.updateProduct(request).subscribe((res: DTOResponse) => {
         this.notiService.Show(action + " thành công", "success");
+        this.router.navigate(['admin/manage-product']);
         this.getProductSelected();
       }, error => {
         this.notiService.Show(action + " thất bại", "error");
@@ -241,7 +244,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Lấy danh sách hình ảnh sản phẩm
   getListImage(res: any) {
-    console.log(res);
+    // console.log(res);
   }
 
   // Lấy danh sách số lượng sản phẩm dựa trên size của sản phẩm
@@ -395,21 +398,6 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
         })
       );
   }
-
-  // Kiểm tra idproduct có trùng hay không
-  // checkIdProduct(code: number, callback: (isDifferent: boolean) => void) {
-  //   this.productAdminService.getProductByCode(code).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-  //     const product: DTOProduct = res.ObjectReturn.Data[0];
-  //     if (product) {
-  //       console.log(product.IdProduct);
-  //       console.log(product.IdProduct !== this.childId.valueTextBox);
-  //       callback(product.IdProduct !== this.childId.valueTextBox);
-  //     } else {
-  //       console.log(product.IdProduct !== this.childId.valueTextBox);
-  //       callback(false);
-  //     }
-  //   });
-  // }
 
   // Đối với update, set các property để gửi req nếu có thay đổi
   setPropertiesUpdate() {
