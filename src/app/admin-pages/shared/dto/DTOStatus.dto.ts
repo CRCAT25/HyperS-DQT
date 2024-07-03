@@ -233,6 +233,14 @@ export const listStatus: DTOStatus[] = [
 
 export const filteredStatusList: DTOStatus[] = listStatus.filter(status => status.Code !== 1);
 
+// export const listStatusNoView: DTOStatus[] = filteredStatusList.filter(item => item.Code !== 1).map(item => {
+//     if (item.ListNextStatus) {
+//         item.ListNextStatus = item.ListNextStatus.filter(subItem => subItem.Code !== 1);
+//     }
+//     return item;
+// });
+
+
 
 export const listStatusActive: DTOStatus[] = [
     {
