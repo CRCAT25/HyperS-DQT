@@ -70,7 +70,7 @@ import { Admin009DetailProductComponent } from './admin-pages/pages/admin009-det
 import { PopupModule } from '@progress/kendo-angular-popup';
 import { EcomProfileComponent } from './ecom-pages/pages/ecom-profile/ecom-profile.component';
 import { ImportMultiImageDirective } from './admin-pages/shared/directive/importmultiimage.directive';
-import { Admin010DetailCartComponent } from './admin-pages/pages/admin010-detail-cart/admin010-detail-cart.component';
+import { Admin006DetailCartComponent } from './admin-pages/pages/admin006-detail-cart/admin006-detail-cart.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -122,7 +122,7 @@ import { Admin010DetailCartComponent } from './admin-pages/pages/admin010-detail
     Admin009DetailProductComponent,
     EcomProfileComponent,
     ImportMultiImageDirective,
-    Admin010DetailCartComponent,
+    Admin006DetailCartComponent,
   ],
   imports: [
     BrowserModule,

@@ -47,31 +47,54 @@
                         </div>
                     </ng-template>
                     </kendo-grid-column>   
-                    <kendo-grid-column  field="Size" title="Size" [width]="110">
+                    <kendo-grid-column  field="Size" title="Size" [width]="100">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="column Size">
                                 <div>{{dataItem.Size}}</div>
                             </div>
                         </ng-template>
                     </kendo-grid-column>
-                    <kendo-grid-column  field="Price" title="Đơn giá" [width]="140">
+                    <kendo-grid-column  field="Price" title="Đơn giá" [width]="130">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="column Price">
                                 <div>{{formatCurrency(dataItem.Price)}}</div>
                             </div>
                         </ng-template>
                     </kendo-grid-column>
-                    <kendo-grid-column  field="Quantity" title="Số lượng" [width]="110">
+                    <kendo-grid-column  field="Quantity" title="Số lượng" [width]="100">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="column Quantity">
                                 <div>{{dataItem.Quantity}}</div>
                             </div>
                         </ng-template>
                     </kendo-grid-column>
-                    <kendo-grid-column  field="TotalPrice" title="Tổng tiền" [width]="140">
+                    <kendo-grid-column  field="TotalPrice" title="Tổng tiền" [width]="130">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="column TotalPrice">
                                 <div>{{formatCurrency(dataItem.TotalPrice)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column  field="Status" title="Trạng thái" [width]="170">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="column-Status">
+                                <div>{{formatStatus(dataItem.Status)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column class="column-button" [width]="50">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="block-Action">
+                                <div (click)="ClickButtonAction(dataItem.Code, $event, dataItem.Status)"
+                                    class="block-buttonAction">
+                                    <component-button class="button-action" [value]="dataItem.Code" text=""
+                                        classIconFontAwesome="fa-ellipsis" [width]="30" [height]="30">
+                                    </component-button>
+                                </div>
+                                <div *ngIf="isClickButton[dataItem.Code]" class="dropDown-action" tabindex="0">
+                                    <component-dropdown-action (sendValue)="clickDropDownAction(dataItem, $event)"
+                                        [listItem]="listNextStatus"></component-dropdown-action>
+                                </div>
                             </div>
                         </ng-template>
                     </kendo-grid-column>
@@ -79,6 +102,18 @@
                 </kendo-grid>
                 </div>
             </div>
+        </div>
+
+        
+        <div class="footer-detail">
+            <div class="">
+                <i id="icon-warning" class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+        </div>
+        <div *ngIf="isShowAlert" class="popUp">
+            <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="objItemStatus.icon"
+                [text]="objItemStatus.text" (sendValue)="updateStatusBillInfo(itemBill,$event)" (sendReason)="receive($event)"
+                [value]="objItemStatus.value"></component-popup-confirm>
         </div>
     </div>
 </div>

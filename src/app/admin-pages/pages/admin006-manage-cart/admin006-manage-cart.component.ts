@@ -475,13 +475,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.listBillInfo = item.ListBillInfo;
     if (this.objItemStatus.value == 1) {
         this.isDetail = !this.isDetail;
-        // console.log(item.ListBillInfo);
-        // console.log(this.itemBill.ListBillInfo);
-
-        // localStorage.setItem('billSelected', item.Code + '');
-        // this.setLayoutStorage('Đơn hàng/Chi tiết đơn hàng', 'admin/detail-cart')
-        // this.router.navigate(['admin/detail-cart']);
-
     } else{
       this.isShowAlert = !this.isShowAlert
     }

@@ -9,7 +9,7 @@
         height: 100%;
         position: relative;
 
-        app-admin010-detail-cart{
+        app-admin006-detail-cart{
             z-index: 10;
             width: 100%;
             height: 100%;
@@ -174,10 +174,6 @@
                     th.k-table-th[aria-colindex="10"]{
                         background-color: transparent;
                     }
-    
-                    // td.k-table-td[aria-colindex="11"]{
-    
-                    // }
 
                     td.k-table-td[aria-colindex="10"] {
                         border-left: 1px solid gray !important;
