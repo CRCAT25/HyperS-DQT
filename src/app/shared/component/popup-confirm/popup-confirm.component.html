@@ -36,8 +36,10 @@
             </div>
             <ng-container *ngIf="footerPopUpCheck.innerHTML.trim().length === 0">
                 <div class="footerDefault">
-                    <component-button [text]="'Không đổi'" [classIconFontAwesome]="''" [width]="144"  [height]="58" [rounded]="0" 
-                    [bgColor]="'#FFFFFF'" [color]="'#959DB3'" [size]="16" (sendValue)="onClickButtonNo($event)" [value]="value"></component-button>
+                    <div class="buttonNoChange">
+                        <component-button [text]="'Không đổi'" [classIconFontAwesome]="''" [width]="144"  [height]="58" [rounded]="0" 
+                    [bgColor]="'#FFFFFF'" [color]="'#959DB3'" [size]="16" [value]="value"></component-button>
+                    </div>
                     <component-button [text]="text" [classIconFontAwesome]="classIconFontAwesome" [width]="224" [height]="58" [rounded]="0" 
                     [bgColor]="bgColor" [color]="'#FFFFFF'" [size]="16" (sendValue)="onClickButtonUp($event)" [value]="value"></component-button>
                 </div>

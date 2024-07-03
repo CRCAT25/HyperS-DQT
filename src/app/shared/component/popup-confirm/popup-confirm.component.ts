@@ -26,7 +26,6 @@ export class PopupConfirmComponent implements OnInit{
   @Input() bgColor: string = '#09880E';
   @Input() value: number;
   @Output() sendValue = new EventEmitter();
-  @Output() noChange = new EventEmitter();
   @Output() sendReason = new EventEmitter();
   @Input() reasonText: string = "";
 
@@ -48,12 +47,6 @@ export class PopupConfirmComponent implements OnInit{
     if(value){
       this.reasonText = value
       this.sendReason.emit(this.reasonText);
-    }
-  }
-
-  onClickButtonNo(obj: any){
-    if(obj){
-      this.noChange.emit(0);
     }
   }
 }

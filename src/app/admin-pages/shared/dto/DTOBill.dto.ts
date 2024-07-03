@@ -35,7 +35,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 2,
-                TotalCost: 900000
+                TotalPrice: 900000,
+                Status: 0
             },
             {
                 Code: 2,
@@ -45,7 +46,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
             ,
             {
@@ -56,7 +58,8 @@ export const listBill: DTOBill[] = [
                 Size: '43',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
         ],
         TotalDiscount: 0,
@@ -80,7 +83,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 2,
-                TotalCost: 900000
+                TotalPrice: 900000,
+                Status: 0
             },
             {
                 Code: 2,
@@ -90,7 +94,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
             ,
             {
@@ -101,7 +106,8 @@ export const listBill: DTOBill[] = [
                 Size: '43',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
         ],
         TotalDiscount: 0,
@@ -125,7 +131,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 2,
-                TotalCost: 900000
+                TotalPrice: 900000,
+                Status: 0
             },
             {
                 Code: 2,
@@ -135,7 +142,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
             ,
             {
@@ -146,7 +154,8 @@ export const listBill: DTOBill[] = [
                 Size: '43',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
         ],
         TotalDiscount: 0,
@@ -170,7 +179,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 2,
-                TotalCost: 900000
+                TotalPrice: 900000,
+                Status: 0
             },
             {
                 Code: 2,
@@ -180,7 +190,8 @@ export const listBill: DTOBill[] = [
                 Size: '42',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
             ,
             {
@@ -191,7 +202,8 @@ export const listBill: DTOBill[] = [
                 Size: '43',
                 Price: 500000,
                 Quantity: 1,
-                TotalCost: 400000
+                TotalPrice: 400000,
+                Status: 0
             }
         ],
         TotalDiscount: 100,
