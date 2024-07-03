@@ -1,10 +1,48 @@
+@import '../../../../styles.scss';
+
 ::ng-deep{
     app-admin001-information-customer{
         .admin001-info-customer{
-            .block{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .header-filter-statistics{
+                @include center-vertical;
+                gap: 20px;
+                padding: 6px 0 12px 0;
+
+                .label-filter{
+                    font-weight: 600;
+                    font-size: 14px;
+                    text-wrap: nowrap;
+                }
+            }
+
+            .content-form-customer-custom{
+                padding-bottom: 10px;
+                gap: 90px !important;
                 display: flex;
-                flex-direction: column;
-                gap: 16px;
+
+                .block-1,
+                .block-2{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                }
+
+                .block-2{
+                    .date-picker-born{
+                        display: flex; 
+                        @include center-vertical;
+                        justify-content: space-between;
+                    }
+
+                    kendo-datepicker{
+                        width: 260px !important;
+                        flex-direction: row !important;
+                    }
+                }
             }
         }
     }

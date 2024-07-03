@@ -1,25 +1,53 @@
 <div class="admin001-info-customer">
-    <!-- <component-form>
-        <div class="content-form">
-            <div class="block block-1">
-                <component-text-input [widthBlock]="400" label="Mã người dùng" ></component-text-input>
-                <component-text-input [widthBlock]="400" label="Họ tên" ></component-text-input>
-            </div>
+    <div class="header-filter-statistics">
+        <div class="label-filter">LỌC DỮ LIỆU</div>
 
-            <div class="block block-2">
-                <component-datepicker label="Ngày sinh" [widthBlock]="230"></component-datepicker>
-                <component-text-input [widthBlock]="400" label="Họ tên" ></component-text-input>
+        <!-- Tổng số lượng khách hàng -->
+        <component-statistics #accountActive [isSelectedDefault]="true" [valueField]="valueTotalCustomer"
+            textField="Tổng số lượng tài khoản"></component-statistics>
+
+        <!-- Số lượng tài khoản hoạt động -->
+        <component-statistics #accountActive [isSelectedDefault]="false" [valueField]="valueTotalCustomerActive"
+            textField="Tài khoản đang hoạt động" color="#09880E"></component-statistics>
+
+        <!-- Số lượng tài khoản vô hiệu hóa -->
+        <component-statistics #accountActive [isSelectedDefault]="false" [valueField]="valueTotalCustomerDisable"
+            textField="Tài khoản bị vô hiệu hóa" color="#FF1D1D"></component-statistics>
+    </div>
+
+    <div class="form">
+        <component-form text="Thông tin khách hàng">
+            <div class="content-form content-form-customer-custom">
+                <div class="block-1">
+                    <!-- Mã người dùng -->
+                    <component-text-input placeholder="Nhập mã người dùng..." #id [widthTextBox]="260"
+                        [widthBlock]="370" label="Mã người dùng"></component-text-input>
+
+                    <!-- Tên người dùng -->
+                    <component-text-input placeholder="Nhập tên người dùng..." #name [widthTextBox]="260"
+                        [widthBlock]="370" label="Tên người dùng"></component-text-input>
+
+                    <!-- Email -->
+                    <component-text-input placeholder="Nhập Email..." #email [widthTextBox]="260" [widthBlock]="370"
+                        label="Email"></component-text-input>
+                </div>
+
+                <div class="block-2">
+                    <!-- Ngày sinh -->
+                    <component-datepicker [minDate]="minDate" [maxDate]="maxDate"
+                        label="Ngày sinh" [blockPointer]="false"></component-datepicker>
+
+                    <!-- Giới tính -->
+                    <component-text-dropdown #gender [widthTextBox]="260" [widthBlock]="370" label="Giới tính"
+                        [defaultItem]="defaultGender" [borderWidth]="1" borderColor="rgb(182, 182, 182)"
+                        [heightTextBox]="30" [listItem]="listGender" textField="Gender"
+                        valueField="Code"></component-text-dropdown>
+
+                    <!-- Số điện thoại -->
+                    <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260"
+                        [widthBlock]="370" label="Số điện thoại"></component-text-input>
+                </div>
             </div>
-        </div>
-    </component-form> -->
-    <!-- <component-grid titleGrid="Danh sách khách hàng" [isLoading]="isLoading" [listData]="listOriginCustomer">
-        <ng-template let-data>
-            <kendo-grid-column title="Code" field="Code">
-            </kendo-grid-column>
-            <kendo-grid-column title="Name" field="Name">
-            </kendo-grid-column>
-    
-        </ng-template>
-    </component-grid> -->
-    <!-- <component-import-multi-image></component-import-multi-image> -->
+        </component-form>
+    </div>
 </div>

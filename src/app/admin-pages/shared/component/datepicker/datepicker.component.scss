@@ -16,7 +16,7 @@
         .k-datepicker {
             display: flex;
             flex-direction: row-reverse;
-            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
             width: 130px;
             height: 32px;
         }
@@ -27,7 +27,6 @@
 
         [id^="datepicker-"] {
             text-align: center;
-            pointer-events: none;
             cursor: default;
             background-color: #bfc4c96b !important;
         }
