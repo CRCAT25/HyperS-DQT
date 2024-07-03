@@ -8,8 +8,15 @@
         gap: 15px;
         height: 100%;
         position: relative;
-        padding-top: 10px;
-        
+
+        app-admin010-detail-cart{
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            justify-content: flex-end;
+        }
+
             .k-chip{
                 overflow: visible !important;
             }
@@ -19,11 +26,13 @@
                 align-items: center;
                 gap: 25px;
                 height: 40px;
+                margin-top: 10px;
                 
                 .k-input{
                     min-width: 955px !important;
                     width: 0;
                 }
+
 
                 
                 kendo-multiselect{
@@ -33,6 +42,7 @@
                     display: flex !important;
                     width: auto !important;
                     align-items: center;
+                    
                     
                     .k-input-values{
                         flex-wrap: nowrap !important;
@@ -101,8 +111,6 @@
 
 
             .showList{
-
-
                 .grid-custom-container{
                     height: calc(100vh - 61px - 60px - 32px - 40px - 10px);
 
@@ -147,7 +155,9 @@
     
                     .column-Status{                    
                         display: flex;
-                        justify-content: flex-end;
+                        flex-direction: column;
+                        text-align: right;
+                        gap: 5px;
                     }
     
                     .column-ShippingAddress{

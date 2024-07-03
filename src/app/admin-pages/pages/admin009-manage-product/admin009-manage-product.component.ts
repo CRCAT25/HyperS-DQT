@@ -41,12 +41,12 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
 
   // variable
   isLoading: boolean = true;
-  pageSize: number = 4;
+  pageSize: number = 15;
   valueSearch: string;
   codeProductSelected: number;
 
   // variable list
-  listPageSize: number[] = [1, 2, 3, 4];
+  listPageSize: number[] = [15, 25, 50];
   listRangePrice: DropDownPrice[] = [
     {
       Code: 0,
@@ -504,11 +504,9 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
 
   // Cật nhật trạng thái sản phẩm
   updateStatusProduct(product: DTOProduct, obj: any) {
-    console.log(obj);
     if (obj.value === -1) {
-      localStorage.setItem('productSelected', product.Code + '');
       this.setLayoutStorage('Quản lý sản phẩm/Chi tiết sản phẩm', 'admin/detail-product')
-      this.router.navigate(['admin/detail-product']);
+      this.goToDetail(null, product.Code);
     }
     if (obj.value >= 0) {
       product.Status = obj.value;
@@ -540,6 +538,11 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
     this.gridState.skip = value.skip;
     this.gridState.take = value.take;
     this.getListProduct();
+  }
+
+  goToDetail(res: any, code: number){
+    localStorage.setItem('productSelected', code + '');
+    this.router.navigate(['admin/detail-product']);
   }
 
   ngOnDestroy(): void {

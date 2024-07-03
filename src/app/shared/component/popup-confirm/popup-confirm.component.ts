@@ -27,7 +27,8 @@ export class PopupConfirmComponent implements OnInit{
   @Input() value: number;
   @Output() sendValue = new EventEmitter();
   @Output() noChange = new EventEmitter();
-
+  @Output() sendReason = new EventEmitter();
+  @Input() reasonText: string = "";
 
 
   constructor(private statusColorPipe: StatusColorPipe) {}
@@ -40,6 +41,13 @@ export class PopupConfirmComponent implements OnInit{
   onClickButtonUp(obj: any){
     if(obj){
       this.sendValue.emit(obj);
+    }
+  }
+
+  sendReasonText(value: any){
+    if(value){
+      this.reasonText = value
+      this.sendReason.emit(this.reasonText);
     }
   }
 

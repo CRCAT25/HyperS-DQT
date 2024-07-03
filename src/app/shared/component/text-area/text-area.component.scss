@@ -3,7 +3,7 @@
         display: inline-block;
         .box-text-area{
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between !important;
             label, kendo-textarea{
                 display: block;
             }
