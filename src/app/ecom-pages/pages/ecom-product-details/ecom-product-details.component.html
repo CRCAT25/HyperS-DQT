@@ -36,7 +36,7 @@
                     </div>
                     <div class="list-size">
                         <div  *ngFor="let size of product?.ListOfSize">
-                            <div (click)="handleSelectedSize(size.Code)" [ngClass]="size.Code == sizeSelected ? 'item-selected': 'item'">
+                            <div [ngStyle]="{'opacity': size.Stock ? '': '0.4', 'pointer-events': size.Stock ? 'auto': 'none'}" (click)="handleSelectedSize(size.Code)" [ngClass]="size.Code == sizeSelected ? 'item-selected': 'item'">
                                 {{size.Size}}
                             </div>
                         </div>

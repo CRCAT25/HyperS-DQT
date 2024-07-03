@@ -18,7 +18,7 @@ export class EcomProductDetailsComponent implements OnInit {
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
   product: DTOProduct
   idProduct: number = 0
-  imageShowSelected: string = ""
+  imageShowSelected: string = "https://www.shutterstock.com/image-vector/image-icon-600nw-211642900.jpg"
   ListSizeOfProduct: DTOSize[] = []
   sizeSelected: number = -1
   dataProductSend: DTOGuessCartProduct = {Code: 0, SelectedSize: 0, Quantity: 0}

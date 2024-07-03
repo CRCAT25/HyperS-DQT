@@ -46,7 +46,7 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
 
   productFilter: State = {
       skip: 0,
-      take: 0,
+      take: 12,
       sort: [
       {
         field: "Code",
@@ -236,7 +236,6 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     filterSearch.filters = []
     filterSearch.filters.push({field: "Name", operator: 'contains', value: this.keySearch})
 
-    // this.productFilter.sort[0].dir = this.selectedSort.dir
 
   
 
@@ -272,6 +271,11 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     this.listBrand.forEach(element => {
       console.log(element.Name);
     });
+  }
+
+  handleLoadMore(){
+    this.productFilter.take += 12
+    this.handleApplyFilter()
   }
 
   ngOnDestroy(): void {

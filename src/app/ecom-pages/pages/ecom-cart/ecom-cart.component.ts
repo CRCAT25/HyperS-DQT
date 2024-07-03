@@ -48,8 +48,10 @@ export class EcomCartComponent implements OnInit{
   APIGetListCartProduct(){
     this.cartService.getListCartProduct(this.requestGetListCart).pipe(takeUntil(this.destroy)).subscribe(data =>{
       if(data.ErrorString != "" || data.StatusCode != 0){
+
         this.notificationService.Show("😭, Erorr when fetching data", "error")
       }
+      console.log(data);
       this.cart = data.ObjectReturn
     })
   }

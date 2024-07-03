@@ -30,6 +30,7 @@ export class LoginComponent {
   APILogin(username: string ,password: string):void{
     this.accoutService.login(username, password).pipe(takeUntil(this.destroy)).subscribe(data => {
       try{
+        console.log(data);
         if(data.StatusCode == 0 && data.ObjectReturn.ResultLogin.Succeeded == true && data.ErrorString == ""){
           localStorage.setItem('token', data.ObjectReturn.ResultToken.Token)
           if(data.ObjectReturn.ResultRedirect == "jkwt"){
