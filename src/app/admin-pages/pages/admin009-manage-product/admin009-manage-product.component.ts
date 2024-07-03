@@ -432,7 +432,7 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
 
     // Reset state
     this.gridState.filter.filters = [];
-    this.pageSize = 4;
+    this.pageSize = 15;
     this.gridState.skip = 0;
     this.gridState.sort = [
       {
@@ -505,8 +505,8 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   // Cật nhật trạng thái sản phẩm
   updateStatusProduct(product: DTOProduct, obj: any) {
     if (obj.value === -1) {
-      this.setLayoutStorage('Quản lý sản phẩm/Chi tiết sản phẩm', 'admin/detail-product')
       this.goToDetail(null, product.Code);
+      this.setLayoutStorage('Quản lý sản phẩm/Chi tiết sản phẩm/Sản phẩm ' + product.Name, 'admin/detail-product');
     }
     if (obj.value >= 0) {
       product.Status = obj.value;
@@ -541,6 +541,9 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   }
 
   goToDetail(res: any, code: number){
+    if(code === 0){
+      this.setLayoutStorage('Quản lý sản phẩm/Thêm mới sản phẩm', 'admin/detail-product')
+    }
     localStorage.setItem('productSelected', code + '');
     this.router.navigate(['admin/detail-product']);
   }
