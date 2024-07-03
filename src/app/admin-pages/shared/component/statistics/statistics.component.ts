@@ -45,7 +45,7 @@ export class StatisticsComponent implements OnChanges, OnInit {
   countUp() {
     let start = 0;
     const end = this.valueField;
-    const duration = 1000;
+    const duration = 300;
     const increment = end / (duration / 10);
 
     const interval = setInterval(() => {

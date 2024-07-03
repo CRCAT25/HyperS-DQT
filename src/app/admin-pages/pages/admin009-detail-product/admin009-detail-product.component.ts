@@ -5,13 +5,12 @@ import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { DTOUpdateProductRequest } from 'src/app/shared/dto/DTOUpdateProductRequest.dto';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 import { DTOColor, listColor } from '../../shared/dto/DTOColor.dto.';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, ReplaySubject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { DTOProductType } from 'src/app/ecom-pages/shared/dto/DTOProductType';
 import { DTOBrand } from 'src/app/ecom-pages/shared/dto/DTOBrand';
 import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
 import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
-import { RouterTestingHarness } from '@angular/router/testing';
 import { ImportMultiImageComponent } from '../../shared/component/import-multi-image/import-multi-image.component';
 import { TextAreaComponent } from 'src/app/shared/component/text-area/text-area.component';
 import { DTOSize, listSize } from 'src/app/ecom-pages/shared/dto/DTOSize';
@@ -28,6 +27,10 @@ interface Gender {
   styleUrls: ['./admin009-detail-product.component.scss']
 })
 export class Admin009DetailProductComponent implements OnInit, OnDestroy {
+  // variables 
+  startSize: number = 35;
+  endSize: number = 48;
+
   // variables object
   productSelected: DTOProduct;
   defaultProductType: DTOProductType = {
@@ -90,6 +93,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   // variable ViewChilds
   @ViewChild('id') childId!: TextInputComponent;
   @ViewChild('name') childName!: TextInputComponent;
+  @ViewChild('start') childStartSize!: TextInputComponent;
+  @ViewChild('end') childEndSize!: TextInputComponent;
   @ViewChild('color') childColor!: TextDropdownComponent;
   @ViewChild('type') childType!: TextDropdownComponent;
   @ViewChild('brand') childBrand!: TextDropdownComponent;
@@ -117,12 +122,21 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       this.productSelected.Color = '-- Màu sắc --';
       this.productSelected.CodeBrand = -1;
       this.productSelected.CodeProductType = -1;
+      this.childStartSize.valueTextBox = '35';
+      this.childEndSize.valueTextBox = '48';
     }
     else {
       this.productAdminService.getProductByCode(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
         this.productSelected = product.ObjectReturn.Data[0];
         this.listSize = this.updateListSize(this.listSizeDefault, this.productSelected.ListOfSize);
-        this.listSizeHandle = [...this.listSize];
+        this.listSizeHandle = this.productSelected.ListOfSize;
+        this.listSizeHandle.sort((a, b) => a.Size - b.Size);
+        this.startSize = this.listSizeHandle[0].Size;
+        this.endSize = this.listSizeHandle[this.listSizeHandle.length - 1].Size;
+        if (this.childStartSize && this.childEndSize) {
+          this.childStartSize.valueTextBox = this.listSizeHandle[0].Size.toString();
+          this.childEndSize.valueTextBox = this.listSizeHandle[this.listSizeHandle.length - 1].Size.toString();
+        }
       });
     }
   }
@@ -145,7 +159,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     return 'Lỗi giới tính';
   }
 
-  // Cật nhật trạng thái sản phẩm
+  // Cật nhật sản phẩm
   updateProduct(product: DTOProduct, obj: any, properties: string[], action: string) {
     if (obj.value >= 0) {
       product.Status = obj.value;
@@ -191,7 +205,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     this.childDescription.resetValue();
     // reset hình ảnh
     this.childListImage.clearListImage();
-    // reset danh sách size
+    // reset size
     this.listSizeHandle = listSize;
     this.notiService.Show("Đã xóa toàn bộ thông tin", "success");
   }
@@ -215,18 +229,19 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     this.childType.value = { Code: this.productSelected.CodeProductType, Name: this.productSelected.ProductType };
     this.childBrand.value = { Code: this.productSelected.CodeBrand, Name: this.productSelected.BrandName };
     this.childGender.value = { Code: this.productSelected.Gender, Gender: this.checkGender(this.productSelected.Gender) };
-    this.childPrice.valueTextBox = (this.productSelected.Price).toString();
-    this.childStock.valueTextBox = (this.productSelected.Stock).toString();
-    this.childSold.valueTextBox = (this.productSelected.Sold).toString();
+    this.childPrice.valueTextBox = this.productSelected.Price.toString();
+    this.childStock.valueTextBox = this.productSelected.Stock.toString();
+    this.childSold.valueTextBox = this.productSelected.Sold.toString();
     this.childListImage.listImageHandler = this.productSelected.ListOfImage;
     this.childDescription.value = this.productSelected.Description;
+    this.listSizeHandle = this.productSelected.ListOfSize;
     this.getProductSelected();
     this.notiService.Show("Khôi phục thành công", "success");
   }
 
   // Lấy danh sách hình ảnh sản phẩm
   getListImage(res: any) {
-    // console.log(res);
+    console.log(res);
   }
 
   // Lấy danh sách số lượng sản phẩm dựa trên size của sản phẩm
@@ -249,6 +264,68 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   // Hàm chạy sau khi nhập input size bất kỳ và blur ra
   updateStock(res: any, size: DTOSize) {
     size.Stock = parseInt(res);
+    this.listSize = this.listSizeHandle;
+  }
+
+  // Set khoảng size của sản phẩm
+  getRangeSize(res: any, type: string) {
+    let totalBefore: number = 0;
+    let totalAfter: number = 0;
+    let isChange: boolean = false;
+
+    if (parseInt(res) > 48 || parseInt(res) < 35) {
+      this.notiService.Show("Khoảng size nằm ngoài khoảng cho phép", "error");
+    }
+    else {
+      if (type === 'start') {
+        if (parseInt(res) !== this.startSize) {
+          if (parseInt(res) >= this.endSize && this.endSize !== 0) {
+            this.notiService.Show("Nhập khoảng size thất bại", "error");
+            this.childStartSize.valueTextBox = this.startSize.toString();
+            this.startSize = this.listSizeHandle[0].Size;
+          }
+          else {
+            this.startSize = parseInt(res);
+            isChange = true;
+          }
+        }
+      }
+      else if (type === 'end') {
+        if (parseInt(res) !== this.endSize) {
+          if (parseInt(res) <= this.startSize) {
+            this.notiService.Show("Nhập khoảng size thất bại", "error");
+            this.childEndSize.valueTextBox = this.endSize.toString();
+            this.endSize = this.listSizeHandle[this.listSizeHandle.length - 1].Size;
+          }
+          else {
+            this.endSize = parseInt(res);
+            isChange = true;
+          }
+        }
+      }
+    }
+
+    const listTemp: DTOSize[] = this.listSizeHandle.filter(size => size.Size >= this.startSize && size.Size <= this.endSize);
+
+    this.listSizeHandle.forEach(size => totalBefore += size.Stock);
+    listTemp.forEach(size => totalAfter += size.Stock);
+
+    if (totalAfter < totalBefore) {
+      this.notiService.Show("Số lượng sản phẩm còn nên không thể xóa Size đó", "error");
+      if (type === 'start') {
+        this.startSize = this.listSizeHandle[0].Size;
+        this.childStartSize.valueTextBox = this.listSizeHandle[0].Size.toString();
+      }
+      if (type === 'end') {
+        this.endSize = this.listSizeHandle[this.listSizeHandle.length - 1].Size;
+        this.childEndSize.valueTextBox = this.listSizeHandle[this.listSizeHandle.length - 1].Size.toString();
+      }
+    }
+    else {
+      if (isChange) {
+        this.listSizeHandle = this.listSize.filter(size => size.Size >= this.startSize && size.Size <= this.endSize);
+      }
+    }
   }
 
   // Thêm sản phẩm mới
@@ -272,70 +349,97 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       Status: 0,
       ThumbnailImg: ''
     }
-    if(type === 'add'){
-      this.checkIdProduct(this.productSelected.Code, isDifferent => {
-        if (!isDifferent) {
-          this.notiService.Show("IdProduct đã có", "error");
-          return;
+
+    if (!this.checkInputProduct(product)) { return; }
+
+    if (type === 'add') {
+      this.checkIdProduct(product.IdProduct).subscribe(isDifferent => {
+        if (isDifferent) {
+          this.updateProduct(product, { value: 0 }, [], 'Thêm mới');
+          this.clearDetailProduct(null);
+        }
+        else {
+          this.notiService.Show("IdProduct đã bị trùng với 1 sản phẩm khác", "error");
         }
       });
     }
-    if (!product.IdProduct) {
-      this.notiService.Show("IdProduct chưa được nhập", "error");
-      return;
-    }
-    if (!product.Name) {
-      this.notiService.Show("Vui lòng nhập tên sản phẩm", "error");
-      return;
-    }
-    if (product.Color === '-- Màu sắc --') {
-      this.notiService.Show("Vui lòng chọn màu sắc", "error");
-      return;
-    }
-    if (product.CodeBrand === -1) {
-      this.notiService.Show("Vui lòng chọn thương hiệu", "error");
-      return;
-    }
-    if (product.CodeProductType === -1) {
-      this.notiService.Show("Vui lòng chọn loại sản phẩm", "error");
-      return;
-    }
-    if (product.Gender === -1) {
-      this.notiService.Show("Vui lòng chọn giới tính", "error");
-      return;
-    }
-    if (product.Price === 0) {
-      this.notiService.Show("Vui lòng nhập giá sản phẩm", "error");
-      return;
-    }
-    if (product.ListOfImage.length === 0) {
-      this.notiService.Show("Vui lòng thêm ảnh sản phẩm", "error");
-      return;
-    }
-    if (type === 'add') {
-      this.updateProduct(product, { value: 0 }, [], 'Thêm mới');
-      this.clearDetailProduct(null);
-    }
+
     if (type === 'update') {
-      product.Code = this.productSelected.Code;
-      this.updateProduct(product, { value: 0 }, this.listPropertiesUpdate, 'Cập nhật');
+      this.checkIdProduct(product.IdProduct).subscribe(isDifferent => {
+        if (isDifferent) {
+          product.Code = this.productSelected.Code;
+          this.updateProduct(product, { value: 0 }, this.setPropertiesUpdate(), 'Cập nhật');
+          this.getProductSelected();
+        }
+        else {
+          if(product.IdProduct !== this.productSelected.IdProduct){
+            this.notiService.Show("IdProduct đã bị trùng với 1 sản phẩm khác", "error");
+          }
+          else{
+            product.Code = this.productSelected.Code;
+            this.updateProduct(product, { value: 0 }, this.setPropertiesUpdate(), 'Cập nhật');
+            this.getProductSelected();
+          }
+        }
+      });
     }
+  }
+
+  checkIdProduct(id: string): Observable<boolean> {
+    return this.productAdminService.getListProduct({})
+      .pipe(
+        takeUntil(this.destroy),
+        map(list => {
+          const listProduct = list.ObjectReturn.Data;
+          return !listProduct.some((product: DTOProduct) => product.IdProduct === id);
+        })
+      );
   }
 
   // Kiểm tra idproduct có trùng hay không
-  checkIdProduct(code: number, callback: (isDifferent: boolean) => void) {
-    this.productAdminService.getProductByCode(code).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-      const product: DTOProduct = res.ObjectReturn.Data[0];
-      if (product) {
-        callback(product.IdProduct !== this.childId.valueTextBox);
-      } else {
-        callback(false);
-      }
-    });
+  // checkIdProduct(code: number, callback: (isDifferent: boolean) => void) {
+  //   this.productAdminService.getProductByCode(code).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+  //     const product: DTOProduct = res.ObjectReturn.Data[0];
+  //     if (product) {
+  //       console.log(product.IdProduct);
+  //       console.log(product.IdProduct !== this.childId.valueTextBox);
+  //       callback(product.IdProduct !== this.childId.valueTextBox);
+  //     } else {
+  //       console.log(product.IdProduct !== this.childId.valueTextBox);
+  //       callback(false);
+  //     }
+  //   });
+  // }
+
+  // Đối với update, set các property để gửi req nếu có thay đổi
+  setPropertiesUpdate() {
+    let listProps: string[] = [];
+    if (this.productSelected.IdProduct !== this.childId.valueTextBox) {
+      listProps.push('IdProduct');
+    }
+    if (this.productSelected.Name !== this.childName.valueTextBox) {
+      listProps.push('Name');
+    }
+    if (this.productSelected.Color !== this.childColor.value.Color) {
+      listProps.push('Color');
+    }
+    if (this.productSelected.ProductType !== this.childType.value.Name) {
+      listProps.push('CodeProductType', 'ProductType');
+    }
+    if (this.productSelected.CodeBrand !== this.childBrand.value.Code) {
+      listProps.push('CodeBrand', 'BrandName');
+    }
+    if (this.productSelected.Gender !== this.childGender.value.Code) {
+      listProps.push('Gender');
+    }
+    if (this.productSelected.Price !== parseInt(this.childPrice.valueTextBox)) {
+      listProps.push('Price');
+    }
+    return listProps;
   }
 
   // Kiểm tra đầu vào sản phẩm có nhập đầy đủ hay không
-  checkInputProduct(product: DTOProduct){
+  checkInputProduct(product: DTOProduct) {
     if (!product.IdProduct) {
       this.notiService.Show("IdProduct chưa được nhập", "error");
       return false;

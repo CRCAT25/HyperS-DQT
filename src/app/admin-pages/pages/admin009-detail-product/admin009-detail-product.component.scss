@@ -56,15 +56,26 @@
                     }
 
                     .size-container{
-                        display: flex;
-                        gap: 30px;
-                        flex-wrap: wrap;
                         min-width: 686px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 30px;
 
                         component-text-input{
                             .k-input-inner{
                                 text-align: center;
                             }
+                        }
+
+                        .range-size{
+                            display: flex;
+                            gap: 30px;
+                        }
+
+                        .list-size{
+                            display: flex;
+                            gap: 30px;
+                            flex-wrap: wrap;
                         }
                     }
                 }
