@@ -1,3 +1,4 @@
+import { listBill } from './../../shared/dto/DTOBill.dto';
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DTOStatus, listStatus, filteredStatusList } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
@@ -57,7 +58,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   statusCounts: { [key: number]: number } = {};
   listBillPageAllStatus: GridDataResult;
   reasonFail: string;
-  isDetail: boolean = true;
+  isDetail: boolean = false;
+  listBillInfo: DTOBillInfo[];
 
 
   // defaultItemStatusBill: DTOStatus = {
@@ -287,8 +289,14 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     if (this.tempID !== null && !(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="10"]')) {
       this.isClickButton[this.tempID] = false;
     }
-    if (this.isShowAlert == true && (!(event.target as HTMLElement).closest('component-dropdown-action') && !(event.target as HTMLElement).closest('.PopUp'))) {
+    // if (this.isShowAlert == true && (!(event.target as HTMLElement).closest('component-dropdown-action') && !(event.target as HTMLElement).closest('.PopUp'))) {
+    //   this.isShowAlert = false;
+    // }
+    if (this.isShowAlert == true && ((event.target as HTMLElement).closest('.buttonNoChange'))) {
       this.isShowAlert = false;
+    }
+    if (this.isDetail == true && ((event.target as HTMLElement).closest('#icon-back'))) {
+      this.isDetail = false;
     }
   }
 
@@ -464,8 +472,12 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   clickDropDownAction(item: DTOBill, value: any) {
     this.itemBill = item;
     this.objItemStatus = value
+    this.listBillInfo = item.ListBillInfo;
     if (this.objItemStatus.value == 1) {
         this.isDetail = !this.isDetail;
+        // console.log(item.ListBillInfo);
+        // console.log(this.itemBill.ListBillInfo);
+
         // localStorage.setItem('billSelected', item.Code + '');
         // this.setLayoutStorage('Đơn hàng/Chi tiết đơn hàng', 'admin/detail-cart')
         // this.router.navigate(['admin/detail-cart']);
@@ -495,6 +507,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
         if (res.StatusCode === 0) {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")
           this.getListBill();
+          this.setFilterExpStatus();
           this.isShowAlert = false;
         }
       }, error => {
@@ -503,10 +516,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
   }
 
-  clickNoChange() {
-    this.isShowAlert = false;
-  }
-
+ 
   test(obj: any) {
     console.log(obj);
   }
