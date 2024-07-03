@@ -256,3 +256,18 @@ export const listStatusActive: DTOStatus[] = [
         IsChecked: false
     }
 ]
+
+export const listStatusCustomer: DTOStatus[] = [
+    {
+        Code: 0,
+        Status: "Kích hoạt",
+        Icon: "fa-circle-check",
+        IsChecked: false
+    },
+    {
+        Code: 1,
+        Status: "Vô hiệu hóa",
+        Icon: "fa-circle-minus",
+        IsChecked: false
+    }
+]

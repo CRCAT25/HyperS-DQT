@@ -48,7 +48,6 @@ import { PopupConfirmComponent } from './shared/component/popup-confirm/popup-co
 import { ImportImageComponent } from './admin-pages/shared/component/import-image/import-image.component';
 import { FormComponent } from './admin-pages/shared/component/form/form.component';
 import { DropdownActionComponent } from './admin-pages/shared/component/dropdown-action/dropdown-action.component';
-import { DrawerDetailComponent } from './admin-pages/shared/component/drawer-detail/drawer-detail.component';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EcomProductCardComponent } from './ecom-pages/shared/component/ecom-product-card/ecom-product-card.component';
 import { NotificationModule } from "@progress/kendo-angular-notification";
@@ -105,7 +104,6 @@ import { Admin006DetailCartComponent } from './admin-pages/pages/admin006-detail
     ImportImageComponent,
     FormComponent,
     DropdownActionComponent,
-    DrawerDetailComponent,
     EcomProductCardComponent,
     EcomFilterProductComponent,
     ImportImageDirective,

@@ -84,10 +84,18 @@
                     <component-text-area #desciption [value]="productSelected.Description" [maxlength]="200"
                         [height]="151" [widthBox]="802" [width]="918" [fontsize]="13"></component-text-area>
                     <div class="size-container">
-                        <div class="size" *ngFor="let size of listSizeHandle">
-                            <component-text-input (getValue)="updateStock($event, size)" [value]="size.Stock"
-                                [typeValue]="'number'" [widthBlock]="100" [widthTextBox]="45"
-                                [label]="'Size ' + size.Size.toString()"></component-text-input>
+                        <div class="range-size">
+                            <component-text-input #start (getValue)="getRangeSize($event, 'start')" [typeValue]="'number'"
+                                [widthBlock]="100" [widthTextBox]="45" label="Từ size" [value]="startSize"></component-text-input>
+                            <component-text-input #end (getValue)="getRangeSize($event, 'end')" [typeValue]="'number'"
+                                [widthBlock]="100" [widthTextBox]="45" label="Đến size" [value]="endSize"></component-text-input>
+                        </div>
+
+                        <div class="list-size" *ngIf="startSize && endSize">
+                            <ng-container *ngFor="let size of listSizeHandle">
+                                <component-text-input (getValue)="updateStock($event, size)" [typeValue]="'number'"
+                                [widthBlock]="100" [widthTextBox]="45" [label]="'Size ' + size.Size" [value]="size.Stock"></component-text-input>
+                            </ng-container>
                         </div>
                     </div>
                 </div>
