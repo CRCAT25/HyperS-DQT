@@ -79,7 +79,7 @@
                         </div>
 
                         <div class="quantity-area">
-                            <i (click)="handleMinusQuantityProduct(item.Product.Code, item.SizeSelected.Code)" class="fa-solid fa-minus"></i>
+                            <i (click)="handleClickFunction(item, 'Update')" class="fa-solid fa-minus"></i>
                             <div class="quantity">
                                 <input class="input" type="text" [value]="item.Quantity">
                             </div>
