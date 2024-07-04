@@ -128,7 +128,9 @@
                                 border-radius: 5px;
                             }
 
+                            th.k-table-th[aria-colindex="7"],
                             .column-Status{
+                                display: flex;
                                 justify-content: flex-end;
                             }
 

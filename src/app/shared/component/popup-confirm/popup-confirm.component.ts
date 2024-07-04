@@ -28,6 +28,10 @@ export class PopupConfirmComponent implements OnInit{
   @Output() sendValue = new EventEmitter();
   @Output() sendReason = new EventEmitter();
   @Input() reasonText: string = "";
+ 
+
+
+
 
 
   constructor(private statusColorPipe: StatusColorPipe) {}

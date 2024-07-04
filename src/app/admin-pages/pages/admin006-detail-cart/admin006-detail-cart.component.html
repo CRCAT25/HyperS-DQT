@@ -78,7 +78,9 @@
                     <kendo-grid-column  field="Status" title="Trạng thái" [width]="170">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="column-Status">
-                                <div>{{formatStatus(dataItem.Status)}}</div>
+                                <div [style.color]="formatStatus(dataItem.Status) | statusColor">
+                                    {{formatStatus(dataItem.Status)}}
+                                </div>    
                             </div>
                         </ng-template>
                     </kendo-grid-column>
@@ -110,10 +112,10 @@
                 <i id="icon-warning" class="fa-solid fa-triangle-exclamation"></i>
             </div>
         </div>
-        <div *ngIf="isShowAlert" class="popUp">
-            <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="objItemStatus.icon"
-                [text]="objItemStatus.text" (sendValue)="updateStatusBillInfo(itemBill,$event)" (sendReason)="receive($event)"
-                [value]="objItemStatus.value"></component-popup-confirm>
-        </div>
     </div>
+</div>
+<div *ngIf="isShowAlert" class="popUp">
+    <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="objItemStatus.icon"
+        [text]="objItemStatus.text" (sendValue)="updateStatusBillInfo($event)" (sendReason)="receive($event)"
+        [value]="objItemStatus.value"></component-popup-confirm>
 </div>
