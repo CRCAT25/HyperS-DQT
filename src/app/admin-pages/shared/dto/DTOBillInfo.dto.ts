@@ -6,6 +6,7 @@ export class DTOBillInfo {
     Size: string;
     Price: number;
     Quantity: number;
-    TotalCost: number;
+    TotalPrice: number;
+    Status: number;
 }
 

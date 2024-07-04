@@ -8,31 +8,74 @@
         <div class="body-detail">
             <div class="box-info">
                 <div>
-                    <div class="codeBill">Mã đơn 01</div>
-                    <div class="createAtBill">25/05/2024</div>
+                    <div class="codeBill">Mã đơn {{itemBill.Code}}</div>
+                    <div class="createAtBill">{{formattedCreateAt(itemBill.CreateAt)}}</div>
                 </div>
                 <div class="box Name">
                     <div class="label Name">Họ tên khách hàng</div>
-                    <div class="nameBill">Đỗ Quốc Thành</div>
+                    <div class="nameBill">{{itemBill.CustomerName}}</div>
                 </div>
                 <div class="box PhoneNumber">
                     <div class="label PhoneNumber">Số điện thoại</div>
-                    <div class="phoneNumberBill">0855280747</div>
+                    <div class="phoneNumberBill">{{itemBill.PhoneNumber}}</div>
                 </div>
                 <div class="box Status">
                     <div class="label Status">Trạng thái</div>
-                    <div class="statusBill">Chờ xác nhận</div>  
+                    <div class="statusBill">{{formatStatus(itemBill.Status)}}</div>  
                 </div>
                 <div class="box Address">
                     <div class="label Address">Địa chỉ</div>
-                    <div class="addressBill">265/Nguyễn Tri Phương, Phường Long Thạnh, thị xã Tân Châu, tỉnh An Giang</div>  
+                    <div class="addressBill">{{itemBill.ShippingAddress}}</div>  
                 </div>
             </div>
 
             <div class="showListDetail">
-                <div class="grid-custom-detail">
-                    <kendo-grid [pageable]="true" [data]="">
-                    <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+                <div class="grid-custom-container">
+                    <kendo-grid [data]="listBillInfo">
+                    <kendo-grid-column  field="ImageURL" title="Hình ảnh" [width]="100">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="column column-image">
+                                <img class="image" [src]="dataItem.ImageURL" alt="">
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column  title="Mã và tên sản phẩm">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div class="column column-id-name">
+                            <div class="idProduct">{{dataItem.IDProduct}}</div>
+                            <div class="nameProduct">{{dataItem.Name}}</div>
+                        </div>
+                    </ng-template>
+                    </kendo-grid-column>   
+                    <kendo-grid-column  field="Size" title="Size" [width]="110">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="column Size">
+                                <div>{{dataItem.Size}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column  field="Price" title="Đơn giá" [width]="140">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="column Price">
+                                <div>{{formatCurrency(dataItem.Price)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column  field="Quantity" title="Số lượng" [width]="110">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="column Quantity">
+                                <div>{{dataItem.Quantity}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column  field="TotalPrice" title="Tổng tiền" [width]="140">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="column TotalPrice">
+                                <div>{{formatCurrency(dataItem.TotalPrice)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
                 </kendo-grid>
                 </div>
             </div>

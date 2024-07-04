@@ -27,7 +27,7 @@ export class TextInputComponent implements OnInit {
   @Input() rounded: number = 5;
   @Input() paddingLeft: number;
   @Input() paddingRight: number = 0;
-  @Input() boxShadow: string = 'rgba(0, 0, 0, 0.1) 0px 0px 10px';
+  @Input() boxShadow: string = 'rgba(0, 0, 0, 0.2) 0px 5px 10px';
   @Input() borderWidth: number = 1;
   @Input() borderColor: string = '#B6B6B6';
   @Input() typeValue: 'text' | 'number' = 'text';

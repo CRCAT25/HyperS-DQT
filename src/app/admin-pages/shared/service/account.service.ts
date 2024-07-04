@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { State } from '@progress/kendo-data-query';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 
 @Injectable({
@@ -20,10 +22,15 @@ export class AccountService {
         };
     }
 
-    getListCustomer(): Observable<DTOResponse> {
-        const httpOption = this.getHttpOptions()
-        const body = {}
-        return this.httpClient.post<DTOResponse>(this.urlGetListCustomer, body, httpOption).pipe()
+    getListCustomer(filter: State): Observable<DTOResponse> {
+        const httpOptions = this.getHttpOptions();
+        return this.httpClient.post<DTOResponse>(this.urlGetListCustomer, filter, httpOptions)
+            .pipe(
+                catchError(error => {
+                    console.error('Error retrieving quiz sessions:', error);
+                    return throwError(error);
+                })
+            );
     }
 
 }

@@ -20,6 +20,7 @@ export class DatepickerComponent implements OnInit {
   @Input() label: string;
   @Input() hasLabel: boolean = false;
   @Input() widthBlock: number;
+  @Input() blockPointer: boolean = true;
   @ViewChild('datePicker', { static: false }) datePicker!: DatePickerComponent;
   // valueDate: Date;
   constructor(private renderer: Renderer2) { }
