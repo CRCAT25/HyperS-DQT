@@ -5,7 +5,6 @@ import { Injectable, EventEmitter } from '@angular/core';
 })
 export class HeaderService {
   headerChange: EventEmitter<void> = new EventEmitter<void>()
-
   constructor() { }
 
   emitHeaderChange():void{

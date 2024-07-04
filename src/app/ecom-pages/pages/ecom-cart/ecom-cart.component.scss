@@ -66,6 +66,10 @@
                         .item-area{
                             height: 500px;
                             overflow-y: auto;
+
+                            .loading{
+                                // height: 300px;
+                            }
                         
                             .item{
                                 height: 150px;

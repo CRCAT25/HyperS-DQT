@@ -1,10 +1,18 @@
 <div class="item" routerLink="ecom/product-detail" (click)="handleProductClick(product)">
     <div>
-        <div *ngFor="let img of product.ListOfImage">
-            <div  class="image" *ngIf="img.IsThumbnail == true">
-                <img src="{{img.ImgUrl}}" alt="">
+        <div *ngIf="hasthumbnail">
+            <div *ngFor="let img of product.ListOfImage">
+                <div class="image" *ngIf="img.IsThumbnail == true">
+                    <img loading="lazy" src="{{img.ImgUrl}}" alt="">
+                </div>
             </div>
         </div>
+        <div *ngIf="!hasthumbnail">
+            <div  class="image">
+                <img src="https://media.istockphoto.com/id/1354776457/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=w3OW0wX3LyiFRuDHo9A32Q0IUMtD4yjXEvQlqyYk9O4=" alt="">
+            </div>
+        </div>
+       
         <div class="info-item">
             <div class="name">
                 {{product.Name}}

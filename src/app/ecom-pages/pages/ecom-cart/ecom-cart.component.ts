@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { DTOCart } from '../../shared/dto/DTOCart';
 
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { CartService } from '../../shared/service/cart.service';
 import { DTOGuessCartProduct } from '../../shared/dto/DTOGuessCartProduct';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, pipe } from 'rxjs';
 import { DTOGetListCartRequest } from '../../shared/dto/DTOGetListCartRequest';
 import { takeUntil } from 'rxjs/operators';
 import { NotiService } from '../../shared/service/noti.service';
 import { DTOProductInCart } from '../../shared/dto/DTOProductInCart';
 import { Router } from '@angular/router';
+import { ProductService } from '../../shared/service/product.service';
+import { DTOAddToCart } from '../../shared/dto/DTOAddToCart';
 
 @Component({
   selector: 'app-ecom-cart',
@@ -26,15 +28,30 @@ export class EcomCartComponent implements OnInit{
   totalPrice: number = 0
   totalItem: number = 0
   isLoading: boolean = false
+  codeCustomer: number = -1
+
+  addToCart: DTOAddToCart = {
+    CodeCustomer: -1,
+    CodeProduct: 0,
+    SelectedSize: -1,
+    Quantity: -1,
+    Type: 'Add'
+  }
 
 
-  constructor(private router: Router,private cartService: CartService, private notificationService: NotiService){
+  constructor(private productService: ProductService , private router: Router,private cartService: CartService, private notificationService: NotiService){
+    this.codeCustomer = Number(localStorage.getItem("codeCustomer"))
     this.getDataInCache()
-
+    
   }
   
   ngOnInit(): void {
-    this.APIGetListCartProduct()
+    if(this.codeCustomer){
+      this.APIGetListCustomerCart(this.codeCustomer)
+    }else{
+      this.APIGetListCartProduct()
+    }
+
   }
 
   getDataInCache(){
@@ -54,6 +71,34 @@ export class EcomCartComponent implements OnInit{
     })
   }
 
+  APIGetListCustomerCart(codeCustomer: number):void{
+    this.cartService.getListCustomerCart(codeCustomer).pipe(takeUntil(this.destroy)).subscribe(data => {
+      this.cart = data.ObjectReturn
+    })
+  }
+
+  APIAddProductToCart(cart: DTOAddToCart, type: string){
+    this.productService.addProductToCart(cart).pipe(takeUntil(this.destroy)).subscribe(data => {
+      console.log(data);
+      if(data.StatusCode == 0 && data.ErrorString == ""){
+        if(type == "Add"){
+          if(cart.CodeCustomer == -1){
+            this.handleAddQuantityProduct(cart.CodeProduct, cart.SelectedSize)
+          }
+          this.notificationService.Show("Add new product success!", "success")
+        }
+        if(type == "Delete"){
+          this.notificationService.Show("Delete product success!", "success")
+        }
+        this.cartService.setTotalItemProduct(this.codeCustomer)
+        this.APIGetListCustomerCart(this.codeCustomer)
+      }else{
+        this.notificationService.Show(data.ErrorString, "error")
+      }
+    })
+
+  }
+
   handleAddQuantityProduct(code: number, size: number){
     const productCart = localStorage.getItem('cacheCart')
     const listData = JSON.parse(productCart) as DTOGuessCartProduct[]
@@ -68,7 +113,31 @@ export class EcomCartComponent implements OnInit{
       this.getDataInCache()
       this.APIGetListCartProduct()
     }
+    this.cartService.emitCartUpdated()
     this.handleUnCheckItem(code)
+  }
+
+  handleClickFunction(item:DTOProductInCart, type: string):void{
+    this.addToCart.CodeProduct = item.Product.Code
+    this.addToCart.Quantity = item.Quantity
+    this.addToCart.SelectedSize = item.SizeSelected.Code
+    this.addToCart.Type = type
+
+
+    if(this.codeCustomer){
+      this.addToCart.CodeCustomer = this.codeCustomer
+      if(type == "Add"){
+        this.addToCart.Quantity = 1
+      }else if(type == "Update"){
+        this.addToCart.Quantity = this.addToCart.Quantity
+      }else if(type == "Delete"){
+      }
+    }else{
+      if(type == "Delete"){
+        this.handleDeleteItem(item.Product.Code, item.SizeSelected.Code)
+      }
+    }
+    this.APIAddProductToCart(this.addToCart, this.addToCart.Type)
   }
 
   handleMinusQuantityProduct(code: number, size: number){
@@ -109,6 +178,7 @@ export class EcomCartComponent implements OnInit{
         this.notificationService.Show("Xóa sản phẩm thành công", "success")
         localStorage.setItem('cacheCart', JSON.stringify(listData))
         this.getDataInCache()
+        this.cartService.emitCartUpdated()
         this.APIGetListCartProduct()
       }catch{
         this.notificationService.Show("Xóa sản phẩm không thành công", "error")
@@ -118,6 +188,9 @@ export class EcomCartComponent implements OnInit{
       this.notificationService.Show("Xóa sản phẩm không thành công", "error")
     }
   }
+
+
+
 
   handleUnCheckItem(codeGet: number){
     this.listItemSelected = []

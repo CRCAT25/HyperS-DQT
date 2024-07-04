@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { ReplaySubject, Subscription } from 'rxjs';
 import { HeaderService } from '../../shared/service/header.service';
 import { takeUntil } from 'rxjs/operators';
+import { and } from '@progress/kendo-angular-grid/utils';
+import { CartService } from '../../shared/service/cart.service';
 
 @Component({
   selector: 'app-ecom-shoes',
@@ -46,7 +48,7 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
 
   productFilter: State = {
       skip: 0,
-      take: 0,
+      take: 12,
       sort: [
       {
         field: "Code",
@@ -56,7 +58,7 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     filter: {
       logic: "and",
       filters: [
-          
+      
       ]
     }
   }   
@@ -70,7 +72,8 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     private headerService: HeaderService,
     private productService: ProductService,
     private notiService: NotiService,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {
     this.initializeData();
   }
@@ -204,6 +207,11 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
   handleFilterItem():void{
     this.productFilter.filter.filters = []
     const filter:CompositeFilterDescriptor = {logic: 'and', filters: []}
+    
+    const filterStatus: CompositeFilterDescriptor = {logic: 'and', filters: []}
+    filterStatus.filters = []
+    filterStatus.filters.push({field: "Status", operator: 'eq', value: 0})
+    
     const filterCategory: CompositeFilterDescriptor = {logic: 'or', filters: []}
     filterCategory.filters = []
     this.listCategorySelected.forEach((item) => {
@@ -236,10 +244,11 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     filterSearch.filters = []
     filterSearch.filters.push({field: "Name", operator: 'contains', value: this.keySearch})
 
-    // this.productFilter.sort[0].dir = this.selectedSort.dir
 
   
-
+    if(filterStatus.filters.length > 0){
+      filter.filters.push(filterStatus)
+    }
     if(filterGender.filters.length > 0){
       filter.filters.push(filterGender)
     }
@@ -255,6 +264,8 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     if(filterSearch.filters.length > 0){
       filter.filters.push(filterSearch)
     }
+
+    console.log(this.productFilter);
 
     this.productFilter.filter.filters.push(filter)
     this.APIGetListProduct()
@@ -272,6 +283,11 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     this.listBrand.forEach(element => {
       console.log(element.Name);
     });
+  }
+
+  handleLoadMore(){
+    this.productFilter.take += 12
+    this.handleApplyFilter()
   }
 
   ngOnDestroy(): void {
