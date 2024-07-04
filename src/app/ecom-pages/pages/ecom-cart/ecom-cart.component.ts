@@ -28,7 +28,7 @@ export class EcomCartComponent implements OnInit{
   totalPrice: number = 0
   totalItem: number = 0
   isLoading: boolean = false
-  codeCustomer: number = -1
+  codeCustomer: number = 0
 
   addToCart: DTOAddToCart = {
     CodeCustomer: -1,
@@ -79,19 +79,27 @@ export class EcomCartComponent implements OnInit{
 
   APIAddProductToCart(cart: DTOAddToCart, type: string){
     this.productService.addProductToCart(cart).pipe(takeUntil(this.destroy)).subscribe(data => {
-      console.log(data);
-      if(data.StatusCode == 0 && data.ErrorString == ""){
-        if(type == "Add"){
-          if(cart.CodeCustomer == -1){
+      if(data.StatusCode == 0 && data.ErrorString == ''){
+        if(this.codeCustomer == 0){
+          if(type == "Add"){
             this.handleAddQuantityProduct(cart.CodeProduct, cart.SelectedSize)
+            this.notificationService.Show("Add new product success!", "success")
           }
-          this.notificationService.Show("Add new product success!", "success")
-        }
-        if(type == "Delete"){
-          this.notificationService.Show("Delete product success!", "success")
+          this.APIGetListCartProduct()
+
+        }else{
+          if(type == "Add"){
+            this.notificationService.Show("Add new product success!", "success")
+          }
+          else if(type == "Delete"){
+            this.notificationService.Show("Delete product success!", "success")
+          }
+          else if(type == "Minus"){
+            this.notificationService.Show("Minus product success!", "success")
+          }
+          this.APIGetListCustomerCart(this.codeCustomer)
         }
         this.cartService.setTotalItemProduct(this.codeCustomer)
-        this.APIGetListCustomerCart(this.codeCustomer)
       }else{
         this.notificationService.Show(data.ErrorString, "error")
       }
@@ -115,30 +123,10 @@ export class EcomCartComponent implements OnInit{
     }
     this.cartService.emitCartUpdated()
     this.handleUnCheckItem(code)
+    this.cartService.setTotalItemProduct(this.codeCustomer)
   }
 
-  handleClickFunction(item:DTOProductInCart, type: string):void{
-    this.addToCart.CodeProduct = item.Product.Code
-    this.addToCart.Quantity = item.Quantity
-    this.addToCart.SelectedSize = item.SizeSelected.Code
-    this.addToCart.Type = type
 
-
-    if(this.codeCustomer){
-      this.addToCart.CodeCustomer = this.codeCustomer
-      if(type == "Add"){
-        this.addToCart.Quantity = 1
-      }else if(type == "Update"){
-        this.addToCart.Quantity = this.addToCart.Quantity
-      }else if(type == "Delete"){
-      }
-    }else{
-      if(type == "Delete"){
-        this.handleDeleteItem(item.Product.Code, item.SizeSelected.Code)
-      }
-    }
-    this.APIAddProductToCart(this.addToCart, this.addToCart.Type)
-  }
 
   handleMinusQuantityProduct(code: number, size: number){
     const productCart = localStorage.getItem('cacheCart')
@@ -150,9 +138,8 @@ export class EcomCartComponent implements OnInit{
         if (answer) {
           const index = listData.findIndex(element => element.Code === code && element.SelectedSize === size);
           listData.splice(index, 1);
-          this.notificationService.Show("Xóa sản phẩm thành công", "error")
+          this.notificationService.Show("Xóa sản phẩm thành công", "success")
           this.getDataInCache()
-          this.APIGetListCartProduct()
         }
         else {
           return
@@ -161,9 +148,13 @@ export class EcomCartComponent implements OnInit{
       item.Quantity -= 1
       localStorage.setItem('cacheCart', JSON.stringify(listData))
       this.getDataInCache()
-      this.APIGetListCartProduct()
     }
+
+    this.cartService.emitCartUpdated()
+    this.cartService.setTotalItemProduct(this.codeCustomer)
     this.handleUnCheckItem(code)
+    this.APIGetListCartProduct()
+
   }
 
 
@@ -187,10 +178,47 @@ export class EcomCartComponent implements OnInit{
     else{
       this.notificationService.Show("Xóa sản phẩm không thành công", "error")
     }
+    this.cartService.setTotalItemProduct(this.codeCustomer)
   }
 
-
-
+  handleClickFunction(item:DTOProductInCart, type: string):void{
+    this.addToCart.CodeProduct = item.Product.Code
+    this.addToCart.Quantity = item.Quantity
+    this.addToCart.SelectedSize = item.SizeSelected.Code
+    this.addToCart.Type = type
+    if(this.codeCustomer){
+      this.addToCart.CodeCustomer = this.codeCustomer
+      if(type == "Add"){
+        this.addToCart.Quantity = 1
+      }else if(type == "Update"){
+        if(this.addToCart.Quantity == 1){
+     
+          var answer = window.confirm("Bạn có muốn xóa sản phẩm này không?");
+          if (answer) {
+            this.addToCart.Type = "Delete"
+          }
+          else {
+            return
+          }
+        }else{
+          this.addToCart.Quantity = this.addToCart.Quantity - 1
+        }
+      }else if(type == "Delete"){
+        
+      }
+      this.APIAddProductToCart(this.addToCart, this.addToCart.Type)
+    }else{
+      if(type == "Add"){
+        this.APIAddProductToCart(this.addToCart, this.addToCart.Type)
+      }
+      else if(type == "Delete"){
+        this.handleDeleteItem(item.Product.Code, item.SizeSelected.Code)
+      }
+      else if(type == "Minus"){
+        this.handleMinusQuantityProduct(item.Product.Code, item.SizeSelected.Code);
+      }
+    }
+  }
 
   handleUnCheckItem(codeGet: number){
     this.listItemSelected = []
