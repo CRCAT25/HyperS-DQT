@@ -47,7 +47,128 @@
                     <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260"
                         [widthBlock]="353" label="Số điện thoại"></component-text-input>
                 </div>
+
+                <div class="block-3">
+                    <div class="label-import-image">Ảnh đại diện</div>
+                    <component-import-image></component-import-image>
+                </div>
             </div>
         </component-form>
+    </div>
+
+    <div class="filter-search-container">
+        <!-- Label danh sách khách hàng -->
+        <div class="filter-search">
+            <div class="label-filter-search">DANH SÁCH KHÁCH HÀNG</div>
+
+            <!-- Thanh search danh sách khách hàng -->
+            <component-search-bar placeholder="Tìm kiếm theo mã và tên khách hàng..."
+                [width]="500"></component-search-bar>
+        </div>
+
+        <!-- Button thêm mới và cập nhật trên form -->
+        <div class="button-action-form">
+            <!-- Button thêm khách hàng -->
+            <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
+                borderStyle="solid" [value]="0" [height]="36" classIconFontAwesome="fa-plus" bgColor="#fff"
+                text="Thêm mới"></component-button>
+
+            <!-- Button cập nhật thông tin khách hàng -->
+            <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
+                borderStyle="solid" [value]="0" [height]="36" classIconFontAwesome="fa-floppy-disk" bgColor="#fff"
+                text="Cập nhật"></component-button>
+        </div>
+    </div>
+
+    <div class="grid-custom-container">
+        <kendo-grid [data]="listCustomer" [skip]="gridState.skip" [loading]="isLoading"
+            [selectable]="{ checkboxOnly: true }" [pageSize]="gridState.take" [pageable]="{
+            type: 'numeric',
+            pageSizes: true,
+        }">
+
+            <!-- Checkbox -->
+            <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+
+            <!-- Hình ảnh -->
+            <kendo-grid-column title="Hình ảnh" [width]="70">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-2">
+                        <img *ngIf="item.ImageURL" [src]="item.ImageURL" alt="">
+                        <img *ngIf="!item.ImageURL" src="../../../../assets/anhTrong.jpg" alt="">
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Mã và Tên khách hàng -->
+            <kendo-grid-column title="Khách hàng" [width]="350">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-3">
+                        <div class="id">{{item.IDCustomer}}</div>
+                        <div class="name">{{item.Name}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Giới tính và ngày sinh khách hàng -->
+            <kendo-grid-column title="Ngày sinh" [width]="200">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-4">
+                        <div class="gender">{{checkGender(item.Gender)}}</div>
+                        <div class="birthday">{{item.Birth}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Số điện thoại -->
+            <kendo-grid-column title="Số điện thoại" [width]="250">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-5">
+                        <div class="phone-number">{{item.PhoneNumber}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Email -->
+            <kendo-grid-column title="Email" [width]="200">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-6">
+                        <div class="email">{{item.Email}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Trạng thái -->
+            <kendo-grid-column title="Trạng thái" [width]="150">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-7">
+                        <div class="status" [style.color]="checkStatus(item.StatusAccount) | statusColor">{{checkStatus(item.StatusAccount)}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- ToolBox -->
+            <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="50">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
+                        <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15" color="#000"
+                            bgColor="#fff" classIconFontAwesome="fa-ellipsis" text=""></component-button>
+                        <div class="list-action" *ngIf="codeCustomerSelected === dataItem.Code">
+                            <component-dropdown-action [listItem]="getListChangeStatus(dataItem.StatusAccount)" (sendValue)="updateStatusCustomer(dataItem.CodeAccount, $event)"></component-dropdown-action>
+                        </div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Paging -->
+            <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+                <kendo-pager-page-sizes pagerGrid [pageSizes]="listPageSize"></kendo-pager-page-sizes>
+                <div class="pager-buttons">
+                    <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                    <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
+                    <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                </div>
+            </ng-template>
+        </kendo-grid>
     </div>
 </div>

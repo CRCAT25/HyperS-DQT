@@ -4,14 +4,14 @@
     <div class="text-icon-container">
         <div class="text-image">{{text}}</div>
         <div style="display: flex;">
-            <kendo-fileselect ImportImageDirective [restrictions]="fileRestrictions" (select)="select($event)"
+            <kendo-fileselect ImportImageDirective [restrictions]="fileRestrictions" (select)="onFileSelected($event)"
                 FileSelected>
             </kendo-fileselect>
         </div>
     </div>
-    <div class="image-container" *ngIf="imagePreview">
+    <div class="image-container" *ngIf="selectedFile">
         <div class="img-preview example-config big-image">
-            <img [src]="imagePreview.src" [ngStyle] ="{
+            <img [src]="imageHandle.ImgUrl" [ngStyle] ="{
                 'width.px' :imgWidth,
                 'max-width.px' :imgWidth,
                 'min-width.px' :imgMinWidth,
@@ -19,15 +19,8 @@
                 'max-height.px' :imgHeight,
                 'min-height.px' :imgMinHeight,
                 'border-radius.px' :rounded,
-            }" alt="big image preview"/>
+            }" alt="Avatar"/>
             <i id="icon-delete" class="fa-regular fa-circle-xmark" (click)="delete()"></i>
         </div>
     </div>
-
-    <!-- <div class="image-container" *ngIf="srcImage">
-        <div class="img-preview example-config big-image">
-            <img src="\assets/{{srcImage}}" alt="big image preview" />
-            <span class="k-icon k-font-icon k-i-minus-outline" (click)="delete()"></span>
-        </div>
-    </div> -->
 </div>

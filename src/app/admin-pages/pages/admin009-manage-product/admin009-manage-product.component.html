@@ -1,32 +1,40 @@
 <div class="admin009">
 
     <div class="header-statistics">
-        <div class="label-filter">LỌC DỮ LIỆU</div>
+        <div class="block-1">
+            <div class="label-filter">LỌC DỮ LIỆU</div>
 
-        <!-- Số lượng sản phẩm đang kinh doanh -->
-        <component-statistics #productActive [isSelectedDefault]="true"
-            (getSelected)="pushStatisticsToAllStatistics(filterProductActive, $event)"
-            [valueField]="valueProductStatusActive" textField="Sản phẩm đang kinh doanh"
-            color="#09880E"></component-statistics>
+            <!-- Số lượng sản phẩm đang kinh doanh -->
+            <component-statistics #productActive [isSelectedDefault]="true"
+                (getSelected)="pushStatisticsToAllStatistics(filterProductActive, $event)"
+                [valueField]="valueProductStatusActive" textField="Sản phẩm đang kinh doanh"
+                color="#09880E"></component-statistics>
 
-        <!-- Số lượng sản phẩm ngưng kinh doanh -->
-        <component-statistics #productDisable
-            (getSelected)="pushStatisticsToAllStatistics(filterProductDisable, $event)"
-            [valueField]="valueProductStatusDisable" textField=" Sản phẩm ngưng kinh doanh"
-            color="#FF1D1D"></component-statistics>
+            <!-- Số lượng sản phẩm ngưng kinh doanh -->
+            <component-statistics #productDisable
+                (getSelected)="pushStatisticsToAllStatistics(filterProductDisable, $event)"
+                [valueField]="valueProductStatusDisable" textField=" Sản phẩm ngưng kinh doanh"
+                color="#FF1D1D"></component-statistics>
 
-        <!-- Số lượng sản phẩm Unisex -->
-        <component-statistics #productUnisex [isSelectedDefault]="true"
-            (getSelected)="pushStatisticsToAllStatistics(filterGenderUnisex, $event)" [valueField]="valueProductUnisex"
-            textField="Sản phẩm Unisex"></component-statistics>
+            <!-- Số lượng sản phẩm Unisex -->
+            <component-statistics #productUnisex [isSelectedDefault]="true"
+                (getSelected)="pushStatisticsToAllStatistics(filterGenderUnisex, $event)"
+                [valueField]="valueProductUnisex" textField="Sản phẩm Unisex"></component-statistics>
 
-        <!-- Số lượng sản phẩm cho Nam -->
-        <component-statistics #productMale (getSelected)="pushStatisticsToAllStatistics(filterGenderMale, $event)"
-            [valueField]="valueProductMale" textField="Sản phẩm cho Nam" color="#EB8D00"></component-statistics>
+            <!-- Số lượng sản phẩm cho Nam -->
+            <component-statistics #productMale (getSelected)="pushStatisticsToAllStatistics(filterGenderMale, $event)"
+                [valueField]="valueProductMale" textField="Sản phẩm cho Nam" color="#EB8D00"></component-statistics>
 
-        <!-- Số lượng sản phẩm cho Nữ -->
-        <component-statistics #productFemale (getSelected)="pushStatisticsToAllStatistics(filterGenderFeMale, $event)"
-            [valueField]="valueProductFemale" textField="Sản phẩm cho Nữ" color="#FF34D2"></component-statistics>
+            <!-- Số lượng sản phẩm cho Nữ -->
+            <component-statistics #productFemale
+                (getSelected)="pushStatisticsToAllStatistics(filterGenderFeMale, $event)"
+                [valueField]="valueProductFemale" textField="Sản phẩm cho Nữ" color="#FF34D2"></component-statistics>
+        </div>
+
+        <!-- Button thêm sản phẩm -->
+        <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E" borderStyle="solid"
+            [value]="0" (sendValue)="goToDetail($event, 0)" [height]="36" classIconFontAwesome="fa-plus" bgColor="#fff"
+            text="Thêm mới"></component-button>
     </div>
 
     <div class="header-filter-search">
@@ -53,13 +61,11 @@
             [defaultItem]="defaultBrand" />
 
         <!-- Dropdown sắp xếp -->
-        <component-text-dropdown #sort (getValue)="setSort($event)"
-            [widthBlock]="170" [widthTextBox]="170" textField="Status" valueField="Code" [listItem]="listSort"
-            [defaultItem]="defaultSort" />
-
-        <component-button (sendValue)="goToDetail($event, 0)" [value]="0" text="Thêm mới" [height]="36" bgColor="#09880E"></component-button>
+        <component-text-dropdown #sort (getValue)="setSort($event)" [widthBlock]="170" [widthTextBox]="170"
+            textField="Status" valueField="Code" [listItem]="listSort" [defaultItem]="defaultSort" />
     </div>
 
+    <div class="label-list-product">Danh sách sản phẩm</div>
 
     <div class="grid-custom-container">
         <kendo-grid [skip]="gridState.skip" [loading]="isLoading" (pageChange)="onPageChange($event)"
@@ -145,10 +151,11 @@
             <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="50">
                 <ng-template kendoGridCellTemplate let-dataItem>
                     <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
-                        <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15" color="#000" bgColor="#fff"
-                            classIconFontAwesome="fa-ellipsis" text=""></component-button>
+                        <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15" color="#000"
+                            bgColor="#fff" classIconFontAwesome="fa-ellipsis" text=""></component-button>
                         <div class="list-action" *ngIf="codeProductSelected === dataItem.Code">
-                            <component-dropdown-action (sendValue)="updateStatusProduct(dataItem, $event)" [listItem]="findItemActionList(dataItem.Status)"></component-dropdown-action>
+                            <component-dropdown-action (sendValue)="updateStatusProduct(dataItem, $event)"
+                                [listItem]="findItemActionList(dataItem.Status)"></component-dropdown-action>
                         </div>
                     </div>
                 </ng-template>
@@ -156,7 +163,7 @@
 
             <!-- Paging -->
             <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
-                <kendo-pager-page-sizes [pageSizes]="listPageSize"></kendo-pager-page-sizes>
+                <kendo-pager-page-sizes pagerGrid [pageSizes]="listPageSize"></kendo-pager-page-sizes>
                 <div class="pager-buttons">
                     <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
                     <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>

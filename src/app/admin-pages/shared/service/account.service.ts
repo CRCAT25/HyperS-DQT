@@ -11,6 +11,7 @@ import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 export class AccountService {
     private direct = 'https://hypersapi.onrender.com';
     private urlGetListCustomer = this.direct + "/api/Customer/GetListCustomer";
+    private urlUpdateCustomer = this.direct + "/api/Customer/UpdateCustomer";
 
     constructor(private httpClient: HttpClient) { }
 
@@ -33,4 +34,14 @@ export class AccountService {
             );
     }
 
+    updateCustomer(req: {CodeAccount: number, CodeStatus: number}): Observable<any> {
+        const httpOptions = this.getHttpOptions();
+        return this.httpClient.post(this.urlUpdateCustomer, req, httpOptions)
+            .pipe(
+                catchError(error => {
+                    console.error('Error updating customer:', error);
+                    return throwError(error);
+                })
+            );
+    }
 }

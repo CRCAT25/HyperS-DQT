@@ -11,15 +11,29 @@
             width: 100%;
 
             .header-statistics{
-                @include center-vertical;
+                display: flex;
                 gap: 20px;
-                padding: 6px 0 12px 0;
-
-                .label-filter{
-                    font-weight: 600;
-                    font-size: 14px;
-                    text-wrap: nowrap;
+                justify-content: space-between;
+                align-items: center;
+                .block-1{
+                    @include center-vertical;
+                    gap: 20px;
+                    padding: 6px 0 12px 0;
+    
+                    .label-filter{
+                        font-weight: 600;
+                        font-size: 14px;
+                        text-wrap: nowrap;
+                    }
                 }
+                
+                .button-add {
+                    .component-button:hover {
+                        color: #fff !important;
+                        background-color: #09880E !important;
+                    }
+                }
+                
             }
 
             .header-filter-search {
@@ -43,8 +57,16 @@
                 }
             }
 
+            .label-list-product{
+                height: 30px;
+                font-weight: 600;
+                @include center-vertical;
+                font-size: 14px;
+                text-transform: uppercase;
+            }
+
             .grid-custom-container {
-                height: calc(100vh - 105px - 57px - 61px - 10px);
+                height: calc(100vh - 105px - 57px - 61px - 30px);
 
                 kendo-grid {
                     height: 100%;
