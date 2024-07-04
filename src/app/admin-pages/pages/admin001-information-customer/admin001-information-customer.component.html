@@ -3,16 +3,20 @@
         <div class="label-filter">LỌC DỮ LIỆU</div>
 
         <!-- Tổng số lượng khách hàng -->
-        <component-statistics #accountActive [isSelectedDefault]="true" [valueField]="valueTotalCustomer"
+        <component-statistics #accountActive (getSelected)="pushStatisticsToAllStatistics(filterAllCustomer, $event)"
+            [isSelectedDefault]="true" [valueField]="valueTotalCustomer"
             textField="Tổng số lượng tài khoản"></component-statistics>
 
         <!-- Số lượng tài khoản hoạt động -->
-        <component-statistics #accountActive [isSelectedDefault]="false" [valueField]="valueTotalCustomerActive"
-            textField="Tài khoản đang hoạt động" color="#09880E"></component-statistics>
+        <component-statistics #accountActive (getSelected)="pushStatisticsToAllStatistics(filterCustomerActive, $event)"
+            [valueField]="valueTotalCustomerActive" textField="Tài khoản đang hoạt động"
+            color="#09880E"></component-statistics>
 
         <!-- Số lượng tài khoản vô hiệu hóa -->
-        <component-statistics #accountActive [isSelectedDefault]="false" [valueField]="valueTotalCustomerDisable"
-            textField="Tài khoản bị vô hiệu hóa" color="#FF1D1D"></component-statistics>
+        <component-statistics #accountActive
+            (getSelected)="pushStatisticsToAllStatistics(filterCustomerDisable, $event)"
+            [valueField]="valueTotalCustomerDisable" textField="Tài khoản bị vô hiệu hóa"
+            color="#FF1D1D"></component-statistics>
     </div>
 
     <div class="form">
@@ -62,8 +66,8 @@
             <div class="label-filter-search">DANH SÁCH KHÁCH HÀNG</div>
 
             <!-- Thanh search danh sách khách hàng -->
-            <component-search-bar placeholder="Tìm kiếm theo mã và tên khách hàng..."
-                [width]="500"></component-search-bar>
+            <component-search-bar #search (getValue)="setFilterSearch($event)"
+                placeholder="Tìm kiếm theo mã và tên khách hàng..." [width]="500"></component-search-bar>
         </div>
 
         <!-- Button thêm mới và cập nhật trên form -->
@@ -82,7 +86,8 @@
 
     <div class="grid-custom-container">
         <kendo-grid [data]="listCustomer" [skip]="gridState.skip" [loading]="isLoading"
-            [selectable]="{ checkboxOnly: true }" [pageSize]="gridState.take" [pageable]="{
+            [selectable]="{ mode: 'single' }"  (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
+            [pageable]="{
             type: 'numeric',
             pageSizes: true,
         }">
@@ -142,7 +147,8 @@
             <kendo-grid-column title="Trạng thái" [width]="150">
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-7">
-                        <div class="status" [style.color]="checkStatus(item.StatusAccount) | statusColor">{{checkStatus(item.StatusAccount)}}</div>
+                        <div class="status" [style.color]="checkStatus(item.StatusAccount) | statusColor">
+                            {{checkStatus(item.StatusAccount)}}</div>
                     </div>
                 </ng-template>
             </kendo-grid-column>
@@ -154,7 +160,8 @@
                         <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15" color="#000"
                             bgColor="#fff" classIconFontAwesome="fa-ellipsis" text=""></component-button>
                         <div class="list-action" *ngIf="codeCustomerSelected === dataItem.Code">
-                            <component-dropdown-action [listItem]="getListChangeStatus(dataItem.StatusAccount)" (sendValue)="updateStatusCustomer(dataItem.CodeAccount, $event)"></component-dropdown-action>
+                            <component-dropdown-action [listItem]="getListChangeStatus(dataItem.StatusAccount)"
+                                (sendValue)="updateStatusCustomer(dataItem.CodeAccount, $event)"></component-dropdown-action>
                         </div>
                     </div>
                 </ng-template>
