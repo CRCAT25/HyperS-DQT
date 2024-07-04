@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FileRestrictions, SelectEvent } from '@progress/kendo-angular-upload';
+import { UploadImageService } from '../../service/uploadImage.service';
+import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
 
 type ImagePreview = {
   src: string | ArrayBuffer;
@@ -13,7 +15,6 @@ type ImagePreview = {
 })
 export class ImportImageComponent {
   public events: string[] = [];
-  public imagePreview: ImagePreview;
   @Output() fileSelected: EventEmitter<string> = new EventEmitter<string>();
   @Input() srcImage: string = '';
   @Input() text: string = '';
@@ -25,44 +26,47 @@ export class ImportImageComponent {
   @Input() imgMinHeight: number = 150;
   @Input() gap: number = 50;
   @Input() rounded: number = 2;
+  selectedFile: File | null = null;
 
+  imageHandle: DTOImageProduct;
 
+  constructor(private uploadImageService: UploadImageService) { }
 
   public fileRestrictions: FileRestrictions = {
     allowedExtensions: [".jpg", ".png"],
   };
 
-  public select(e: SelectEvent){
-    this.srcImage = '';
-    const objectFile = e.files;
-    this.imagePreview = null;
-    const that = this;
+  // Chọn file ảnh
+  onFileSelected(event: any) {
+    if (event) {
+      this.selectedFile = event.files[0].rawFile;
+    }
+    this.onUpload();
+  }
 
-    e.files.forEach((file) => {
-      if (!file.validationErrors) {
-        const reader = new FileReader();
-
-        reader.onload = function (ev) {
-          const image: ImagePreview = {
-            src: ev.target["result"],
-            uid: file.uid,
-          };
-
-          that.imagePreview = image;
-        };
-        
-        reader.readAsDataURL(file.rawFile);
-      }
-    });
-    
-    // Emit the filename to the parent component
-    this.fileSelected.emit(objectFile[0].name);
+  // Upload hình ảnh lên imgBB
+  onUpload() {
+    if (this.selectedFile) {
+      this.uploadImageService.uploadImage(this.selectedFile).subscribe(
+        (response) => {
+          this.imageHandle = {
+            "Code": null,
+            "IdImage": null,
+            "ImgUrl": response.data.url,
+            "IsThumbnail": true
+          }
+        },
+        (error) => {
+          console.error('Error uploading image:', error);
+        }
+      );
+    }
   }
 
 
-  public delete(){
-    this.imagePreview = null;
-    this.srcImage = null;
+  public delete() {
+    this.selectedFile = null;
+    this.imageHandle = null;
     this.fileSelected.emit('');
   }
 }
