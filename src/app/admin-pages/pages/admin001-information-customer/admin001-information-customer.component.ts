@@ -51,6 +51,7 @@ export class Admin001InformationCustomerComponent implements OnInit {
   ];
   listCustomer: GridDataResult;
   listPageSize: number[] = [2, 3, 4];
+  selectedRow: number[]
 
   // variables object
   defaultGender: Gender = {
@@ -194,6 +195,7 @@ export class Admin001InformationCustomerComponent implements OnInit {
   onPageChange(value: any) {
     this.gridState.skip = value.skip;
     this.gridState.take = value.take;
+    this.selectedRow = [];
     this.getListCustomer();
   }
 

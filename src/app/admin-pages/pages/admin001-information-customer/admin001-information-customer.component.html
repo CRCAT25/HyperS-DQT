@@ -85,15 +85,22 @@
     </div>
 
     <div class="grid-custom-container">
-        <kendo-grid [data]="listCustomer" [skip]="gridState.skip" [loading]="isLoading"
-            [selectable]="{ mode: 'single' }"  (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
+        <kendo-grid 
+            [data]="listCustomer" 
+            kendoGridSelectBy 
+            [(selectedKeys)]="selectedRow" 
+            [skip]="gridState.skip"
+            [loading]="isLoading" 
+            [selectable]="{ mode: 'single' }" 
+            (pageChange)="onPageChange($event)"
+            [pageSize]="gridState.take" 
             [pageable]="{
-            type: 'numeric',
-            pageSizes: true,
-        }">
+                type: 'numeric',
+                pageSizes: true,
+            }">
 
             <!-- Checkbox -->
-            <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+            <!-- <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column> -->
 
             <!-- Hình ảnh -->
             <kendo-grid-column title="Hình ảnh" [width]="70">

@@ -103,6 +103,7 @@
                         @include center-horizontal;
                         overflow: visible;
                         z-index: 0;
+                        border-left: 1px solid #2e2e2e !important;
 
                         .button-tool-box {
                             margin: auto;
