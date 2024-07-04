@@ -1,46 +1,205 @@
 @import '../../../../styles.scss';
+@import '../../shared/style/grid.scss';
 
-::ng-deep{
-    app-admin001-information-customer{
-        .admin001-info-customer{
+::ng-deep {
+    app-admin001-information-customer {
+        height: 100%;
+
+        .admin001-info-customer {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            height: 100%;
+            position: relative;
 
-            .header-filter-statistics{
+            .header-filter-statistics {
                 @include center-vertical;
                 gap: 20px;
                 padding: 6px 0 12px 0;
 
-                .label-filter{
+                .label-filter {
                     font-weight: 600;
                     font-size: 14px;
                     text-wrap: nowrap;
                 }
             }
 
-            .content-form-customer-custom{
+            .content-form-customer-custom {
                 padding-bottom: 10px;
-                gap: 90px !important;
+                gap: 150px !important;
                 display: flex;
+                align-items: center;
 
                 .block-1,
-                .block-2{
+                .block-2 {
                     display: flex;
                     flex-direction: column;
                     gap: 16px;
                 }
 
-                .block-2{
-                    .date-picker-born{
-                        display: flex; 
+                .block-2 {
+                    .date-picker-born {
+                        display: flex;
                         @include center-vertical;
                         justify-content: space-between;
                     }
 
-                    kendo-datepicker{
+                    kendo-datepicker {
                         width: 260px !important;
                         flex-direction: row !important;
+                    }
+                }
+
+                .block-3 {
+                    align-self: normal;
+                    display: flex;
+
+                    .label-import-image {
+                        padding-top: 8px;
+                    }
+
+                    .text-icon-container {
+                        padding-top: 4px;
+                    }
+
+                    component-import-image {
+                        img {
+                            width: 113px !important;
+                            height: 113px !important;
+                            min-height: 100px !important;
+                        }
+                    }
+
+                    .image-container {
+                        padding-top: 8px !important;
+                    }
+                }
+            }
+
+            .filter-search-container {
+                @include center-vertical;
+                justify-content: space-between;
+                gap: 20px;
+                padding: 10px 0;
+
+                .filter-search {
+                    height: 30px;
+                    display: flex;
+                    @include center-vertical;
+                    gap: 30px;
+
+                    .label-filter-search {
+                        text-transform: uppercase;
+                        font-weight: 600;
+                        font-size: 14px;
+                    }
+                }
+
+                .button-action-form {
+                    display: flex;
+                    gap: 10px;
+
+                    .button-add {
+                        .component-button:hover {
+                            color: #fff !important;
+                            background-color: #09880E !important;
+                        }
+                    }
+
+                    .button-update {
+                        .component-button:hover {
+                            color: #ffffff !important;
+                            background-color: #2557A0 !important;
+                        }
+                    }
+                }
+            }
+
+            .grid-custom-container {
+                height: calc(100vh - 61px - 78px - 187px - 56px - 30px);
+
+                kendo-grid {
+                    height: 100%;
+
+                    tr.k-table-row {
+                        max-height: 60px;
+                        height: 60px;
+                        color: #000 !important;
+                    }
+
+                    th.k-table-th[aria-colindex="2"],
+                    th.k-table-th[aria-colindex="5"],
+                    th.k-table-th[aria-colindex="6"] {
+                        .k-column-title {
+                            margin: auto;
+                        }
+                    }
+
+                    th.k-table-th[aria-colindex="7"] {
+                        .k-link {
+                            display: flex;
+                            justify-content: end;
+                        }
+                    }
+
+
+                    .column-2 {
+                        text-align: center;
+
+                        img {
+                            height: 38px;
+                            width: 38px;
+                            object-fit: cover;
+                            border-radius: 3px;
+                        }
+                    }
+
+                    .column-5,
+                    .column-6 {
+                        text-align: center;
+                    }
+
+                    .column-7 {
+                        text-align: right;
+                    }
+
+                    td.k-table-td[aria-colindex="8"] {
+                        background-color: #fff;
+                        box-shadow: $box-shadow2;
+                        height: 44px;
+                        @include center-horizontal;
+                        overflow: visible;
+                        z-index: 0;
+
+                        .button-tool-box {
+                            margin: auto;
+                            box-shadow: $box-shadow3;
+                        }
+
+                        .component-button:hover {
+                            background: #464646 !important;
+                            color: #fff !important;
+                        }
+                    }
+
+                    .tool-box-container{
+                        position: relative;
+                        @include center;
+                        margin: auto;
+
+                        .list-action{
+                            position: absolute;
+                            left: -169px;
+                            top: 0;
+
+                            component-dropdown-action{
+                                width: 169px;
+
+                                component-button{
+                                    width: 169px;
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -26,6 +26,7 @@
                         <component-text-area [height]="70" [width]="270" [widthBox]="320" [label]="'Lý do:'" (valueTextArea)="sendReasonText($event)"></component-text-area>
                     </ng-container>
 
+
                 </div>
             </ng-container>
         </div>
@@ -40,8 +41,10 @@
                         <component-button [text]="'Không đổi'" [classIconFontAwesome]="''" [width]="144"  [height]="58" [rounded]="0" 
                     [bgColor]="'#FFFFFF'" [color]="'#959DB3'" [size]="16" [value]="value"></component-button>
                     </div>
-                    <component-button [text]="text" [classIconFontAwesome]="classIconFontAwesome" [width]="224" [height]="58" [rounded]="0" 
-                    [bgColor]="bgColor" [color]="'#FFFFFF'" [size]="16" (sendValue)="onClickButtonUp($event)" [value]="value"></component-button>
+                    <div class="buttonReturnDate">
+                        <component-button [text]="text" [classIconFontAwesome]="classIconFontAwesome" [width]="224" [height]="58" [rounded]="0" 
+                        [bgColor]="bgColor" [color]="'#FFFFFF'" [size]="16" (sendValue)="onClickButtonUp($event)" [value]="value"></component-button>
+                    </div>
                 </div>
             </ng-container>
         </div>

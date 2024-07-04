@@ -35,6 +35,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   listFilterStatus: DTOStatus[] = filteredStatusList;
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
   listBillPage: GridDataResult;
+  listBillAllDate: GridDataResult;
   pageSize: number = 4;
   listPageSize: number[] = [1, 2, 3, 4];
   idButton: number;
@@ -60,6 +61,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   reasonFail: string;
   isDetail: boolean = false;
   listBillInfo: DTOBillInfo[];
+  isShowAlertStatus: boolean = false;
+  countBillWaiting: number;
+  earliestDate: string;
+  nowDate: string;
 
 
   // defaultItemStatusBill: DTOStatus = {
@@ -123,6 +128,22 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
   }
 
+  gridStateWaitingAllDate: State = {
+    skip: 0,
+    sort: [
+      {
+        field: "Code",
+        dir: "asc"
+      }
+    ],
+    filter: {
+      logic: "and",
+      filters: [
+        this.filterStatus
+      ]
+    }
+  }
+
 
 
 
@@ -134,6 +155,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit(): void {
     this.getListBill();
+    this.getListBillAllDate();
     this.setFilterExpStatus();
   }
 
@@ -141,17 +163,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.destroy.next();
     this.destroy.complete();
   }
-
-    // Set cho breadcrumb, routerLink
-    setLayoutStorage(breadcrumb: string, routerlink: string) {
-      localStorage.setItem('breadcrumb', breadcrumb);
-      localStorage.setItem('routerLink', routerlink);
-      this.layoutService.setSelectedBreadCrumb(breadcrumb);
-    }
-      // Xóa localStorage
-      removeLocalStorage() {
-        localStorage.removeItem('productSelected');
-      }
 
   getDateFromDatePicker(value: any, type: string) {
     if (type === 'start') {
@@ -202,6 +213,17 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     const time = date.toTimeString().split(' ')[0];
 
     return `${day}/${month}/${year} - ${time}`;
+  }
+
+  formattedCreateAtNoTime(createAt: any) {
+    const date = new Date(createAt);
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const time = date.toTimeString().split(' ')[0];
+
+    return `${day}/${month}/${year}`;
   }
 
 
@@ -292,11 +314,15 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     // if (this.isShowAlert == true && (!(event.target as HTMLElement).closest('component-dropdown-action') && !(event.target as HTMLElement).closest('.PopUp'))) {
     //   this.isShowAlert = false;
     // }
-    if (this.isShowAlert == true && ((event.target as HTMLElement).closest('.buttonNoChange'))) {
+    if ((this.isShowAlert == true || this.isShowAlertStatus == true) && ((event.target as HTMLElement).closest('.buttonNoChange'))) {
       this.isShowAlert = false;
+      this.isShowAlertStatus = false;
     }
     if (this.isDetail == true && ((event.target as HTMLElement).closest('#icon-back'))) {
       this.isDetail = false;
+    }
+    if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonReturnDate'))) {
+      alert('a')
     }
   }
 
@@ -313,11 +339,43 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.billService.getListBill(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listBillPage = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-      console.log(this.listBillPage.data);
-      this.isLoading = false;
+      // console.log(this.listBillPage.data);   
+       this.isLoading = false;
+
     })
     // console.log(this.gridState)
   }
+
+  getListBillAllDate(){
+    this.billService.getListBill(this.gridStateWaitingAllDate).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      console.log(this.listBillAllDate.data.length);
+      this.countBillWaiting = this.listBillAllDate.data.length;
+      this.findEarliestDate();
+      this.isLoading = false;
+      this.isShowAlertStatus = !this.isShowAlertStatus;
+
+    })
+  }
+
+  //Tìm ngày xa nhất của status Chờ xác nhận
+  findEarliestDate() {
+    if (!this.listBillAllDate.data || this.listBillAllDate.data.length === 0) {
+      return null;
+    }
+  
+    const earliestDate = this.listBillAllDate.data.reduce((earliest, bill) => {
+      const createDate = new Date(bill.CreateAt);
+      return createDate < earliest ? createDate : earliest;
+    }, new Date(this.listBillAllDate.data[0].CreateAt));
+    
+    this.earliestDate = this.formattedCreateAtNoTime(earliestDate);
+    this.nowDate = this.formattedCreateAtNoTime(this.endDate);
+    // console.log(this.formattedCreateAtNoTime(earliestDate));
+
+    return earliestDate;
+  }
+
 
   countStatuses() {
     this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
@@ -325,8 +383,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       acc[status] = (acc[status] || 0) + 1;
       return acc;
     }, {});
-  
-    // console.log(this.statusCounts);
+    console.log(this.statusCounts[2]);
+
   }
 
   //Lowcase string
@@ -475,13 +533,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.listBillInfo = item.ListBillInfo;
     if (this.objItemStatus.value == 1) {
         this.isDetail = !this.isDetail;
-        // console.log(item.ListBillInfo);
-        // console.log(this.itemBill.ListBillInfo);
-
-        // localStorage.setItem('billSelected', item.Code + '');
-        // this.setLayoutStorage('Đơn hàng/Chi tiết đơn hàng', 'admin/detail-cart')
-        // this.router.navigate(['admin/detail-cart']);
-
     } else{
       this.isShowAlert = !this.isShowAlert
     }
@@ -494,7 +545,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   // Update status bill
   updateStatusBill(bill: DTOBill, obj: any) {
-    console.log(obj);
     if (obj.value >= 2) {
       bill.Status = obj.value;
       const request: DTOUpdateBillRequest = {
@@ -503,6 +553,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
         ListOfBillInfo: bill.ListBillInfo,
         Note: this.reasonFail,
       }
+
+      request.ListOfBillInfo.forEach(billInf => {
+        billInf.Status = obj.value;
+      });
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
         if (res.StatusCode === 0) {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")

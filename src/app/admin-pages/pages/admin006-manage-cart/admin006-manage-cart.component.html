@@ -1,4 +1,8 @@
 <div class="header-filter">
+    <div class="countWaitingCheck">
+        <div class="numberCount">{{statusCounts[2] !== undefined ? statusCounts[2] : 0}}</div>
+        <div class="labelWaitingCheck">Đơn chờ xác nhận</div>
+    </div>
     <div class="label-filter">Lọc trạng thái</div>
     <kendo-multiselect #multielect [data]="listFilterStatus" textField="Status" valueField="Code"
         [checkboxes]="{ checkOnClick: false }" [autoClose]="false" (valueChange)="setFilterStatus($event)"
@@ -120,8 +124,19 @@
         [value]="objItemStatus.value"></component-popup-confirm>
 </div>
 
+<div *ngIf="isShowAlertStatus" class="popUp">
+    <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="'fa-arrow-rotate-left'" 
+        [text]="'Quay lại'" 
+        [value]="">
+    
+    <div class="content-popup">
+        <div class="contentQuestion">Có tổng cộng {{countBillWaiting}} đơn chờ xác nhận</div>
+        <div class="contentWarning">Kể từ ngày {{earliestDate}} đến ngày {{nowDate}}! Bạn có muốn quay lại?</div>
+    </div></component-popup-confirm>
+</div>
+
 <ng-container *ngIf="isDetail">
-    <app-admin010-detail-cart [listData]="listBillInfo" [itemData]="itemBill"></app-admin010-detail-cart>
+    <app-admin006-detail-cart [listData]="listBillInfo" [itemData]="itemBill"></app-admin006-detail-cart>
 </ng-container>
 <!-- <component-text-area [label]="'Lí do hủy đơn:'"
 [labelWidth]="100"
