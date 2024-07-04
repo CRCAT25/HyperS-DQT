@@ -35,17 +35,17 @@
                 <div class="block-2">
                     <!-- Ngày sinh -->
                     <component-datepicker [minDate]="minDate" [maxDate]="maxDate"
-                        label="Ngày sinh" [blockPointer]="false"></component-datepicker>
+                        label="Ngày sinh"></component-datepicker>
 
                     <!-- Giới tính -->
-                    <component-text-dropdown #gender [widthTextBox]="260" [widthBlock]="370" label="Giới tính"
+                    <component-text-dropdown #gender [widthTextBox]="260" [widthBlock]="353" label="Giới tính"
                         [defaultItem]="defaultGender" [borderWidth]="1" borderColor="rgb(182, 182, 182)"
                         [heightTextBox]="30" [listItem]="listGender" textField="Gender"
                         valueField="Code"></component-text-dropdown>
 
                     <!-- Số điện thoại -->
                     <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260"
-                        [widthBlock]="370" label="Số điện thoại"></component-text-input>
+                        [widthBlock]="353" label="Số điện thoại"></component-text-input>
                 </div>
             </div>
         </component-form>

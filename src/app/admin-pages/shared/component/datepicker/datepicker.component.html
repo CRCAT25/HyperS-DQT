@@ -3,9 +3,6 @@
         <span>{{label}}</span>
     </ng-container>
     <kendo-datepicker 
-        [ngStyle]="{
-            'pointer-events': blockPointer ? 'none' : 'all'
-        }"
         #datePicker
         calendarType="classic"
         (valueChange)="onChange($event)" 
