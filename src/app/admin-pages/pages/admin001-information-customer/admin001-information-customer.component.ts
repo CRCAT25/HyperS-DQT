@@ -2,10 +2,11 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { AccountService } from '../../shared/service/account.service';
 import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
-import { FilterDescriptor, State } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GridDataResult } from '@progress/kendo-angular-grid';
+import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 
 interface Gender {
   Code: number
@@ -27,8 +28,9 @@ export class Admin001InformationCustomerComponent implements OnInit {
   currentDate: Date = new Date();
   minDate: Date = new Date(1900, 1, 1);
   maxDate: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
-  pageSize: number = 15;
+  pageSize: number = 2;
   codeCustomerSelected: number;
+  valueSearch: string;
 
   // variable Statistics
   valueTotalCustomer: number = 100;
@@ -48,7 +50,7 @@ export class Admin001InformationCustomerComponent implements OnInit {
     }
   ];
   listCustomer: GridDataResult;
-  listPageSize: number[] = [15, 25, 50];
+  listPageSize: number[] = [2, 3, 4];
 
   // variables object
   defaultGender: Gender = {
@@ -72,12 +74,16 @@ export class Admin001InformationCustomerComponent implements OnInit {
     }
   }
 
-  // variables filters
-  filterAllCustomer: State = {};
+  // variables FilterDescriptor
+  filterAllCustomer: FilterDescriptor = { operator: '' };
   filterCustomerActive: FilterDescriptor = { "field": "StatusAccount", "operator": "eq", "value": 0, "ignoreCase": true };
   filterCustomerDisable: FilterDescriptor = { "field": "StatusAccount", "operator": "eq", "value": 1, "ignoreCase": true };
 
-  constructor(private accountService: AccountService) { }
+  // variable CompositeFilterDescriptor
+  filterAllStatistics: CompositeFilterDescriptor = { logic: 'or', filters: [this.filterAllCustomer] };
+  filterSearch: CompositeFilterDescriptor = { logic: 'or', filters: [] };
+
+  constructor(private accountService: AccountService, private notiService: NotiService) { }
 
   ngOnInit(): void {
     this.getListCustomer();
@@ -177,9 +183,60 @@ export class Admin001InformationCustomerComponent implements OnInit {
   }
 
   // Cập nhật trạng thái của khách hàng
-  updateStatusCustomer(codeAccount: number, codeStatus: any){
-    this.accountService.updateCustomer({CodeAccount: codeAccount, CodeStatus: codeStatus.value}).pipe(takeUntil(this.destroy)).subscribe(res => {
+  updateStatusCustomer(codeAccount: number, codeStatus: any) {
+    this.accountService.updateCustomer({ CodeAccount: codeAccount, CodeStatus: codeStatus.value }).pipe(takeUntil(this.destroy)).subscribe(res => {
       this.getListCustomer();
+      this.notiService.Show('Cập nhật trạng thái thành công', 'success');
     })
+  }
+
+  // Thao tác paging
+  onPageChange(value: any) {
+    this.gridState.skip = value.skip;
+    this.gridState.take = value.take;
+    this.getListCustomer();
+  }
+
+  // Push các filter statistics vào filterAllStatistics
+  pushStatisticsToAllStatistics(filter: any, value: any) {
+    if (value.isSelected) {
+      this.filterAllStatistics.filters.push(filter);
+    }
+    else {
+      this.filterAllStatistics.filters = this.filterAllStatistics.filters.filter(item => item !== filter);
+    }
+    this.setFilterData();
+  }
+
+  // Set filter tất cả
+  setFilterData() {
+    this.gridState.filter.filters = [];
+    this.pushToGridState(null, this.filterSearch);
+    this.pushToGridState(null, this.filterAllStatistics);
+    this.getListCustomer();
+    console.log(this.gridState);
+  }
+
+  // Set filter search
+  setFilterSearch(value: any) {
+    this.valueSearch = value;
+    this.filterSearch.filters = [];
+    this.filterSearch.filters.push({ field: 'IDCustomer', operator: 'contains', value: this.valueSearch, ignoreCase: true });
+    this.filterSearch.filters.push({ field: 'Name', operator: 'contains', value: this.valueSearch, ignoreCase: true });
+    this.setFilterData();
+  }
+
+  // Push filter vào gridState
+  pushToGridState(filter: FilterDescriptor, comFilter: CompositeFilterDescriptor) {
+    if (filter) {
+      if (filter.value && filter.value > 0) {
+        this.gridState.filter.filters.push(filter);
+      }
+    }
+    else if (comFilter) {
+      if (comFilter.filters.length > 0) {
+        this.gridState.filter.filters.push(comFilter);
+      }
+    }
   }
 }
