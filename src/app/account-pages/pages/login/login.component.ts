@@ -33,8 +33,11 @@ export class LoginComponent {
         console.log(data);
         if(data.StatusCode == 0 && data.ObjectReturn.ResultLogin.Succeeded == true && data.ErrorString == ""){
           localStorage.setItem('token', data.ObjectReturn.ResultToken.Token)
+          localStorage.setItem('codeCustomer', data.ObjectReturn.ResultCus)
           if(data.ObjectReturn.ResultRedirect == "jkwt"){
             this.handleNavigate('/ecom/home')
+          }else if(data.ObjectReturn.ResultRedirect == "uije"){
+            this.handleNavigate('/admin')
           }
           this.notiService.Show("Login Successfully!", "success")
           return

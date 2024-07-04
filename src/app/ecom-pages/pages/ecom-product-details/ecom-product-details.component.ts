@@ -8,6 +8,7 @@ import { NotificationService } from '@progress/kendo-angular-notification';
 import { NotiService } from '../../shared/service/noti.service';
 import { DTOGuessCartProduct } from '../../shared/dto/DTOGuessCartProduct';
 import { CartService } from '../../shared/service/cart.service';
+import { DTOAddToCart } from '../../shared/dto/DTOAddToCart';
 
 @Component({
   selector: 'app-ecom-product-details',
@@ -23,10 +24,19 @@ export class EcomProductDetailsComponent implements OnInit {
   sizeSelected: number = -1
   dataProductSend: DTOGuessCartProduct = {Code: 0, SelectedSize: 0, Quantity: 0}
   isLoading: boolean = false
+  codeCustomer: number
+  addToCart: DTOAddToCart = {
+    CodeCustomer: -1,
+    CodeProduct: this.idProduct,
+    SelectedSize: -1,
+    Quantity: -1,
+    Type: 'null'
+  }
 
   constructor(private cartService: CartService,private productService: ProductService, private notificationService: NotiService){
     try{
       this.isLoading = true
+      this.codeCustomer = Number(localStorage.getItem('codeCustomer'))
       const productData = localStorage.getItem('productSelected');
       if (productData) {
         const data = JSON.parse(productData) as DTOProduct;
@@ -39,11 +49,13 @@ export class EcomProductDetailsComponent implements OnInit {
     }finally{
       this.isLoading = false
     }
+
+    this.APIGetProductByID(this.idProduct)
    
   }
 
   ngOnInit(): void {
-    this.APIGetProductByID(this.idProduct)
+   
   }
 
   APIGetProductByID(id: number){
@@ -68,6 +80,19 @@ export class EcomProductDetailsComponent implements OnInit {
     })
   }
 
+  APIAddProductToCart(cart: DTOAddToCart){
+    this.productService.addProductToCart(cart).pipe(takeUntil(this.destroy)).subscribe(data => {
+      console.log(data);
+      if(data.StatusCode != 0 && data.ErrorString != ""){
+        console.log(this);
+        this.cartService.emitCartUpdated()
+        this.notificationService.Show("Yay 🥰, check your bag", "success")
+      }else{
+        this.notificationService.Show("Error when add your bag!", "eror")
+      }
+    })
+  }
+
   handleChangeImageShow(url: string){
     this.imageShowSelected = url
   }
@@ -83,30 +108,42 @@ export class EcomProductDetailsComponent implements OnInit {
         this.notificationService.Show("Please choose the shoe size", "warning")
         return
       }
-      const productCart = localStorage.getItem('cacheCart')
-      if(productCart){
-        const listData = JSON.parse(productCart) as DTOGuessCartProduct[]
-        let item = listData.find(element => element.Code == this.product.Code && element.SelectedSize == this.sizeSelected)
-        if(item){
-          item.Quantity += 1
-          localStorage.setItem('cacheCart', JSON.stringify(listData))
-        }else{
-          this.dataProductSend.Code = this.product.Code
-          this.dataProductSend.Quantity = 1
-          listData.push(this.dataProductSend)
-          localStorage.setItem('cacheCart', JSON.stringify(listData))
+      if(this.codeCustomer){
+        this.addToCart.CodeCustomer = this.codeCustomer
+        this.addToCart.CodeProduct = this.idProduct
+        this.addToCart.SelectedSize = this.sizeSelected
+        this.addToCart.Quantity = 1
+        this.addToCart.Type = "Add"
+      }else{
+        const productCart = localStorage.getItem('cacheCart')
+        if(productCart){
+          const listData = JSON.parse(productCart) as DTOGuessCartProduct[]
+          let item = listData.find(element => element.Code == this.product.Code && element.SelectedSize == this.sizeSelected)
+          if(item){
+            item.Quantity += 1
+            localStorage.setItem('cacheCart', JSON.stringify(listData))
+          }else{
+            this.dataProductSend.Code = this.product.Code
+            this.dataProductSend.Quantity = 1
+            listData.push(this.dataProductSend)
+            localStorage.setItem('cacheCart', JSON.stringify(listData))
+          }
+         
         }
-       
+        else{
+          this.dataProductSend.Code = 125
+          this.dataProductSend.Quantity = 1
+          this.dataProductSend.SelectedSize = 5
+          localStorage.setItem('cacheCart', JSON.stringify([this.dataProductSend]))
+        }
+    
       }
-      else{
-        this.dataProductSend.Code = 125
-        this.dataProductSend.Quantity = 1
-        this.dataProductSend.SelectedSize = 5
-        localStorage.setItem('cacheCart', JSON.stringify([this.dataProductSend]))
-      }
-  
-      this.cartService.emitCartUpdated()
-      this.notificationService.Show("Yay 🥰, check your bag", "success")
+
+      console.log(this.addToCart);
+
+      this.APIAddProductToCart(this.addToCart)
+      
+     
     }catch{
       this.notificationService.Show("😭, not success", "erorr")
     }

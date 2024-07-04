@@ -31,7 +31,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
     ListProduct: [],
     ShippingAddress: "",
     PaymentMethod: -1,
-    TotalBill: 0
+    TotalBill: 0,
+    IsGuess: true
   }
 
   provinceSelected: DTOProvince

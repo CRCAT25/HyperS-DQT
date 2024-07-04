@@ -3,6 +3,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { DTOGetListCartRequest } from '../dto/DTOGetListCartRequest';
 import { Observable } from 'rxjs';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
+import { DTOAddToCart } from '../dto/DTOAddToCart';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,8 @@ export class CartService {
       })
     };
   }
+
+
 
   getListCartProduct(cart: DTOGetListCartRequest):Observable<DTOResponse>{
     const httpOption = this.getHttpOptions()
