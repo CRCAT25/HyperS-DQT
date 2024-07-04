@@ -20,6 +20,9 @@
                 </div>
                 <div class="under-line"></div>
                 <div class="item-area">
+                    <!-- <div class="loading">
+                        <app-loading [isLoading]="true"></app-loading>
+                    </div> -->
                     <div class="item" *ngFor="let item of cart?.ListProductInCart">
                         <div class="infor">
                             <label class="custom-checkbox">
@@ -31,8 +34,10 @@
                                 >
                                 <span class="checkmark"></span>
                               </label>
-                            <div class="image">
-                                <img src="{{item.Product.ListOfImage[1].ImgUrl}}" alt="">
+                              <div *ngFor="let img of item.Product.ListOfImage">
+                                <div  class="image" *ngIf="img.IsThumbnail == true">
+                                    <img src="{{img.ImgUrl}}" alt="">
+                                </div>
                             </div>
 
                             <div class="info-area">
@@ -78,7 +83,7 @@
                             <div class="quantity">
                                 <input class="input" type="text" [value]="item.Quantity">
                             </div>
-                            <i (click)="handleAddQuantityProduct(item.Product.Code, item.SizeSelected.Code)" class="fa-solid fa-plus"></i>
+                            <i (click)="handleClickFunction(item, 'Add')" class="fa-solid fa-plus"></i>
                         </div>
 
                         <div class="total-price-area">
@@ -89,7 +94,7 @@
                                 {{item.TotalPriceOfProduct | number: '1.0-0'}}$
                             </div>
                         </div>
-                        <div (click)="handleDeleteItem(item.Product.Code, item.SizeSelected.Code)" class="delete-area">
+                        <div (click)="handleClickFunction(item, 'Delete')" class="delete-area">
                             <i class="icon fa-solid fa-trash"></i>
                         </div>
                   

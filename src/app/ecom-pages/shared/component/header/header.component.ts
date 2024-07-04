@@ -3,8 +3,10 @@ import { DataModule } from '../../data/moduleHeader';
 import { Router } from '@angular/router';
 import { DTOGuessCartProduct } from '../../dto/DTOGuessCartProduct';
 import { CartService } from '../../service/cart.service';
-import { Subscription } from 'rxjs';
+import { ReplaySubject, Subscription } from 'rxjs';
 import { HeaderService } from '../../service/header.service';
+import { UserService } from '../../service/user.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -16,8 +18,14 @@ export class HeaderComponent implements OnInit {
   dataModuleHeader = DataModule
   totalItemCart: number = 0
   cartUpdateSubscription: Subscription;
+  codeCustomer:number = this.userService.codeCustomer
+  destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
 
-  constructor(private headerService: HeaderService, private cartService: CartService, private router: Router){}
+  constructor(private userService: UserService, private headerService: HeaderService, private cartService: CartService, private router: Router){}
+
+  APIGetCountCartOfUser():void{
+
+  }
 
   handleSelectActionCenter(action: number){
     this.dataModuleHeader.forEach(element => {
@@ -38,14 +46,31 @@ export class HeaderComponent implements OnInit {
     });
 
     // Cập nhật totalItemCart lần đầu khi component được khởi tạo
-    this.updateTotalItemCart();
+    if(this.codeCustomer){
+      console.log(this.codeCustomer);
+      this.APIGetCountInCart(this.codeCustomer);
+    }else{
+      this.updateTotalItemCart();
+    }
+
+
+  }
+
+  APIGetCountInCart(code: number){
+    this.cartService.setTotalItemProduct(code)
+    this.cartService.totalItemProduct$.subscribe(data => {
+      this.totalItemCart = data
+    })
   }
 
   private updateTotalItemCart(): void {
+    this.totalItemCart = 0
     const productCart = localStorage.getItem('cacheCart');
     if (productCart) {
       const listData = JSON.parse(productCart) as DTOGuessCartProduct[];
-      this.totalItemCart = listData.length;
+      listData.forEach(element => {
+        this.totalItemCart += element.Quantity
+      });
     }
   }
 

@@ -51,7 +51,6 @@ import { DropdownActionComponent } from './admin-pages/shared/component/dropdown
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EcomProductCardComponent } from './ecom-pages/shared/component/ecom-product-card/ecom-product-card.component';
 import { NotificationModule } from "@progress/kendo-angular-notification";
-import { EcomFilterProductComponent } from './ecom-pages/pages/ecom-filter-product/ecom-filter-product.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImportImageDirective } from './admin-pages/shared/directive/import.directive';
 import { LoadingComponent } from './ecom-pages/shared/component/loading/loading.component';
@@ -105,7 +104,6 @@ import { Admin006DetailCartComponent } from './admin-pages/pages/admin006-detail
     FormComponent,
     DropdownActionComponent,
     EcomProductCardComponent,
-    EcomFilterProductComponent,
     ImportImageDirective,
     LoadingComponent,
     PaymentComponent,

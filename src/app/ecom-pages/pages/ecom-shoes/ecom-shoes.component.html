@@ -102,7 +102,13 @@
                         <app-ecom-product-card [product]="product"></app-ecom-product-card>
                     </div>
                 </div>
+                <div class="load-area">
+                    <div (click)="handleLoadMore()" class="btn-load-more">
+                        {{'load more' | uppercase}}
+                    </div>
+                </div>
             </div>
+            
         </div>
         
     </div>

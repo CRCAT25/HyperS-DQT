@@ -239,20 +239,46 @@
             }
 
             .grid-show{
-              height: calc(100vh - 185px);
+              height: calc(100vh - 195px);
               width: 100%;
-              display: flex;
-              justify-content: center;
+              overflow: auto;
+              margin-left: 50px;
+              overflow-x: hidden;
     
               .product-list{
                 padding: 0 40px;
                 width: 100%;
                 gap: 5px 5px;
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(380px, 380px));
                 overflow: auto;
               }
+
+              .load-area{
+                height: 30px;
+                align-items: center;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 50px;
+
+                .btn-load-more{
+                  cursor: pointer;
+                  margin-right: 50px;
+                  border-radius: 10px;
+                  height: 40px; 
+                  width: 200px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  background-color: $color-main;
+                  color: #fff;
+                }
+                
+              }
             }
+
+           
           }
   
           

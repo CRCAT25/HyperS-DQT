@@ -7,5 +7,6 @@ export class DTOProcessToPayment {
     ShippingAddress: string;
     PaymentMethod: number;
     ListProduct: DTOProductInCart[];
-    TotalBill: number
+    TotalBill: number;
+    IsGuess: boolean;
 }

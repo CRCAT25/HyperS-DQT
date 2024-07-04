@@ -6,6 +6,7 @@ import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { State } from '@progress/kendo-data-query';
 import { catchError, map } from 'rxjs/operators';
 import { DTOUpdateProductRequest } from 'src/app/shared/dto/DTOUpdateProductRequest.dto';
+import { DTOAddToCart } from '../dto/DTOAddToCart';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class ProductService {
   urlGetListProductType = "https://hypersapi.onrender.com/api/Product/GetListProductType"
   urlGetListBrand = "https://hypersapi.onrender.com/api/Brand/GetAllBrands"
   urlUpdateProduct = "https://hypersapi.onrender.com/api/Product/UpdateProduct"
-
+  urlAddProductToCart = "https://hypersapi.onrender.com/api/Product/AddProductToCart"
 
   getHttpOptions() {
     return {
@@ -35,7 +36,7 @@ export class ProductService {
     return this.httpClient.post<DTOResponse>(this.urlGetListProduct, filter, httpOptions)
       .pipe(
         catchError(error => {
-          console.error('Error retrieving quiz sessions:', error);
+          console.error('Error fetching data:', error);
           return throwError(error);
         })
       );
@@ -70,5 +71,11 @@ export class ProductService {
           return throwError(error);
         })
       );
+  }
+
+  addProductToCart(cart: DTOAddToCart):Observable<DTOResponse>{
+    const httpOption = this.getHttpOptions()
+    const body = cart
+    return this.httpClient.post<DTOResponse>(this.urlAddProductToCart, body, httpOption).pipe()
   }
 }

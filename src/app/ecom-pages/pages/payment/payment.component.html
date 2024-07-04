@@ -133,8 +133,10 @@
                 <div class="show-product">
                     <div *ngFor="let product of listProductPayment" >
                         <div class="item">
-                            <div class="image">
-                                <img src="{{product.Product.ListOfImage[1].ImgUrl}}" alt="">
+                            <div *ngFor="let img of product.Product.ListOfImage">
+                                <div  class="image" *ngIf="img.IsThumbnail == true">
+                                    <img src="{{img.ImgUrl}}" alt="">
+                                </div>
                             </div>
                             <div class="area-info">
                                 <div class="info">
