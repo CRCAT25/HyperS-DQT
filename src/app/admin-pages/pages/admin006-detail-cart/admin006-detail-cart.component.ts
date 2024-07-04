@@ -1,8 +1,12 @@
-import { DTOStatus, listStatus } from '../../shared/dto/DTOStatus.dto';
+import { DTOStatus, listStatus, listStatusNoView } from '../../shared/dto/DTOStatus.dto';
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { DTOBillInfo } from '../../shared/dto/DTOBillInfo.dto';
 import { DTOBill } from '../../shared/dto/DTOBill.dto';
 import { DTOUpdateBillInfoRequest } from '../../shared/dto/DTOUpdateBillInfo.dto';
+import { DTOUpdateBillRequest } from '../../shared/dto/DTOUpdateBillRequest.dto';
+import { BillService } from '../../shared/service/bill.service';
+import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
+import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 
 @Component({
   selector: 'app-admin006-detail-cart',
@@ -16,7 +20,7 @@ export class Admin006DetailCartComponent implements OnInit {
   listBillInfo: DTOBillInfo[];
   itemBill: DTOBill;
   itemBillInfo: DTOBillInfo;
-  listStatus: DTOStatus[] = listStatus;
+  listStatus: DTOStatus[] = listStatusNoView;
   isClickButton: { [key: number]: boolean } = {};
   tempID: number;
   listNextStatus: DTOStatus[];
@@ -24,11 +28,18 @@ export class Admin006DetailCartComponent implements OnInit {
   isShowAlert: boolean = false;
 
   ngOnInit(): void {
-    this.listBillInfo = this.listData;
-    this.itemBill = this.itemData;
+    this.getListBillInfo();
   }
 
 
+  constructor(private billService: BillService,
+    private notiService: NotiService,){}
+
+
+  getListBillInfo(){
+    this.listBillInfo = this.listData;
+    this.itemBill = this.itemData;
+  }
 
   formatCurrency(value: number): string {
     if (typeof value === 'number' && !isNaN(value)) {
@@ -130,26 +141,32 @@ export class Admin006DetailCartComponent implements OnInit {
   }
 
   // Update status bill
-  updateStatusBillInfo(bill: DTOBill, obj: any) {
-    // console.log(obj);
-    // if (obj.value >= 2) {
-    //   bill.Status = obj.value;
-    //   const request: DTOUpdateBillInfoRequest = {
-    //     CodeBill: bill.Code,
-    //     Status: obj.value,
-    //     ListOfBillInfo: bill.ListBillInfo,
-    //     Note: this.reasonFail,
-    //   }
-    //   this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-    //     if (res.StatusCode === 0) {
-    //       this.notiService.Show("Cập nhật trạng thái thành công", "success")
-    //       this.getListBill();
-    //       this.setFilterExpStatus();
-    //       this.isShowAlert = false;
-    //     }
-    //   }, error => {
-    //     console.error('Error:', error);
-    //   });
-    // }
+  updateStatusBillInfo(obj: any) {
+    if (obj.value >= 2) {
+      this.itemBill.Status = obj.value;
+      const request: DTOUpdateBillRequest = {
+        CodeBill: this.itemBill.Code,
+        Status: obj.value,
+        ListOfBillInfo: this.itemBill.ListBillInfo,
+        Note: this.itemBill.Note,
+      }
+      // const status = this.listStatus.find(status => status.Code === idStatus);
+      // this.listNextStatus = status ? status.ListNextStatus : null;
+      request.ListOfBillInfo.forEach(billInfo =>{
+        if(billInfo.Code == this.itemBillInfo.Code){
+          billInfo.Status = obj.value;
+        }
+      })
+      // const codeBillInfo = request.ListOfBillInfo.find(billInf => billInf.Code === this.itemBillInfo.Code);
+      this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          this.notiService.Show("Cập nhật trạng thái thành công", "success")
+          this.getListBillInfo();
+          this.isShowAlert = false;
+        }
+      }, error => {
+        console.error('Error:', error);
+      });
+    }
   }
 }

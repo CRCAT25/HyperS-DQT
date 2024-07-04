@@ -34,6 +34,25 @@
                     width: 0;
                 }
 
+                .countWaitingCheck{
+                    @include center;
+                    padding: 7px;
+                    box-shadow: $box-shadow3;
+                    border-radius: 5px;
+                    gap: 5px;
+                    font-weight: 600;
+                    
+                    .numberCount{
+                        width: 35px;
+                        height: 35px;
+                        @include center;
+                        background-color: #aaaaaa;
+                        border-radius: 5px;
+                        color: white;
+                        
+                    }
+                }
+
 
                 
                 kendo-multiselect{
@@ -232,6 +251,22 @@
 
             .popUp{
                 background-color: red;
+
+                .content-popup{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    .contentQuestion{
+                        color: red;
+                        font-size: 16px;
+                        text-align: center;
+                    }
+
+                    .contentWarning{
+                        font-size: 15px;
+                        text-align: center;
+                    }
+                }
             }
 
     }
