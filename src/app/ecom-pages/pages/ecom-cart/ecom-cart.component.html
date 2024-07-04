@@ -83,7 +83,7 @@
                             <div class="quantity">
                                 <input class="input" type="text" [value]="item.Quantity">
                             </div>
-                            <i (click)="handleAddQuantityProduct(item.Product.Code, item.SizeSelected.Code)" class="fa-solid fa-plus"></i>
+                            <i (click)="handleClickFunction(item, 'Add')" class="fa-solid fa-plus"></i>
                         </div>
 
                         <div class="total-price-area">
@@ -94,7 +94,7 @@
                                 {{item.TotalPriceOfProduct | number: '1.0-0'}}$
                             </div>
                         </div>
-                        <div (click)="handleDeleteItem(item.Product.Code, item.SizeSelected.Code)" class="delete-area">
+                        <div (click)="handleClickFunction(item, 'Delete')" class="delete-area">
                             <i class="icon fa-solid fa-trash"></i>
                         </div>
                   

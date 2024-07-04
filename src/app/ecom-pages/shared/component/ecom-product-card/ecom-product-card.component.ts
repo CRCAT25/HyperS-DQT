@@ -10,7 +10,10 @@ import { Router } from '@angular/router';
 export class EcomProductCardComponent implements OnInit {
   @Input() product: DTOProduct
   hasthumbnail: boolean;
-  constructor(private router: Router){}
+  constructor(
+    private router: Router
+  ){
+  }
   handleProductClick(product: DTOProduct){
     localStorage.setItem('productSelected', JSON.stringify(product))
     this.navigateToDetail()

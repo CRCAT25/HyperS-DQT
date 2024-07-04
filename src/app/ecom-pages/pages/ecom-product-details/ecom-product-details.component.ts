@@ -25,15 +25,21 @@ export class EcomProductDetailsComponent implements OnInit {
   dataProductSend: DTOGuessCartProduct = {Code: 0, SelectedSize: 0, Quantity: 0}
   isLoading: boolean = false
   codeCustomer: number
+
   addToCart: DTOAddToCart = {
     CodeCustomer: -1,
     CodeProduct: this.idProduct,
     SelectedSize: -1,
     Quantity: -1,
-    Type: 'null'
+    Type: 'Add'
   }
 
-  constructor(private cartService: CartService,private productService: ProductService, private notificationService: NotiService){
+  constructor(
+      private cartService: CartService,
+      private productService: ProductService, 
+      private notificationService: NotiService,  
+    )
+    {
     try{
       this.isLoading = true
       this.codeCustomer = Number(localStorage.getItem('codeCustomer'))
@@ -51,7 +57,6 @@ export class EcomProductDetailsComponent implements OnInit {
     }
 
     this.APIGetProductByID(this.idProduct)
-   
   }
 
   ngOnInit(): void {
@@ -82,10 +87,9 @@ export class EcomProductDetailsComponent implements OnInit {
 
   APIAddProductToCart(cart: DTOAddToCart){
     this.productService.addProductToCart(cart).pipe(takeUntil(this.destroy)).subscribe(data => {
-      console.log(data);
-      if(data.StatusCode != 0 && data.ErrorString != ""){
-        console.log(this);
+      if(data.StatusCode == 0 && data.ErrorString == ""){
         this.cartService.emitCartUpdated()
+        this.cartService.setTotalItemProduct(this.codeCustomer)
         this.notificationService.Show("Yay 🥰, check your bag", "success")
       }else{
         this.notificationService.Show("Error when add your bag!", "eror")
@@ -108,13 +112,14 @@ export class EcomProductDetailsComponent implements OnInit {
         this.notificationService.Show("Please choose the shoe size", "warning")
         return
       }
+      this.addToCart.CodeProduct = this.idProduct
+      this.addToCart.SelectedSize = this.sizeSelected
+      this.addToCart.Quantity = 1
       if(this.codeCustomer){
         this.addToCart.CodeCustomer = this.codeCustomer
-        this.addToCart.CodeProduct = this.idProduct
-        this.addToCart.SelectedSize = this.sizeSelected
-        this.addToCart.Quantity = 1
         this.addToCart.Type = "Add"
       }else{
+
         const productCart = localStorage.getItem('cacheCart')
         if(productCart){
           const listData = JSON.parse(productCart) as DTOGuessCartProduct[]
@@ -136,19 +141,11 @@ export class EcomProductDetailsComponent implements OnInit {
           this.dataProductSend.SelectedSize = 5
           localStorage.setItem('cacheCart', JSON.stringify([this.dataProductSend]))
         }
-    
       }
-
-      console.log(this.addToCart);
-
       this.APIAddProductToCart(this.addToCart)
-      
-     
     }catch{
       this.notificationService.Show("😭, not success", "erorr")
     }
-    
-    
   }
 
   log(){

@@ -36,7 +36,7 @@ export class ProductService {
     return this.httpClient.post<DTOResponse>(this.urlGetListProduct, filter, httpOptions)
       .pipe(
         catchError(error => {
-          console.error('Error retrieving quiz sessions:', error);
+          console.error('Error fetching data:', error);
           return throwError(error);
         })
       );
