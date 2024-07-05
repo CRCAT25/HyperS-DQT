@@ -1,6 +1,6 @@
 <div class="boxForm">
     <p class="label-form">{{text}}</p>
-    <form class="form">
+    <form class="form" [ngClass]="{'disable': isDisabled}">
         <ng-content select=".content-form"></ng-content>
     </form>
 </div>
