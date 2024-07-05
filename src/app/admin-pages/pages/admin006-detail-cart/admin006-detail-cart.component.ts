@@ -26,6 +26,7 @@ export class Admin006DetailCartComponent implements OnInit {
   listNextStatus: DTOStatus[];
   objItemStatus: any;
   isShowAlert: boolean = false;
+  reasonFail: string;
 
   ngOnInit(): void {
     this.getListBillInfo();
@@ -137,7 +138,7 @@ export class Admin006DetailCartComponent implements OnInit {
 
   //Nhận text của text-area
   receive(value: any) {
-    // this.reasonFail = value;
+    this.reasonFail = value;
   }
 
   // Update status bill
@@ -148,7 +149,7 @@ export class Admin006DetailCartComponent implements OnInit {
         CodeBill: this.itemBill.Code,
         Status: obj.value,
         ListOfBillInfo: this.itemBill.ListBillInfo,
-        Note: this.itemBill.Note,
+        Note: this.reasonFail,
       }
       // const status = this.listStatus.find(status => status.Code === idStatus);
       // this.listNextStatus = status ? status.ListNextStatus : null;
