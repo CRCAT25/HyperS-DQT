@@ -36,6 +36,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
   listBillPage: GridDataResult;
   listBillAllDate: GridDataResult;
+  listBillNowDate: GridDataResult;
   pageSize: number = 4;
   listPageSize: number[] = [1, 2, 3, 4];
   idButton: number;
@@ -62,10 +63,12 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   isDetail: boolean = false;
   listBillInfo: DTOBillInfo[];
   isShowAlertStatus: boolean = false;
-  countBillWaiting: number;
+  countBillWaiting: number = 0;
+  countBillNowDate: number = 0;
   earliestDate: string;
   nowDate: string;
-
+  earliestDates: Date;
+  obj = document.getElementsByClassName("numberCount");
 
   // defaultItemStatusBill: DTOStatus = {
   //   Code: -1,
@@ -139,7 +142,24 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     filter: {
       logic: "and",
       filters: [
-        this.filterStatus
+        { field: 'Status', operator: 'eq', value: 2 }
+      ]
+    }
+  }
+
+  gridStateBillNowDate: State = {
+    skip: 0,
+    sort: [
+      {
+        field: "Code",
+        dir: "asc"
+      }
+    ],
+    filter: {
+      logic: "and",
+      filters: [
+        { field: 'CreateAt', operator: 'gte', value: this.toLocalString(this.startDate, 'start') },
+        { field: 'CreateAt', operator: 'lte', value: this.toLocalString(this.endDate, 'end') }
       ]
     }
   }
@@ -156,6 +176,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getListBill();
     this.getListBillAllDate();
+    this.isShowAlertStatus = !this.isShowAlertStatus;
+    this.getListBillNowDate();
     this.setFilterExpStatus();
   }
 
@@ -320,9 +342,15 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
     if (this.isDetail == true && ((event.target as HTMLElement).closest('#icon-back'))) {
       this.isDetail = false;
+      this.getListBill();
+      this.setFilterExpStatus();
+      this.getListBillAllDate();
     }
     if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonReturnDate'))) {
-      alert('a')
+      this.childRangeDateStart.defaultDate = this.earliestDates;
+      this.startDate = this.earliestDates;
+      this.isShowAlertStatus = false;
+      this.setFilterDate();
     }
   }
 
@@ -346,14 +374,23 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     // console.log(this.gridState)
   }
 
+  //Lấy danh sách bill chờ xác nhận
   getListBillAllDate(){
     this.billService.getListBill(this.gridStateWaitingAllDate).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-      console.log(this.listBillAllDate.data.length);
+      // console.log(this.listBillAllDate.data.length);
       this.countBillWaiting = this.listBillAllDate.data.length;
+      console.log(this.countBillWaiting);
       this.findEarliestDate();
       this.isLoading = false;
-      this.isShowAlertStatus = !this.isShowAlertStatus;
+
+    })
+  }
+
+  getListBillNowDate(){
+    this.billService.getListBill(this.gridStateBillNowDate).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listBillNowDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      this.countBillNowDate = this.listBillNowDate.data.length;
 
     })
   }
@@ -370,6 +407,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }, new Date(this.listBillAllDate.data[0].CreateAt));
     
     this.earliestDate = this.formattedCreateAtNoTime(earliestDate);
+    this.earliestDates = earliestDate;
     this.nowDate = this.formattedCreateAtNoTime(this.endDate);
     // console.log(this.formattedCreateAtNoTime(earliestDate));
 
@@ -383,7 +421,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       acc[status] = (acc[status] || 0) + 1;
       return acc;
     }, {});
-    console.log(this.statusCounts[2]);
+    // this.animateValue(this.obj,this.statusCounts[2], 50000);
+    // console.log(typeof(this.statusCounts[2]));
 
   }
 
@@ -417,7 +456,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.filterDate.filters.push(filterTo);
     this.setFilterData();
     this.setFilterExpStatus();
-
   }
 
   // Set filter status
@@ -560,6 +598,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
         if (res.StatusCode === 0) {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")
+          this.getListBillAllDate();
           this.getListBill();
           this.setFilterExpStatus();
           this.isShowAlert = false;
@@ -569,6 +608,49 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  showAlertAllDate(){
+    this.isShowAlertStatus = !this.isShowAlertStatus;
+  }
+
+  returnNowDate(){
+    this.startDate = this.currentDate;
+    this.endDate = this.currentDate;
+    this.setFilterDate();
+  }
+
+//   animateCount(targetCount: number) {
+//     let start = 0;
+//     const duration = 2000; 
+//     const frameRate = 20; // 20 ms per frame
+//     const totalFrames = duration / frameRate;
+//     const increment = targetCount / totalFrames; 
+
+//     const step = () => {
+//         start += increment;
+//         if (start < targetCount) {
+//             this.animatedCount = Math.round(start);
+//             requestAnimationFrame(step);
+//         } else {
+//             this.animatedCount = targetCount;
+//         }
+//     };
+
+//     requestAnimationFrame(step);
+// }
+
+// animateValue(obj: any, end: number, duration: number) {
+//   let startTimestamp: any = null;
+//   const step = (timestamp: number) => {
+//     if (!startTimestamp) startTimestamp = timestamp;
+//     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+//     obj.innerHTML = Math.floor(progress * (end - 0) + 0);
+//     if (progress < 1) {
+//       window.requestAnimationFrame(step);
+//     }
+//   };
+//   window.requestAnimationFrame(step);
+// }
 
  
   test(obj: any) {

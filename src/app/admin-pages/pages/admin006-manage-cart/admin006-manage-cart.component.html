@@ -1,6 +1,11 @@
 <div class="header-filter">
-    <div class="countWaitingCheck">
-        <div class="numberCount">{{statusCounts[2] !== undefined ? statusCounts[2] : 0}}</div>
+    <div class="countWaitingCheck" (click)="returnNowDate()">
+        <div class="numberCountBill" [style.background-color]="'red'">{{countBillNowDate}}</div>
+        <div class="labelWaitingCheck">Đơn mới hôm nay</div>
+    </div>
+    <div class="countWaitingCheck" (click)="showAlertAllDate()">
+        <!-- <div class="numberCount">{{statusCounts[2] !== undefined ? statusCounts[2] : 0}}</div> -->
+        <div class="numberCount">{{countBillWaiting}}</div>
         <div class="labelWaitingCheck">Đơn chờ xác nhận</div>
     </div>
     <div class="label-filter">Lọc trạng thái</div>
@@ -130,7 +135,7 @@
         [value]="">
     
     <div class="content-popup">
-        <div class="contentQuestion">Có tổng cộng {{countBillWaiting}} đơn chờ xác nhận</div>
+        <div class="contentQuestion">Có tổng cộng <span> {{countBillWaiting}} </span>đơn chờ xác nhận</div>
         <div class="contentWarning">Kể từ ngày {{earliestDate}} đến ngày {{nowDate}}! Bạn có muốn quay lại?</div>
     </div></component-popup-confirm>
 </div>

@@ -39,9 +39,21 @@
                     padding: 7px;
                     box-shadow: $box-shadow3;
                     border-radius: 5px;
-                    gap: 5px;
+                    gap: 8px;
                     font-weight: 600;
+                    cursor: pointer;
+                    border: 2px solid rgb(255, 255, 255);
+
+
+                    &:hover{
+                        border: 2px solid #aaaaaa;
+                    }
+
+                    &:active{
+                        border: 2px solid #aaaaaa;
+                    }
                     
+                    .numberCountBill,
                     .numberCount{
                         width: 35px;
                         height: 35px;
@@ -49,8 +61,9 @@
                         background-color: #aaaaaa;
                         border-radius: 5px;
                         color: white;
-                        
+                        transition: font-size 0.5s ease;
                     }
+
                 }
 
 
@@ -257,9 +270,15 @@
                     flex-direction: column;
                     gap: 20px;
                     .contentQuestion{
-                        color: red;
                         font-size: 16px;
-                        text-align: center;
+                        justify-content: center;
+                        display: flex;
+                        gap: 3px;
+
+                        span{
+                            color: red;
+                            font-weight: 600;
+                        }
                     }
 
                     .contentWarning{
