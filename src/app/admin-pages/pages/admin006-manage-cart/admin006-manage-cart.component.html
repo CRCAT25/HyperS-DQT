@@ -17,8 +17,8 @@
             <div [style.padding-left.px]="7" [style.margin-top.px]="5" [style.display]="'flex'" [style.height.px]="20">
                 <span [style.width.px]="170" [style.fontSize.px]="14" [style.fontWeight]="600">Trạng thái đơn</span>
                 <span [style.fontSize.px]="14" [style.fontWeight]="600">Đơn theo bộ lọc</span>
-                <span [style.width.px]="640" [style.display]="'flex'" [style.justify-content]="'flex-end'"
-                    [style.fontSize.px]="14" [style.fontWeight]="600">Tất cả số lượng đơn</span>
+                <div [style.width.px]="650" [style.display]="'flex'" [style.justify-content]="'flex-end'"
+                    [style.fontSize.px]="14" [style.fontWeight]="600"><span>Tất cả số lượng đơn</span></div>
 
 
             </div>
@@ -36,8 +36,8 @@
                 <div class="countOfStatus" [style.width.px]="683" [style.display]="'flex'"
                     [style.justify-content]="'flex-end'"
                     [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code]?.count > 0 ? 'red' : 'inherit' }">
-                    {{ statusCountsAllDate[dataItem.Code]?.count || 0 }} đơn từ ngày 
-                    {{formattedCreateAtNoTime(statusCountsAllDate[dataItem.Code]?.earliestDate) || 'N/A' }}
+                    <span>{{ statusCountsAllDate[dataItem.Code]?.count || 0 }} đơn từ ngày 
+                        {{formattedCreateAtNoTime(statusCountsAllDate[dataItem.Code]?.earliestDate) || 'N/A' }}</span>
                 </div>
             </div>
         </ng-template>

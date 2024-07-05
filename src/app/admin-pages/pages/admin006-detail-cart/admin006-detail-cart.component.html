@@ -7,7 +7,25 @@
 
         <div class="body-detail">
             <div class="box-info">
-                <div>
+                <component-form [text]="'THÔNG TIN HÓA ĐƠN'">
+                    <div class="content-form">
+                        <div class="column column1">
+                            <component-text-input [label]="'Tên khách hàng'" [widthBlock]="430"></component-text-input>
+                            <component-text-input [label]="'Số điện thoại'" [widthBlock]="430"></component-text-input>
+                            <component-text-dropdown [label]="'Phương thức'" [widthBlock]="430" [widthTextBox]="298" [heightTextBox]="30"></component-text-dropdown>
+                            <component-text-area [label]="'Ghi chú'" [widthBox]="430" [height]="40" [width]="298"></component-text-area>
+                        </div>
+
+                        <div class="column column2">
+                            <component-text-dropdown [label]="'Tỉnh, thành phố'" [widthBlock]="430" [widthTextBox]="294" [heightTextBox]="30"></component-text-dropdown>
+                            <component-text-dropdown [label]="'Quận, huyện'" [widthBlock]="430" [widthTextBox]="294" [heightTextBox]="30"></component-text-dropdown>
+                            <component-text-dropdown [label]="'Xã, thị trấn'" [widthBlock]="430" [widthTextBox]="294" [heightTextBox]="30"></component-text-dropdown>
+                            <component-text-input [label]="'Địa chỉ cụ thể'" [widthBlock]="430"></component-text-input>
+                        </div>
+
+                    </div>
+                </component-form>
+                <!-- <div>
                     <div class="codeBill">Mã đơn {{itemBill.Code}}</div>
                     <div class="createAtBill">{{formattedCreateAt(itemBill.CreateAt)}}</div>
                 </div>
@@ -26,7 +44,8 @@
                 <div class="box Address">
                     <div class="label Address">Địa chỉ</div>
                     <div class="addressBill">{{itemBill.ShippingAddress}}</div>  
-                </div>
+                </div> -->
+
             </div>
 
             <div class="showListDetail">

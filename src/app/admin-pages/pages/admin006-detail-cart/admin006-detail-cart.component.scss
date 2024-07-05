@@ -55,33 +55,17 @@
                         gap: 15px;
                         // background-color: antiquewhite;
 
-                        .codeBill{
-                            font-size: 20px;
-                            font-weight: 600;
-                            width: 100%;
-                            text-align: center;
-                            margin-bottom: 10px;
-                            font-size: 20px;
-
-                        }
-
-                        .createAtBill{
-                            width: 100%;
-                            text-align: center;
-                            font-size: 16px;
-                        }
-
-                        .box{
+                        .content-form{
                             display: flex;
+                            gap: 20px;
 
-                            .label{
-                                width: 200px;
-                            }
-
-                            .addressBill{
-                                width: calc(100% - 200px);
+                            .column{
+                                display: flex;
+                                flex-direction: column;
+                                gap: 15px;
                             }
                         }
+
                     }
                     .showListDetail{
                         margin-top: 10px;
