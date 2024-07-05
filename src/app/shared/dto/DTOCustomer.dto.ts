@@ -3,13 +3,13 @@ export class DTOCustomer {
     IDCustomer: string
     Name: string
     ImageURL: string
-    Gender: string
+    Gender: number
     Birth: Date
     PhoneNumber: string
     Email: string
     CodeAccount: number
     StatusAccount: number
     StatusAccountStr: string
-    Permission: number
-    PermissionStr: string
+    Permission?: number
+    PermissionStr?: string
 }

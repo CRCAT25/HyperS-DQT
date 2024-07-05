@@ -35,5 +35,6 @@ export class SearchBarComponent {
   // Xóa toàn bộ dữ liệu nhập vào
   clearValue() {
     this.valueSearch = ''
+    this.getValue.emit('');
   }
 }

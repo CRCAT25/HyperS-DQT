@@ -9,9 +9,9 @@
             </kendo-fileselect>
         </div>
     </div>
-    <div class="image-container" *ngIf="selectedFile">
+    <div class="image-container" *ngIf="selectedFile || imageHandle">
         <div class="img-preview example-config big-image">
-            <img [src]="imageHandle.ImgUrl" [ngStyle] ="{
+            <img *ngIf="imageHandle" [src]="imageHandle.ImgUrl" [ngStyle] ="{
                 'width.px' :imgWidth,
                 'max-width.px' :imgWidth,
                 'min-width.px' :imgMinWidth,

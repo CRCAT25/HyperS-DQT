@@ -20,7 +20,7 @@
     </div>
 
     <div class="form">
-        <component-form text="Thông tin khách hàng">
+        <component-form [isDisabled]="true" text="Thông tin khách hàng">
             <div class="content-form content-form-customer-custom">
                 <div class="block-1">
                     <!-- Mã người dùng -->
@@ -38,7 +38,7 @@
 
                 <div class="block-2">
                     <!-- Ngày sinh -->
-                    <component-datepicker [minDate]="minDate" [maxDate]="maxDate"
+                    <component-datepicker #birthday [minDate]="minDate" [maxDate]="maxDate"
                         label="Ngày sinh"></component-datepicker>
 
                     <!-- Giới tính -->
@@ -49,12 +49,12 @@
 
                     <!-- Số điện thoại -->
                     <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260"
-                        [widthBlock]="353" label="Số điện thoại"></component-text-input>
+                        [widthBlock]="353" typeValue="number" label="Số điện thoại"></component-text-input>
                 </div>
 
                 <div class="block-3">
                     <div class="label-import-image">Ảnh đại diện</div>
-                    <component-import-image></component-import-image>
+                    <component-import-image #image></component-import-image>
                 </div>
             </div>
         </component-form>
@@ -69,31 +69,12 @@
             <component-search-bar #search (getValue)="setFilterSearch($event)"
                 placeholder="Tìm kiếm theo mã và tên khách hàng..." [width]="500"></component-search-bar>
         </div>
-
-        <!-- Button thêm mới và cập nhật trên form -->
-        <div class="button-action-form">
-            <!-- Button thêm khách hàng -->
-            <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                borderStyle="solid" [value]="0" [height]="36" classIconFontAwesome="fa-plus" bgColor="#fff"
-                text="Thêm mới"></component-button>
-
-            <!-- Button cập nhật thông tin khách hàng -->
-            <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
-                borderStyle="solid" [value]="0" [height]="36" classIconFontAwesome="fa-floppy-disk" bgColor="#fff"
-                text="Cập nhật"></component-button>
-        </div>
     </div>
 
     <div class="grid-custom-container">
-        <kendo-grid 
-            [data]="listCustomer" 
-            kendoGridSelectBy 
-            [(selectedKeys)]="selectedRow" 
-            [skip]="gridState.skip"
-            [loading]="isLoading" 
-            [selectable]="{ mode: 'single' }" 
-            (pageChange)="onPageChange($event)"
-            [pageSize]="gridState.take" 
+        <kendo-grid [data]="listCustomer" kendoGridSelectBy="Code" [selectedKeys]="selectedCodeCustomer"
+            (selectionChange)="onSelectionChange($event)" [skip]="gridState.skip" [loading]="isLoading"
+            [selectable]="{ mode: 'single' }" (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
             [pageable]="{
                 type: 'numeric',
                 pageSizes: true,
@@ -107,7 +88,7 @@
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-2">
                         <img *ngIf="item.ImageURL" [src]="item.ImageURL" alt="">
-                        <img *ngIf="!item.ImageURL" src="../../../../assets/anhTrong.jpg" alt="">
+                        <img *ngIf="!item.ImageURL" [src]="imageNull.ImgUrl" alt="">
                     </div>
                 </ng-template>
             </kendo-grid-column>
@@ -127,7 +108,7 @@
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-4">
                         <div class="gender">{{checkGender(item.Gender)}}</div>
-                        <div class="birthday">{{item.Birth}}</div>
+                        <div class="birthday">{{formatDisplayDate(item.Birth)}}</div>
                     </div>
                 </ng-template>
             </kendo-grid-column>

@@ -7,4 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class FormComponent {
   @Input() text: string="THÔNG TIN CÁ NHÂN";
+  @Input() isDisabled: boolean = false;
 }

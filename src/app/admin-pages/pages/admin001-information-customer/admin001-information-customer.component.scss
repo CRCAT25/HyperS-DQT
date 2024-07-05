@@ -73,6 +73,10 @@
                     .image-container {
                         padding-top: 8px !important;
                     }
+
+                    i#icon-delete{
+                        display: none;
+                    }
                 }
             }
 
@@ -103,13 +107,6 @@
                         .component-button:hover {
                             color: #fff !important;
                             background-color: #09880E !important;
-                        }
-                    }
-
-                    .button-update {
-                        .component-button:hover {
-                            color: #ffffff !important;
-                            background-color: #2557A0 !important;
                         }
                     }
                 }

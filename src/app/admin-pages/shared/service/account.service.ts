@@ -4,6 +4,7 @@ import { State } from '@progress/kendo-data-query';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
+import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 
 @Injectable({
     providedIn: 'root'
@@ -35,6 +36,17 @@ export class AccountService {
     }
 
     updateCustomer(req: {CodeAccount: number, CodeStatus: number}): Observable<any> {
+        const httpOptions = this.getHttpOptions();
+        return this.httpClient.post(this.urlUpdateCustomer, req, httpOptions)
+            .pipe(
+                catchError(error => {
+                    console.error('Error updating customer:', error);
+                    return throwError(error);
+                })
+            );
+    }
+
+    addCustomer(req: DTOCustomer): Observable<any> {
         const httpOptions = this.getHttpOptions();
         return this.httpClient.post(this.urlUpdateCustomer, req, httpOptions)
             .pipe(
