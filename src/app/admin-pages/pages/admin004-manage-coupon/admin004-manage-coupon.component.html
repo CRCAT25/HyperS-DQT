@@ -1,1 +1,16 @@
-<p>admin004-manage-coupon works!</p>
+<kendo-drawer-container>
+    <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="widthDrawer" [(expanded)]="expanded">
+        <ng-template kendoDrawerTemplate>
+            <div class="drawer-custom-container">
+                <button kendoButton (click)="drawer.toggle()">Toggle the Drawer</button>
+            </div>
+        </ng-template>
+    </kendo-drawer>
+
+    <kendo-drawer-content>
+        <div class="content-container">
+            <button kendoButton (click)="drawer.toggle()">Toggle the Drawer</button>
+            <img src="../../../../assets/bg-coupon.png" alt="">
+        </div>
+    </kendo-drawer-content>
+</kendo-drawer-container>
