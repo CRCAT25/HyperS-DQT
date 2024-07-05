@@ -55,6 +55,48 @@
                         gap: 15px;
                         // background-color: antiquewhite;
 
+                        .codeBill{
+                            font-size: 20px;
+                            font-weight: 600;
+                            width: 100%;
+                            text-align: center;
+                            margin-bottom: 10px;
+                            
+                        }
+
+                        .createAtBill{
+                            width: 100%;
+                            text-align: center;
+                            font-size: 16px;
+                        }
+
+                        .box-button-update{
+                            display: flex;
+                            justify-content: flex-end;
+                            width: 100%;
+                            gap: 10px;
+                            .button-edit{
+                                .component-button:hover{
+                                    background-color: rgb(255, 29, 29) !important;
+                                    color: white !important;
+                                }
+                            }
+
+                            .button-update{
+                                .component-button:hover{
+                                    background-color: rgb(37, 87, 160) !important;
+                                    color: white !important;
+                                }
+                            }
+
+                            .button-restore{
+                                .component-button:hover{
+                                    background-color: rgb(88, 88, 88) !important;
+                                    color: white !important;
+                                }
+                            }
+                        }
+
                         .content-form{
                             display: flex;
                             gap: 20px;
@@ -71,7 +113,7 @@
                         margin-top: 10px;
                         border-bottom: 3px solid black;
                         .grid-custom-container{
-                            height: 500px;
+                            height: 350px;
                             position: initial !important;
                             th.k-table-th[aria-colindex="3"],
                             th.k-table-th[aria-colindex="4"],
