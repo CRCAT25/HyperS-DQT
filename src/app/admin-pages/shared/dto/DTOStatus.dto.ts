@@ -66,6 +66,22 @@ export const listStatus: DTOStatus[] = [
     },
     {
         Code: 4,
+        Status: "Đơn hàng bị hủy",
+        Icon: "fa-circle-xmark",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 1,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false
+                
+            }
+        ]
+    },
+    {
+        Code: 5,
         Status: "Đang vận chuyển",
         Icon: "fa-cart-flatbed",
         IsChecked: false,
@@ -94,25 +110,9 @@ export const listStatus: DTOStatus[] = [
         ]
     },
     {
-        Code: 5,
+        Code: 6,
         Status: "Giao hàng thành công",
         Icon: "fa-circle-check",
-        IsChecked: false,
-        ListNextStatus:
-        [
-            {
-                Code: 1,
-                Status: "Xem chi tiết",
-                Icon: "fa-eye",
-                IsChecked: false
-                
-            }
-        ]
-    },
-    {
-        Code: 6,
-        Status: "Đơn hàng bị hủy",
-        Icon: "fa-circle-xmark",
         IsChecked: false,
         ListNextStatus:
         [
@@ -217,6 +217,54 @@ export const listStatus: DTOStatus[] = [
         Code: 11,
         Status: "Không hoàn tiền",
         Icon: "fa-circle-xmark",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 1,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false
+                
+            }
+        ]
+    },
+    {
+        Code: 12,
+        Status: "Khách yêu cầu đổi trả",
+        Icon: "fa-arrow-right-arrow-left",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 1,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false
+                
+            }
+        ]
+    },
+    {
+        Code: 13,
+        Status: "Xác nhận đổi hàng",
+        Icon: "fa-cart-flatbed",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 1,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false
+                
+            }
+        ]
+    },
+    {
+        Code: 14,
+        Status: "Đã đổi hàng",
+        Icon: "circle-check",
         IsChecked: false,
         ListNextStatus:
         [

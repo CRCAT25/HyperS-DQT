@@ -10,8 +10,69 @@
                 <div>
                     <div class="codeBill">Mã đơn {{itemBill.Code}}</div>
                     <div class="createAtBill">{{formattedCreateAt(itemBill.CreateAt)}}</div>
+                    <div class="box-button-update">
+                        <component-button *ngIf="!isEdit" class="button-edit" [text]="'Chỉnh sửa'" [classIconFontAwesome]="'fa-pencil'" [color]="'rgb(255, 29, 29)'" [bgColor]="'white'" [borderColor]="'rgb(255, 29, 29)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                        </component-button>
+                        <ng-container *ngIf="isEdit">
+                            <component-button class="button-update" [text]="'Cập nhật'" [classIconFontAwesome]="'fa-floppy-disk'" [color]="'rgb(37, 87, 160)'" [bgColor]="'white'" [borderColor]="'rgb(37, 87, 160)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                            </component-button>
+                            <component-button class="button-restore" [text]="'Khôi phục'" [classIconFontAwesome]="'fa-arrow-rotate-left'" [color]="'rgb(88, 88, 88)'" [bgColor]="'white'" [borderColor]="'rgb(88, 88, 88)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                            </component-button>
+                        </ng-container>
+                    </div>
                 </div>
-                <div class="box Name">
+                <component-form [text]="'THÔNG TIN HÓA ĐƠN'">
+                    <div class="content-form">
+                        <div class="column column1">
+                            <component-text-input [label]="'Tên khách hàng'" [widthBlock]="430" [value]="itemBill.CustomerName"></component-text-input>
+                            <component-text-input [label]="'Số điện thoại'" [widthBlock]="430" [value]="itemBill.PhoneNumber"></component-text-input>
+                            <component-text-dropdown [label]="'Phương thức'" [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" 
+                            [listItem]="PaymentMethodDropDown" textField="Method" valueField="Code">
+                            <!-- [value]="formatPaymentMethod(itemBill.PaymentMethod)" -->
+                            </component-text-dropdown>
+                            <component-text-area [label]="'Ghi chú'" [widthBox]="430" [height]="40" [width]="300" [value]="itemBill.Note"></component-text-area>
+                        </div>
+
+                        <div class="column column2">
+                            <component-text-dropdown
+                            [label]="'Tỉnh, thành phố'"
+                            [widthBlock]="430"
+                            [widthTextBox]="300"
+                            [heightTextBox]="30"
+                            [listItem]="listProvince"
+                            textField="province_name"
+                            valueField="province_name"
+                            [(ngModel)]="provinceSelected"
+                            [hasEmitValueChange]="1"
+                            (valueChange)="handleChangeProvince($event)"
+                            ></component-text-dropdown>
+                            <component-text-dropdown [label]="'Quận, huyện'" 
+                            [widthBlock]="430"
+                            [widthTextBox]="300"
+                            [heightTextBox]="30"
+                            [listItem]="listDistrict"
+                            textField="district_name"
+                            valueField="district_name"
+                            [(ngModel)]="districtSelected"
+                            [disabled]="isDisableDistrict"
+                            [hasEmitValueChange]="1"
+                            (valueChange)="handleChangeDistrict($event)"></component-text-dropdown>
+                            <component-text-dropdown [label]="'Xã, thị trấn'"
+                            [widthBlock]="430"
+                            [widthTextBox]="300"
+                            [heightTextBox]="30"
+                            [listItem]="listWard"
+                            textField="ward_name"
+                            valueField="ward_name"
+                            [(ngModel)]="wardSelected"
+                            [disabled]="isDisableWard"
+                            [hasEmitValueChange]="1"
+                            (valueChange)="handleChangeWard($event)"></component-text-dropdown>                            <component-text-input [label]="'Địa chỉ cụ thể'" [widthBlock]="430" [value]="specialAddress"></component-text-input>
+                        </div>
+
+                    </div>
+                </component-form>
+                <!-- <div class="box Name">
                     <div class="label Name">Họ tên khách hàng</div>
                     <div class="nameBill">{{itemBill.CustomerName}}</div>
                 </div>
@@ -26,7 +87,8 @@
                 <div class="box Address">
                     <div class="label Address">Địa chỉ</div>
                     <div class="addressBill">{{itemBill.ShippingAddress}}</div>  
-                </div>
+                </div> -->
+
             </div>
 
             <div class="showListDetail">
