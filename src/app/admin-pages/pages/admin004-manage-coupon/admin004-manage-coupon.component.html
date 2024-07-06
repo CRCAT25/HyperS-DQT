@@ -30,7 +30,7 @@
             <div class="header-filter-stage">
                 <div class="block-filter-stage">
                     <div class="label-delete-filter">Xóa bộ lọc</div>
-                    <component-search-bar [width]="400"
+                    <component-search-bar [width]="400" (getValue)="setFilterSearch($event)"
                         [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
                     <div class="list-stage">
                         <component-checkboxlist (getListChecked)="this.getValueFromCheckList($event, 'stage')" [valueField]="'Code'" [textField]="'Status'"

@@ -35,8 +35,6 @@ export class Admin004ManageCouponComponent {
   endDate: Date = this.maxDate;
   // Số item mỗi trang
   pageSize: number = 2;
-  // Giá trị của input search
-  valueSearch: string = '';
 
 
   // Danh sách đầy đủ các trạng thái của coupon
@@ -63,7 +61,7 @@ export class Admin004ManageCouponComponent {
   // Filter cho ngày
   filterDate: CompositeFilterDescriptor = { logic: 'and', filters: [] };
   // Filter cho search
-  filterSearch: FilterDescriptor = { field: 'IdCoupon', operator: 'contains', value: this.valueSearch, ignoreCase: true };
+  filterSearch: FilterDescriptor = { field: 'IdCoupon', operator: 'contains', value: null, ignoreCase: true };
   // Filter cho nhóm khách hàng
   filterGroupCustomer: FilterDescriptor = { field: 'ApplyTo', operator: 'eq', value: -1, ignoreCase: true };
 
@@ -97,7 +95,6 @@ export class Admin004ManageCouponComponent {
     if (type === 'end') {
       this.endDate = value;
     }
-    console.log(value);
     this.setFilterDate();
   }
 
@@ -108,6 +105,12 @@ export class Admin004ManageCouponComponent {
     this.filterDate.filters.push(filterFrom);
     const filterTo: FilterDescriptor = { field: 'EndDate', operator: 'lte', value: this.transformToDateString(this.endDate, 'end') };
     this.filterDate.filters.push(filterTo);
+    this.setFilterData();
+  }
+
+  // Set filter search
+  setFilterSearch(res: any){
+    this.filterSearch = { field: 'IdCoupon', operator: 'contains', value: res, ignoreCase: true };
     this.setFilterData();
   }
 
@@ -136,7 +139,6 @@ export class Admin004ManageCouponComponent {
     return '';
   }
 
-
   // Filter tất cả
   setFilterData() {
     this.gridState.filter.filters = [];
@@ -144,12 +146,14 @@ export class Admin004ManageCouponComponent {
     this.pushToGridState(null, this.filterStage);
     this.pushToGridState(null, this.filterDate);
     this.pushToGridState(this.filterGroupCustomer, null);
+    this.pushToGridState(this.filterSearch, null);
+    console.log(this.gridState);
   }
 
   // Push filter vào gridState
   pushToGridState(filter: FilterDescriptor, comFilter: CompositeFilterDescriptor) {
     if (filter) {
-      if (filter.value >= 0) {
+      if (filter.value !== null && filter.value !== '' && filter.value !== -1) {
         this.gridState.filter.filters.push(filter);
       }
     }
