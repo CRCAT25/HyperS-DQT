@@ -2,7 +2,7 @@ export class DTOCustomer {
     Code: number
     IDCustomer: string
     Name: string
-    ImageURL: string
+    ImageURL: string = ""
     Gender: string
     Birth: Date
     PhoneNumber: string
