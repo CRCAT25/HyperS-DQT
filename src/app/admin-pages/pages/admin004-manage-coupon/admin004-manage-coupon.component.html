@@ -9,8 +9,54 @@
 
     <kendo-drawer-content>
         <div class="content-container">
-            <button kendoButton (click)="drawer.toggle()">Toggle the Drawer</button>
-            <img src="../../../../assets/bg-coupon.png" alt="">
+            <!-- Header Filter theo trạng thái -->
+            <div class="header-filter-status">
+                <div class="block-filter-status">
+                    <div class="label-filter">Lọc dữ liệu</div>
+                    <!-- Danh sách các trạng thái -->
+                    <div class="list-status">
+                        <component-checkboxlist (getListChecked)="this.getValueFromCheckList($event, 'status')" [valueField]="'Code'" [textField]="'Status'"
+                            [listCheckBox]="listStatusCoupon"></component-checkboxlist>
+                    </div>
+                </div>
+
+                <!-- Button thêm khuyến mãi-->
+                <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
+                    borderStyle="solid" [value]="0" (sendValue)="drawer.toggle()" [height]="36" classIconFontAwesome="fa-plus" bgColor="#fff"
+                    text="Thêm mới"></component-button>
+            </div>
+
+            <!-- Header Filter theo giai đoạn -->
+            <div class="header-filter-stage">
+                <div class="block-filter-stage">
+                    <div class="label-delete-filter">Xóa bộ lọc</div>
+                    <component-search-bar [width]="400"
+                        [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
+                    <div class="list-stage">
+                        <component-checkboxlist (getListChecked)="this.getValueFromCheckList($event, 'stage')" [valueField]="'Code'" [textField]="'Status'"
+                            [listCheckBox]="listStageCoupon"></component-checkboxlist>
+                    </div>
+                </div>
+
+                <div class="block-filter-date">
+                    <component-datepicker #rangeDateStart [minDate]="minDate" [maxDate]="endDate"
+                        (datePicked)="getDateFromDatePicker($event, 'start')"></component-datepicker>
+                    <div class="line"></div>
+                    <component-datepicker #rangeDateEnd [minDate]="startDate" [maxDate]="maxDate"
+                        (datePicked)="getDateFromDatePicker($event, 'end')"></component-datepicker>
+                </div>
+
+                <div class="block-filter-group">
+                    <div class="label-filter-group">Đối tượng</div>
+                    <component-text-dropdown (getValue)="setFilterGroupCustomer($event)" [label]="''" [listItem]="listGroupCustomerApply"
+                        [defaultItem]="defaultGroupCustomerApply" [valueField]="'Code'"
+                        [textField]="'Group'"></component-text-dropdown>
+                </div>
+            </div>
+
+            <div class="label-list-coupon">
+                Danh sách khuyến mãi
+            </div>
         </div>
     </kendo-drawer-content>
 </kendo-drawer-container>
