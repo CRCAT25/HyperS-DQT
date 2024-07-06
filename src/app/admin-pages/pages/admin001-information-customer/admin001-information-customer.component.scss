@@ -73,6 +73,10 @@
                     .image-container {
                         padding-top: 8px !important;
                     }
+
+                    i#icon-delete{
+                        display: none;
+                    }
                 }
             }
 
@@ -105,13 +109,6 @@
                             background-color: #09880E !important;
                         }
                     }
-
-                    .button-update {
-                        .component-button:hover {
-                            color: #ffffff !important;
-                            background-color: #2557A0 !important;
-                        }
-                    }
                 }
             }
 
@@ -127,15 +124,15 @@
                         color: #000 !important;
                     }
 
-                    th.k-table-th[aria-colindex="2"],
-                    th.k-table-th[aria-colindex="5"],
-                    th.k-table-th[aria-colindex="6"] {
+                    th.k-table-th[aria-colindex="1"],
+                    th.k-table-th[aria-colindex="4"],
+                    th.k-table-th[aria-colindex="5"] {
                         .k-column-title {
                             margin: auto;
                         }
                     }
 
-                    th.k-table-th[aria-colindex="7"] {
+                    th.k-table-th[aria-colindex="6"] {
                         .k-link {
                             display: flex;
                             justify-content: end;
@@ -163,13 +160,14 @@
                         text-align: right;
                     }
 
-                    td.k-table-td[aria-colindex="8"] {
+                    td.k-table-td[aria-colindex="7"] {
                         background-color: #fff;
                         box-shadow: $box-shadow2;
                         height: 44px;
                         @include center-horizontal;
                         overflow: visible;
                         z-index: 0;
+                        border-left: 1px solid #2e2e2e !important;
 
                         .button-tool-box {
                             margin: auto;

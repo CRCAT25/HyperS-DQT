@@ -17,6 +17,11 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router, private layoutService: LayoutService) { }
 
   ngOnInit(): void {
+    const breadcrumbLS: string = localStorage.getItem('breadcrumb');
+    const listBreadCrumbSplit: string[] = breadcrumbLS.split('/')
+    const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
+
+
     const cartModule = listModule.find(item => item.ModuleName === 'Đơn hàng');
     if (!!!localStorage.getItem('moduleName')) {
       this.onSelectItemDrawer(cartModule);
@@ -29,7 +34,16 @@ export class SidebarComponent implements OnInit {
         module.IsSelected = true;
       }
     })
+
+    // Ngoại lệ đối với Quản lý tài khoản
+    if(listBreadCrumbSplit[0] === 'Quản lý tài khoản'){
+      accountModule.IsExpanded = true;
+      accountModule.IsSelected = true;
+      const childAccountModule: DTOModule = accountModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
+      childAccountModule.IsSelected = true;
+    }
   }
+
 
   // Lấy danh sách các module và submodule
   getListModuleAndSub() {
@@ -45,6 +59,15 @@ export class SidebarComponent implements OnInit {
 
   // Sự kiện khi chọn vào item drawer
   onSelectItemDrawer(item: DTOModule): void {
+    // Ngoại lệ đối với Quản lý tài khoản
+    if(item.ModuleName !== 'Quản lý tài khoản'){
+      const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
+      accountModule.IsExpanded = false;
+      accountModule.IsSelected = false;
+      accountModule.SubModule.forEach(sub => sub.IsSelected = false);
+    }
+
+
     if (item.SubModule) {
       item.IsExpanded = !item.IsExpanded;
     }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileRestrictions, SelectEvent } from '@progress/kendo-angular-upload';
 import { UploadImageService } from '../../service/uploadImage.service';
 import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
@@ -13,10 +13,10 @@ type ImagePreview = {
   templateUrl: './import-image.component.html',
   styleUrls: ['./import-image.component.scss']
 })
-export class ImportImageComponent {
+export class ImportImageComponent implements OnInit {
   public events: string[] = [];
-  @Output() fileSelected: EventEmitter<string> = new EventEmitter<string>();
-  @Input() srcImage: string = '';
+  @Output() fileSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Input() srcImage: string;
   @Input() text: string = '';
   // @Input() width: number = 300;
   // @Input() minWidth: number = 100;
@@ -28,11 +28,17 @@ export class ImportImageComponent {
   @Input() rounded: number = 2;
   selectedFile: File | null = null;
 
-  imageHandle: DTOImageProduct;
+  imageHandle: DTOImageProduct = new DTOImageProduct();
 
   constructor(private uploadImageService: UploadImageService) { }
 
-  public fileRestrictions: FileRestrictions = {
+  ngOnInit(): void {
+    if(this.srcImage){
+      this.imageHandle.ImgUrl = this.srcImage;
+    }
+  }
+
+  fileRestrictions: FileRestrictions = {
     allowedExtensions: [".jpg", ".png"],
   };
 
@@ -55,6 +61,7 @@ export class ImportImageComponent {
             "ImgUrl": response.data.url,
             "IsThumbnail": true
           }
+          this.fileSelected.emit(this.imageHandle);
         },
         (error) => {
           console.error('Error uploading image:', error);
@@ -63,10 +70,13 @@ export class ImportImageComponent {
     }
   }
 
+  setImgURL(imgURL: string){
+    this.imageHandle.ImgUrl = imgURL;
+  }
 
   public delete() {
     this.selectedFile = null;
-    this.imageHandle = null;
+    this.imageHandle = new DTOImageProduct();
     this.fileSelected.emit('');
   }
 }

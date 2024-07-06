@@ -1,12 +1,17 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { AccountService } from '../../shared/service/account.service';
 import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { GridDataResult } from '@progress/kendo-angular-grid';
+import { GridDataResult, RowArgs, SelectionEvent } from '@progress/kendo-angular-grid';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
+import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
+import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
+import { DatepickerComponent } from '../../shared/component/datepicker/datepicker.component';
+import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
+import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
 
 interface Gender {
   Code: number
@@ -51,12 +56,14 @@ export class Admin001InformationCustomerComponent implements OnInit {
   ];
   listCustomer: GridDataResult;
   listPageSize: number[] = [2, 3, 4];
+  selectedCodeCustomer: number[];
 
   // variables object
   defaultGender: Gender = {
     Code: -1,
     Gender: '-- Giới tính --',
   }
+  imageNull: DTOImageProduct = new DTOImageProduct();
 
   // variable State
   gridState: State = {
@@ -83,6 +90,15 @@ export class Admin001InformationCustomerComponent implements OnInit {
   filterAllStatistics: CompositeFilterDescriptor = { logic: 'or', filters: [this.filterAllCustomer] };
   filterSearch: CompositeFilterDescriptor = { logic: 'or', filters: [] };
 
+  // variables ViewChild
+  @ViewChild('id') childId!: TextInputComponent;
+  @ViewChild('name') childName!: TextInputComponent;
+  @ViewChild('email') childEmail!: TextInputComponent;
+  @ViewChild('phonenumber') childPhoneNumber!: TextInputComponent;
+  @ViewChild('gender') childGender!: TextDropdownComponent;
+  @ViewChild('birthday') childBirthday!: DatepickerComponent;
+  @ViewChild('image') childImage!: ImportImageComponent;
+
   constructor(private accountService: AccountService, private notiService: NotiService) { }
 
   ngOnInit(): void {
@@ -90,6 +106,7 @@ export class Admin001InformationCustomerComponent implements OnInit {
     this.getStatistics();
   }
 
+  // Lấy danh sách khách hàng
   getListCustomer() {
     this.isLoading = true;
     this.accountService.getListCustomer(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
@@ -177,8 +194,12 @@ export class Admin001InformationCustomerComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="8"]')) {
+    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="7"]')) {
       this.codeCustomerSelected = null;
+    }
+    if (!(event.target as HTMLElement).closest('td.k-table-td') && !(event.target as HTMLElement).closest('.form') && !(event.target as HTMLElement).closest('component-button')) {
+      this.selectedCodeCustomer = [];
+      this.clearDetailCustomer(null);
     }
   }
 
@@ -194,6 +215,7 @@ export class Admin001InformationCustomerComponent implements OnInit {
   onPageChange(value: any) {
     this.gridState.skip = value.skip;
     this.gridState.take = value.take;
+    this.selectedCodeCustomer = [];
     this.getListCustomer();
   }
 
@@ -238,5 +260,48 @@ export class Admin001InformationCustomerComponent implements OnInit {
         this.gridState.filter.filters.push(comFilter);
       }
     }
+  }
+
+  // Sự kiện khi chọn vào hàng bất kỳ của grid
+  onSelectionChange(e: SelectionEvent): void {
+    this.selectedCodeCustomer = []
+    this.selectedCodeCustomer.push(e.selectedRows[0]?.dataItem.Code);
+
+    const selectedCustomer = e.selectedRows[0]?.dataItem; // Là object Customer sau khi chọn 1 row của grid
+    this.bindSelectedCustomerToForm(selectedCustomer);
+  }
+
+  // format ngày từ string sang string. Ví dụ: "2003-09-25" sang "25-09-2003"
+  formatDisplayDate(date: string) {
+    const dateSplit = date.split('-');
+    return `${dateSplit[2]}-${dateSplit[1]}-${dateSplit[0]}`
+  }
+
+  // Binding thông tin khách hàng được chọn lên form
+  bindSelectedCustomerToForm(customer: DTOCustomer) {
+    this.childId.valueTextBox = customer.IDCustomer;
+    this.childName.valueTextBox = customer.Name;
+    this.childEmail.valueTextBox = customer.Email;
+    this.childPhoneNumber.valueTextBox = customer.PhoneNumber;
+    this.childGender.value = { Code: customer.Gender, Gender: this.checkGender(customer.Gender) };
+    this.childBirthday.datePicker.writeValue(new Date(customer.Birth));
+    if (!customer.ImageURL) {
+      this.childImage.imageHandle = new DTOImageProduct();
+    }
+    else {
+      this.childImage.setImgURL(customer.ImageURL);
+    }
+  }
+
+  // Xóa toàn bộ thông tin trên form
+  clearDetailCustomer(res: any){
+    this.childId.valueTextBox = '';
+    this.childName.valueTextBox = '';
+    this.childEmail.valueTextBox = '';
+    this.childPhoneNumber.valueTextBox = '';
+    this.childGender.resetValue();
+    this.childBirthday.datePicker.writeValue(null);
+    this.selectedCodeCustomer = [];
+    this.childImage.imageHandle = new DTOImageProduct();
   }
 }

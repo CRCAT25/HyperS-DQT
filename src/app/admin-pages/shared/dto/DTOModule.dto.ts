@@ -48,15 +48,15 @@ export const listModule: DTOModule[] = [
         IsExpanded: false,
         BreadCrumb: 'Quản lý sản phẩm'
     },
-    {
-        RouteLink: '/admin/manage-module',
-        ModuleName: 'Quản lý danh mục',
-        ClassIconFontAwesome: 'fa-rectangle-list',
-        IsChild: false,
-        IsSelected: false,
-        IsExpanded: false,
-        BreadCrumb: 'Quản lý danh mục'
-    },
+    // {
+    //     RouteLink: '/admin/manage-module',
+    //     ModuleName: 'Quản lý danh mục',
+    //     ClassIconFontAwesome: 'fa-rectangle-list',
+    //     IsChild: false,
+    //     IsSelected: false,
+    //     IsExpanded: false,
+    //     BreadCrumb: 'Quản lý danh mục'
+    // },
     {
         RouteLink: '/admin/manage-dashboard',
         ModuleName: 'Dashboard',
@@ -69,7 +69,7 @@ export const listModule: DTOModule[] = [
     {
         RouteLink: '/admin/manage-coupon',
         ModuleName: 'Quản lý khuyến mãi',
-        ClassIconFontAwesome: 'fa-ticket',
+        ClassIconFontAwesome: 'fa-gift',
         IsChild: false,
         IsSelected: false,
         IsExpanded: false,
