@@ -13,11 +13,31 @@
         [checkboxes]="{ checkOnClick: false }" [autoClose]="false" (valueChange)="setFilterStatus($event)"
         [(ngModel)]="valueMulti">
 
+        <ng-template kendoMultiSelectHeaderTemplate let-dataItem>
+            <div [style.padding-left.px]="7" [style.margin-top.px]="5" [style.display]="'flex'" [style.height.px]="20">
+                <span [style.width.px]="170" [style.fontSize.px]="14" [style.fontWeight]="600">Trạng thái đơn</span>
+                <span [style.fontSize.px]="14" [style.fontWeight]="600">Đơn theo bộ lọc</span>
+                <div [style.width.px]="650" [style.display]="'flex'" [style.justify-content]="'flex-end'"
+                    [style.fontSize.px]="14" [style.fontWeight]="600"><span>Tất cả số lượng đơn</span></div>
+
+
+            </div>
+        </ng-template>
+
         <ng-template kendoMultiSelectItemTemplate let-dataItem>
             <div class="row-status" [style.display]="'flex'" [style.width]="'100%'">
-                <span [style.width.px]="150">{{ dataItem.Status}}</span>
+                <span [style.width.px]="187">{{ dataItem.Status}}</span>
                 <div class="countOfStatus" [ngStyle]="{ 'color': statusCounts[dataItem.Code] > 0 ? 'red' : 'inherit' }">
                     {{ statusCounts[dataItem.Code] || 0 }} đơn
+                </div>
+                <!-- <div class="countOfStatus" [style.width.px]="683" [style.display]="'flex'" [style.justify-content]="'flex-end'" [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code] > 0 ? 'red' : 'inherit' }">
+                    {{ statusCountsAllDate[dataItem.Code] || 0 }} đơn từ ngày {{statusCountsAllDate[dataItem.Code]}}
+                </div> -->
+                <div class="countOfStatus" [style.width.px]="683" [style.display]="'flex'"
+                    [style.justify-content]="'flex-end'"
+                    [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code]?.count > 0 ? 'red' : 'inherit' }">
+                    <span>{{ statusCountsAllDate[dataItem.Code]?.count || 0 }} đơn từ ngày 
+                        {{formattedCreateAtNoTime(statusCountsAllDate[dataItem.Code]?.earliestDate) || 'N/A' }}</span>
                 </div>
             </div>
         </ng-template>
@@ -130,14 +150,14 @@
 </div>
 
 <div *ngIf="isShowAlertStatus" class="popUp">
-    <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="'fa-arrow-rotate-left'" 
-        [text]="'Quay lại'" 
-        [value]="">
-    
-    <div class="content-popup">
-        <div class="contentQuestion">Có tổng cộng <span> {{countBillWaiting}} </span>đơn chờ xác nhận</div>
-        <div class="contentWarning">Kể từ ngày {{earliestDate}} đến ngày {{nowDate}}! Bạn có muốn quay lại?</div>
-    </div></component-popup-confirm>
+    <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="'fa-arrow-rotate-left'"
+        [text]="'Quay lại'" [value]="">
+
+        <div class="content-popup">
+            <div class="contentQuestion">Có tổng cộng <span> {{countBillWaiting}} </span>đơn chờ xác nhận</div>
+            <div class="contentWarning">Kể từ ngày {{earliestDate}} đến ngày {{nowDate}}! Bạn có muốn quay lại?</div>
+        </div>
+    </component-popup-confirm>
 </div>
 
 <ng-container *ngIf="isDetail">

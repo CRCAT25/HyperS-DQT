@@ -36,6 +36,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
   listBillPage: GridDataResult;
   listBillAllDate: GridDataResult;
+  listBillWaitingAllDate: GridDataResult;
   listBillNowDate: GridDataResult;
   pageSize: number = 4;
   listPageSize: number[] = [1, 2, 3, 4];
@@ -58,6 +59,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   itemBill: DTOBill;
   listBillNew: DTOBill[];
   statusCounts: { [key: number]: number } = {};
+  // statusCountsAllDate: { [key: number]: number } = {};
+  statusCountsAllDate: { [statusCode: string]: { count: number; earliestDate: string } } = {};
   listBillPageAllStatus: GridDataResult;
   reasonFail: string;
   isDetail: boolean = false;
@@ -131,6 +134,21 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
   }
 
+  gridStateAllDate: State = {
+    skip: 0,
+    sort: [
+      {
+        field: "Code",
+        dir: "asc"
+      }
+    ],
+    filter: {
+      logic: "and",
+      filters: [
+      ]
+    }
+  }
+
   gridStateWaitingAllDate: State = {
     skip: 0,
     sort: [
@@ -175,7 +193,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit(): void {
     this.getListBill();
-    this.getListBillAllDate();
+    this.getListBillWaitingAllDate();
     this.isShowAlertStatus = !this.isShowAlertStatus;
     this.getListBillNowDate();
     this.setFilterExpStatus();
@@ -344,7 +362,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.isDetail = false;
       this.getListBill();
       this.setFilterExpStatus();
-      this.getListBillAllDate();
+      this.getListBillWaitingAllDate();
     }
     if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonReturnDate'))) {
       this.childRangeDateStart.defaultDate = this.earliestDates;
@@ -375,15 +393,19 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   }
 
   //Lấy danh sách bill chờ xác nhận
-  getListBillAllDate(){
+  getListBillWaitingAllDate(){
     this.billService.getListBill(this.gridStateWaitingAllDate).pipe(takeUntil(this.destroy)).subscribe(list => {
-      this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-      // console.log(this.listBillAllDate.data.length);
-      this.countBillWaiting = this.listBillAllDate.data.length;
-      console.log(this.countBillWaiting);
+      this.listBillWaitingAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      // console.log(this.listBillWaitingAllDate.data.length);
+      this.countBillWaiting = this.listBillWaitingAllDate.data.length;
       this.findEarliestDate();
       this.isLoading = false;
 
+    })
+
+    this.billService.getListBill(this.gridStateAllDate).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      // console.log(this.listBillWaitingAllDate.data.length);
     })
   }
 
@@ -397,14 +419,14 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   //Tìm ngày xa nhất của status Chờ xác nhận
   findEarliestDate() {
-    if (!this.listBillAllDate.data || this.listBillAllDate.data.length === 0) {
+    if (!this.listBillWaitingAllDate.data || this.listBillWaitingAllDate.data.length === 0) {
       return null;
     }
   
-    const earliestDate = this.listBillAllDate.data.reduce((earliest, bill) => {
+    const earliestDate = this.listBillWaitingAllDate.data.reduce((earliest, bill) => {
       const createDate = new Date(bill.CreateAt);
       return createDate < earliest ? createDate : earliest;
-    }, new Date(this.listBillAllDate.data[0].CreateAt));
+    }, new Date(this.listBillWaitingAllDate.data[0].CreateAt));
     
     this.earliestDate = this.formattedCreateAtNoTime(earliestDate);
     this.earliestDates = earliestDate;
@@ -419,6 +441,38 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
       const status = bill.Status;
       acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    }, {});
+
+    // this.statusCountsAllDate = this.listBillAllDate.data.reduce((acc, bill) => {
+    //   const status = bill.Status;
+    //   const date = bill.Date;
+    
+    //   // Tăng số đếm cho trạng thái
+    //   acc.counts[status] = (acc.counts[status] || 0) + 1;
+    
+    //   // Cập nhật earliestDateStatus nếu ngày của hóa đơn là ngày sớm nhất
+    //   if (!acc.earliestDateStatus || new Date(date) < new Date(acc.earliestDateStatus.date)) {
+    //     acc.earliestDateStatus = { status, date };
+    //   }
+    
+    //   return acc;
+    // }, { counts: {}, earliestDateStatus: null });
+
+    this.statusCountsAllDate = this.listBillAllDate.data.reduce((acc, bill) => {
+      const status = bill.Status;
+      const date = bill.CreateAt;
+    
+      if (!acc[status]) {
+        acc[status] = { count: 0, earliestDate: date };
+      }
+    
+      acc[status].count += 1;
+    
+      if (new Date(date) < new Date(acc[status].earliestDate)) {
+        acc[status].earliestDate = date;
+      }
+    
       return acc;
     }, {});
     // this.animateValue(this.obj,this.statusCounts[2], 50000);
@@ -598,7 +652,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
         if (res.StatusCode === 0) {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")
-          this.getListBillAllDate();
+          this.getListBillWaitingAllDate();
           this.getListBill();
           this.setFilterExpStatus();
           this.isShowAlert = false;
