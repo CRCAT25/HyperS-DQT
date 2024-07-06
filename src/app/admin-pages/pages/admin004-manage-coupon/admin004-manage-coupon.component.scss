@@ -1,19 +1,103 @@
 @import './../../../../styles.scss';
 @import '../../shared/style/grid.scss';
 
-::ng-deep{
-    app-admin004-manage-coupon{
-        kendo-drawer-container{
-            .k-overlay{
+::ng-deep {
+    app-admin004-manage-coupon {
+        height: 100%;
+
+        kendo-drawer-container {
+            height: 100%;
+
+            .k-overlay {
                 pointer-events: none;
             }
 
-            .content-container{
-                img{
-                    width: 356px;
-                    height: 94px;
+            kendo-drawer-content {
+                height: 100%;
+
+                .content-container {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+
+                    .header-filter-status {
+                        gap: 10px;
+                        @include center-vertical;
+                        padding: 6px 0 10px 0;
+                        justify-content: space-between;
+                        overflow-x: auto;
+
+                        .block-filter-status {
+                            gap: 10px;
+                            @include center-vertical;
+
+                            .label-filter {
+                                font-weight: 600;
+                                text-transform: uppercase;
+                                font-size: 14px;
+                                width: 100px;
+                                text-wrap: nowrap;
+                            }
+                        }
+
+                        .button-add {
+                            .component-button:hover {
+                                color: #fff !important;
+                                background-color: #09880E !important;
+                            }
+                        }
+                    }
+
+                    .header-filter-stage {
+                        gap: 10px;
+                        @include center-vertical;
+                        padding: 6px 0 10px 0;
+                        overflow-x: auto;
+                        justify-content: space-between;
+
+                        .block-filter-stage,
+                        .block-filter-group {
+                            gap: 10px;
+                            @include center-vertical;
+
+                            .label-delete-filter {
+                                width: 100px;
+                                text-decoration: underline;
+                                color: rgb(255, 68, 68);
+                                text-wrap: nowrap;
+
+                                &:hover {
+                                    color: red;
+                                    cursor: pointer;
+                                }
+                            }
+                        }
+
+                        .block-filter-date {
+                            gap: 10px;
+                            @include center-vertical;
+
+                            .line {
+                                width: 10px;
+                                height: 2px;
+                                border-radius: 2px;
+                                background-color: rgb(87, 87, 87);
+                            }
+                        }
+                    }
+
+                    .label-list-coupon {
+                        padding: 6px 0 10px 0;
+                        height: 40px;
+                        font-weight: 600;
+                        @include center-vertical;
+                        font-size: 14px;
+                        text-transform: uppercase;
+                    }
                 }
             }
+
         }
     }
 }

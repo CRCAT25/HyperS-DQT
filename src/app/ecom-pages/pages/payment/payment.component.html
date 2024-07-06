@@ -17,20 +17,21 @@
                     <div class="title">Province</div>
                     <kendo-dropdownlist  
                         [loading]="isLoadingProvince"
-                        [data]="listProvince"
+                        [data]="dataProvineFilter"
                         textField="province_name"
                         valueField="province_name"
                         [filterable]="true"
                         [(ngModel)]="provinceSelected"
                         (valueChange)="handleChangeProvince()"
                         [defaultItem]="defaultValueProvince"
+                        (filterChange)="hanldeFilterProvine($event)"
                        ></kendo-dropdownlist>
                 </div> 
                 <div class="textbox">
                     <div class="title">District</div>
                     <kendo-dropdownlist  
                         [loading]="isLoadingDistrict"
-                        [data]="listDistrict"
+                        [data]="dataDistrictFilter"
                         textField="district_name"
                         valueField="district_name"
                         [filterable]="true"
@@ -38,13 +39,14 @@
                         [(ngModel)]="districtSelected"
                         [defaultItem]="defaulValueDistrict"
                         (valueChange)="handleChangeDistrict()"
+                        (filterChange)="hanldeFilterDistrict($event)"
                        ></kendo-dropdownlist>
                 </div> 
                 <div class="textbox">
                     <div class="title">Ward</div>
                     <kendo-dropdownlist  
                         [loading]="isLoadingWard"
-                        [data]="listWard"
+                        [data]="dataWardFilter"
                         textField="ward_name"
                         valueField="ward_name"
                         [filterable]="true"
@@ -52,6 +54,7 @@
                         [defaultItem]="defaultValueWard"
                         [(ngModel)]="wardSelected"
                         (valueChange)="handleChangeWard()"
+                        (filterChange)="hanldeFilterWard($event)"
                        ></kendo-dropdownlist>
                 </div> 
                 <div class="textbox">

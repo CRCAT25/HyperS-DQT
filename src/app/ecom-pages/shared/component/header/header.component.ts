@@ -79,9 +79,9 @@ export class HeaderComponent implements OnInit {
   }
 
   navigateProfile(){
-    const token = localStorage.getItem('token')
-    if(token){
-
+    const codeCustomer = localStorage.getItem('codeCustomer')
+    if(codeCustomer){
+      this.navigate('/ecom/profile')
     }else{
       this.navigate('/account/login')
     }

@@ -214,7 +214,8 @@ export class EcomCartComponent implements OnInit{
       else if(type == "Delete"){
         this.handleDeleteItem(item.Product.Code, item.SizeSelected.Code)
       }
-      else if(type == "Minus"){
+      else if(type == "Update"){
+        console.log('hear');
         this.handleMinusQuantityProduct(item.Product.Code, item.SizeSelected.Code);
       }
     }

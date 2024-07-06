@@ -10,7 +10,7 @@ export class JwtInterceptor implements HttpInterceptor{
         if(token && req.url !== 'https://api.imgbb.com/1/upload'){
             req = req.clone({
                 setHeaders: {
-                    Authorizaiton: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`
                 }
             })
         }

@@ -13,6 +13,8 @@ import { DTOProductInCart } from '../../shared/dto/DTOProductInCart';
 import { Router } from '@angular/router';
 import { DTOProcessToPayment } from '../../shared/dto/DTOProcessToPayment';
 import { DTOGuessCartProduct } from '../../shared/dto/DTOGuessCartProduct';
+import { UserService } from '../../shared/service/user.service';
+import { CartService } from '../../shared/service/cart.service';
 
 @Component({
   selector: 'app-payment',
@@ -65,14 +67,22 @@ export class PaymentComponent implements OnInit, OnDestroy {
   defaultValueWard: DTOWard = {district_id: "", ward_id: "", ward_name:"-- Select --", ward_type: ""}
   defaulValueDistrict : DTODistrict ={district_id: "", district_name: "-- Select --", district_type: "", province_id: "", lat: "", lng: ""  }
 
+  dataProvineFilter: DTOProvince[]
+  dataDistrictFilter: DTODistrict[]
+  dataWardFilter: DTOWard[]
+
+
   priceSubTotal: number = 0
   priceDelivery: number = 0
   priceCoupon: number = 0
   totalPrice: number = 0
 
+  codeCustomer: number = 0
 
-  constructor(private router: Router,private paymentService: PaymentService, private notiService: NotiService){
+  constructor(private cartService: CartService,private userService: UserService ,private router: Router,private paymentService: PaymentService, private notiService: NotiService){
     this.APIGetProvince();
+    this.codeCustomer = userService.codeCustomer
+
   }
 
   ngOnInit(): void {
@@ -101,6 +111,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
         if(data){
           
           this.listProvince = data.results
+          this.dataProvineFilter = this.listProvince
         }else{
           this.notiService.Show("Error when fetching data", "error")
         }
@@ -119,6 +130,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
       try{
         if(data){
           this.listDistrict = data.results
+          this.dataDistrictFilter = this.listDistrict
         }else{
           this.notiService.Show("Error when fetching data", "error")
         }
@@ -137,6 +149,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
       try{
         if(data){
           this.listWard = data.results
+          this.dataWardFilter = this.listWard
         }else{
           this.notiService.Show("Error when fetching data", "error")
         }
@@ -150,7 +163,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   APIPayment(info: DTOProcessToPayment):void{
-    console.log(this.processToPayment.ListProduct);
     this.paymentService.payment(info).pipe(takeUntil(this.destroy)).subscribe(data => {
       try{
         if(data.StatusCode == 0 && data.ErrorString == ""){
@@ -159,6 +171,12 @@ export class PaymentComponent implements OnInit, OnDestroy {
               this.notiService.Show(element, "error")
             }); 
           return
+          }
+          if(this.codeCustomer == 0){
+            console.log('here');
+            this.listProductPayment.forEach(element => {
+              this.handleDeleteItemCart(element.Product.Code, element.SizeSelected.Code)
+            });
           }
           this.notiService.Show("Payment Successfully", "success")
         }else{
@@ -250,6 +268,25 @@ export class PaymentComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleDeleteItemCart(code: number, size: number){
+    const productCart = localStorage.getItem('cacheCart')
+    const listData = JSON.parse(productCart) as DTOGuessCartProduct[]
+    const index = listData.findIndex(element => element.Code === code && element.SelectedSize === size);
+    if(index != -1){
+      try{
+        listData.splice(index, 1);
+        localStorage.setItem('cacheCart', JSON.stringify(listData))
+        this.cartService.emitCartUpdated()
+      }catch{
+        this.notiService.Show("Xóa sản phẩm không thành công", "error")
+      }
+    }
+    else{
+      this.notiService.Show("Xóa sản phẩm không thành công", "error")
+    }
+    this.cartService.setTotalItemProduct(this.codeCustomer)
+  }
+
   handlePayment():void{
     if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
       this.notiService.Show("Payment error", "error")
@@ -268,6 +305,19 @@ export class PaymentComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy.next()
     this.destroy.complete()
+  }
+
+  hanldeFilterProvine(value: any){
+    this.dataProvineFilter = this.listProvince.filter((s) => s.province_name.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) != -1)
+  }
+
+  
+  hanldeFilterDistrict(value: any){
+    this.dataDistrictFilter = this.listDistrict.filter((s) => s.district_name.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) != -1)
+  }
+
+  hanldeFilterWard(value: any){
+    this.dataWardFilter = this.listWard.filter((s) => s.ward_name.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) != -1)
   }
 
   log(){
