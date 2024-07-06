@@ -11,6 +11,7 @@ import { PaymentService } from 'src/app/ecom-pages/shared/service/payment.servic
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { DTODistrict, DTOProvince, DTOWard } from 'src/app/ecom-pages/shared/dto/DTOProvince';
+import { DTOUpdateBill } from '../../shared/dto/DTOUpdateBill.dto';
 
 
 interface PaymentMethod {
@@ -68,6 +69,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   districtSelected: DTODistrict
   wardSelected: DTOWard
 
+  provinceBiding: string;
+  districtBiding: string;
+  wardBiding: string;
+  isDisabled: boolean = true;
+
 
   ngOnInit(): void {
     this.getListBillInfo();
@@ -94,8 +100,13 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   }
 
   getSpecialAddress(address: string): string {
+    this.wardBiding = address.split(',')[1];
+    this.districtBiding = address.split(',')[2];
+    this.provinceBiding = address.split(',')[3];
     return address.split(',')[0];
   }
+
+
 
   formatCurrency(value: number): string {
     if (typeof value === 'number' && !isNaN(value)) {
@@ -256,6 +267,60 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
   }
 
+  setDTOAddress(type: number){
+    if(type == 1){
+      if(this.wardSelected){
+        return {
+          ward_name: this.wardSelected.ward_name
+        }
+      } else{
+        return {
+          ward_name: this.wardBiding
+        }
+      }
+    } else if(type == 2){
+      if(this.districtSelected){
+        return {
+          district_name: this.districtSelected.district_name
+        }
+      } else{
+        return {
+          district_name: this.districtBiding
+        }
+      }
+    } else if(type == 3){
+      if(this.provinceSelected){
+        // this.districtSelected = {
+        //   district_name: "",
+        // };
+        return {
+          province_name: this.provinceSelected.province_name
+        }
+      } else{
+        return {
+          province_name: this.provinceBiding
+        }
+      }
+      
+    }
+    return {}
+  }
+
+  setDTOPaymentMethod(){
+    if(this.itemBill.PaymentMethod == 0){
+      return {
+        Code: 0,
+        Method: "Ship COD"
+      } 
+    } else if(this.itemBill.PaymentMethod == 1){
+      return {
+        Code: 1,
+        Method: "Momo"
+      } 
+    }
+    return {};
+  }
+
   ClickButtonAction(id: number, event: Event, idStatus: number) {
     const status = this.listStatus.find(status => status.Code === idStatus);
     this.listNextStatus = status ? status.ListNextStatus : null;
@@ -294,9 +359,14 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
     if (this.isEdit == false && ((event.target as HTMLElement).closest('.button-edit'))) {
       this.isEdit = !this.isEdit;
+      this.isDisabled = false;
     }
     if (this.isEdit == true && (((event.target as HTMLElement).closest('.button-update'))) || ((event.target as HTMLElement).closest('.button-restore'))) {
       this.isEdit = false;
+      this.isDisabled = !this.isDisabled;
+      this.isDisableDistrict = !this.isDisableDistrict;
+      this.isDisableWard = !this.isDisableWard;
+      this.isDisableSpecific = !this.isDisableSpecific;
     }
   }
 
@@ -306,23 +376,26 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   }
 
   // Update status bill
-  updateStatusBillInfo(obj: any) {
+  updateStatusBillInfo(obj: any) {    
     if (obj.value >= 2) {
       this.itemBill.Status = obj.value;
-      const request: DTOUpdateBillRequest = {
+      const requestUpdateBill: DTOUpdateBill = {
         CodeBill: this.itemBill.Code,
         Status: obj.value,
         ListOfBillInfo: this.itemBill.ListBillInfo,
         Note: this.reasonFail,
       }
-      // const status = this.listStatus.find(status => status.Code === idStatus);
-      // this.listNextStatus = status ? status.ListNextStatus : null;
-      request.ListOfBillInfo.forEach(billInfo =>{
+
+      requestUpdateBill.ListOfBillInfo.forEach(billInfo =>{
         if(billInfo.Code == this.itemBillInfo.Code){
           billInfo.Status = obj.value;
         }
       })
-      // const codeBillInfo = request.ListOfBillInfo.find(billInf => billInf.Code === this.itemBillInfo.Code);
+
+      const request: DTOUpdateBillRequest = {
+            DTOUpdateBill: requestUpdateBill,
+            DTOProceedToPayment: null
+          }
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
         if (res.StatusCode === 0) {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")

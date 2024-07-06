@@ -36,6 +36,7 @@ export class TextInputComponent implements OnInit {
   @Input() value: any;
   @Output() getValue = new EventEmitter();
   valueTextBox: string = '';
+  @Input() disabled: boolean = false;
 
   ngOnInit(): void {
     if(this.value || this.value === 0){

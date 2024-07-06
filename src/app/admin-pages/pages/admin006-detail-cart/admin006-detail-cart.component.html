@@ -24,50 +24,54 @@
                 <component-form [text]="'THÔNG TIN HÓA ĐƠN'">
                     <div class="content-form">
                         <div class="column column1">
-                            <component-text-input [label]="'Tên khách hàng'" [widthBlock]="430" [value]="itemBill.CustomerName"></component-text-input>
-                            <component-text-input [label]="'Số điện thoại'" [widthBlock]="430" [value]="itemBill.PhoneNumber"></component-text-input>
+                            <component-text-input [label]="'Tên khách hàng'" [widthBlock]="430" [value]="itemBill.CustomerName" [disabled]="isDisabled"></component-text-input>
+                            <component-text-input [label]="'Số điện thoại'" [widthBlock]="430" [value]="itemBill.PhoneNumber" [disabled]="isDisabled"></component-text-input>
                             <component-text-dropdown [label]="'Phương thức'" [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" 
-                            [listItem]="PaymentMethodDropDown" textField="Method" valueField="Code">
-                            <!-- [value]="formatPaymentMethod(itemBill.PaymentMethod)" -->
+                            [listItem]="PaymentMethodDropDown" textField="Method" valueField="Code" [value]="setDTOPaymentMethod()" [disabled]="isDisabled">
                             </component-text-dropdown>
-                            <component-text-area [label]="'Ghi chú'" [widthBox]="430" [height]="40" [width]="300" [value]="itemBill.Note"></component-text-area>
+                            <component-text-area [label]="'Ghi chú'" [widthBox]="430" [height]="40" [width]="300" [fontsize]="13" [placeholder]="itemBill.Note" [disabled]="isDisabled"></component-text-area>
                         </div>
 
                         <div class="column column2">
                             <component-text-dropdown
                             [label]="'Tỉnh, thành phố'"
+                            [isLoading]="isLoadingProvince"
                             [widthBlock]="430"
                             [widthTextBox]="300"
                             [heightTextBox]="30"
                             [listItem]="listProvince"
                             textField="province_name"
                             valueField="province_name"
-                            [(ngModel)]="provinceSelected"
                             [hasEmitValueChange]="1"
+                            [value]="setDTOAddress(3)"
                             (valueChange)="handleChangeProvince($event)"
+                            [disabled]="isDisabled"
                             ></component-text-dropdown>
                             <component-text-dropdown [label]="'Quận, huyện'" 
+                            [isLoading]="isLoadingDistrict"
                             [widthBlock]="430"
                             [widthTextBox]="300"
                             [heightTextBox]="30"
                             [listItem]="listDistrict"
                             textField="district_name"
                             valueField="district_name"
-                            [(ngModel)]="districtSelected"
-                            [disabled]="isDisableDistrict"
                             [hasEmitValueChange]="1"
-                            (valueChange)="handleChangeDistrict($event)"></component-text-dropdown>
+                            [value]="setDTOAddress(2)"
+                            (valueChange)="handleChangeDistrict($event)"
+                            [disabled]="isDisableDistrict"></component-text-dropdown>
                             <component-text-dropdown [label]="'Xã, thị trấn'"
+                            [isLoading]="isLoadingWard"
                             [widthBlock]="430"
                             [widthTextBox]="300"
                             [heightTextBox]="30"
                             [listItem]="listWard"
                             textField="ward_name"
                             valueField="ward_name"
-                            [(ngModel)]="wardSelected"
-                            [disabled]="isDisableWard"
                             [hasEmitValueChange]="1"
-                            (valueChange)="handleChangeWard($event)"></component-text-dropdown>                            <component-text-input [label]="'Địa chỉ cụ thể'" [widthBlock]="430" [value]="specialAddress"></component-text-input>
+                            [value]="setDTOAddress(1)"
+                            (valueChange)="handleChangeWard($event)"
+                            [disabled]="isDisableWard"></component-text-dropdown>                            
+                            <component-text-input [label]="'Địa chỉ cụ thể'" [widthBlock]="430" [value]="specialAddress" [disabled]="isDisableWard"></component-text-input>
                         </div>
 
                     </div>

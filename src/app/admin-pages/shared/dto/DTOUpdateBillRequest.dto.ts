@@ -1,8 +1,8 @@
-import { DTOBillInfo } from "./DTOBillInfo.dto";
+import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToPayment';
+import { DTOUpdateBill } from './DTOUpdateBill.dto';
 
 export class DTOUpdateBillRequest {
-    CodeBill: number = 0;
-    Status: number;
-    ListOfBillInfo: DTOBillInfo[];
-    Note: string;
+    DTOUpdateBill: DTOUpdateBill;
+    DTOProceedToPayment: DTOProcessToPayment;
+
 }
