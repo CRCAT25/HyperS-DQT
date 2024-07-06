@@ -6,9 +6,9 @@
     <div class="countWaitingCheck" (click)="showAlertAllDate()">
         <!-- <div class="numberCount">{{statusCounts[2] !== undefined ? statusCounts[2] : 0}}</div> -->
         <div class="numberCount">{{countBillWaiting}}</div>
-        <div class="labelWaitingCheck">Đơn chờ xác nhận</div>
+        <div class="labelWaitingCheck" >Đơn chờ xác nhận</div>
     </div>
-    <div class="label-filter">Lọc trạng thái</div>
+    <div class="label-filter" (click)="log()">Lọc trạng thái</div>
     <kendo-multiselect #multielect [data]="listFilterStatus" textField="Status" valueField="Code"
         [checkboxes]="{ checkOnClick: false }" [autoClose]="false" (valueChange)="setFilterStatus($event)"
         [(ngModel)]="valueMulti">

@@ -19,7 +19,8 @@
             [placeholder]="placeholder"
             [(value)]="valueTextBox"
             (blur)="sendValueTextBox()"
-            (keydown)="onKeyDown($event)">
+            (keydown)="onKeyDown($event)"
+            [disabled]="disabled">
         </kendo-textbox>
     </kendo-label>
 </div>

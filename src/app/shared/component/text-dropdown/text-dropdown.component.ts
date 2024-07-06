@@ -23,6 +23,8 @@ export class TextDropdownComponent implements OnInit {
   @Input() valueField: string;
   @Input() size: number = 13;
   @Input() value: any;
+  @Input() disabled: boolean = false;
+  @Input() isLoading: boolean = false;
   @Output() getValue = new EventEmitter();
   @Output() valueChange = new EventEmitter(); // Thêm sự kiện valueChange
   @Input() hasEmitValueChange: number = 0; // Truyền Output valueChange nếu có input hasEmitValueChange != 0

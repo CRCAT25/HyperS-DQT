@@ -22,6 +22,8 @@ export class TextAreaComponent {
   @Input() fontsize: number = 15;
   @Input() widthBox: number = 300;
   @Input() value: any = '';
+  @Input() disabled: boolean = false;
+  @Input() textContent: string = '';
   @Output() valueTextArea = new EventEmitter();
 
   // blur ra rồi emit
