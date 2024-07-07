@@ -6,12 +6,14 @@ import { DTOCoupon, listActionChangeStatusCoupon } from '../../shared/dto/DTOCou
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CouponService } from '../../shared/service/coupon.service';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { CheckboxlistComponent } from '../../shared/component/checkboxlist/checkboxlist.component';
 import { DatepickerComponent } from '../../shared/component/datepicker/datepicker.component';
 import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
 import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
+import { DTOUpdateCouponRequest } from '../../shared/dto/DTOUpdateCouponRequest.dto';
+import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 
 interface GroupCustomer {
   Code: number
@@ -51,6 +53,8 @@ export class Admin004ManageCouponComponent implements OnInit {
   pageSize: number = 2;
   // Loading của grid
   isLoading: boolean = true;
+  // Code của coupon được chọn
+  selectedCouponCode: number = 0;
 
 
   // Danh sách đầy đủ các trạng thái của coupon
@@ -106,7 +110,6 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Đối tượng áp dụng mặc định
   defaultGroupCustomerApply: GroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
   // Coupon được chọn
-  selectedCoupon: DTOCoupon = new DTOCoupon;
 
 
   // ViewChild
@@ -250,7 +253,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Kiểm tra giá trị giảm giá
   checkValueDiscount(coupon: DTOCoupon) {
     if (coupon.CouponType === 0) return 'Giảm phần trăm: ' + coupon.PercentDiscount + '%';
-    if (coupon.CouponType === 1) return 'Giảm trực tiếp: ' + coupon.DirectDiscount + 'đ';
+    if (coupon.CouponType === 1) return 'Giảm trực tiếp: ' + this.formatCurrency(coupon.DirectDiscount);
     return 'Lỗi giá trị giảm giá';
   }
 
@@ -297,11 +300,11 @@ export class Admin004ManageCouponComponent implements OnInit {
 
   // Sự kiện click vào button ... tool box
   onClickToolBox(coupon: DTOCoupon, event: Event) {
-    if (this.selectedCoupon.Code === coupon.Code) {
-      this.selectedCoupon = new DTOCoupon;
+    if (this.selectedCouponCode === coupon.Code) {
+      this.selectedCouponCode = 0;
     }
     else {
-      this.selectedCoupon = coupon;
+      this.selectedCouponCode = coupon.Code;
     }
 
     // Remove 'active' class from all cells
@@ -318,7 +321,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
     if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="9"]')) {
-      this.selectedCoupon = new DTOCoupon;
+      this.selectedCouponCode = 0;
     }
   }
 
@@ -397,5 +400,40 @@ export class Admin004ManageCouponComponent implements OnInit {
       this.gridState.take = this.pageSize;
     
     this.getListCoupon();
+  }
+
+  // Format tiền tệ
+  formatCurrency(value: number): string {
+    if (typeof value === 'number' && !isNaN(value)) {
+      return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    } else {
+      return 'Invalid value';
+    }
+  }
+
+  // Cập nhật trạng thái cho khuyến mãi
+  updateStatusCoupon(coupon: DTOCoupon, newStatus: any){
+    if(newStatus.value === 0 || newStatus.value === 1){
+      // this.selectedCoupon = coupon;
+      // console.log(this.selectedCoupon);
+      return;
+    }
+    if(newStatus.value === 2) coupon.Status = 1;
+    if(newStatus.value === 3) coupon.Status = 2;
+    if(newStatus.value === 4) coupon.Status = 3;
+    
+    const req: DTOUpdateCouponRequest = {
+      Coupon: coupon,
+      Properties: ['Status']
+    }
+    console.log(req);
+    this.couponService.updateCoupon(req).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if(res.StatusCode === 0){
+        this.notiService.Show('Cập nhật trạng thái thành công', 'success');
+        this.getListCoupon();
+      }
+    }, (error => {
+      this.notiService.Show(`Cập nhật trạng thái bị lỗi ${error}`, 'error');
+    }))
   }
 }
