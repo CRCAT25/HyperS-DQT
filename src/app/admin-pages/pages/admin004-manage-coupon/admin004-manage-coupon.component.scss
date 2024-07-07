@@ -20,6 +20,7 @@
                     display: flex;
                     flex-direction: column;
                     gap: 6px;
+                    position: relative;
 
                     .header-filter-status {
                         gap: 10px;
@@ -94,6 +95,111 @@
                         @include center-vertical;
                         font-size: 14px;
                         text-transform: uppercase;
+                    }
+
+                    .grid-custom-container {
+                        height: calc(100vh - 52px - 56px - 40px - 90px);
+
+                        .k-grid-header {
+                            padding: 0px 10px 0px 0px !important;
+                        }
+
+                        th.k-table-th[aria-colindex="6"] {
+                            .k-column-title {
+                                margin: auto;
+                            }
+                        }
+
+                        th.k-table-th[aria-colindex="8"] {
+                            .k-link {
+                                display: flex;
+                                justify-content: end;
+                            }
+                        }
+
+                        td.k-table-td[aria-colindex="9"] {
+                            background-color: #fff;
+                            box-shadow: $box-shadow2;
+                            height: 44px;
+                            @include center-horizontal;
+                            overflow: visible;
+                            z-index: 0;
+                            border-left: 1px solid #2e2e2e !important;
+
+                            .button-tool-box {
+                                margin: auto;
+                                box-shadow: $box-shadow3;
+                            }
+
+                            .component-button:hover {
+                                background: #464646 !important;
+                                color: #fff !important;
+                            }
+                        }
+
+                        .column-1,
+                        .column-2,
+                        .column-3,
+                        .column-4,
+                        .column-5,
+                        .column-6,
+                        .column-7,
+                        .column-8 {
+                            color: #000;
+                        }
+
+
+                        .column-2 {
+                            font-weight: 600;
+                        }
+
+                        .column-3 {
+                            .value-discount {
+                                color: $color-cancel;
+                                font-style: italic;
+                            }
+                        }
+
+                        .column-6 {
+                            text-align: center;
+                        }
+
+                        .column-7 {
+                            .remaining-quantity {
+                                color: $color-cancel;
+                            }
+                        }
+
+                        .column-8 {
+                            text-align: right;
+                            text-wrap: nowrap;
+                            text-overflow: ellipsis;
+                            color: #000;
+                        }
+
+                        .tool-box-container {
+                            position: relative;
+                            @include center;
+                            margin: auto;
+
+                            .list-action {
+                                position: absolute;
+                                left: -169px;
+                                top: 0;
+
+                                component-dropdown-action {
+                                    width: 169px;
+
+                                    component-button {
+                                        width: 169px;
+                                    }
+                                }
+                            }
+                        }
+
+                        td.active {
+                            z-index: 100 !important;
+                        }
                     }
                 }
             }

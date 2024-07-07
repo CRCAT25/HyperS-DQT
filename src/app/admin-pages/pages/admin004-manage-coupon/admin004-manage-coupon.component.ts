@@ -1,7 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { DTOStatus, listStageCoupon, listStatusCoupon } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
+import { DTOCoupon, listActionChangeStatusCoupon, listCoupon } from '../../shared/dto/DTOCoupon.dto';
+import { GridDataResult } from '@progress/kendo-angular-grid';
 
 interface GroupCustomer {
   Code: number
@@ -12,7 +14,7 @@ interface GroupCustomer {
   templateUrl: './admin004-manage-coupon.component.html',
   styleUrls: ['./admin004-manage-coupon.component.scss']
 })
-export class Admin004ManageCouponComponent {
+export class Admin004ManageCouponComponent implements OnInit {
   // Chế độ hiển thị của drawer
   expandMode: DrawerMode = 'overlay';
   // Drawer đang được mở hay không
@@ -35,12 +37,18 @@ export class Admin004ManageCouponComponent {
   endDate: Date = this.maxDate;
   // Số item mỗi trang
   pageSize: number = 2;
+  // Loading của grid
+  isLoading: boolean = true;
 
 
   // Danh sách đầy đủ các trạng thái của coupon
   listStatusCoupon: DTOStatus[] = listStatusCoupon;
   // Danh sách đầy đủ các giai đoạn của coupon
   listStageCoupon: DTOStatus[] = listStageCoupon.filter(stage => stage.Code !== 0);
+  // Danh sách các coupon
+  listCoupon: GridDataResult;
+  // Danh sách các pageSize
+  listPageSize: number[] = [2, 3, 4];
   // Danh sách đầy đủ các đối tượng khách hàng
   listGroupCustomerApply: GroupCustomer[] = [
     {
@@ -85,7 +93,19 @@ export class Admin004ManageCouponComponent {
 
   // Đối tượng áp dụng mặc định
   defaultGroupCustomerApply: GroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
+  // Coupon được chọn
+  selectedCoupon: DTOCoupon = new DTOCoupon;
 
+  ngOnInit(): void {
+    this.getListCoupon();
+  }
+
+  // Lấy danh sách coupon
+  getListCoupon() {
+    this.isLoading = true;
+    this.listCoupon = { data: listCoupon, total: listCoupon.length };
+    this.isLoading = false;
+  }
 
   // Lấy giá trị từ datepicker
   getDateFromDatePicker(value: any, type: string) {
@@ -109,7 +129,7 @@ export class Admin004ManageCouponComponent {
   }
 
   // Set filter search
-  setFilterSearch(res: any){
+  setFilterSearch(res: any) {
     this.filterSearch = { field: 'IdCoupon', operator: 'contains', value: res, ignoreCase: true };
     this.setFilterData();
   }
@@ -118,7 +138,7 @@ export class Admin004ManageCouponComponent {
   transformToDateString(dateTime: Date, type: string): string {
     // Step 1: Create a Date object
     const date = new Date(dateTime);
-  
+
     // Step 2: Extract the date components
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-based
@@ -129,13 +149,13 @@ export class Admin004ManageCouponComponent {
     const hoursEnd = '23';
     const minutesEnd = '59';
     const secondsEnd = '59';
-  
+
     // Step 3: Construct the desired format
     const formattedDateStart = `${year}-${month}-${day}T${hoursStart}:${minutesStart}:${secondsStart}`;
     const formattedDateEnd = `${year}-${month}-${day}T${hoursEnd}:${minutesEnd}:${secondsEnd}`;
-    
-    if(type === 'start') return formattedDateStart;
-    if(type === 'end') return formattedDateEnd;
+
+    if (type === 'start') return formattedDateStart;
+    if (type === 'end') return formattedDateEnd;
     return '';
   }
 
@@ -193,5 +213,86 @@ export class Admin004ManageCouponComponent {
     this.filterGroupCustomer.value = group.Code;
 
     this.setFilterData();
+  }
+
+  // Kiểm tra loại khuyến mãi
+  checkCouponType(type: number) {
+    if (type === 0) return 'Theo phần trăm';
+    if (type === 1) return 'Giảm giá trực tiếp';
+    return 'Lỗi loại khuyến mãi';
+  }
+
+  // Kiểm tra giá trị giảm giá
+  checkValueDiscount(coupon: DTOCoupon) {
+    if (coupon.CouponType === 0) return 'Giảm phần trăm: ' + coupon.PercentDiscout + '%';
+    if (coupon.CouponType === 1) return 'Giảm trực tiếp: ' + coupon.DirectDiscout + 'đ';
+    return 'Lỗi giá trị giảm giá';
+  }
+
+  // Kiểm tra khách hàng áp dụng
+  checkApplyToCustomer(coupon: DTOCoupon) {
+    if (coupon.ApplyTo === 0) return 'Tất cả';
+    if (coupon.ApplyTo === 1) return 'Có tài khoản';
+    return 'Lỗi khách hàng áp dụng'
+  }
+
+  // Kiểm tra trạng thái
+  checkStatus(coupon: DTOCoupon) {
+    if (coupon.Status === 0) return 'Đang tạo khuyến mãi';
+    if (coupon.Status === 1) return 'Đợi duyệt';
+    if (coupon.Status === 2) return 'Duyệt áp dụng';
+    if (coupon.Status === 3) return 'Ngưng áp dụng';
+    return 'Lỗi trạng thái';
+  }
+
+  // Kiểm tra giai đoạn
+  checkStage(coupon: DTOCoupon) {
+    if (coupon.Stage === 0) return 'Chưa có hiệu lực';
+    if (coupon.Stage === 1) return 'Đang có hiệu lực';
+    if (coupon.Stage === 2) return 'Hết hiệu lực';
+    return 'Lỗi giai đoạn';
+  }
+
+  // Thao tác paging
+  onPageChange(value: any) {
+    this.gridState.skip = value.skip;
+    this.gridState.take = value.take;
+    this.getListCoupon();
+  }
+
+  // Sự kiện click vào button ... tool box
+  onClickToolBox(coupon: DTOCoupon, event: Event) {
+    if (this.selectedCoupon.Code === coupon.Code) {
+      this.selectedCoupon = new DTOCoupon;
+    }
+    else {
+      this.selectedCoupon = coupon;
+    }
+
+    // Remove 'active' class from all cells
+    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="9"]');
+    cells.forEach(cell => cell.classList.remove('active'));
+
+    // Add 'active' class to the clicked cell
+    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="9"]');
+    if (cell) {
+      cell.classList.add('active');
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="9"]')) {
+      this.selectedCoupon = new DTOCoupon;
+    }
+  }
+
+  // Lấy danh sách các action có thể để chuyển trạng thái
+  getListChangeStatus(status: number): DTOStatus[]{
+    if(status === 0) return listActionChangeStatusCoupon.filter(item => item.Code === 0 || item.Code === 2);
+    if(status === 1) return listActionChangeStatusCoupon.filter(item => item.Code === 1 || item.Code === 3);
+    if(status === 2) return listActionChangeStatusCoupon.filter(item => item.Code === 1 || item.Code === 4);
+    if(status === 3) return listActionChangeStatusCoupon.filter(item => item.Code === 1);
+    return listActionChangeStatusCoupon.filter(item => item.Code === 1);
   }
 }
