@@ -27,15 +27,15 @@ export class PaymentComponent implements OnInit, OnDestroy {
   listDistrict: DTODistrict[]
   listWard: DTOWard[]
   listProductPayment: DTOProductInCart[]
-  processToPayment: DTOProcessToPayment ={
-    CustomerName: "",
-    PhoneNumber: "",
-    ListProduct: [],
-    ShippingAddress: "",
-    PaymentMethod: -1,
-    TotalBill: 0,
-    IsGuess: true
-  }
+  // processToPayment: DTOProcessToPayment ={
+  //   CustomerName: "",
+  //   PhoneNumber: "",
+  //   ListProduct: [],
+  //   ShippingAddress: "",
+  //   PaymentMethod: -1,
+  //   TotalBill: 0,
+  //   IsGuess: true
+  // }
 
   provinceSelected: DTOProvince
   districtSelected: DTODistrict
@@ -288,18 +288,18 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   handlePayment():void{
-    if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
-      this.notiService.Show("Payment error", "error")
-      return
-    }
-    this.processToPayment.CustomerName = this.name
-    this.processToPayment.PhoneNumber = this.numberPhone
-    this.processToPayment.ShippingAddress = this.provinceSelected.province_name + ", " + this.districtSelected.district_name + ", " +  this.wardSelected.ward_name + ", " +  this.specific
-    this.processToPayment.ListProduct = this.listProductPayment
-    this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
-    this.processToPayment.TotalBill = this.totalPrice
+    // if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
+    //   this.notiService.Show("Payment error", "error")
+    //   return
+    // }
+    // this.processToPayment.CustomerName = this.name
+    // this.processToPayment.PhoneNumber = this.numberPhone
+    // this.processToPayment.ShippingAddress = this.provinceSelected.province_name + ", " + this.districtSelected.district_name + ", " +  this.wardSelected.ward_name + ", " +  this.specific
+    // this.processToPayment.ListProduct = this.listProductPayment
+    // this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
+    // this.processToPayment.TotalBill = this.totalPrice
 
-    this.APIPayment(this.processToPayment)
+    // this.APIPayment(this.processToPayment)
   }
 
   ngOnDestroy(): void {

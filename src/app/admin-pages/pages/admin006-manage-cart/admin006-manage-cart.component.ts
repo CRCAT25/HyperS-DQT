@@ -55,6 +55,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   ];
   listNextStatus: DTOStatus[];
   isShowAlert: boolean = false;
+  isAdd: boolean = false;
   iconPopUp: string;
   objItemStatus: any;
   itemBill: DTOBill;
@@ -194,10 +195,11 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit(): void {
     this.getListBill();
-    
-    this.isShowAlertStatus = !this.isShowAlertStatus;
-    this.getListBillNowDate();
     this.setFilterExpStatus();
+    this.getListBillNowDate();
+    this.getListBillWaitingAllDate();
+    this.isShowAlertStatus = !this.isShowAlertStatus;
+
   }
 
   log(){
@@ -356,24 +358,28 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     if (this.tempID !== null && !(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="10"]')) {
       this.isClickButton[this.tempID] = false;
     }
-    // if (this.isShowAlert == true && (!(event.target as HTMLElement).closest('component-dropdown-action') && !(event.target as HTMLElement).closest('.PopUp'))) {
-    //   this.isShowAlert = false;
-    // }
     if ((this.isShowAlert == true || this.isShowAlertStatus == true) && ((event.target as HTMLElement).closest('.buttonNoChange'))) {
+      this.getListBillWaitingAllDate();
+      this.setFilterExpStatus();
       this.isShowAlert = false;
       this.isShowAlertStatus = false;
     }
-    if (this.isDetail == true && ((event.target as HTMLElement).closest('#icon-back'))) {
+    if ((this.isDetail == true || this.isAdd == true) && ((event.target as HTMLElement).closest('#icon-back'))) {
       this.isDetail = false;
+      this.isAdd = false;
       this.getListBill();
       this.setFilterExpStatus();
       this.getListBillWaitingAllDate();
     }
     if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonReturnDate'))) {
+      this.getListBillWaitingAllDate();
       this.childRangeDateStart.defaultDate = this.earliestDates;
       this.startDate = this.earliestDates;
-      this.isShowAlertStatus = false;
       this.setFilterDate();
+      this.isShowAlertStatus = false;
+    }
+    if((event.target as HTMLElement).closest('.button-add')){
+      this.isAdd = !this.isAdd;
     }
   }
 
@@ -391,7 +397,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.billService.getListBill(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listBillPage = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
       // console.log(this.listBillPage.data);   
-      this.getListBillWaitingAllDate();
        this.isLoading = false;
 
     })
@@ -400,81 +405,26 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   //Lấy danh sách bill chờ xác nhận
   getListBillWaitingAllDate() {
-    this.isLoading = true;
-    this.billService.getListBill(this.gridStateWaitingAllDate)
-      .pipe(
-        takeUntil(this.destroy),
-        catchError(error => {
-          console.error('Error fetching listBillWaitingAllDate:', error);
-          this.isLoading = false;
-          alert('An error occurred while fetching the waiting bills for all dates.');
-          return of(null); // Trả về null để tiếp tục chuỗi Observable
-        })
-      )
-      .subscribe(list => {
-        try {
-          if (!list || !list.ObjectReturn) {
-            throw new Error('Invalid data structure');
-          }
-          this.listBillWaitingAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-          this.countBillWaiting = this.listBillWaitingAllDate.data.length;
-          this.findEarliestDate();
-        } catch (error) {
-          console.error('Error processing listBillWaitingAllDate:', error);
-          alert('An error occurred while processing the waiting bills for all dates.');
-        } finally {
-          this.isLoading = false;
-        }
-      });
-  
-    this.isLoading = true;
-    this.billService.getListBill(this.gridStateAllDate)
-      .pipe(
-        takeUntil(this.destroy),
-        catchError(error => {
-          console.error('Error fetching listBillAllDate:', error);
-          this.isLoading = false;
-          alert('An error occurred while fetching all bills.');
-          return of(null); // Trả về null để tiếp tục chuỗi Observable
-        })
-      )
-      .subscribe(list => {
-        try {
-          if (!list || !list.ObjectReturn) {
-            throw new Error('Invalid data structure');
-          }
-          this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-        } catch (error) {
-          console.error('Error processing listBillAllDate:', error);
-          alert('An error occurred while processing all bills.');
-        } finally {
-          this.isLoading = false;
-        }
-      });
+    this.billService.getListBill(this.gridStateWaitingAllDate).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listBillWaitingAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      this.countBillWaiting = this.listBillWaitingAllDate.data.length;
+      this.findEarliestDate();
+    })
+
+    this.billService.getListBill(this.gridStateAllDate).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      this.countStatuses();
+    })
+
   }
   
   getListBillNowDate() {
-    this.billService.getListBill(this.gridStateBillNowDate)
-      .pipe(
-        takeUntil(this.destroy),
-        catchError(error => {
-          console.error('Error fetching listBillNowDate:', error);
-          alert('An error occurred while fetching the bills for today.');
-          return of(null); // Trả về null để tiếp tục chuỗi Observable
-        })
-      )
-      .subscribe(list => {
-        try {
-          if (!list || !list.ObjectReturn) {
-            throw new Error('Invalid data structure');
-          }
-          this.listBillNowDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-          this.countBillNowDate = this.listBillNowDate.data.length;
-        } catch (error) {
-          console.error('Error processing listBillNowDate:', error);
-          alert('An error occurred while processing the bills for today.');
-        }
-      });
+    this.isLoading = true;
+    this.billService.getListBill(this.gridStateBillNowDate).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listBillNowDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      this.countBillNowDate = this.listBillNowDate.data.length;
+      this.isLoading = false;
+    })
   }
 
   //Tìm ngày xa nhất của status Chờ xác nhận
@@ -498,12 +448,13 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
 
   countStatuses() {
-    if(this.isLoading== true){
-      this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
-        const status = bill.Status;
-        acc[status] = (acc[status] || 0) + 1;
-        return acc;
-      }, {});
+      if(this.listBillPageAllStatus){
+        this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
+          const status = bill.Status;
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {});
+      }
   
       if(this.listBillAllDate){
         this.statusCountsAllDate = this.listBillAllDate.data.reduce((acc, bill) => {
@@ -522,9 +473,9 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
         
           return acc;
         }, {});
+        console.log(this.formattedCreateAtNoTime(this.statusCountsAllDate[3].earliestDate));
       }
       
-    }
     // this.animateValue(this.obj,this.statusCounts[2], 50000);
     // console.log(typeof(this.statusCounts[2]));
 
@@ -590,14 +541,13 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.pushTogridStateAllStatus(null, this.filterDate);
     this.pushTogridStateAllStatus(null, this.filterSearch);
     this.getListBill();
+    this.countStatuses();
   }
 
   setFilterExpStatus() {
-    this.isLoading = true;
     this.billService.getListBill(this.gridStateAllStatus).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listBillPageAllStatus = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
       this.countStatuses();
-      this.isLoading = false;
     })
     // console.log(this.gridStateAllStatus);
   }

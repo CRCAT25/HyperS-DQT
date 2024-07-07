@@ -31,7 +31,7 @@
                 margin-bottom: 10px;
                 
                 .k-input{
-                    min-width: 955px !important;
+                    min-width: 620px !important;
                     width: 0;
                 }
 
@@ -112,36 +112,50 @@
                 padding-bottom: 15px;
                 gap: 30px;
                 text-wrap: nowrap;
-                @include center-vertical;
+                justify-content: space-between;
+                .group-filter{
+                    display: flex;
+                    gap: 30px;
+                    @include center-vertical;
 
-                
-                .resetFilter{
-                    color: red;
-                    text-decoration: underline;
-                    cursor: pointer;
-
-                    &:hover{
-                        color: rgb(216, 3, 3);
+                    .resetFilter{
+                        color: red;
+                        text-decoration: underline;
+                        cursor: pointer;
+    
+                        &:hover{
+                            color: rgb(216, 3, 3);
+                        }
+                    }
+        
+                    .titlePage{
+                        font-size: 16px;
+                        font-weight: bold;
+                    }
+        
+                    .line{
+                        background-color: black;
+                        width: 15px;
+                        height: 2px;
+                    }
+            
+                    .timeStartEnd{
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        // background-color: red;
                     }
                 }
-    
-                .titlePage{
-                    font-size: 16px;
-                    font-weight: bold;
+
+                .button-add{
+                    .component-button:hover{
+                        background-color: #09880E !important;
+                        color: white !important;
+                    }
                 }
-    
-                .line{
-                    background-color: black;
-                    width: 15px;
-                    height: 2px;
-                }
-        
-                .timeStartEnd{
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    // background-color: red;
-                }
+
+                
+
             }
     
 
