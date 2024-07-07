@@ -9,7 +9,7 @@ import { DTOUpdateCouponRequest } from '../dto/DTOUpdateCouponRequest.dto';
 @Injectable({
     providedIn: 'root'
 })
-export class AccountService {
+export class CouponService {
     private direct = 'https://hypersapi.onrender.com';
     private urlGetListCoupon = this.direct + "/api/Coupon/GetListCoupon";
     private urlUpdateCoupon = this.direct + "/api/Coupon/UpdateCoupon";

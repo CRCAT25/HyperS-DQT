@@ -82,7 +82,7 @@ export class Admin001InformationCustomerComponent implements OnInit {
   }
 
   // variables FilterDescriptor
-  filterAllCustomer: FilterDescriptor = { operator: '' };
+  filterAllCustomer: FilterDescriptor = { "field": "StatusAccount", "operator": "gte", "value": 0, "ignoreCase": true };
   filterCustomerActive: FilterDescriptor = { "field": "StatusAccount", "operator": "eq", "value": 0, "ignoreCase": true };
   filterCustomerDisable: FilterDescriptor = { "field": "StatusAccount", "operator": "eq", "value": 1, "ignoreCase": true };
 

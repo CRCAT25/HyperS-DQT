@@ -15,7 +15,7 @@
                     <div class="label-filter">Lọc dữ liệu</div>
                     <!-- Danh sách các trạng thái -->
                     <div class="list-status">
-                        <component-checkboxlist (getListChecked)="this.getValueFromCheckList($event, 'status')"
+                        <component-checkboxlist #status (getListChecked)="this.getValueFromCheckList($event, 'status')"
                             [valueField]="'Code'" [textField]="'Status'"
                             [listCheckBox]="listStatusCoupon"></component-checkboxlist>
                     </div>
@@ -30,11 +30,11 @@
             <!-- Header Filter theo giai đoạn -->
             <div class="header-filter-stage">
                 <div class="block-filter-stage">
-                    <div class="label-delete-filter">Xóa bộ lọc</div>
-                    <component-search-bar [width]="400" (getValue)="setFilterSearch($event)"
+                    <div class="label-delete-filter" (click)="resetFilter()">Xóa bộ lọc</div>
+                    <component-search-bar #search [width]="400" (getValue)="setFilterSearch($event)"
                         [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
                     <div class="list-stage">
-                        <component-checkboxlist (getListChecked)="this.getValueFromCheckList($event, 'stage')"
+                        <component-checkboxlist #stage (getListChecked)="this.getValueFromCheckList($event, 'stage')"
                             [valueField]="'Code'" [textField]="'Status'"
                             [listCheckBox]="listStageCoupon"></component-checkboxlist>
                     </div>
@@ -50,7 +50,7 @@
 
                 <div class="block-filter-group">
                     <div class="label-filter-group">Đối tượng</div>
-                    <component-text-dropdown (getValue)="setFilterGroupCustomer($event)" [label]="''"
+                    <component-text-dropdown #group (getValue)="setFilterGroupCustomer($event)" [label]="''"
                         [listItem]="listGroupCustomerApply" [defaultItem]="defaultGroupCustomerApply"
                         [valueField]="'Code'" [textField]="'Group'"></component-text-dropdown>
                 </div>
@@ -103,8 +103,8 @@
                     <kendo-grid-column title="Thời gian áp dụng" [width]="150">
                         <ng-template kendoGridCellTemplate let-item>
                             <div class="column-5">
-                                <div class="start-date">Từ: </div>
-                                <div class="end-date">Đến: </div>
+                                <div class="start-date">Từ: {{formatDateToDisplay(item.StartDate)}}</div>
+                                <div class="end-date">Đến: {{formatDateToDisplay(item.EndDate)}}</div>
                             </div>
                         </ng-template>
                     </kendo-grid-column>
