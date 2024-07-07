@@ -27,6 +27,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @Output() datePicked = new EventEmitter();
   @Input() listData: DTOBillInfo[];
   @Input() itemData: DTOBill;
+  @Input() isAdd: boolean;
+
   listBillInfo: DTOBillInfo[];
   itemBill: DTOBill;
   itemBillInfo: DTOBillInfo;
@@ -74,6 +76,15 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   wardBiding: string;
   isDisabled: boolean = true;
 
+  oldProvinceBiding: string;
+  oldDistrictBiding: string;
+  oldWardBiding: string;
+  oldSpecificBiding: string;
+
+  defaultValueProvince: DTOProvince = {province_id: "", province_name: 'Chọn tỉnh, thành phố',  province_type: ""}
+  defaultValueWard: DTOWard = {district_id: "", ward_id: "", ward_name:"Chọn huận, huyện", ward_type: ""}
+  defaulValueDistrict : DTODistrict ={district_id: "", district_name: "Chọn thị xã, trấn", district_type: "", province_id: "", lat: "", lng: ""  }
+
 
   ngOnInit(): void {
     this.getListBillInfo();
@@ -100,10 +111,14 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   }
 
   getSpecialAddress(address: string): string {
-    this.wardBiding = address.split(',')[1];
-    this.districtBiding = address.split(',')[2];
-    this.provinceBiding = address.split(',')[3];
-    return address.split(',')[0];
+    this.wardBiding = address.split(',')[2];
+    this.oldWardBiding = address.split(',')[2];
+    this.districtBiding = address.split(',')[1];
+    this.oldDistrictBiding = address.split(',')[1];
+    this.provinceBiding = address.split(',')[0];
+    this.oldProvinceBiding = address.split(',')[0];
+    this.oldSpecificBiding = address.split(',')[3];
+    return address.split(',')[3];
   }
 
 
@@ -222,6 +237,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   handleChangeProvince(obj: any):void{
     this.provinceSelected = obj;
     this.APIGetProvince();
+    this.districtBiding = this.defaulValueDistrict.district_name;
+    this.wardSelected = null;
     if(this.provinceSelected){
       this.districtSelected = null
       this.wardSelected = null
@@ -240,7 +257,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   handleChangeDistrict(obj: any):void{
     this.districtSelected = obj;
     this.APIGetDistrict(this.provinceSelected.province_id)
-
+    this.wardBiding = this.defaultValueWard.ward_name;
+    this.wardSelected = null;
     if(this.districtSelected){  
       this.wardSelected = null
       if(this.provinceSelected.province_id != ""){

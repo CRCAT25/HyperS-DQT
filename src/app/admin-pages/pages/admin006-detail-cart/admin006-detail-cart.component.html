@@ -8,8 +8,10 @@
         <div class="body-detail">
             <div class="box-info">
                 <div>
-                    <div class="codeBill">Mã đơn {{itemBill.Code}}</div>
-                    <div class="createAtBill">{{formattedCreateAt(itemBill.CreateAt)}}</div>
+                    <ng-container *ngIf="!isAdd">
+                        <div class="codeBill">Mã đơn {{itemBill.Code}}</div>
+                        <div class="createAtBill">{{formattedCreateAt(itemBill.CreateAt)}}</div>
+                    </ng-container>
                     <div class="box-button-update">
                         <component-button *ngIf="!isEdit" class="button-edit" [text]="'Chỉnh sửa'" [classIconFontAwesome]="'fa-pencil'" [color]="'rgb(255, 29, 29)'" [bgColor]="'white'" [borderColor]="'rgb(255, 29, 29)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
                         </component-button>
@@ -46,6 +48,7 @@
                             [value]="setDTOAddress(3)"
                             (valueChange)="handleChangeProvince($event)"
                             [disabled]="isDisabled"
+                            [defaultItem]="defaultValueProvince"
                             ></component-text-dropdown>
                             <component-text-dropdown [label]="'Quận, huyện'" 
                             [isLoading]="isLoadingDistrict"
@@ -58,7 +61,9 @@
                             [hasEmitValueChange]="1"
                             [value]="setDTOAddress(2)"
                             (valueChange)="handleChangeDistrict($event)"
-                            [disabled]="isDisableDistrict"></component-text-dropdown>
+                            [disabled]="isDisableDistrict"
+                            [defaultItem]="defaulValueDistrict"
+                            ></component-text-dropdown>
                             <component-text-dropdown [label]="'Xã, thị trấn'"
                             [isLoading]="isLoadingWard"
                             [widthBlock]="430"
@@ -70,7 +75,9 @@
                             [hasEmitValueChange]="1"
                             [value]="setDTOAddress(1)"
                             (valueChange)="handleChangeWard($event)"
-                            [disabled]="isDisableWard"></component-text-dropdown>                            
+                            [disabled]="isDisableWard"
+                            [defaultItem]="defaultValueWard"
+                            ></component-text-dropdown>                            
                             <component-text-input [label]="'Địa chỉ cụ thể'" [widthBlock]="430" [value]="specialAddress" [disabled]="isDisableWard"></component-text-input>
                         </div>
 

@@ -17,7 +17,7 @@
             <div [style.padding-left.px]="7" [style.margin-top.px]="5" [style.display]="'flex'" [style.height.px]="20">
                 <span [style.width.px]="170" [style.fontSize.px]="14" [style.fontWeight]="600">Trạng thái đơn</span>
                 <span [style.fontSize.px]="14" [style.fontWeight]="600">Đơn theo bộ lọc</span>
-                <div [style.width.px]="650" [style.display]="'flex'" [style.justify-content]="'flex-end'"
+                <div [style.width.px]="305" [style.display]="'flex'" [style.justify-content]="'flex-end'"
                     [style.fontSize.px]="14" [style.fontWeight]="600"><span>Tất cả số lượng đơn</span></div>
 
 
@@ -33,7 +33,7 @@
                 <!-- <div class="countOfStatus" [style.width.px]="683" [style.display]="'flex'" [style.justify-content]="'flex-end'" [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code] > 0 ? 'red' : 'inherit' }">
                     {{ statusCountsAllDate[dataItem.Code] || 0 }} đơn từ ngày {{statusCountsAllDate[dataItem.Code]}}
                 </div> -->
-                <div class="countOfStatus" [style.width.px]="683" [style.display]="'flex'"
+                <div class="countOfStatus" [style.width.px]="345" [style.display]="'flex'"
                     [style.justify-content]="'flex-end'"
                     [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code]?.count > 0 ? 'red' : 'inherit' }">
                     <span>{{ statusCountsAllDate[dataItem.Code]?.count || 0 }} đơn từ ngày 
@@ -44,20 +44,20 @@
     </kendo-multiselect>
 </div>
 <div class="headerSearch">
-    <p class="titlePage">DANH SÁCH ĐƠN HÀNG</p>
-    <p class="resetFilter" (click)="resetFilter()">Xóa bộ lọc</p>
-    <component-search-bar #search class="searchBar" (getValue)="setFilterSearch($event)"
-        placeholder="Tìm kiếm theo tên hoặc số điện thoại" [width]="500"></component-search-bar>
-    <div class="timeStartEnd">
-        <component-datepicker #rangeDateStart [minDate]="minDate" [maxDate]="endDate" [defaultDate]="startDate"
-            (datePicked)="getDateFromDatePicker($event, 'start')"></component-datepicker>
-        <div class="line"></div>
-        <component-datepicker #rangeDateEnd [minDate]="startDate" [maxDate]="maxDate" [defaultDate]="endDate"
-            (datePicked)="getDateFromDatePicker($event, 'end')"></component-datepicker>
+    <div class="group-filter">
+        <p class="titlePage">DANH SÁCH ĐƠN HÀNG</p>
+        <p class="resetFilter" (click)="resetFilter()">Xóa bộ lọc</p>
+        <component-search-bar #search class="searchBar" (getValue)="setFilterSearch($event)"
+            placeholder="Tìm kiếm theo tên hoặc số điện thoại" [width]="500"></component-search-bar>
+        <div class="timeStartEnd">
+            <component-datepicker #rangeDateStart [minDate]="minDate" [maxDate]="endDate" [defaultDate]="startDate"
+                (datePicked)="getDateFromDatePicker($event, 'start')"></component-datepicker>
+            <div class="line"></div>
+            <component-datepicker #rangeDateEnd [minDate]="startDate" [maxDate]="maxDate" [defaultDate]="endDate"
+                (datePicked)="getDateFromDatePicker($event, 'end')"></component-datepicker>
+        </div>
     </div>
-    <!-- <component-text-dropdown [listItem]="listStatus" textField="Status" valueField="Code"
-        [defaultItem]="defaultItemStatusBill" [heightTextBox]="35"
-        (getValue)="setFilterProperty(filterStatus, 'Status', 'eq', 'Code', $event)"></component-text-dropdown> -->
+    <component-button class="button-add" [color]="'#09880E'" [bgColor]="'white'" [borderColor]="'#09880E'" [borderWidth]="2" [borderStyle]="'solid'"></component-button>
 </div>
 <div class="showList">
     <div class="grid-custom-container">
