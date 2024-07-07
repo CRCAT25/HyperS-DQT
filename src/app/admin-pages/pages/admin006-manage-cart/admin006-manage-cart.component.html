@@ -57,7 +57,7 @@
                 (datePicked)="getDateFromDatePicker($event, 'end')"></component-datepicker>
         </div>
     </div>
-    <component-button class="button-add" [color]="'#09880E'" [bgColor]="'white'" [borderColor]="'#09880E'" [borderWidth]="2" [borderStyle]="'solid'"></component-button>
+    <component-button class="button-add"  [color]="'#09880E'" [bgColor]="'white'" [borderColor]="'#09880E'" [borderWidth]="2" [borderStyle]="'solid'"></component-button>
 </div>
 <div class="showList">
     <div class="grid-custom-container">
@@ -162,6 +162,9 @@
 
 <ng-container *ngIf="isDetail">
     <app-admin006-detail-cart [listData]="listBillInfo" [itemData]="itemBill"></app-admin006-detail-cart>
+</ng-container>
+<ng-container *ngIf="isAdd">
+    <app-admin006-detail-cart [isAdd]="isAdd"></app-admin006-detail-cart>
 </ng-container>
 <!-- <component-text-area [label]="'Lí do hủy đơn:'"
 [labelWidth]="100"

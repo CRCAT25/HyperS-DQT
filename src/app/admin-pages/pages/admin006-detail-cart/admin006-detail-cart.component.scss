@@ -95,6 +95,26 @@
                                     color: white !important;
                                 }
                             }
+
+                            .button-addBill{
+                                .component-button:hover{
+                                    background-color: #09880E !important;
+                                    color: white !important;
+                                }
+                            }
+                        }
+
+                        .header-addBill{
+                            display: flex;
+                            width: 100%;
+                            justify-content: flex-end;
+
+                            .button-addBill{
+                                .component-button:hover{
+                                    background-color: #09880E !important;
+                                    color: white !important;
+                                }
+                            }
                         }
 
                         .content-form{
@@ -112,8 +132,27 @@
                     .showListDetail{
                         margin-top: 10px;
                         border-bottom: 3px solid black;
+
+                        .header-search-product{
+                            width: 100%;
+                            display: flex;
+                            justify-content: space-between;
+
+                            .button-addDetailBill{
+                                justify-content: flex-end;
+                                padding: 10px 0px;
+                                .component-button:hover{
+                                    background-color: #09880E !important;
+                                    color: white !important;
+                                }
+                            }
+                        }
+
+
+
                         .grid-custom-container{
-                            height: 350px;
+                            height: 230px;
+                            overflow-y: scroll;
                             position: initial !important;
                             th.k-table-th[aria-colindex="3"],
                             th.k-table-th[aria-colindex="4"],
@@ -223,8 +262,28 @@
                 }
 
                 .footer-detail{
-                    #icon-warning{
+                    width: 100%;
+                    display: flex;
+                    justify-content: flex-end;
+                    padding-right: 10px;
+                    padding-top: 10px;
 
+                    .box-TotalBill{
+                        display: flex;
+                        gap: 35px;
+                        box-shadow: $box-shadow3;
+                        border-radius: 5px;
+                        padding: 10px;
+
+                        .label-Total{
+                            font-size: 17px;
+                            font-weight: 600;
+                        }
+
+                        .TotalBill{
+                            font-size: 17px;
+                            font-weight: 600;
+                        }
                     }
                 }
             }

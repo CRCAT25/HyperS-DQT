@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { State } from '@progress/kendo-data-query';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { DTOUpdateProductRequest } from 'src/app/shared/dto/DTOUpdateProductRequest.dto';
 import { DTOProduct } from 'src/app/ecom-pages/shared/dto/DTOProduct';
 
@@ -38,6 +38,23 @@ export class ProductAdminService {
                     return throwError(error);
                 })
             );
+    }
+
+    getProductByIdProduct(id: string): Observable<DTOProduct> {
+        return this.getListProduct({}).pipe(
+            map((response:DTOResponse) => {
+                const product = response.ObjectReturn.Data.find((item: DTOProduct) => item.IdProduct === id);
+                if (product) {
+                    return product;
+                } else {
+                    throw new Error('Product not found');
+                }
+            }),
+            catchError(error => {
+                console.error('Error retrieving product:', error);
+                return throwError(error);
+            })
+        );
     }
 
     getProductByCode(code: number): Observable<DTOResponse> {

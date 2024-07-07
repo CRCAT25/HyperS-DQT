@@ -55,6 +55,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   ];
   listNextStatus: DTOStatus[];
   isShowAlert: boolean = false;
+  isAdd: boolean = false;
   iconPopUp: string;
   objItemStatus: any;
   itemBill: DTOBill;
@@ -357,19 +358,15 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     if (this.tempID !== null && !(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="10"]')) {
       this.isClickButton[this.tempID] = false;
     }
-    // if (this.isShowAlert == true && (!(event.target as HTMLElement).closest('component-dropdown-action') && !(event.target as HTMLElement).closest('.PopUp'))) {
-    //   this.isShowAlert = false;
-    // }
     if ((this.isShowAlert == true || this.isShowAlertStatus == true) && ((event.target as HTMLElement).closest('.buttonNoChange'))) {
       this.getListBillWaitingAllDate();
       this.setFilterExpStatus();
       this.isShowAlert = false;
       this.isShowAlertStatus = false;
-
-
     }
-    if (this.isDetail == true && ((event.target as HTMLElement).closest('#icon-back'))) {
+    if ((this.isDetail == true || this.isAdd == true) && ((event.target as HTMLElement).closest('#icon-back'))) {
       this.isDetail = false;
+      this.isAdd = false;
       this.getListBill();
       this.setFilterExpStatus();
       this.getListBillWaitingAllDate();
@@ -380,7 +377,9 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.startDate = this.earliestDates;
       this.setFilterDate();
       this.isShowAlertStatus = false;
-
+    }
+    if((event.target as HTMLElement).closest('.button-add')){
+      this.isAdd = !this.isAdd;
     }
   }
 
@@ -449,11 +448,13 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
 
   countStatuses() {
-      this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
-        const status = bill.Status;
-        acc[status] = (acc[status] || 0) + 1;
-        return acc;
-      }, {});
+      if(this.listBillPageAllStatus){
+        this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
+          const status = bill.Status;
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {});
+      }
   
       if(this.listBillAllDate){
         this.statusCountsAllDate = this.listBillAllDate.data.reduce((acc, bill) => {
