@@ -139,11 +139,19 @@
                         }
                     }
 
+                    .column-9{
+                        font-weight: 600;
+                    }
+
                     .column-3{
                         .name{
                             max-width: 280px;
                             text-wrap: nowrap;
                             text-overflow: ellipsis;
+                        }
+
+                        .idproduct{
+                            font-weight: 600;
                         }
                     }
 

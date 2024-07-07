@@ -31,7 +31,6 @@ export class CheckboxlistComponent implements OnInit {
   }
 
   resetCheckList(listDefault: any){
-    console.log(listDefault);
     this.currentListCheckBox = listDefault;
   }
 }
