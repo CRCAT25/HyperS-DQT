@@ -9,13 +9,13 @@ export class DTOCoupon {
     Quantity: number
     RemainingQuantity: number
     MinBillPrice: number
-    MaxBillDiscount?: number = 0
+    MaxBillDiscount?: number
     Status: number
     Stage: number
     CouponType: number
-    DirectDiscount?: number = 0
-    PercentDiscount?: number = 0
-    ApplyTo: number = 0
+    DirectDiscount?: number
+    PercentDiscount?: number
+    ApplyTo: number
 }
 
 export const listActionChangeStatusCoupon: DTOStatus[] = [

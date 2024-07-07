@@ -2,7 +2,27 @@
     <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="widthDrawer" [(expanded)]="expanded">
         <ng-template kendoDrawerTemplate>
             <div class="drawer-custom-container">
-                <button kendoButton (click)="drawer.toggle()">Toggle the Drawer</button>
+                <!-- Header của drawer -->
+                <div class="header-drawer">
+                    <i class="fa-solid fa-angles-left icon-back" (click)="closeDrawer()"></i>
+                    <div class="label-detail-coupon" *ngIf="selectedCoupon.Code !== 0">Chi tiết khuyến mãi</div>
+                    <div class="label-add-coupon" *ngIf="selectedCoupon.Code === 0">Thêm mới khuyến mãi</div>
+                </div>
+
+                <!-- Content của drawer -->
+                <div class="content-drawer">
+                    <!-- Mã khuyến mãi -->
+                    <component-text-input typeValue="number" #price
+                    [widthTextBox]="350" [widthBlock]="510" label="Mã khuyến mãi"></component-text-input>
+                </div>
+
+                <!-- Footer của drawer -->
+                <div class="footer-drawer">
+                    <!-- Button quay lại để đóng drawer -->
+                    <component-button class="button-back" [borderWidth]="2" color="#000" borderColor="#000"
+                        borderStyle="solid" [value]="0" (sendValue)="closeDrawer()" [height]="36"
+                        classIconFontAwesome="fa-reply" bgColor="#fff" text="Quay lại"></component-button>
+                </div>
             </div>
         </ng-template>
     </kendo-drawer>
@@ -78,7 +98,7 @@
                     </kendo-grid-column>
 
                     <!-- Loại khuyến mãi -->
-                    <kendo-grid-column title="Loại khuyến mãi" [width]="150">
+                    <kendo-grid-column title="Loại khuyến mãi" [width]="180">
                         <ng-template kendoGridCellTemplate let-item>
                             <div class="column-3">
                                 <div class="type">{{checkCouponType(item.CouponType)}}</div>
@@ -93,7 +113,8 @@
                             <div class="column-4">
                                 <div class="min-bill-price">Đơn tối thiểu: {{formatCurrency(item.MinBillPrice)}}</div>
                                 <ng-container *ngIf="item.PercentDiscout && item.DirectDiscout === 0">
-                                    <div class="max-bill-discount">Giảm tối đa: {{formatCurrency(item.MaxBillDiscount)}}</div>
+                                    <div class="max-bill-discount">Giảm tối đa: {{formatCurrency(item.MaxBillDiscount)}}
+                                    </div>
                                 </ng-container>
                             </div>
                         </ng-template>
@@ -132,7 +153,8 @@
                     <kendo-grid-column title="Trạng thái" [width]="130">
                         <ng-template kendoGridCellTemplate let-item>
                             <div class="column-8">
-                                <div class="status" [style.color]="checkStatus(item) | statusColor">{{checkStatus(item)}}</div>
+                                <div class="status" [style.color]="checkStatus(item) | statusColor">
+                                    {{checkStatus(item)}}</div>
                                 <div class="stage">{{checkStage(item)}}</div>
                             </div>
                         </ng-template>
@@ -147,7 +169,8 @@
                                     color="#000" bgColor="#fff" classIconFontAwesome="fa-ellipsis"
                                     text=""></component-button>
                                 <div class="list-action" *ngIf="selectedCouponCode === dataItem.Code">
-                                    <component-dropdown-action (sendValue)="updateStatusCoupon(dataItem, $event)" [listItem]="getListChangeStatus(dataItem.Status)"></component-dropdown-action>
+                                    <component-dropdown-action (sendValue)="updateStatusCoupon(dataItem, $event)"
+                                        [listItem]="getListChangeStatus(dataItem.Status)"></component-dropdown-action>
                                 </div>
                             </div>
                         </ng-template>

@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
+import { DrawerComponent, DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { DTOStatus, listStageCoupon, listStatusCoupon } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
 import { DTOCoupon, listActionChangeStatusCoupon } from '../../shared/dto/DTOCoupon.dto';
@@ -32,7 +32,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Chế độ hiển thị của drawer
   expandMode: DrawerMode = 'overlay';
   // Drawer đang được mở hay không
-  expanded = false;
+  expanded = true;
   // Chiều dài của drawer
   widthDrawer: number = 550;
   // Vị trị xuất hiện của drawer
@@ -109,7 +109,9 @@ export class Admin004ManageCouponComponent implements OnInit {
 
   // Đối tượng áp dụng mặc định
   defaultGroupCustomerApply: GroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
-  // Coupon được chọn
+  // Coupon được chọn để hiển thị trên drawer
+  selectedCoupon: DTOCoupon = new DTOCoupon();
+
 
 
   // ViewChild
@@ -119,6 +121,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   @ViewChild('rangeDateStart') chidlStartDate!: DatepickerComponent;
   @ViewChild('rangeDateEnd') chidlEndDate!: DatepickerComponent;
   @ViewChild('group') childGroup!: TextDropdownComponent;
+  @ViewChild('drawer') childDrawer!: DrawerComponent;
 
   constructor(private couponService: CouponService, private notiService: NotiService) { }
 
@@ -414,8 +417,8 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Cập nhật trạng thái cho khuyến mãi
   updateStatusCoupon(coupon: DTOCoupon, newStatus: any){
     if(newStatus.value === 0 || newStatus.value === 1){
-      // this.selectedCoupon = coupon;
-      // console.log(this.selectedCoupon);
+      this.selectedCoupon = coupon;
+      this.childDrawer.toggle();
       return;
     }
     if(newStatus.value === 2) coupon.Status = 1;
@@ -435,5 +438,11 @@ export class Admin004ManageCouponComponent implements OnInit {
     }, (error => {
       this.notiService.Show(`Cập nhật trạng thái bị lỗi ${error}`, 'error');
     }))
+  }
+
+  // Đóng drawer
+  closeDrawer(){
+    this.selectedCoupon = new DTOCoupon();
+    this.childDrawer.toggle();
   }
 }
