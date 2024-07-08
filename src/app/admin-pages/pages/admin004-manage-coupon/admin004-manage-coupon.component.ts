@@ -61,7 +61,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Ngày nhỏ nhất có thể của chi tiết coupon
   minDateCoupon: Date = new Date(1900, 1, 1);
   // Ngày lớn nhất có thể của chi tiết coupon
-  maxDateCoupon: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
+  maxDateCoupon: Date = new Date(this.currentDate.getFullYear() + 0, 12, 30);
   // Ngày bắt đầu của chi tiết coupon
   startDateCoupon: Date = null;
   // Ngày kết thúc của chi tiết coupon
@@ -97,7 +97,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   defaultGroupCustomerApply: GroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
   // Coupon được chọn để hiển thị trên drawer
   selectedCoupon: DTOCoupon = {
-    Code: 0,
+    Code: -1,
     IdCoupon: '',
     Description: '',
     StartDate: null,
@@ -108,10 +108,10 @@ export class Admin004ManageCouponComponent implements OnInit {
     MaxBillDiscount: 0,
     Status: 0,
     Stage: 0,
-    CouponType: null,
+    CouponType: -1,
     DirectDiscount: 0,
     PercentDiscount: 0,
-    ApplyTo: null
+    ApplyTo: -1
   }
   // Loại coupon mặc định
   defaultCouponType: DTOCouponType = { Code: -1, Type: '-- Chọn loại khuyến mãi --' };
@@ -478,9 +478,9 @@ export class Admin004ManageCouponComponent implements OnInit {
   }
 
   // Đóng drawer
-  toggleDrawer() {
+  toggleDrawerToAdd() {
     this.selectedCoupon = {
-      Code: 0,
+      Code: -1,
       IdCoupon: '',
       Description: '',
       StartDate: null,
@@ -491,27 +491,26 @@ export class Admin004ManageCouponComponent implements OnInit {
       MaxBillDiscount: 0,
       Status: 0,
       Stage: 0,
-      CouponType: null,
+      CouponType: -1,
       DirectDiscount: 0,
       PercentDiscount: 0,
-      ApplyTo: null
+      ApplyTo: -1
     };
     this.childDrawer.toggle();
     this.startDateCoupon = null;
     this.endDateCoupon = null;
-    this.childStartDateCoupon.resetDate();
-    this.childEndDateCoupon.resetDate();
     this.selectedCouponType = -1;
   }
 
   // Chọn loại khuyến mãi
   getCouponType(res: DTOCouponType) {
     this.selectedCouponType = res.Code;
+    this.selectedCoupon.CouponType = res.Code;
   }
 
   // Chọn nhóm khách hàng
   getGroupCustomer(res: DTOGroupCustomer) {
-    console.log(res);
+    this.selectedCoupon.ApplyTo = res.Code;
   }
 
   // Lấy giá trị từ datepicker
@@ -529,5 +528,61 @@ export class Admin004ManageCouponComponent implements OnInit {
     this.startDateCoupon = new Date(this.selectedCoupon.StartDate);
     this.endDateCoupon = new Date(this.selectedCoupon.EndDate);
     this.selectedCouponType = this.selectedCoupon.CouponType;
+  }
+
+  // Cập nhật chi tiết khuyến mãi
+  updateDetailCoupon() {
+    if(this.checkUpdatable()){
+      console.log('Có thể cập nhật');
+    }
+  }
+
+  // Kiểm tra các thông tin trước khi cập nhật 1 coupon
+  checkUpdatable() {
+    if (this.selectedCoupon.IdCoupon === '') {
+      this.notiService.Show('Vui lòng điền mã khuyến mãi', 'error');
+      return false;
+    }
+    if (this.selectedCoupon.StartDate === null) {
+      this.notiService.Show('Vui lòng chọn ngày bắt đầu khuyến mãi', 'error');
+      return false;
+    }
+    if (this.selectedCoupon.EndDate === null) {
+      this.notiService.Show('Vui lòng chọn ngày kết thúc khuyến mãi', 'error');
+      return false;
+    }
+    if (this.selectedCoupon.Quantity === 0) {
+      this.notiService.Show('Vui lòng nhập thêm số lượng khuyến mãi', 'error');
+      return false;
+    }
+    if (this.selectedCoupon.MinBillPrice === 0) {
+      this.notiService.Show('Vui lòng nhập số tiền tối thiểu áp dụng', 'error');
+      return false;
+    }
+    if (this.selectedCoupon.CouponType === -1) {
+      this.notiService.Show('Vui lòng chọn loại khuyến mãi', 'error');
+      return false;
+    }
+    if (this.selectedCoupon.CouponType === 0) {
+      if (this.selectedCoupon.MaxBillDiscount === 0) {
+        this.notiService.Show('Vui lòng nhập giảm tối đa', 'error');
+        return false;
+      }
+      if (this.selectedCoupon.PercentDiscount === 0) {
+        this.notiService.Show('Vui lòng nhập phần trăm giảm giá', 'error');
+        return false;
+      }
+    }
+    if (this.selectedCoupon.CouponType === 1) {
+      if (this.selectedCoupon.DirectDiscount === 0) {
+        this.notiService.Show('Vui lòng nhập số tiền giảm trực tiếp', 'error');
+        return false;
+      }
+    }
+    if (this.selectedCoupon.ApplyTo === -1) {
+      this.notiService.Show('Vui lòng chọn nhóm khách hàng', 'error');
+      return false;
+    }
+    return true;
   }
 }

@@ -143,7 +143,23 @@
                                     background-color: #069DF1 !important;
                                     // font-weight: 100 !important;
                                 }
-                            }
+                            } 
+
+                            .button-approve {
+                                .component-button:hover {
+                                    color: #ffffff !important;
+                                    background-color: #09880E !important;
+                                    // font-weight: 100 !important;
+                                }
+                            } 
+
+                            .button-disapprove {
+                                .component-button:hover {
+                                    color: #ffffff !important;
+                                    background-color: #FF1D1D !important;
+                                    // font-weight: 100 !important;
+                                }
+                            } 
                         }
                     }
 

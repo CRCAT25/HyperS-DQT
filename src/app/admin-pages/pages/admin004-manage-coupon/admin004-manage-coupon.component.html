@@ -4,7 +4,7 @@
             <div class="drawer-custom-container">
                 <!-- Header của drawer -->
                 <div class="header-drawer">
-                    <i class="fa-solid fa-angles-left icon-back" (click)="toggleDrawer()"></i>
+                    <i class="fa-solid fa-angles-left icon-back" (click)="toggleDrawerToAdd()"></i>
                     <div class="label-detail-coupon" *ngIf="selectedCoupon.Code !== 0">Chi tiết khuyến mãi</div>
                     <div class="label-add-coupon" *ngIf="selectedCoupon.Code === 0">Thêm mới khuyến mãi</div>
                 </div>
@@ -13,8 +13,7 @@
                 <div class="content-drawer">
                     <!-- Mã khuyến mãi -->
                     <component-text-input [placeholder]="'Nhập mã khuyến mãi...'" [value]="selectedCoupon.IdCoupon"
-                        typeValue="number" [widthTextBox]="350" [widthBlock]="510"
-                        label="Mã khuyến mãi"></component-text-input>
+                        [widthTextBox]="350" [widthBlock]="510" label="Mã khuyến mãi"></component-text-input>
 
                     <!-- Ngày áp dụng -->
                     <div class="date-apply-block">
@@ -105,10 +104,18 @@
                         [widthTextBox]="350" [widthBlock]="510" label="Giai đoạn hiện tại"></component-text-input>
 
                     <div class="button-block">
-                        <!-- Button cập nhật -->
-                        <ng-container *ngIf="selectedCoupon.Status === 0">
+                        <!-- Button lưu bản nháp -->
+                        <ng-container *ngIf="selectedCoupon.Code === -1">
                             <component-button class="button-update" [borderWidth]="2" color="#2557A0"
                                 borderColor="#2557A0" borderStyle="solid" [value]="1"
+                                classIconFontAwesome="fa-floppy-disk" [height]="36" bgColor="#fff"
+                                text="Lưu bản nháp"></component-button>
+                        </ng-container>
+
+                        <!-- Button cập nhật -->
+                        <ng-container *ngIf="selectedCoupon.Status === 0 && selectedCoupon.Code !== -1">
+                            <component-button class="button-update" [borderWidth]="2" color="#2557A0"
+                                borderColor="#2557A0" borderStyle="solid" [value]="1" (sendValue)="updateDetailCoupon()"
                                 classIconFontAwesome="fa-floppy-disk" [height]="36" bgColor="#fff"
                                 text="Cập nhật"></component-button>
                         </ng-container>
@@ -116,17 +123,24 @@
                         <!-- Button gửi duyệt -->
                         <ng-container *ngIf="selectedCoupon.Status === 0">
                             <component-button class="button-send" [borderWidth]="2" color="#069DF1"
-                                borderColor="#069DF1" borderStyle="solid" [value]="1"
-                                classIconFontAwesome="fa-share" [height]="36" bgColor="#fff"
-                                text="Gửi duyệt"></component-button>
+                                borderColor="#069DF1" borderStyle="solid" [value]="1" classIconFontAwesome="fa-share"
+                                [height]="36" bgColor="#fff" text="Gửi duyệt"></component-button>
                         </ng-container>
 
                         <!-- Button phê duyệt -->
                         <ng-container *ngIf="selectedCoupon.Status === 1">
-                            <component-button class="button-approve" [borderWidth]="2" color="#069DF1"
-                                borderColor="#069DF1" borderStyle="solid" [value]="1"
-                                classIconFontAwesome="fa-share" [height]="36" bgColor="#fff"
-                                text="Gửi duyệt"></component-button>
+                            <component-button class="button-approve" [borderWidth]="2" color="#09880E"
+                                borderColor="#09880E" borderStyle="solid" [value]="1"
+                                classIconFontAwesome="fa-circle-check" [height]="36" bgColor="#fff"
+                                text="Phê duyệt"></component-button>
+                        </ng-container>
+
+                        <!-- Button ngưng áp dụng -->
+                        <ng-container *ngIf="selectedCoupon.Status === 2">
+                            <component-button class="button-disapprove" [borderWidth]="2" color="#FF1D1D"
+                                borderColor="#FF1D1D" borderStyle="solid" [value]="1"
+                                classIconFontAwesome="fa-circle-minus" [height]="36" bgColor="#fff"
+                                text="Ngừng áp dụng"></component-button>
                         </ng-container>
                     </div>
                 </div>
@@ -135,7 +149,7 @@
                 <div class="footer-drawer">
                     <!-- Button quay lại để đóng drawer -->
                     <component-button class="button-back" [borderWidth]="2" color="#000" borderColor="#000"
-                        borderStyle="solid" [value]="0" (sendValue)="toggleDrawer()" [height]="36"
+                        borderStyle="solid" [value]="0" (sendValue)="toggleDrawerToAdd()" [height]="36"
                         classIconFontAwesome="fa-reply" bgColor="#fff" text="Quay lại"></component-button>
                 </div>
             </div>
@@ -158,7 +172,7 @@
 
                 <!-- Button thêm khuyến mãi-->
                 <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                    borderStyle="solid" [value]="0" (sendValue)="toggleDrawer()" [height]="36"
+                    borderStyle="solid" [value]="0" (sendValue)="toggleDrawerToAdd()" [height]="36"
                     classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"></component-button>
             </div>
 
