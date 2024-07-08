@@ -22,7 +22,6 @@ import { CartService } from '../../shared/service/cart.service';
   styleUrls: ['./payment.component.scss']
 })
 export class PaymentComponent implements OnInit, OnDestroy {
-  
   listProvince: DTOProvince[]
   listDistrict: DTODistrict[]
   listWard: DTOWard[]
@@ -36,47 +35,35 @@ export class PaymentComponent implements OnInit, OnDestroy {
     TotalBill: 0,
     IsGuess: true
   }
-
   provinceSelected: DTOProvince
   districtSelected: DTODistrict
   wardSelected: DTOWard
   paymenMethodSelected: DTOPaymentMethod
-
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
-
   isLoadingProvince: boolean = false
   isLoadingDistrict: boolean = false
   isLoadingWard: boolean = false
-
-
   isDisableDistrict: boolean = true
   isDisableWard: boolean = true
   isDisableSpecific: boolean = true
-
   name:string = ""
   numberPhone: string = ""
   specific: string = ""
-
   listPaymentMethod: DTOPaymentMethod[] = [
     {id: 0, text: "COD", icon: "fa-money-bill"},
     {id: 1, text: "QR Payment", icon: "fa-qrcode"},
     {id: 2, text: "Bank Transfer", icon: "fa-credit-card"},
   ]
-  
   defaultValueProvince: DTOProvince = {province_id: "", province_name: '-- Select --',  province_type: ""}
   defaultValueWard: DTOWard = {district_id: "", ward_id: "", ward_name:"-- Select --", ward_type: ""}
   defaulValueDistrict : DTODistrict ={district_id: "", district_name: "-- Select --", district_type: "", province_id: "", lat: "", lng: ""  }
-
   dataProvineFilter: DTOProvince[]
   dataDistrictFilter: DTODistrict[]
   dataWardFilter: DTOWard[]
-
-
   priceSubTotal: number = 0
   priceDelivery: number = 0
   priceCoupon: number = 0
   totalPrice: number = 0
-
   codeCustomer: number = 0
 
   constructor(private cartService: CartService,private userService: UserService ,private router: Router,private paymentService: PaymentService, private notiService: NotiService){
