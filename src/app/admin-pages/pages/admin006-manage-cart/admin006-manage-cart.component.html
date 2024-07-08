@@ -1,4 +1,6 @@
 <div class="header-filter">
+    <!-- <component-dropdown-action class="testStatus" [listItem]="listStatus"></component-dropdown-action> -->
+
     <div class="countWaitingCheck" (click)="returnNowDate()">
         <div class="numberCountBill" [style.background-color]="'red'">{{countBillNowDate}}</div>
         <div class="labelWaitingCheck">Đơn mới hôm nay</div>
@@ -42,6 +44,7 @@
             </div>
         </ng-template>
     </kendo-multiselect>
+
 </div>
 <div class="headerSearch">
     <div class="group-filter">

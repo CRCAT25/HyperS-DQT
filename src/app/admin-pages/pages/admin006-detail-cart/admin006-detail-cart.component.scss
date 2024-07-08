@@ -1,11 +1,12 @@
 @import '../../../../styles.scss';
 @import '../../shared/style/grid.scss';
 
-::ng-deep{
-    app-admin006-detail-cart{
+::ng-deep {
+    app-admin006-detail-cart {
         display: inline-block;
         font-size: 14px;
-        .bg-detail-cart{
+
+        .bg-detail-cart {
             width: calc(100vw - 268px);
             height: 885px;
             min-height: 885px;
@@ -16,7 +17,8 @@
             background-color: rgba($color: #000000, $alpha: 0.3);
             justify-content: flex-end;
             position: relative;
-            .component-detail-cart{
+
+            .component-detail-cart {
                 position: absolute;
                 right: 0;
                 width: 950px;
@@ -24,10 +26,10 @@
                 height: 885px;
                 background-color: white;
                 // background-color: #F5F5F5;
-                border-top: 2px solid #D9D9D9 ;
-                border-left: 2px solid #D9D9D9 ;
+                border-top: 2px solid #D9D9D9;
+                border-left: 2px solid #D9D9D9;
 
-                .header-detail{
+                .header-detail {
                     height: 40px;
                     display: flex;
                     align-items: center;
@@ -35,93 +37,95 @@
                     padding-left: 10px;
                     border-bottom: 3px solid #D9D9D9;
 
-                    #icon-back{
+                    #icon-back {
                         font-size: 23px;
                         cursor: pointer;
                     }
 
-                    p{
+                    p {
                         font-size: 15px;
                     }
                 }
 
-                .body-detail{
+                .body-detail {
                     padding-top: 20px;
                     padding-left: 10px;
                     padding-right: 10px;
-                    .box-info{
+
+                    .box-info {
                         display: flex;
                         flex-direction: column;
                         gap: 15px;
                         // background-color: antiquewhite;
 
-                        .codeBill{
+                        .codeBill {
                             font-size: 20px;
                             font-weight: 600;
                             width: 100%;
                             text-align: center;
                             margin-bottom: 10px;
-                            
+
                         }
 
-                        .createAtBill{
+                        .createAtBill {
                             width: 100%;
                             text-align: center;
                             font-size: 16px;
                         }
 
-                        .box-button-update{
+                        .box-button-update {
                             display: flex;
                             justify-content: flex-end;
                             width: 100%;
                             gap: 10px;
-                            .button-edit{
-                                .component-button:hover{
+
+                            .button-edit {
+                                .component-button:hover {
                                     background-color: rgb(255, 29, 29) !important;
                                     color: white !important;
                                 }
                             }
 
-                            .button-update{
-                                .component-button:hover{
+                            .button-update {
+                                .component-button:hover {
                                     background-color: rgb(37, 87, 160) !important;
                                     color: white !important;
                                 }
                             }
 
-                            .button-restore{
-                                .component-button:hover{
+                            .button-restore {
+                                .component-button:hover {
                                     background-color: rgb(88, 88, 88) !important;
                                     color: white !important;
                                 }
                             }
 
-                            .button-addBill{
-                                .component-button:hover{
+                            .button-addBill {
+                                .component-button:hover {
                                     background-color: #09880E !important;
                                     color: white !important;
                                 }
                             }
                         }
 
-                        .header-addBill{
+                        .header-addBill {
                             display: flex;
                             width: 100%;
                             justify-content: flex-end;
 
-                            .button-addBill{
-                                .component-button:hover{
+                            .button-addBill {
+                                .component-button:hover {
                                     background-color: #09880E !important;
                                     color: white !important;
                                 }
                             }
                         }
 
-                        .content-form{
+                        .content-form {
                             display: flex;
                             gap: 20px;
 
-                            .column{
+                            .column {
                                 display: flex;
                                 flex-direction: column;
                                 gap: 15px;
@@ -129,19 +133,23 @@
                         }
 
                     }
-                    .showListDetail{
+
+                    .showListDetail {
                         margin-top: 10px;
                         border-bottom: 3px solid black;
+                        height: 365px;
 
-                        .header-search-product{
+                        .header-search-product {
                             width: 100%;
                             display: flex;
                             justify-content: space-between;
-
-                            .button-addDetailBill{
+                            margin-top: 15px;
+                            margin-bottom: 15px;
+                            .button-addDetailBill {
                                 justify-content: flex-end;
-                                padding: 10px 0px;
-                                .component-button:hover{
+                                
+
+                                .component-button:hover {
                                     background-color: #09880E !important;
                                     color: white !important;
                                 }
@@ -150,137 +158,194 @@
 
 
 
-                        .grid-custom-container{
-                            height: 230px;
-                            overflow-y: scroll;
+
+                        .grid-custom-container {
+                            height: 360px;
                             position: initial !important;
+
+                            .grid-listProduct{
+                                height: 115px;
+                            }
+                            .grid-ListProductInCart{
+                                overflow-y: scroll;
+                                height: 165px;    
+                            }
+
+                            .labelProductInCart{
+                                width: 100%;
+                                display: flex;
+                                justify-content: center;
+                                font-size: 15px;
+                                font-weight: 600;
+                                margin-top: 10px;
+                            }
+
+
                             th.k-table-th[aria-colindex="3"],
                             th.k-table-th[aria-colindex="4"],
                             th.k-table-th[aria-colindex="5"],
-                            th.k-table-th[aria-colindex="6"]{
+                            th.k-table-th[aria-colindex="6"] {
                                 justify-content: center;
                             }
-            
-                            td{
+
+                            td {
                                 text-wrap: nowrap !important;
                             }
 
                             th.k-table-th[aria-colindex="1"],
-                            th.k-table-th[aria-colindex="2"]{
+                            th.k-table-th[aria-colindex="2"] {
                                 justify-content: start;
                                 padding-left: 0;
                             }
 
-                            .column{
+                            .column {
                                 @include center-horizontal;
                             }
 
-                            .k-touch-action-auto[aria-colindex="1"]{
+                            .k-touch-action-auto[aria-colindex="1"] {
                                 padding: 8px 8px;
                             }
 
-                            .k-touch-action-auto[aria-colindex="2"]{
+                            .k-touch-action-auto[aria-colindex="2"] {
                                 padding-left: 0;
                             }
+
                             .column-image,
-                            .column-id-name{
-                               flex-direction: column;
+                            .column-id-name {
+                                flex-direction: column;
                             }
 
-                            .image{
+                            .image {
                                 width: 45px;
                                 height: 45px;
                                 border-radius: 5px;
                             }
 
                             th.k-table-th[aria-colindex="7"],
-                            .column-Status{
+                            .column-Status {
                                 display: flex;
                                 justify-content: flex-end;
                             }
 
-                            th.k-table-th[aria-colindex="8"]{
+                            th.k-table-th[aria-colindex="8"] {
                                 background-color: transparent;
                             }
-        
+
                             td.k-table-td[aria-colindex="8"] {
                                 border-left: 1px solid gray !important;
                                 height: 44px;
                                 overflow: visible;
                                 z-index: 1;
                             }
-        
+
                             td.k-table-td[aria-colindex="8"].active {
                                 z-index: 2 !important;
                             }
 
-                            .column-button{
+                            .column-button {
                                 // z-index: 10;
                                 position: relative;
                                 background-color: white !important;
-        
-                                .block-Action{
+
+                                .block-Action {
                                     display: inline-block;
-        
-                                    .block-buttonAction{
+
+                                    .block-buttonAction {
                                         .component-button {
                                             box-shadow: $box-shadow3;
                                             background-color: white !important;
                                             color: black !important;
-        
-        
+
+
                                             &:hover {
                                                 background-color: #464646 !important;
-        
+
                                             }
                                         }
-                                        
+
                                         .component-button:hover #idIconFontAwsome {
                                             color: white !important;
                                         }
                                     }
                                 }
-        
-                                .dropDown-action{
+
+                                .dropDown-action {
                                     position: absolute;
                                     top: 15px !important;
                                     left: -180px;
                                     // right: 50px;
                                     z-index: 10 !important;
-        
-                                    component-button{
+
+                                    component-button {
                                         width: 192px !important;
                                     }
                                 }
                             }
 
+                            .column-Quantity {
+                                @include center;
+                                gap: 5px;
+
+                                input[type=number]::-webkit-inner-spin-button,
+                                input[type=number]::-webkit-outer-spin-button {
+                                    -webkit-appearance: none;
+                                    margin: 0;
+                                }
+
+                                input[type=number] {
+                                    -moz-appearance: textfield;
+                                }
+
+                                .inputQuantity {
+                                    width: 40px !important;
+                                    height: 30px;
+                                    border-radius: 3px;
+                                    text-align: center;
+                                }
+                            }
+
+                            td.k-table-td[aria-colindex="7"] {
+                                display: flex;
+                                justify-content: flex-end;
+                                align-items: center;
+                                padding: 0 10px !important;
+                                height: 60px;
+                                    .block-Action{
+                                        @include center;
+                                        gap: 5px;
+                                    }
+                            }
+
+
+
                         }
 
 
-                        
+
                     }
                 }
 
-                .footer-detail{
+                .footer-detail {
                     width: 100%;
                     display: flex;
                     justify-content: flex-end;
                     padding-right: 10px;
                     padding-top: 10px;
 
-                    .box-TotalBill{
+
+                    .box-TotalBill {
                         display: flex;
                         gap: 35px;
                         box-shadow: $box-shadow3;
                         border-radius: 5px;
                         padding: 10px;
 
-                        .label-Total{
+                        .label-Total {
                             font-size: 17px;
                             font-weight: 600;
                         }
 
-                        .TotalBill{
+                        .TotalBill {
                             font-size: 17px;
                             font-weight: 600;
                         }
