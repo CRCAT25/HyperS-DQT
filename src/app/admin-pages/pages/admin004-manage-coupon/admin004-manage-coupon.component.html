@@ -4,7 +4,7 @@
             <div class="drawer-custom-container">
                 <!-- Header của drawer -->
                 <div class="header-drawer">
-                    <i class="fa-solid fa-angles-left icon-back" (click)="closeDrawer()"></i>
+                    <i class="fa-solid fa-angles-left icon-back" (click)="toggleDrawer()"></i>
                     <div class="label-detail-coupon" *ngIf="selectedCoupon.Code !== 0">Chi tiết khuyến mãi</div>
                     <div class="label-add-coupon" *ngIf="selectedCoupon.Code === 0">Thêm mới khuyến mãi</div>
                 </div>
@@ -12,35 +12,39 @@
                 <!-- Content của drawer -->
                 <div class="content-drawer">
                     <!-- Mã khuyến mãi -->
-                    <component-text-input [placeholder]="'Nhập mã khuyến mãi...'" [value]="selectedCoupon.IdCoupon" typeValue="number" [widthTextBox]="350" [widthBlock]="510"
+                    <component-text-input [placeholder]="'Nhập mã khuyến mãi...'" [value]="selectedCoupon.IdCoupon"
+                        typeValue="number" [widthTextBox]="350" [widthBlock]="510"
                         label="Mã khuyến mãi"></component-text-input>
 
                     <!-- Ngày áp dụng -->
                     <div class="date-apply-block">
                         <div class="label">Thời gian áp dụng</div>
                         <div class="date">
-                            <component-datepicker></component-datepicker>
+                            <component-datepicker #startDateCouponView [defaultDate]="startDateCoupon" [minDate]="minDateCoupon" [maxDate]="endDateCoupon"
+                                (datePicked)="getDateDetailCoupon($event, 'start')"></component-datepicker>
                             <span>Đến</span>
-                            <component-datepicker></component-datepicker>
+                            <component-datepicker #endDateCouponView [defaultDate]="endDateCoupon" [minDate]="startDateCoupon" [maxDate]="maxDateCoupon"
+                                (datePicked)="getDateDetailCoupon($event, 'end')"></component-datepicker>
                         </div>
                     </div>
 
                     <!-- Số lượng -->
                     <div class="quantity-block">
                         <!-- Số lượng -->
-                        <component-text-input [value]="selectedCoupon.Quantity" typeValue="number" [widthTextBox]="150" [widthBlock]="230"
-                            label="Số lượng"></component-text-input>
+                        <component-text-input [value]="selectedCoupon.Quantity" typeValue="number" [widthTextBox]="150"
+                            [widthBlock]="230" label="Số lượng"></component-text-input>
                         <!-- Còn lại -->
-                        <component-text-input [value]="selectedCoupon.RemainingQuantity" [readOnly]="true" typeValue="number" [widthTextBox]="150"
-                            [widthBlock]="230" label="Còn lại"></component-text-input>
+                        <component-text-input [value]="selectedCoupon.RemainingQuantity" [readOnly]="true"
+                            typeValue="number" [widthTextBox]="150" [widthBlock]="230"
+                            label="Còn lại"></component-text-input>
                     </div>
 
                     <!-- Đơn hàng tối thiểu được áp dụng -->
-                    <component-text-input class="text-input-min" typeValue="number" [widthTextBox]="250"
+                    <component-text-input [value]="selectedCoupon.MinBillPrice" class="text-input-min" typeValue="number" [widthTextBox]="250"
                         [widthBlock]="510" label="Đơn hàng tối thiểu được áp dụng"></component-text-input>
 
                     <!-- Chọn loại khuyến mãi -->
-                    <component-text-dropdown (getValue)="getCouponType($event)" [widthTextBox]="250" [widthBlock]="510"
+                    <component-text-dropdown [value]="{Code: selectedCoupon.CouponType, Type: checkCouponType(selectedCoupon.CouponType)}" (getValue)="getCouponType($event)" [widthTextBox]="250" [widthBlock]="510"
                         label="Loại khuyến mãi" [defaultItem]="defaultCouponType" [borderWidth]="1"
                         borderColor="rgb(182, 182, 182)" [heightTextBox]="30" [listItem]="listCouponType"
                         textField="Type" valueField="Code"></component-text-dropdown>
@@ -50,19 +54,19 @@
                         <!-- Giảm tối đa và % giảm -->
                         <div class="percent-discount-block">
                             <!-- Giảm tối đa -->
-                            <component-text-input typeValue="number" [widthTextBox]="130" [widthBlock]="230"
+                            <component-text-input [value]="selectedCoupon.MaxBillDiscount" typeValue="number" [widthTextBox]="130" [widthBlock]="230"
                                 label="Giảm tối đa"></component-text-input>
                             <!-- Giảm % -->
-                            <component-text-input class="input-percent-discount" typeValue="number"
-                                [widthTextBox]="150" [widthBlock]="230" label="Giảm %"></component-text-input>
+                            <component-text-input [value]="selectedCoupon.PercentDiscount" class="input-percent-discount" typeValue="number" [widthTextBox]="150"
+                                [widthBlock]="230" label="Giảm %"></component-text-input>
                         </div>
                     </ng-container>
 
                     <!-- Đối với loại khuyến mãi là giảm giá trực tiếp -->
                     <ng-container *ngIf="selectedCouponType === 1">
                         <!-- Giảm giá trực tiếp -->
-                        <component-text-input class="input-direct-discount" typeValue="number"
-                            [widthTextBox]="250" [widthBlock]="510" label="Giảm trực tiếp"></component-text-input>
+                        <component-text-input class="input-direct-discount" typeValue="number" [widthTextBox]="250"
+                            [widthBlock]="510" label="Giảm trực tiếp"></component-text-input>
                     </ng-container>
 
                     <!-- Nhóm khách hàng áp dụng -->
@@ -72,7 +76,8 @@
                         [listItem]="listGroupCustomer" textField="Group" valueField="Code"></component-text-dropdown>
 
                     <!-- Mô tả -->
-                    <component-text-area [label]="'Mô tả khuyến mãi'" [width]="350" [widthBox]="510" [fontsize]="13"></component-text-area>
+                    <component-text-area [label]="'Mô tả khuyến mãi'" [width]="350" [widthBox]="510"
+                        [fontsize]="13"></component-text-area>
 
                     <!-- Xem trước -->
                     <div class="review-block">
@@ -95,7 +100,7 @@
                 <div class="footer-drawer">
                     <!-- Button quay lại để đóng drawer -->
                     <component-button class="button-back" [borderWidth]="2" color="#000" borderColor="#000"
-                        borderStyle="solid" [value]="0" (sendValue)="closeDrawer()" [height]="36"
+                        borderStyle="solid" [value]="0" (sendValue)="toggleDrawer()" [height]="36"
                         classIconFontAwesome="fa-reply" bgColor="#fff" text="Quay lại"></component-button>
                 </div>
             </div>
@@ -118,7 +123,7 @@
 
                 <!-- Button thêm khuyến mãi-->
                 <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                    borderStyle="solid" [value]="0" (sendValue)="openDrawerToAdd()" [height]="36"
+                    borderStyle="solid" [value]="0" (sendValue)="toggleDrawer()" [height]="36"
                     classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"></component-button>
             </div>
 

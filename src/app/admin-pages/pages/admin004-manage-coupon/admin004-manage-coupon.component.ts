@@ -58,6 +58,14 @@ export class Admin004ManageCouponComponent implements OnInit {
   selectedCouponCode: number = 0;
   // Loại khuyến mãi được chọn
   selectedCouponType: number = -1;
+  // Ngày nhỏ nhất có thể của chi tiết coupon
+  minDateCoupon: Date = new Date(1900, 1, 1);
+  // Ngày lớn nhất có thể của chi tiết coupon
+  maxDateCoupon: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
+  // Ngày bắt đầu của chi tiết coupon
+  startDateCoupon: Date = null;
+  // Ngày kết thúc của chi tiết coupon
+  endDateCoupon: Date = null;
 
 
   // Danh sách đầy đủ các trạng thái của coupon
@@ -89,7 +97,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   defaultGroupCustomerApply: GroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
   // Coupon được chọn để hiển thị trên drawer
   selectedCoupon: DTOCoupon = {
-    Code:  0,
+    Code: 0,
     IdCoupon: '',
     Description: '',
     StartDate: null,
@@ -108,7 +116,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Loại coupon mặc định
   defaultCouponType: DTOCouponType = { Code: -1, Type: '-- Chọn loại khuyến mãi --' };
   // Nhóm khách hàng áp dụng mặc định
-  defaultGroupCustomer: DTOGroupCustomer = {Code: -1, Group: '-- Chọn nhóm khách hàng --'};
+  defaultGroupCustomer: DTOGroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
 
 
   // Filter cho trạng thái khuyến mãi
@@ -148,6 +156,8 @@ export class Admin004ManageCouponComponent implements OnInit {
   @ViewChild('rangeDateEnd') chidlEndDate!: DatepickerComponent;
   @ViewChild('group') childGroup!: TextDropdownComponent;
   @ViewChild('drawer') childDrawer!: DrawerComponent;
+  @ViewChild('startDateCouponView') childStartDateCoupon!: DatepickerComponent;
+  @ViewChild('endDateCouponView') childEndDateCoupon!: DatepickerComponent;
 
   constructor(private couponService: CouponService, private notiService: NotiService) { }
 
@@ -445,6 +455,7 @@ export class Admin004ManageCouponComponent implements OnInit {
     if (newStatus.value === 0 || newStatus.value === 1) {
       this.selectedCoupon = coupon;
       this.childDrawer.toggle();
+      this.bindingDetailCoupon();
       return;
     }
     if (newStatus.value === 2) coupon.Status = 1;
@@ -467,9 +478,9 @@ export class Admin004ManageCouponComponent implements OnInit {
   }
 
   // Đóng drawer
-  closeDrawer() {
+  toggleDrawer() {
     this.selectedCoupon = {
-      Code:  0,
+      Code: 0,
       IdCoupon: '',
       Description: '',
       StartDate: null,
@@ -486,37 +497,37 @@ export class Admin004ManageCouponComponent implements OnInit {
       ApplyTo: null
     };
     this.childDrawer.toggle();
-  }
-
-  // Mở drawer để thêm mới
-  openDrawerToAdd(){
-    this.selectedCoupon = {
-      Code:  0,
-      IdCoupon: '',
-      Description: '',
-      StartDate: null,
-      EndDate: null,
-      Quantity: 0,
-      RemainingQuantity: 0,
-      MinBillPrice: 0,
-      MaxBillDiscount: 0,
-      Status: 0,
-      Stage: 0,
-      CouponType: null,
-      DirectDiscount: 0,
-      PercentDiscount: 0,
-      ApplyTo: null
-    };
-    this.childDrawer.toggle();
+    this.startDateCoupon = null;
+    this.endDateCoupon = null;
+    this.childStartDateCoupon.resetDate();
+    this.childEndDateCoupon.resetDate();
+    this.selectedCouponType = -1;
   }
 
   // Chọn loại khuyến mãi
-  getCouponType(res: DTOCouponType){
+  getCouponType(res: DTOCouponType) {
     this.selectedCouponType = res.Code;
   }
 
   // Chọn nhóm khách hàng
-  getGroupCustomer(res: DTOGroupCustomer){
+  getGroupCustomer(res: DTOGroupCustomer) {
     console.log(res);
+  }
+
+  // Lấy giá trị từ datepicker
+  getDateDetailCoupon(value: any, type: string) {
+    if (type === 'start') {
+      this.startDateCoupon = value;
+    }
+    if (type === 'end') {
+      this.endDateCoupon = value;
+    }
+  }
+
+  // Binding dữ liệu chi tiết khuyến mãi
+  bindingDetailCoupon() {
+    this.startDateCoupon = new Date(this.selectedCoupon.StartDate);
+    this.endDateCoupon = new Date(this.selectedCoupon.EndDate);
+    this.selectedCouponType = this.selectedCoupon.CouponType;
   }
 }

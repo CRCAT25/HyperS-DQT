@@ -278,6 +278,14 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
     if (parseInt(res) > 48 || parseInt(res) < 35) {
       this.notiService.Show("Khoảng size nằm ngoài khoảng cho phép", "error");
+      if (type === 'start') {
+        this.childStartSize.valueTextBox = this.startSize.toString();
+        this.startSize = this.listSizeHandle[0].Size;
+      }
+      if (type === 'end') {
+        this.childEndSize.valueTextBox = this.endSize.toString();
+        this.endSize = this.listSizeHandle[this.listSizeHandle.length - 1].Size;
+      }
     }
     else {
       if (type === 'start') {
@@ -375,10 +383,10 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
           this.getProductSelected();
         }
         else {
-          if(product.IdProduct !== this.productSelected.IdProduct){
+          if (product.IdProduct !== this.productSelected.IdProduct) {
             this.notiService.Show("IdProduct đã bị trùng với 1 sản phẩm khác", "error");
           }
-          else{
+          else {
             product.Code = this.productSelected.Code;
             this.updateProduct(product, { value: 0 }, this.setPropertiesUpdate(), 'Cập nhật');
             this.getProductSelected();
