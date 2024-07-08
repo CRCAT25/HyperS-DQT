@@ -13,3 +13,19 @@ export class DTOCustomer {
     Permission?: number
     PermissionStr?: string
 }
+
+export class DTOGroupCustomer{
+    Code: number
+    Group: string
+}
+
+export const listGroupCustomer: DTOGroupCustomer[] = [
+    {
+        Code: 0,
+        Group: 'Tất cả'
+    },
+    {
+        Code: 1,
+        Group: 'Có tài khoản'
+    }
+]
