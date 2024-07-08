@@ -113,7 +113,7 @@
                             <component-button class="button-update" [borderWidth]="2" color="#2557A0"
                                 borderColor="#2557A0" borderStyle="solid" [value]="1"
                                 classIconFontAwesome="fa-floppy-disk" [height]="36" bgColor="#fff"
-                                text="Lưu bản nháp"></component-button>
+                                text="Lưu bản nháp" (sendValue)="addCoupon()"></component-button>
                         </ng-container>
 
                         <!-- Button cập nhật -->
@@ -128,23 +128,23 @@
                         <ng-container *ngIf="selectedCoupon.Status === 0">
                             <component-button class="button-send" [borderWidth]="2" color="#069DF1"
                                 borderColor="#069DF1" borderStyle="solid" [value]="1" classIconFontAwesome="fa-share"
-                                [height]="36" bgColor="#fff" text="Gửi duyệt"></component-button>
+                                [height]="36" bgColor="#fff" text="Gửi duyệt" (sendValue)="updateStatusDrawer($event)"></component-button>
                         </ng-container>
 
                         <!-- Button phê duyệt -->
                         <ng-container *ngIf="selectedCoupon.Status === 1">
                             <component-button class="button-approve" [borderWidth]="2" color="#09880E"
-                                borderColor="#09880E" borderStyle="solid" [value]="1"
+                                borderColor="#09880E" borderStyle="solid" [value]="2"
                                 classIconFontAwesome="fa-circle-check" [height]="36" bgColor="#fff"
-                                text="Phê duyệt"></component-button>
+                                text="Phê duyệt" (sendValue)="updateStatusDrawer($event)"></component-button>
                         </ng-container>
 
                         <!-- Button ngưng áp dụng -->
                         <ng-container *ngIf="selectedCoupon.Status === 2">
                             <component-button class="button-disapprove" [borderWidth]="2" color="#FF1D1D"
-                                borderColor="#FF1D1D" borderStyle="solid" [value]="1"
+                                borderColor="#FF1D1D" borderStyle="solid" [value]="3"
                                 classIconFontAwesome="fa-circle-minus" [height]="36" bgColor="#fff"
-                                text="Ngừng áp dụng"></component-button>
+                                text="Ngừng áp dụng" (sendValue)="updateStatusDrawer($event)"></component-button>
                         </ng-container>
                     </div>
                 </div>
@@ -245,7 +245,7 @@
                         <ng-template kendoGridCellTemplate let-item>
                             <div class="column-4">
                                 <div class="min-bill-price">Đơn tối thiểu: {{formatCurrency(item.MinBillPrice)}}</div>
-                                <ng-container *ngIf="item.PercentDiscout && item.DirectDiscout === 0">
+                                <ng-container *ngIf="item.PercentDiscount && !item.DirectDiscount">
                                     <div class="max-bill-discount">Giảm tối đa: {{formatCurrency(item.MaxBillDiscount)}}
                                     </div>
                                 </ng-container>

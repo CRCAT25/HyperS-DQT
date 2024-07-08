@@ -35,7 +35,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Chế độ hiển thị của drawer
   expandMode: DrawerMode = 'overlay';
   // Drawer đang được mở hay không
-  expanded = true;
+  expanded = false;
   // Chiều dài của drawer
   widthDrawer: number = 550;
   // Vị trị xuất hiện của drawer
@@ -565,7 +565,183 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Cập nhật chi tiết khuyến mãi
   updateDetailCoupon() {
     if (this.checkUpdatable()) {
-      console.log('Có thể cập nhật');
+      this.reviewCoupon = {
+        Code: this.selectedCoupon.Code,
+        IdCoupon: this.childIdCoupon.valueTextBox,
+        Description: this.childDescription.value,
+        StartDate: this.startDateCoupon,
+        EndDate: this.endDateCoupon,
+        Quantity: parseInt(this.childQuantity.valueTextBox),
+        RemainingQuantity: parseInt(this.childRemainingQuantity.valueTextBox),
+        MinBillPrice: parseInt(this.childMinBillPrice.valueTextBox),
+        MaxBillDiscount: this.childMaxBillPrice ? parseInt(this.childMaxBillPrice.valueTextBox) : null,
+        Status: this.selectedCoupon.Status,
+        Stage: this.selectedCoupon.Stage,
+        CouponType: this.childCouponType.value.Code,
+        DirectDiscount: this.childDirectDiscount ? parseInt(this.childDirectDiscount.valueTextBox) : null,
+        PercentDiscount: this.childPercentDiscount ? parseInt(this.childPercentDiscount.valueTextBox) : null,
+        ApplyTo: this.childApplyTo.value.Code
+      }
+      const req: DTOUpdateCouponRequest = {
+        Coupon: this.reviewCoupon,
+        Properties: [
+          'IdCoupon',
+          'Description',
+          'StartDate',
+          'EndDate',
+          'Quantity',
+          'RemainingQuantity',
+          'MinBillPrice',
+          'MaxBillDiscount',
+          'CouponType',
+          'DirectDiscount',
+          'PercentDiscount',
+          'ApplyTo'
+        ]
+      }
+      this.couponService.updateCoupon(req).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          this.notiService.Show('Cập nhật thành công', 'success');
+          this.toggleDrawerToAdd();
+          this.getListCoupon();
+        }
+        else {
+          this.notiService.Show('Lỗi: ' + res.ErrorString, 'error');
+        }
+      }, err => {
+        this.notiService.Show('Lỗi hệ thống ' + err, 'error');
+      })
+    }
+  }
+
+  // Thêm mới khuyến mãi
+  addCoupon(){
+    if (this.checkUpdatable()) {
+      this.reviewCoupon = {
+        Code: 0,
+        IdCoupon: this.childIdCoupon.valueTextBox,
+        Description: this.childDescription.value,
+        StartDate: this.startDateCoupon,
+        EndDate: this.endDateCoupon,
+        Quantity: parseInt(this.childQuantity.valueTextBox),
+        RemainingQuantity: parseInt(this.childRemainingQuantity.valueTextBox),
+        MinBillPrice: parseInt(this.childMinBillPrice.valueTextBox),
+        MaxBillDiscount: this.childMaxBillPrice ? parseInt(this.childMaxBillPrice.valueTextBox) : null,
+        Status: this.selectedCoupon.Status,
+        Stage: this.selectedCoupon.Stage,
+        CouponType: this.childCouponType.value.Code,
+        DirectDiscount: this.childDirectDiscount ? parseInt(this.childDirectDiscount.valueTextBox) : null,
+        PercentDiscount: this.childPercentDiscount ? parseInt(this.childPercentDiscount.valueTextBox) : null,
+        ApplyTo: this.childApplyTo.value.Code
+      }
+      const req: DTOUpdateCouponRequest = {
+        Coupon: this.reviewCoupon,
+        Properties: [
+          'IdCoupon',
+          'Description',
+          'StartDate',
+          'EndDate',
+          'Quantity',
+          'RemainingQuantity',
+          'MinBillPrice',
+          'MaxBillDiscount',
+          'CouponType',
+          'DirectDiscount',
+          'PercentDiscount',
+          'ApplyTo'
+        ]
+      }
+      this.couponService.updateCoupon(req).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          this.notiService.Show('Thêm mới khuyến mãi thành công', 'success');
+          this.toggleDrawerToAdd();
+          this.getListCoupon();
+        }
+        else {
+          this.notiService.Show('Lỗi: ' + res.ErrorString, 'error');
+        }
+      }, err => {
+        this.notiService.Show('Lỗi hệ thống ' + err, 'error');
+      })
+    }
+  }
+
+  // Cập nhật trạng thái bên trong drawer
+  updateStatusDrawer(res: any){
+    if (this.checkUpdatable()) {
+      if(this.selectedCoupon.Code === -1){
+        this.reviewCoupon = {
+          Code: 0,
+          IdCoupon: this.childIdCoupon.valueTextBox,
+          Description: this.childDescription.value,
+          StartDate: this.startDateCoupon,
+          EndDate: this.endDateCoupon,
+          Quantity: parseInt(this.childQuantity.valueTextBox),
+          RemainingQuantity: parseInt(this.childRemainingQuantity.valueTextBox),
+          MinBillPrice: parseInt(this.childMinBillPrice.valueTextBox),
+          MaxBillDiscount: this.childMaxBillPrice ? parseInt(this.childMaxBillPrice.valueTextBox) : null,
+          Status: res.value,
+          Stage: this.selectedCoupon.Stage,
+          CouponType: this.childCouponType.value.Code,
+          DirectDiscount: this.childDirectDiscount ? parseInt(this.childDirectDiscount.valueTextBox) : null,
+          PercentDiscount: this.childPercentDiscount ? parseInt(this.childPercentDiscount.valueTextBox) : null,
+          ApplyTo: this.childApplyTo.value.Code
+        }
+      }
+      else{
+        this.reviewCoupon = {
+          Code: this.selectedCoupon.Code,
+          IdCoupon: this.childIdCoupon.valueTextBox,
+          Description: this.childDescription.value,
+          StartDate: this.startDateCoupon,
+          EndDate: this.endDateCoupon,
+          Quantity: parseInt(this.childQuantity.valueTextBox),
+          RemainingQuantity: parseInt(this.childRemainingQuantity.valueTextBox),
+          MinBillPrice: parseInt(this.childMinBillPrice.valueTextBox),
+          MaxBillDiscount: this.childMaxBillPrice ? parseInt(this.childMaxBillPrice.valueTextBox) : null,
+          Status: res.value,
+          Stage: this.selectedCoupon.Stage,
+          CouponType: this.childCouponType.value.Code,
+          DirectDiscount: this.childDirectDiscount ? parseInt(this.childDirectDiscount.valueTextBox) : null,
+          PercentDiscount: this.childPercentDiscount ? parseInt(this.childPercentDiscount.valueTextBox) : null,
+          ApplyTo: this.childApplyTo.value.Code
+        }
+      }
+
+      this.reviewCoupon.StartDate = null;
+      this.reviewCoupon.EndDate = null;
+      
+      const req: DTOUpdateCouponRequest = {
+        Coupon: this.reviewCoupon,
+        Properties: [
+          'IdCoupon',
+          'Description',
+          // 'StartDate',
+          // 'EndDate',
+          'Quantity',
+          'RemainingQuantity',
+          'MinBillPrice',
+          'MaxBillDiscount',
+          'CouponType',
+          'DirectDiscount',
+          'PercentDiscount',
+          'ApplyTo',
+          'Status'
+        ]
+      }
+      console.log(req);
+      this.couponService.updateCoupon(req).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          this.notiService.Show('Cập nhật thành công', 'success');
+          this.toggleDrawerToAdd();
+          this.getListCoupon();
+        }
+        else {
+          this.notiService.Show('Lỗi: ' + res.ErrorString, 'error');
+        }
+      }, err => {
+        this.notiService.Show('Lỗi hệ thống ' + err, 'error');
+      })
     }
   }
 

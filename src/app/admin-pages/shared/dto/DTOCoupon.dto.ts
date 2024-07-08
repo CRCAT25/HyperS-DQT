@@ -4,8 +4,8 @@ export class DTOCoupon {
     Code: number = 0
     IdCoupon: string
     Description: string
-    StartDate: string
-    EndDate: string
+    StartDate: Date
+    EndDate: Date
     Quantity: number
     RemainingQuantity: number
     MinBillPrice: number
