@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs';
 import { AuthService } from '../../shared/services/account.service';
 import { takeUntil } from 'rxjs/operators';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
+import { CartService } from 'src/app/ecom-pages/shared/service/cart.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class LoginComponent {
   username: string = "";
   password: string = ""
 
-  constructor(private router: Router, private accoutService: AuthService, private notiService: NotiService){}
+  constructor(private router: Router, private accoutService: AuthService, private notiService: NotiService,private cartService: CartService){}
 
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
 
@@ -30,8 +31,8 @@ export class LoginComponent {
   APILogin(username: string ,password: string):void{
     this.accoutService.login(username, password).pipe(takeUntil(this.destroy)).subscribe(data => {
       try{
-        console.log(data);
         if(data.StatusCode == 0 && data.ObjectReturn.ResultLogin.Succeeded == true && data.ErrorString == ""){
+          console.log("Hello world");
           localStorage.setItem('token', data.ObjectReturn.ResultToken.Token)
           localStorage.setItem('codeCustomer', data.ObjectReturn.ResultCus)
           if(data.ObjectReturn.ResultRedirect == "jkwt"){
@@ -39,14 +40,14 @@ export class LoginComponent {
           }else if(data.ObjectReturn.ResultRedirect == "uije"){
             this.handleNavigate('/admin')
           }
+          this.cartService.getCountInCart(data.ObjectReturn.ResultCus)
+          this.cartService.emitCartUpdated()
           this.notiService.Show("Login Successfully!", "success")
-          return
+        }else{
+          this.notiService.Show(data.ErrorString, "error")
         }
-        this.notiService.Show("Login Fail!", "error")
-
-        
       }catch{
-
+        this.notiService.Show(data.ErrorString, "error")
       }
       finally{
 

@@ -15,6 +15,7 @@ import { DTOProcessToPayment } from '../../shared/dto/DTOProcessToPayment';
 import { DTOGuessCartProduct } from '../../shared/dto/DTOGuessCartProduct';
 import { UserService } from '../../shared/service/user.service';
 import { CartService } from '../../shared/service/cart.service';
+import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 
 @Component({
   selector: 'app-payment',
@@ -22,71 +23,74 @@ import { CartService } from '../../shared/service/cart.service';
   styleUrls: ['./payment.component.scss']
 })
 export class PaymentComponent implements OnInit, OnDestroy {
-  
   listProvince: DTOProvince[]
   listDistrict: DTODistrict[]
   listWard: DTOWard[]
   listProductPayment: DTOProductInCart[]
-  // processToPayment: DTOProcessToPayment ={
-  //   CustomerName: "",
-  //   PhoneNumber: "",
-  //   ListProduct: [],
-  //   ShippingAddress: "",
-  //   PaymentMethod: -1,
-  //   TotalBill: 0,
-  //   IsGuess: true
-  // }
-
+  processToPayment: DTOProcessToPayment ={
+    CustomerName: "",
+    OrdererPhoneNumber: "",
+    PhoneNumber: "",
+    ListProduct: [],
+    ShippingAddress: "",
+    PaymentMethod: -1,
+    TotalBill: 0,
+    IsGuess: true
+  }
   provinceSelected: DTOProvince
   districtSelected: DTODistrict
   wardSelected: DTOWard
   paymenMethodSelected: DTOPaymentMethod
-
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
-
   isLoadingProvince: boolean = false
   isLoadingDistrict: boolean = false
   isLoadingWard: boolean = false
-
-
   isDisableDistrict: boolean = true
   isDisableWard: boolean = true
   isDisableSpecific: boolean = true
-
   name:string = ""
   numberPhone: string = ""
+  recipientPhone: string = ""
+  road: string = ""
   specific: string = ""
-
-  listPaymentMethod: DTOPaymentMethod[] = [
+  listPaymentMethodUser: DTOPaymentMethod[] = [
     {id: 0, text: "COD", icon: "fa-money-bill"},
     {id: 1, text: "QR Payment", icon: "fa-qrcode"},
     {id: 2, text: "Bank Transfer", icon: "fa-credit-card"},
   ]
-  
+
+  listPaymentMethodGuess: DTOPaymentMethod[] = [
+    // {id: 0, text: "COD", icon: "fa-money-bill"},
+    {id: 1, text: "QR Payment", icon: "fa-qrcode"},
+    {id: 2, text: "Bank Transfer", icon: "fa-credit-card"},
+  ]
+
+
   defaultValueProvince: DTOProvince = {province_id: "", province_name: '-- Select --',  province_type: ""}
   defaultValueWard: DTOWard = {district_id: "", ward_id: "", ward_name:"-- Select --", ward_type: ""}
   defaulValueDistrict : DTODistrict ={district_id: "", district_name: "-- Select --", district_type: "", province_id: "", lat: "", lng: ""  }
-
   dataProvineFilter: DTOProvince[]
   dataDistrictFilter: DTODistrict[]
   dataWardFilter: DTOWard[]
-
-
   priceSubTotal: number = 0
   priceDelivery: number = 0
   priceCoupon: number = 0
   totalPrice: number = 0
-
   codeCustomer: number = 0
+  dataCustomer: DTOCustomer[]
+  isBuyOther: boolean = false
 
   constructor(private cartService: CartService,private userService: UserService ,private router: Router,private paymentService: PaymentService, private notiService: NotiService){
     this.APIGetProvince();
     this.codeCustomer = userService.codeCustomer
-
   }
 
   ngOnInit(): void {
     this.GETCaheItemSelected()
+    if(this.codeCustomer){
+      this.APIGetUser()
+    }
+
   }
 
   GETCaheItemSelected():void{
@@ -102,14 +106,11 @@ export class PaymentComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   APIGetProvince():void{
     this.isLoadingProvince = true
     this.paymentService.getProvince().pipe(takeUntil(this.destroy)).subscribe((data) => {
       try{
         if(data){
-          
           this.listProvince = data.results
           this.dataProvineFilter = this.listProvince
         }else{
@@ -164,6 +165,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
   APIPayment(info: DTOProcessToPayment):void{
     this.paymentService.payment(info).pipe(takeUntil(this.destroy)).subscribe(data => {
+      console.log(data);
       try{
         if(data.StatusCode == 0 && data.ErrorString == ""){
           if(data.ObjectReturn.ErrorList){
@@ -173,12 +175,14 @@ export class PaymentComponent implements OnInit, OnDestroy {
           return
           }
           if(this.codeCustomer == 0){
-            console.log('here');
             this.listProductPayment.forEach(element => {
               this.handleDeleteItemCart(element.Product.Code, element.SizeSelected.Code)
             });
           }
+          this.cartService.getCountInCart(this.codeCustomer)
+          this.cartService.emitCartUpdated()
           this.notiService.Show("Payment Successfully", "success")
+          this.router.navigate(['ecom/home'])
         }else{
           this.notiService.Show("Error when payment", "error")
         }
@@ -186,6 +190,18 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
       }finally{
 
+      }
+    })
+  }
+
+  APIGetUser():void{
+    this.userService.getMyInfo().pipe(takeUntil(this.destroy)).subscribe(data => {
+      if(data.StatusCode == 0 && data.ErrorString == "" && data.ObjectReturn.Data){
+        this.dataCustomer = data.ObjectReturn.Data
+        this.numberPhone = this.dataCustomer[0].PhoneNumber
+      }else{
+        this.notiService.Show("Error Check out", "error")
+        this.router.navigate(["ecom/cart"])
       }
     })
   }
@@ -238,7 +254,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
       }else{
         this.isDisableSpecific = true
       }
-
     }
   }
 
@@ -288,18 +303,38 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   handlePayment():void{
-    // if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
-    //   this.notiService.Show("Payment error", "error")
-    //   return
-    // }
-    // this.processToPayment.CustomerName = this.name
-    // this.processToPayment.PhoneNumber = this.numberPhone
-    // this.processToPayment.ShippingAddress = this.provinceSelected.province_name + ", " + this.districtSelected.district_name + ", " +  this.wardSelected.ward_name + ", " +  this.specific
-    // this.processToPayment.ListProduct = this.listProductPayment
-    // this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
-    // this.processToPayment.TotalBill = this.totalPrice
-
-    // this.APIPayment(this.processToPayment)
+    if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
+      if(this.isBuyOther){
+        if(!this.recipientPhone){
+          this.notiService.Show("Payment error", "error")
+          return
+        }
+      }else{
+        this.notiService.Show("Payment error", "error")
+          return
+      }
+    }
+  
+    if(this.codeCustomer == 0){
+      this.processToPayment.OrdererPhoneNumber = this.numberPhone
+      this.processToPayment.IsGuess = true
+      this.processToPayment.PhoneNumber = this.numberPhone
+    }else{
+      if(this.isBuyOther == true){
+        this.processToPayment.OrdererPhoneNumber = this.dataCustomer[0].PhoneNumber
+        this.processToPayment.PhoneNumber = this.recipientPhone
+      }else{
+        this.processToPayment.OrdererPhoneNumber = this.dataCustomer[0].PhoneNumber
+        this.processToPayment.PhoneNumber = this.dataCustomer[0].PhoneNumber
+      }
+      this.processToPayment.IsGuess = false
+    }
+    this.processToPayment.CustomerName = this.name
+    this.processToPayment.ShippingAddress = this.provinceSelected.province_name + ", " + this.districtSelected.district_name + ", " +  this.wardSelected.ward_name + ", " + this.road + ", " +this.specific
+    this.processToPayment.ListProduct = this.listProductPayment
+    this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
+    this.processToPayment.TotalBill = this.totalPrice
+    this.APIPayment(this.processToPayment)
   }
 
   ngOnDestroy(): void {
@@ -321,7 +356,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   log(){
-    console.log(this.listProductPayment);
+    console.log(this.isBuyOther);
   }
 
  

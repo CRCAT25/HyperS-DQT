@@ -4,8 +4,8 @@ export class DTOCoupon {
     Code: number = 0
     IdCoupon: string
     Description: string
-    StartDate: string
-    EndDate: string
+    StartDate: Date
+    EndDate: Date
     Quantity: number
     RemainingQuantity: number
     MinBillPrice: number
@@ -16,6 +16,11 @@ export class DTOCoupon {
     DirectDiscount?: number
     PercentDiscount?: number
     ApplyTo: number
+}
+
+export class DTOCouponType{
+    Code: number
+    Type: string
 }
 
 export const listActionChangeStatusCoupon: DTOStatus[] = [
@@ -43,5 +48,16 @@ export const listActionChangeStatusCoupon: DTOStatus[] = [
         Code: 4,
         Status: 'Ngừng áp dụng',
         Icon: 'fa-circle-minus'
+    }
+]
+
+export const listCouponType : DTOCouponType[] = [
+    {
+        Code: 0,
+        Type: 'Theo phần trăm'
+    },
+    {
+        Code: 1,
+        Type: 'Giảm giá trực tiếp'
     }
 ]

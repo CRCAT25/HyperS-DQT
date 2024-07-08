@@ -86,12 +86,12 @@
                 </ng-template>
             </kendo-grid-column>
 
-            <!-- Tên sản phẩm -->
-            <kendo-grid-column title="Tên sản phẩm" [width]="270">
+            <!-- Tên và Mã sản phẩm -->
+            <kendo-grid-column title="Sản phẩm" [width]="300">
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-3">
-                        <div class="idproduct">{{item.IdProduct}}</div>
-                        <div class="name" [title]="item.Name">{{item.Name}}</div>
+                        <div class="idproduct">ID: {{item.IdProduct}}</div>
+                        <div class="name" [title]="item.Name">Sản phẩm: {{item.Name}}</div>
                     </div>
                 </ng-template>
             </kendo-grid-column>

@@ -6,13 +6,25 @@
             </div>
             <div class="form-area">
                 <div class="textbox">
+                    <div class="title-item">
+                        <div class="title">Order phone number</div>
+                        <div *ngIf="codeCustomer" class="checkbox-order">
+                            <div class="title">Buy for others</div>
+                            <input [(ngModel)]="isBuyOther" type="checkbox" kendoCheckBox>
+                        </div>
+                        
+                    </div>
+                    <kendo-textbox [disabled]="!!codeCustomer" [(ngModel)]="numberPhone" class="input" placeholder="Your phone"></kendo-textbox>
+                </div> 
+                <div *ngIf="isBuyOther" class="textbox">
+                    <div class="title">Recipient's phone</div>
+                    <kendo-textbox [(ngModel)]="recipientPhone" class="input" placeholder="Your phone"></kendo-textbox>
+                </div> 
+                <div class="textbox">
                     <div class="title">Recipient's name</div>
                     <kendo-textbox [(ngModel)]="name" class="input" placeholder="Your name"></kendo-textbox>
                 </div> 
-                <div class="textbox">
-                    <div class="title">Phone number</div>
-                    <kendo-textbox [(ngModel)]="numberPhone" class="input" placeholder="Your phone"></kendo-textbox>
-                </div> 
+            
                 <div class="textbox">
                     <div class="title">Province</div>
                     <kendo-dropdownlist  
@@ -58,6 +70,11 @@
                        ></kendo-dropdownlist>
                 </div> 
                 <div class="textbox">
+                    <div class="title">Road</div>
+                    <kendo-textbox [(ngModel)]="road" [disabled]="isDisableSpecific" class="input" placeholder="Your specific address"></kendo-textbox>
+                </div> 
+
+                <div class="textbox">
                     <div class="title">Specific address</div>
                     <kendo-textbox [(ngModel)]="specific" [disabled]="isDisableSpecific" class="input" placeholder="Your specific address"></kendo-textbox>
                 </div> 
@@ -66,13 +83,20 @@
                     <div class="title title-method">
                         Payment method
                     </div>
-                    <div class="area-button-method">
-                        <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethod" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">
+                    <div *ngIf="codeCustomer != 0" class="area-button-method">
+                        <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethodUser" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">
                             <div  class="area">
                                 <i class="fa-solid {{p.icon}}"></i>
                                 <div>{{p.text}}</div>
                             </div>
-                          
+                        </div>
+                    </div>
+                    <div *ngIf="!codeCustomer" class="area-button-method">
+                        <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethodGuess" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">
+                            <div  class="area">
+                                <i class="fa-solid {{p.icon}}"></i>
+                                <div>{{p.text}}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,13 +181,10 @@
                                     <i class="fa-solid fa-trash"></i>
                                 </div>
                             </div>
-                           
                         </div>
                     </div>
                 </div>
-                
             </div>
-           
         </div>
     </div>
 </div>

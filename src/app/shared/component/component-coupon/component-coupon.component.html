@@ -1,0 +1,61 @@
+<div class="component-coupon">
+    <div class="bg-coupon">
+        <img [src]="srcBgCoupon" alt="">
+        <div class="block-1">
+            <i class="fa-solid fa-gift"></i>
+            <div>Tất cả hình thức thanh toán</div>
+        </div>
+        <div class="block-2" *ngIf="coupon">
+            <div class="id">{{coupon.IdCoupon}}</div>
+
+            <!-- Nếu là giảm theo phần trăm -->
+            <ng-container *ngIf="coupon.CouponType === 0">
+                <div class="block-discount-0">
+                    <div style="display: flex; gap: 5px;">
+                        <span>Giảm</span>
+                        <span style="font-weight: 600;">{{coupon.PercentDiscount}}%</span>
+                        <span>Giảm tối đa</span>
+                        <span style="font-weight: 600;">{{formatCurrency(coupon.MaxBillDiscount)}}</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <span>Đơn tối thiểu</span>
+                        <span style="font-weight: 600;">{{formatCurrency(coupon.MinBillPrice)}}</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <span>Hiệu lực</span>
+                        <span *ngIf="coupon.StartDate" style="font-weight: 600;">{{formatDateToDisplay(coupon.StartDate)}}</span>
+                        <span>đến</span>
+                        <span *ngIf="coupon.EndDate" style="font-weight: 600;">{{formatDateToDisplay(coupon.EndDate)}}</span>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- Nếu là giảm giá trực tiếp -->
+            <ng-container *ngIf="coupon.CouponType === 1">
+                <div class="block-discount-1">
+                    <div style="display: flex; gap: 5px;">
+                        <span>Giảm giá </span>
+                        <span style="font-weight: 600;">{{formatCurrency(coupon.DirectDiscount)}}</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <span>Đơn tối thiểu</span>
+                        <span style="font-weight: 600;">{{formatCurrency(coupon.MinBillPrice)}}</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <span>Hiệu lực</span>
+                        <span *ngIf="coupon.StartDate" style="font-weight: 600;">{{formatDateToDisplay(coupon.StartDate)}}</span>
+                        <span>đến</span>
+                        <span *ngIf="coupon.EndDate" style="font-weight: 600;">{{formatDateToDisplay(coupon.EndDate)}}</span>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+
+        <ng-container *ngIf="coupon">
+            <div class="block-3">
+                <div>Còn</div>
+                <div style="font-size: 11px;">{{coupon.RemainingQuantity}}</div>
+            </div>
+        </ng-container>
+    </div>
+</div>
