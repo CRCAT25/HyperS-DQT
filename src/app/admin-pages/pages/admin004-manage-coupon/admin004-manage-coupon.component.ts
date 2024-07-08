@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { DrawerComponent, DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { DTOStatus, listStageCoupon, listStatusCoupon } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
-import { DTOCoupon, listActionChangeStatusCoupon } from '../../shared/dto/DTOCoupon.dto';
+import { DTOCoupon, DTOCouponType, listActionChangeStatusCoupon, listCouponType } from '../../shared/dto/DTOCoupon.dto';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CouponService } from '../../shared/service/coupon.service';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
@@ -14,6 +14,7 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
 import { DTOUpdateCouponRequest } from '../../shared/dto/DTOUpdateCouponRequest.dto';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
+import { DTOGroupCustomer, listGroupCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 
 interface GroupCustomer {
   Code: number
@@ -32,7 +33,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Chế độ hiển thị của drawer
   expandMode: DrawerMode = 'overlay';
   // Drawer đang được mở hay không
-  expanded = true;
+  expanded = false;
   // Chiều dài của drawer
   widthDrawer: number = 550;
   // Vị trị xuất hiện của drawer
@@ -55,6 +56,8 @@ export class Admin004ManageCouponComponent implements OnInit {
   isLoading: boolean = true;
   // Code của coupon được chọn
   selectedCouponCode: number = 0;
+  // Loại khuyến mãi được chọn
+  selectedCouponType: number = -1;
 
 
   // Danh sách đầy đủ các trạng thái của coupon
@@ -76,6 +79,36 @@ export class Admin004ManageCouponComponent implements OnInit {
       Group: 'Có tài khoản'
     }
   ]
+  // Danh sách các loại khuyến mãi
+  listCouponType: DTOCouponType[] = listCouponType;
+  // Danh sách nhóm khách hàng áp dụng
+  listGroupCustomer: DTOGroupCustomer[] = listGroupCustomer;
+
+
+  // Đối tượng áp dụng mặc định
+  defaultGroupCustomerApply: GroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
+  // Coupon được chọn để hiển thị trên drawer
+  selectedCoupon: DTOCoupon = {
+    Code:  0,
+    IdCoupon: '',
+    Description: '',
+    StartDate: null,
+    EndDate: null,
+    Quantity: 0,
+    RemainingQuantity: 0,
+    MinBillPrice: 0,
+    MaxBillDiscount: 0,
+    Status: 0,
+    Stage: 0,
+    CouponType: null,
+    DirectDiscount: 0,
+    PercentDiscount: 0,
+    ApplyTo: null
+  }
+  // Loại coupon mặc định
+  defaultCouponType: DTOCouponType = { Code: -1, Type: '-- Chọn loại khuyến mãi --' };
+  // Nhóm khách hàng áp dụng mặc định
+  defaultGroupCustomer: DTOGroupCustomer = {Code: -1, Group: '-- Chọn nhóm khách hàng --'};
 
 
   // Filter cho trạng thái khuyến mãi
@@ -105,13 +138,6 @@ export class Admin004ManageCouponComponent implements OnInit {
       filters: [this.filterStatus]
     }
   }
-
-
-  // Đối tượng áp dụng mặc định
-  defaultGroupCustomerApply: GroupCustomer = { Code: -1, Group: '-- Chọn nhóm khách hàng --' };
-  // Coupon được chọn để hiển thị trên drawer
-  selectedCoupon: DTOCoupon = new DTOCoupon();
-
 
 
   // ViewChild
@@ -362,7 +388,7 @@ export class Admin004ManageCouponComponent implements OnInit {
         IsChecked: false
       }
     ]);
-    this.filterStatus.filters =[{ field: 'Status', operator: 'eq', value: 0 }];
+    this.filterStatus.filters = [{ field: 'Status', operator: 'eq', value: 0 }];
 
     // reset giai đoạn
     this.childStage.resetCheckList([{
@@ -401,7 +427,7 @@ export class Admin004ManageCouponComponent implements OnInit {
       }
     ],
       this.gridState.take = this.pageSize;
-    
+
     this.getListCoupon();
   }
 
@@ -415,23 +441,23 @@ export class Admin004ManageCouponComponent implements OnInit {
   }
 
   // Cập nhật trạng thái cho khuyến mãi
-  updateStatusCoupon(coupon: DTOCoupon, newStatus: any){
-    if(newStatus.value === 0 || newStatus.value === 1){
+  updateStatusCoupon(coupon: DTOCoupon, newStatus: any) {
+    if (newStatus.value === 0 || newStatus.value === 1) {
       this.selectedCoupon = coupon;
       this.childDrawer.toggle();
       return;
     }
-    if(newStatus.value === 2) coupon.Status = 1;
-    if(newStatus.value === 3) coupon.Status = 2;
-    if(newStatus.value === 4) coupon.Status = 3;
-    
+    if (newStatus.value === 2) coupon.Status = 1;
+    if (newStatus.value === 3) coupon.Status = 2;
+    if (newStatus.value === 4) coupon.Status = 3;
+
     const req: DTOUpdateCouponRequest = {
       Coupon: coupon,
       Properties: ['Status']
     }
     console.log(req);
     this.couponService.updateCoupon(req).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-      if(res.StatusCode === 0){
+      if (res.StatusCode === 0) {
         this.notiService.Show('Cập nhật trạng thái thành công', 'success');
         this.getListCoupon();
       }
@@ -441,8 +467,56 @@ export class Admin004ManageCouponComponent implements OnInit {
   }
 
   // Đóng drawer
-  closeDrawer(){
-    this.selectedCoupon = new DTOCoupon();
+  closeDrawer() {
+    this.selectedCoupon = {
+      Code:  0,
+      IdCoupon: '',
+      Description: '',
+      StartDate: null,
+      EndDate: null,
+      Quantity: 0,
+      RemainingQuantity: 0,
+      MinBillPrice: 0,
+      MaxBillDiscount: 0,
+      Status: 0,
+      Stage: 0,
+      CouponType: null,
+      DirectDiscount: 0,
+      PercentDiscount: 0,
+      ApplyTo: null
+    };
     this.childDrawer.toggle();
+  }
+
+  // Mở drawer để thêm mới
+  openDrawerToAdd(){
+    this.selectedCoupon = {
+      Code:  0,
+      IdCoupon: '',
+      Description: '',
+      StartDate: null,
+      EndDate: null,
+      Quantity: 0,
+      RemainingQuantity: 0,
+      MinBillPrice: 0,
+      MaxBillDiscount: 0,
+      Status: 0,
+      Stage: 0,
+      CouponType: null,
+      DirectDiscount: 0,
+      PercentDiscount: 0,
+      ApplyTo: null
+    };
+    this.childDrawer.toggle();
+  }
+
+  // Chọn loại khuyến mãi
+  getCouponType(res: DTOCouponType){
+    this.selectedCouponType = res.Code;
+  }
+
+  // Chọn nhóm khách hàng
+  getGroupCustomer(res: DTOGroupCustomer){
+    console.log(res);
   }
 }

@@ -18,6 +18,11 @@ export class DTOCoupon {
     ApplyTo: number
 }
 
+export class DTOCouponType{
+    Code: number
+    Type: string
+}
+
 export const listActionChangeStatusCoupon: DTOStatus[] = [
     {
         Code: 0,
@@ -43,5 +48,16 @@ export const listActionChangeStatusCoupon: DTOStatus[] = [
         Code: 4,
         Status: 'Ngừng áp dụng',
         Icon: 'fa-circle-minus'
+    }
+]
+
+export const listCouponType : DTOCouponType[] = [
+    {
+        Code: 0,
+        Type: 'Theo phần trăm'
+    },
+    {
+        Code: 1,
+        Type: 'Giảm giá trực tiếp'
     }
 ]

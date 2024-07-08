@@ -8,10 +8,6 @@
         kendo-drawer-container {
             height: 100%;
 
-            .k-overlay {
-                pointer-events: none;
-            }
-
             kendo-drawer{
                 .drawer-custom-container{
                     .header-drawer{
@@ -35,7 +31,95 @@
                         padding: 20px;
                         color: #000 !important;
                         display: flex;
+                        flex-direction: column;
+                        gap: 20px;
                         
+                        .date-apply-block{
+                            width: 100%;
+                            justify-content: space-between;
+                            @include center-vertical;
+
+                            .date{
+                                width: 350px;;
+                                @include center-vertical;
+                                justify-content: space-between;
+                            }
+                        }
+
+                        .quantity-block{
+                            width: 100%;
+                            justify-content: space-between;
+                            @include center-vertical;
+
+                            kendo-textbox{
+                                input.k-input-inner{
+                                    text-align: center;
+                                }
+                            }
+                        }
+
+                        .text-input-min{
+                            kendo-textbox{
+                                input.k-input-inner{
+                                    text-align: center;
+                                }
+                            }
+                        }
+
+                        .percent-discount-block{
+                            width: 100%;
+                            justify-content: space-between;
+                            @include center-vertical;
+
+                            .input-percent-discount{
+                                color: $color-cancel;
+                                kendo-textbox{
+                                    input.k-input-inner{
+                                        text-align: center;
+                                        color: $color-cancel;
+                                    }
+                                }
+                            }
+                        }
+
+                        .input-direct-discount{
+                            color: $color-cancel;
+                            kendo-textbox{
+                                input.k-input-inner{
+                                    text-align: center;
+                                    color: $color-cancel;
+                                }
+                            }
+                        }
+
+                        .review-block{
+                            width: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 10px;
+
+                            .label{
+                                font-size: 14px;
+                                text-transform: uppercase;
+                                font-weight: 600;
+                            }
+
+                            .review{
+                                width: 100%;
+
+                                .component-coupon{
+                                    @include center-horizontal;
+                                }
+                            }
+                        }
+
+                        component-text-area{
+                            .k-label{
+                                height: 30px;
+                                display: flex;
+                                align-items: center;
+                            }
+                        }
                     }
 
                     .footer-drawer{

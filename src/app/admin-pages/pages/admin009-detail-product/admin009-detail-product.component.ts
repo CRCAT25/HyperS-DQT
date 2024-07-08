@@ -423,6 +423,9 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     if (this.productSelected.Price !== parseInt(this.childPrice.valueTextBox)) {
       listProps.push('Price');
     }
+    if (this.productSelected.Description !== this.childDescription.value) {
+      listProps.push('Description');
+    }
     return listProps;
   }
 
