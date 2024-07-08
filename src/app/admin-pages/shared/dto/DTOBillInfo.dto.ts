@@ -2,7 +2,7 @@ export class DTOBillInfo {
     Code: number = 0;
     IDProduct: string;
     Name: string;
-    ImageUrl: string;
+    ImageURL: string;
     Size: string;
     Price: number;
     Quantity: number;

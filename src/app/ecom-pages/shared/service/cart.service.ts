@@ -27,10 +27,12 @@ export class CartService {
   getHttpOptions() {
     return {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'  // Thêm tiêu đề Access-Control-Allow-Origin
       })
     }
   }
+  
 
   setTotalItemProduct(code: number):void{
     this.getCountInCart(code).subscribe(data => {

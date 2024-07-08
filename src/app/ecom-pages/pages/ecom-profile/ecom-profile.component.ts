@@ -9,6 +9,7 @@ import { BillService } from '../../shared/service/bill.service';
 import { DTOBill } from 'src/app/admin-pages/shared/dto/DTOBill.dto';
 import { NotiService } from '../../shared/service/noti.service';
 import { DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ecom-profile',
@@ -25,11 +26,13 @@ export class EcomProfileComponent implements OnInit {
   expanded: boolean = false
   billSelected: DTOBill
   isLoading: boolean = true
+  
 
   constructor(
     private userService: UserService, 
     private billService: BillService,
-    private notiService: NotiService
+    private notiService: NotiService,
+    private router: Router
   ){
     this.APIGetProfile()
     this.APIGetListBillCustomer()
@@ -51,7 +54,6 @@ export class EcomProfileComponent implements OnInit {
       finally{
         this.isLoading = false
       }
-      console.log(data);
     })
   }
 
@@ -74,32 +76,66 @@ export class EcomProfileComponent implements OnInit {
   handleGetStatusByCode(Code: number): DTOStaTusByCode{
     let result: DTOStaTusByCode
     switch(Code){
-      case 2: 
+      // case 2: 
+      //   return {Code: Code ,Text: "Waiting for confirmation", Icon: "fa-hourglass-start", Color: ""}
+      // case 3:
+      //   return {Code: Code ,Text: "Being packed", Icon: "fa-box", Color: ""}
+      // case 4:
+      //   return {Code: Code ,Text: "Order canceled", Icon: "fa-xmark", Color: ""}
+      // case 5:
+      //   return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: ""}
+      // case 6:
+      //   return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: ""}
+      // case 7:
+      //   return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: ""}
+      // case 8:
+      //   return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: ""}
+      // case 9:
+      //   return {Code: Code ,Text: "Goods received", Icon: "fa-clipboard-check", Color: ""}
+      // case 10:
+      //   return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: ""}
+      // case 11:
+      //   return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: ""}
+      // case 12:
+      //   return {Code: Code ,Text: "Requests a return/exchange", Icon: "fa-code-pull-request", Color: ""}
+      // case 13:
+      //   return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: ""}
+      // case 14:
+      //   return {Code: Code ,Text: "Exchange completed", Icon: "fa-check", Color: ""}
+      case 1:
         return {Code: Code ,Text: "Waiting for confirmation", Icon: "fa-hourglass-start", Color: ""}
-      case 3:
-        return {Code: Code ,Text: "Being packed", Icon: "fa-box", Color: ""}
-      case 4:
+      case 2:
         return {Code: Code ,Text: "Order canceled", Icon: "fa-xmark", Color: ""}
+      case 3:
+        return {Code: Code ,Text: "Not confirmed", Icon: "fa-ban", Color: ""}
+      case 4:
+        return {Code: Code ,Text: "Confirmed", Icon: "fa-check", Color: ""}
       case 5:
-        return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: ""}
+        return {Code: Code ,Text: "Being packaged", Icon: "fa-box-open", Color: ""}
       case 6:
-        return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: ""}
+        return {Code: Code ,Text: "Packaged", Icon: "fa-box", Color: ""}
       case 7:
-        return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: ""}
-      case 8:
-        return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: ""}
+        return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: ""}
+      case 8 :
+        return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: ""}
       case 9:
-        return {Code: Code ,Text: "Goods received", Icon: "fa-clipboard-check", Color: ""}
+        return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: ""}
       case 10:
-        return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: ""}
-      case 11:
-        return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: ""}
+        return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: ""}
+      case 11: 
+        return {Code: Code ,Text: "Accept return", Icon: "fa-dolly", Color: ""}
       case 12:
-        return {Code: Code ,Text: "Requests a return/exchange", Icon: "fa-code-pull-request", Color: ""}
+        return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: ""}
       case 13:
-        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: ""}
+        return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: ""}
       case 14:
+        return {Code: Code ,Text: "Requests a return/exchange", Icon: "fa-code-pull-request", Color: ""}
+      case 15:
+        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: ""}
+      case 16:
         return {Code: Code ,Text: "Exchange completed", Icon: "fa-check", Color: ""}
+      case 17:
+        return {Code: Code ,Text: "Watting payment", Icon: "fa-stopwatch", Color: ""}
       }
       
       return result
@@ -130,6 +166,12 @@ export class EcomProfileComponent implements OnInit {
     if(data){
       this.billSelected = data
     }
+  }
+
+  logout():void{
+    localStorage.removeItem("token")
+    localStorage.removeItem("codeCustomer")
+    this.router.navigate(["ecom/home"])
   }
 
 }
