@@ -33,7 +33,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Chế độ hiển thị của drawer
   expandMode: DrawerMode = 'overlay';
   // Drawer đang được mở hay không
-  expanded = false;
+  expanded = true;
   // Chiều dài của drawer
   widthDrawer: number = 550;
   // Vị trị xuất hiện của drawer
