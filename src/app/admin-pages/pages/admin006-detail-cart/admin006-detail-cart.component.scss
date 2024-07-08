@@ -61,8 +61,7 @@
                             width: 100%;
                             text-align: center;
                             margin-bottom: 10px;
-                            font-size: 20px;
-
+                            
                         }
 
                         .createAtBill{
@@ -71,23 +70,50 @@
                             font-size: 16px;
                         }
 
-                        .box{
+                        .box-button-update{
                             display: flex;
-
-                            .label{
-                                width: 200px;
+                            justify-content: flex-end;
+                            width: 100%;
+                            gap: 10px;
+                            .button-edit{
+                                .component-button:hover{
+                                    background-color: rgb(255, 29, 29) !important;
+                                    color: white !important;
+                                }
                             }
 
-                            .addressBill{
-                                width: calc(100% - 200px);
+                            .button-update{
+                                .component-button:hover{
+                                    background-color: rgb(37, 87, 160) !important;
+                                    color: white !important;
+                                }
+                            }
+
+                            .button-restore{
+                                .component-button:hover{
+                                    background-color: rgb(88, 88, 88) !important;
+                                    color: white !important;
+                                }
                             }
                         }
+
+                        .content-form{
+                            display: flex;
+                            gap: 20px;
+
+                            .column{
+                                display: flex;
+                                flex-direction: column;
+                                gap: 15px;
+                            }
+                        }
+
                     }
                     .showListDetail{
                         margin-top: 10px;
                         border-bottom: 3px solid black;
                         .grid-custom-container{
-                            height: 500px;
+                            height: 350px;
                             position: initial !important;
                             th.k-table-th[aria-colindex="3"],
                             th.k-table-th[aria-colindex="4"],

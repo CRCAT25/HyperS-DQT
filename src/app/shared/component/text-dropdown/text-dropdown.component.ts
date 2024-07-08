@@ -23,11 +23,25 @@ export class TextDropdownComponent implements OnInit {
   @Input() valueField: string;
   @Input() size: number = 13;
   @Input() value: any;
+  @Input() disabled: boolean = false;
+  @Input() isLoading: boolean = false;
   @Output() getValue = new EventEmitter();
+  @Output() valueChange = new EventEmitter(); // Thêm sự kiện valueChange
+  @Input() hasEmitValueChange: number = 0; // Truyền Output valueChange nếu có input hasEmitValueChange != 0
+
 
   onClickItem(value: any){
     this.getValue.emit(value);
+    if(this.hasEmitValueChange !== 0){
+      this.valueItemChange(value);
+    }
   }
+
+  valueItemChange(value: any){
+    this.value = value; 
+    this.valueChange.emit(value);
+  }
+
 
   ngOnInit(): void {
     if(!this.value){

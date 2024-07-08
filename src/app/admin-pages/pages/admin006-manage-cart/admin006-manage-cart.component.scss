@@ -28,6 +28,7 @@
                 gap: 25px;
                 height: 40px;
                 margin-top: 10px;
+                margin-bottom: 10px;
                 
                 .k-input{
                     min-width: 955px !important;
@@ -91,9 +92,11 @@
                     }
 
                     
-                    // .row-status i {
-                    //     margin-right: 8px;
-                    // }
+                    .row-status {
+                        // background-color: red;
+                        // font-weight: 600;
+                        justify-content: flex-end;
+                    }
                     
                 }
 
@@ -145,7 +148,7 @@
 
             .showList{
                 .grid-custom-container{
-                    height: calc(100vh - 61px - 60px - 32px - 40px - 10px);
+                    height: calc(100vh - 61px - 60px - 32px - 40px - 10px - 10px);
 
                     th.k-table-th[aria-colindex="2"],
                     th.k-table-th[aria-colindex="4"],

@@ -12,6 +12,8 @@
     [data]="listItem"
     [(value)]="value"
     (valueChange)="onClickItem($event)"
+    [disabled]="disabled"
+    [loading]="isLoading"
     [ngStyle]="{
     'width.px': widthTextBox,
     'height.px': heightTextBox,

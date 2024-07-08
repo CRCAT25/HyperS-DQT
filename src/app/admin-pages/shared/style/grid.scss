@@ -101,6 +101,7 @@
             }
 
             thead.k-table-thead {
+                color: #000;
                 th.k-header.k-table-th {
                     border: none;
                 }
@@ -124,7 +125,7 @@
             }
 
             .k-grid-header {
-                padding: 0 !important;
+                // padding: 0 !important;
             }
 
             .k-checkbox:checked,

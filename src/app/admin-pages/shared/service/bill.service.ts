@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { DTOUpdateBillRequest } from '../dto/DTOUpdateBillRequest.dto';
+import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToPayment';
 
 @Injectable({
     providedIn: 'root'
@@ -38,6 +39,7 @@ export class BillService {
 
     updateBill(req: DTOUpdateBillRequest): Observable<any> {
         const httpOptions = this.getHttpOptions();
+        const requestNull: DTOProcessToPayment = null;
         return this.httpClient.post(this.urlUpdateBill, req, httpOptions)
           .pipe(
             catchError(error => {

@@ -1,11 +1,10 @@
-import { listBill } from './../../shared/dto/DTOBill.dto';
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DTOStatus, listStatus, filteredStatusList } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
 import { GridDataResult, SelectionEvent } from '@progress/kendo-angular-grid';
 import { BillService } from 'src/app/admin-pages/shared/service/bill.service'
-import { takeUntil } from 'rxjs/operators';
-import { ReplaySubject } from 'rxjs';
+import { catchError, takeUntil } from 'rxjs/operators';
+import { of, ReplaySubject } from 'rxjs';
 import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
 import { formatDate } from '@progress/kendo-angular-intl';
 import { DTOBill } from '../../shared/dto/DTOBill.dto';
@@ -18,6 +17,8 @@ import { DatepickerComponent } from '../../shared/component/datepicker/datepicke
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
 import { LayoutService } from '../../shared/service/layout.service';
 import { Router } from '@angular/router';
+import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToPayment';
+import { DTOUpdateBill } from '../../shared/dto/DTOUpdateBill.dto';
 
 @Component({
   selector: 'app-admin006-manage-cart',
@@ -36,6 +37,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
   listBillPage: GridDataResult;
   listBillAllDate: GridDataResult;
+  listBillWaitingAllDate: GridDataResult;
   listBillNowDate: GridDataResult;
   pageSize: number = 4;
   listPageSize: number[] = [1, 2, 3, 4];
@@ -58,8 +60,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   itemBill: DTOBill;
   listBillNew: DTOBill[];
   statusCounts: { [key: number]: number } = {};
+  // statusCountsAllDate: { [key: number]: number } = {};
+  statusCountsAllDate: { [statusCode: string]: { count: number; earliestDate: string } } = {};
   listBillPageAllStatus: GridDataResult;
-  reasonFail: string;
+  reasonFail: string = "";
   isDetail: boolean = false;
   listBillInfo: DTOBillInfo[];
   isShowAlertStatus: boolean = false;
@@ -131,6 +135,21 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
   }
 
+  gridStateAllDate: State = {
+    skip: 0,
+    sort: [
+      {
+        field: "Code",
+        dir: "asc"
+      }
+    ],
+    filter: {
+      logic: "and",
+      filters: [
+      ]
+    }
+  }
+
   gridStateWaitingAllDate: State = {
     skip: 0,
     sort: [
@@ -175,10 +194,14 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit(): void {
     this.getListBill();
-    this.getListBillAllDate();
+    
     this.isShowAlertStatus = !this.isShowAlertStatus;
     this.getListBillNowDate();
     this.setFilterExpStatus();
+  }
+
+  log(){
+    console.log(this.listBillAllDate);
   }
 
   ngOnDestroy(): void {
@@ -344,7 +367,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.isDetail = false;
       this.getListBill();
       this.setFilterExpStatus();
-      this.getListBillAllDate();
+      this.getListBillWaitingAllDate();
     }
     if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonReturnDate'))) {
       this.childRangeDateStart.defaultDate = this.earliestDates;
@@ -368,6 +391,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.billService.getListBill(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listBillPage = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
       // console.log(this.listBillPage.data);   
+      this.getListBillWaitingAllDate();
        this.isLoading = false;
 
     })
@@ -375,36 +399,94 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   }
 
   //Lấy danh sách bill chờ xác nhận
-  getListBillAllDate(){
-    this.billService.getListBill(this.gridStateWaitingAllDate).pipe(takeUntil(this.destroy)).subscribe(list => {
-      this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-      // console.log(this.listBillAllDate.data.length);
-      this.countBillWaiting = this.listBillAllDate.data.length;
-      console.log(this.countBillWaiting);
-      this.findEarliestDate();
-      this.isLoading = false;
-
-    })
+  getListBillWaitingAllDate() {
+    this.isLoading = true;
+    this.billService.getListBill(this.gridStateWaitingAllDate)
+      .pipe(
+        takeUntil(this.destroy),
+        catchError(error => {
+          console.error('Error fetching listBillWaitingAllDate:', error);
+          this.isLoading = false;
+          alert('An error occurred while fetching the waiting bills for all dates.');
+          return of(null); // Trả về null để tiếp tục chuỗi Observable
+        })
+      )
+      .subscribe(list => {
+        try {
+          if (!list || !list.ObjectReturn) {
+            throw new Error('Invalid data structure');
+          }
+          this.listBillWaitingAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+          this.countBillWaiting = this.listBillWaitingAllDate.data.length;
+          this.findEarliestDate();
+        } catch (error) {
+          console.error('Error processing listBillWaitingAllDate:', error);
+          alert('An error occurred while processing the waiting bills for all dates.');
+        } finally {
+          this.isLoading = false;
+        }
+      });
+  
+    this.isLoading = true;
+    this.billService.getListBill(this.gridStateAllDate)
+      .pipe(
+        takeUntil(this.destroy),
+        catchError(error => {
+          console.error('Error fetching listBillAllDate:', error);
+          this.isLoading = false;
+          alert('An error occurred while fetching all bills.');
+          return of(null); // Trả về null để tiếp tục chuỗi Observable
+        })
+      )
+      .subscribe(list => {
+        try {
+          if (!list || !list.ObjectReturn) {
+            throw new Error('Invalid data structure');
+          }
+          this.listBillAllDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+        } catch (error) {
+          console.error('Error processing listBillAllDate:', error);
+          alert('An error occurred while processing all bills.');
+        } finally {
+          this.isLoading = false;
+        }
+      });
   }
-
-  getListBillNowDate(){
-    this.billService.getListBill(this.gridStateBillNowDate).pipe(takeUntil(this.destroy)).subscribe(list => {
-      this.listBillNowDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-      this.countBillNowDate = this.listBillNowDate.data.length;
-
-    })
+  
+  getListBillNowDate() {
+    this.billService.getListBill(this.gridStateBillNowDate)
+      .pipe(
+        takeUntil(this.destroy),
+        catchError(error => {
+          console.error('Error fetching listBillNowDate:', error);
+          alert('An error occurred while fetching the bills for today.');
+          return of(null); // Trả về null để tiếp tục chuỗi Observable
+        })
+      )
+      .subscribe(list => {
+        try {
+          if (!list || !list.ObjectReturn) {
+            throw new Error('Invalid data structure');
+          }
+          this.listBillNowDate = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+          this.countBillNowDate = this.listBillNowDate.data.length;
+        } catch (error) {
+          console.error('Error processing listBillNowDate:', error);
+          alert('An error occurred while processing the bills for today.');
+        }
+      });
   }
 
   //Tìm ngày xa nhất của status Chờ xác nhận
   findEarliestDate() {
-    if (!this.listBillAllDate.data || this.listBillAllDate.data.length === 0) {
+    if (!this.listBillWaitingAllDate.data || this.listBillWaitingAllDate.data.length === 0) {
       return null;
     }
   
-    const earliestDate = this.listBillAllDate.data.reduce((earliest, bill) => {
+    const earliestDate = this.listBillWaitingAllDate.data.reduce((earliest, bill) => {
       const createDate = new Date(bill.CreateAt);
       return createDate < earliest ? createDate : earliest;
-    }, new Date(this.listBillAllDate.data[0].CreateAt));
+    }, new Date(this.listBillWaitingAllDate.data[0].CreateAt));
     
     this.earliestDate = this.formattedCreateAtNoTime(earliestDate);
     this.earliestDates = earliestDate;
@@ -416,11 +498,33 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
 
   countStatuses() {
-    this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
-      const status = bill.Status;
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    }, {});
+    if(this.isLoading== true){
+      this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
+        const status = bill.Status;
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, {});
+  
+      if(this.listBillAllDate){
+        this.statusCountsAllDate = this.listBillAllDate.data.reduce((acc, bill) => {
+          const status = bill.Status;
+          const date = bill.CreateAt;
+        
+          if (!acc[status]) {
+            acc[status] = { count: 0, earliestDate: date };
+          }
+        
+          acc[status].count += 1;
+        
+          if (new Date(date) < new Date(acc[status].earliestDate)) {
+            acc[status].earliestDate = date;
+          }
+        
+          return acc;
+        }, {});
+      }
+      
+    }
     // this.animateValue(this.obj,this.statusCounts[2], 50000);
     // console.log(typeof(this.statusCounts[2]));
 
@@ -585,20 +689,25 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   updateStatusBill(bill: DTOBill, obj: any) {
     if (obj.value >= 2) {
       bill.Status = obj.value;
-      const request: DTOUpdateBillRequest = {
+      const requestUpdateBill: DTOUpdateBill = {
         CodeBill: bill.Code,
         Status: obj.value,
         ListOfBillInfo: bill.ListBillInfo,
         Note: this.reasonFail,
       }
 
-      request.ListOfBillInfo.forEach(billInf => {
+      requestUpdateBill.ListOfBillInfo.forEach(billInf => {
         billInf.Status = obj.value;
       });
+
+      const request: DTOUpdateBillRequest = {
+        DTOUpdateBill: requestUpdateBill,
+        DTOProceedToPayment: null
+      }
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
         if (res.StatusCode === 0) {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")
-          this.getListBillAllDate();
+          this.getListBillWaitingAllDate();
           this.getListBill();
           this.setFilterExpStatus();
           this.isShowAlert = false;
@@ -618,39 +727,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.endDate = this.currentDate;
     this.setFilterDate();
   }
-
-//   animateCount(targetCount: number) {
-//     let start = 0;
-//     const duration = 2000; 
-//     const frameRate = 20; // 20 ms per frame
-//     const totalFrames = duration / frameRate;
-//     const increment = targetCount / totalFrames; 
-
-//     const step = () => {
-//         start += increment;
-//         if (start < targetCount) {
-//             this.animatedCount = Math.round(start);
-//             requestAnimationFrame(step);
-//         } else {
-//             this.animatedCount = targetCount;
-//         }
-//     };
-
-//     requestAnimationFrame(step);
-// }
-
-// animateValue(obj: any, end: number, duration: number) {
-//   let startTimestamp: any = null;
-//   const step = (timestamp: number) => {
-//     if (!startTimestamp) startTimestamp = timestamp;
-//     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-//     obj.innerHTML = Math.floor(progress * (end - 0) + 0);
-//     if (progress < 1) {
-//       window.requestAnimationFrame(step);
-//     }
-//   };
-//   window.requestAnimationFrame(step);
-// }
 
  
   test(obj: any) {

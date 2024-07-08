@@ -1,5 +1,5 @@
 import { DTOStatus, listStatus, listStatusNoView } from '../../shared/dto/DTOStatus.dto';
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DTOBillInfo } from '../../shared/dto/DTOBillInfo.dto';
 import { DTOBill } from '../../shared/dto/DTOBill.dto';
 import { DTOUpdateBillInfoRequest } from '../../shared/dto/DTOUpdateBillInfo.dto';
@@ -7,13 +7,23 @@ import { DTOUpdateBillRequest } from '../../shared/dto/DTOUpdateBillRequest.dto'
 import { BillService } from '../../shared/service/bill.service';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
+import { PaymentService } from 'src/app/ecom-pages/shared/service/payment.service';
+import { takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { DTODistrict, DTOProvince, DTOWard } from 'src/app/ecom-pages/shared/dto/DTOProvince';
+import { DTOUpdateBill } from '../../shared/dto/DTOUpdateBill.dto';
 
+
+interface PaymentMethod {
+  Code: number;
+  Method: string;
+}
 @Component({
   selector: 'app-admin006-detail-cart',
   templateUrl: './admin006-detail-cart.component.html',
   styleUrls: ['./admin006-detail-cart.component.scss']
 })
-export class Admin006DetailCartComponent implements OnInit {
+export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @Output() datePicked = new EventEmitter();
   @Input() listData: DTOBillInfo[];
   @Input() itemData: DTOBill;
@@ -27,20 +37,76 @@ export class Admin006DetailCartComponent implements OnInit {
   objItemStatus: any;
   isShowAlert: boolean = false;
   reasonFail: string;
+  isEdit: boolean = false;
+  specialAddress: string;
+  PaymentMethodDropDown: PaymentMethod[] = [
+    {
+      Code: 0,
+      Method: "Ship COD"
+    },
+    {
+      Code: 1,
+      Method: "Momo"
+    }
+  ];
+
+  listProvince: DTOProvince[]
+  listDistrict: DTODistrict[]
+  listWard: DTOWard[]
+  
+  destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
+
+  isLoadingProvince: boolean = false
+  isLoadingDistrict: boolean = false
+  isLoadingWard: boolean = false
+
+
+  isDisableDistrict: boolean = true
+  isDisableWard: boolean = true
+  isDisableSpecific: boolean = true
+
+  provinceSelected: DTOProvince
+  districtSelected: DTODistrict
+  wardSelected: DTOWard
+
+  provinceBiding: string;
+  districtBiding: string;
+  wardBiding: string;
+  isDisabled: boolean = true;
+
 
   ngOnInit(): void {
     this.getListBillInfo();
+    this.APIGetProvince();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
 
   constructor(private billService: BillService,
-    private notiService: NotiService,){}
+    private notiService: NotiService,
+    private paymentService: PaymentService){}
+
+
 
 
   getListBillInfo(){
     this.listBillInfo = this.listData;
     this.itemBill = this.itemData;
+    this.specialAddress = this.getSpecialAddress(this.itemBill.ShippingAddress);
   }
+
+  getSpecialAddress(address: string): string {
+    this.wardBiding = address.split(',')[1];
+    this.districtBiding = address.split(',')[2];
+    this.provinceBiding = address.split(',')[3];
+    return address.split(',')[0];
+  }
+
+
 
   formatCurrency(value: number): string {
     if (typeof value === 'number' && !isNaN(value)) {
@@ -98,6 +164,163 @@ export class Admin006DetailCartComponent implements OnInit {
     }
   }
 
+  APIGetProvince():void{
+    this.isLoadingProvince = true
+    this.paymentService.getProvince().pipe(takeUntil(this.destroy)).subscribe((data) => {
+      try{
+        if(data){
+          
+          this.listProvince = data.results
+        }else{
+          this.notiService.Show("Error when fetching data", "error")
+        }
+      }catch{
+
+      }finally{
+        this.isLoadingProvince = false
+      }
+      
+    })
+  }
+
+  APIGetDistrict(idProvince: string):void{
+    this.isLoadingDistrict = true
+    this.paymentService.getDistrict(idProvince).pipe(takeUntil(this.destroy)).subscribe((data) => {
+      try{
+        if(data){
+          this.listDistrict = data.results
+        }else{
+          this.notiService.Show("Error when fetching data", "error")
+        }
+      }catch{
+
+      }finally{
+        this.isLoadingDistrict = false
+      }
+      
+    })
+  }
+
+  APIGetWard(idDistrict: string):void{
+    this.isLoadingWard = true
+    this.paymentService.getWard(idDistrict).pipe(takeUntil(this.destroy)).subscribe((data) => {
+      try{
+        if(data){
+          this.listWard = data.results
+        }else{
+          this.notiService.Show("Error when fetching data", "error")
+        }
+      }catch{
+
+      }finally{
+        this.isLoadingWard = false
+      }
+      
+    })
+  }
+
+  handleChangeProvince(obj: any):void{
+    this.provinceSelected = obj;
+    this.APIGetProvince();
+    if(this.provinceSelected){
+      this.districtSelected = null
+      this.wardSelected = null
+      this.isDisableWard = true
+      if(this.provinceSelected.province_id != ""){
+        this.isDisableDistrict = false
+      }else{
+        this.isDisableDistrict = true
+      }
+
+      this.APIGetDistrict(this.provinceSelected.province_id)
+      return
+    }
+  }
+
+  handleChangeDistrict(obj: any):void{
+    this.districtSelected = obj;
+    this.APIGetDistrict(this.provinceSelected.province_id)
+
+    if(this.districtSelected){  
+      this.wardSelected = null
+      if(this.provinceSelected.province_id != ""){
+        this.isDisableWard = false
+      }else{
+        this.isDisableWard = true
+      }
+      this.isDisableWard = false
+      this.APIGetWard(this.districtSelected.district_id)
+      return
+    }
+  }
+
+  handleChangeWard(obj: any):void{
+    this.APIGetWard(this.districtSelected.district_id)
+    this.wardSelected = obj;
+    if(this.wardSelected){
+      if(this.provinceSelected.province_id != ""){
+        this.isDisableSpecific = false
+      }else{
+        this.isDisableSpecific = true
+      }
+
+    }
+  }
+
+  setDTOAddress(type: number){
+    if(type == 1){
+      if(this.wardSelected){
+        return {
+          ward_name: this.wardSelected.ward_name
+        }
+      } else{
+        return {
+          ward_name: this.wardBiding
+        }
+      }
+    } else if(type == 2){
+      if(this.districtSelected){
+        return {
+          district_name: this.districtSelected.district_name
+        }
+      } else{
+        return {
+          district_name: this.districtBiding
+        }
+      }
+    } else if(type == 3){
+      if(this.provinceSelected){
+        // this.districtSelected = {
+        //   district_name: "",
+        // };
+        return {
+          province_name: this.provinceSelected.province_name
+        }
+      } else{
+        return {
+          province_name: this.provinceBiding
+        }
+      }
+      
+    }
+    return {}
+  }
+
+  setDTOPaymentMethod(){
+    if(this.itemBill.PaymentMethod == 0){
+      return {
+        Code: 0,
+        Method: "Ship COD"
+      } 
+    } else if(this.itemBill.PaymentMethod == 1){
+      return {
+        Code: 1,
+        Method: "Momo"
+      } 
+    }
+    return {};
+  }
+
   ClickButtonAction(id: number, event: Event, idStatus: number) {
     const status = this.listStatus.find(status => status.Code === idStatus);
     this.listNextStatus = status ? status.ListNextStatus : null;
@@ -134,6 +357,17 @@ export class Admin006DetailCartComponent implements OnInit {
     if (this.isShowAlert == true && ((event.target as HTMLElement).closest('.buttonNoChange'))) {
       this.isShowAlert = false;
     }
+    if (this.isEdit == false && ((event.target as HTMLElement).closest('.button-edit'))) {
+      this.isEdit = !this.isEdit;
+      this.isDisabled = false;
+    }
+    if (this.isEdit == true && (((event.target as HTMLElement).closest('.button-update'))) || ((event.target as HTMLElement).closest('.button-restore'))) {
+      this.isEdit = false;
+      this.isDisabled = !this.isDisabled;
+      this.isDisableDistrict = !this.isDisableDistrict;
+      this.isDisableWard = !this.isDisableWard;
+      this.isDisableSpecific = !this.isDisableSpecific;
+    }
   }
 
   //Nhận text của text-area
@@ -142,23 +376,26 @@ export class Admin006DetailCartComponent implements OnInit {
   }
 
   // Update status bill
-  updateStatusBillInfo(obj: any) {
+  updateStatusBillInfo(obj: any) {    
     if (obj.value >= 2) {
       this.itemBill.Status = obj.value;
-      const request: DTOUpdateBillRequest = {
+      const requestUpdateBill: DTOUpdateBill = {
         CodeBill: this.itemBill.Code,
         Status: obj.value,
         ListOfBillInfo: this.itemBill.ListBillInfo,
         Note: this.reasonFail,
       }
-      // const status = this.listStatus.find(status => status.Code === idStatus);
-      // this.listNextStatus = status ? status.ListNextStatus : null;
-      request.ListOfBillInfo.forEach(billInfo =>{
+
+      requestUpdateBill.ListOfBillInfo.forEach(billInfo =>{
         if(billInfo.Code == this.itemBillInfo.Code){
           billInfo.Status = obj.value;
         }
       })
-      // const codeBillInfo = request.ListOfBillInfo.find(billInf => billInf.Code === this.itemBillInfo.Code);
+
+      const request: DTOUpdateBillRequest = {
+            DTOUpdateBill: requestUpdateBill,
+            DTOProceedToPayment: null
+          }
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
         if (res.StatusCode === 0) {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")

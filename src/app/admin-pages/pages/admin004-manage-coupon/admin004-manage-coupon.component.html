@@ -2,15 +2,191 @@
     <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="widthDrawer" [(expanded)]="expanded">
         <ng-template kendoDrawerTemplate>
             <div class="drawer-custom-container">
-                <button kendoButton (click)="drawer.toggle()">Toggle the Drawer</button>
+                <!-- Header của drawer -->
+                <div class="header-drawer">
+                    <i class="fa-solid fa-angles-left icon-back" (click)="closeDrawer()"></i>
+                    <div class="label-detail-coupon" *ngIf="selectedCoupon.Code !== 0">Chi tiết khuyến mãi</div>
+                    <div class="label-add-coupon" *ngIf="selectedCoupon.Code === 0">Thêm mới khuyến mãi</div>
+                </div>
+
+                <!-- Content của drawer -->
+                <div class="content-drawer">
+                    <!-- Mã khuyến mãi -->
+                    <component-text-input typeValue="number" #price
+                    [widthTextBox]="350" [widthBlock]="510" label="Mã khuyến mãi"></component-text-input>
+                </div>
+
+                <!-- Footer của drawer -->
+                <div class="footer-drawer">
+                    <!-- Button quay lại để đóng drawer -->
+                    <component-button class="button-back" [borderWidth]="2" color="#000" borderColor="#000"
+                        borderStyle="solid" [value]="0" (sendValue)="closeDrawer()" [height]="36"
+                        classIconFontAwesome="fa-reply" bgColor="#fff" text="Quay lại"></component-button>
+                </div>
             </div>
         </ng-template>
     </kendo-drawer>
 
     <kendo-drawer-content>
         <div class="content-container">
-            <button kendoButton (click)="drawer.toggle()">Toggle the Drawer</button>
-            <img src="../../../../assets/bg-coupon.png" alt="">
+            <!-- Header Filter theo trạng thái -->
+            <div class="header-filter-status">
+                <div class="block-filter-status">
+                    <div class="label-filter">Lọc dữ liệu</div>
+                    <!-- Danh sách các trạng thái -->
+                    <div class="list-status">
+                        <component-checkboxlist #status (getListChecked)="this.getValueFromCheckList($event, 'status')"
+                            [valueField]="'Code'" [textField]="'Status'"
+                            [listCheckBox]="listStatusCoupon"></component-checkboxlist>
+                    </div>
+                </div>
+
+                <!-- Button thêm khuyến mãi-->
+                <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
+                    borderStyle="solid" [value]="0" (sendValue)="drawer.toggle()" [height]="36"
+                    classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"></component-button>
+            </div>
+
+            <!-- Header Filter theo giai đoạn -->
+            <div class="header-filter-stage">
+                <div class="block-filter-stage">
+                    <div class="label-delete-filter" (click)="resetFilter()">Xóa bộ lọc</div>
+                    <component-search-bar #search [width]="400" (getValue)="setFilterSearch($event)"
+                        [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
+                    <div class="list-stage">
+                        <component-checkboxlist #stage (getListChecked)="this.getValueFromCheckList($event, 'stage')"
+                            [valueField]="'Code'" [textField]="'Status'"
+                            [listCheckBox]="listStageCoupon"></component-checkboxlist>
+                    </div>
+                </div>
+
+                <div class="block-filter-date">
+                    <component-datepicker #rangeDateStart [minDate]="minDate" [maxDate]="endDate"
+                        (datePicked)="getDateFromDatePicker($event, 'start')"></component-datepicker>
+                    <div class="line"></div>
+                    <component-datepicker #rangeDateEnd [minDate]="startDate" [maxDate]="maxDate"
+                        (datePicked)="getDateFromDatePicker($event, 'end')"></component-datepicker>
+                </div>
+
+                <div class="block-filter-group">
+                    <div class="label-filter-group">Đối tượng</div>
+                    <component-text-dropdown #group (getValue)="setFilterGroupCustomer($event)" [label]="''"
+                        [listItem]="listGroupCustomerApply" [defaultItem]="defaultGroupCustomerApply"
+                        [valueField]="'Code'" [textField]="'Group'"></component-text-dropdown>
+                </div>
+            </div>
+
+            <div class="label-list-coupon">
+                Danh sách khuyến mãi
+            </div>
+
+            <div class="grid-custom-container">
+                <kendo-grid [data]="listCoupon" [skip]="gridState.skip" [loading]="isLoading"
+                    (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
+                    [pageable]="{ type: 'numeric', pageSizes: true }" [selectable]="{ checkboxOnly: true }">
+
+                    <!-- Checkbox -->
+                    <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+
+                    <!-- Mã khuyến mãi -->
+                    <kendo-grid-column title="Khuyến mãi" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-2">
+                                {{item.IdCoupon}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Loại khuyến mãi -->
+                    <kendo-grid-column title="Loại khuyến mãi" [width]="180">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-3">
+                                <div class="type">{{checkCouponType(item.CouponType)}}</div>
+                                <div class="value-discount">{{checkValueDiscount(item)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Điều kiện áp dụng -->
+                    <kendo-grid-column title="Điều kiện áp dụng" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-4">
+                                <div class="min-bill-price">Đơn tối thiểu: {{formatCurrency(item.MinBillPrice)}}</div>
+                                <ng-container *ngIf="item.PercentDiscout && item.DirectDiscout === 0">
+                                    <div class="max-bill-discount">Giảm tối đa: {{formatCurrency(item.MaxBillDiscount)}}
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Thời gian áp dụng -->
+                    <kendo-grid-column title="Thời gian áp dụng" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-5">
+                                <div class="start-date">Từ: {{formatDateToDisplay(item.StartDate)}}</div>
+                                <div class="end-date">Đến: {{formatDateToDisplay(item.EndDate)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Khách hàng áp dụng -->
+                    <kendo-grid-column title="Khách hàng áp dụng" [width]="130">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-6">
+                                <div class="apply-to">{{checkApplyToCustomer(item)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Số lượng -->
+                    <kendo-grid-column title="Số lượng" [width]="130">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-7">
+                                <div class="quantity">Gốc: {{item.Quantity}}</div>
+                                <div class="remaining-quantity">Còn lại: {{item.RemainingQuantity}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Trạng thái và giai đoạn -->
+                    <kendo-grid-column title="Trạng thái" [width]="130">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-8">
+                                <div class="status" [style.color]="checkStatus(item) | statusColor">
+                                    {{checkStatus(item)}}</div>
+                                <div class="stage">{{checkStage(item)}}</div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+
+                    <!-- ToolBox -->
+                    <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="40">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
+                                <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15"
+                                    color="#000" bgColor="#fff" classIconFontAwesome="fa-ellipsis"
+                                    text=""></component-button>
+                                <div class="list-action" *ngIf="selectedCouponCode === dataItem.Code">
+                                    <component-dropdown-action (sendValue)="updateStatusCoupon(dataItem, $event)"
+                                        [listItem]="getListChangeStatus(dataItem.Status)"></component-dropdown-action>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Paging -->
+                    <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+                        <kendo-pager-page-sizes pagerGrid [pageSizes]="listPageSize"></kendo-pager-page-sizes>
+                        <div class="pager-buttons">
+                            <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                            <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
+                            <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                        </div>
+                    </ng-template>
+                </kendo-grid>
+            </div>
         </div>
     </kendo-drawer-content>
 </kendo-drawer-container>
