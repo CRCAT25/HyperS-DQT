@@ -27,7 +27,9 @@ export class PaymentComponent implements OnInit, OnDestroy {
   listWard: DTOWard[]
   listProductPayment: DTOProductInCart[]
   processToPayment: DTOProcessToPayment ={
+    CodeCustomer: null,
     CustomerName: "",
+    OrdererPhoneNumber: "",
     PhoneNumber: "",
     ListProduct: [],
     ShippingAddress: "",

@@ -39,7 +39,6 @@ export class BillService {
 
     updateBill(req: DTOUpdateBillRequest): Observable<any> {
         const httpOptions = this.getHttpOptions();
-        const requestNull: DTOProcessToPayment = null;
         return this.httpClient.post(this.urlUpdateBill, req, httpOptions)
           .pipe(
             catchError(error => {
