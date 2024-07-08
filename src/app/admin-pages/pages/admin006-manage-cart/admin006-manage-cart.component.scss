@@ -29,6 +29,13 @@
                 height: 40px;
                 margin-top: 10px;
                 margin-bottom: 10px;
+
+                .testStatus{
+                    position: absolute;
+                    top: 40%;
+                    left: 50%;
+                    z-index: 10;
+                }
                 
                 .k-input{
                     min-width: 620px !important;
@@ -290,7 +297,7 @@
                         font-size: 16px;
                         justify-content: center;
                         display: flex;
-                        gap: 3px;
+                        gap: 5px;
 
                         span{
                             color: red;

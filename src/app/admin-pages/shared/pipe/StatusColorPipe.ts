@@ -17,8 +17,14 @@ export class StatusColorPipe implements PipeTransform {
         return '#23282c';
       case 'Chờ xác nhận':
         return '#23282c';
+      case 'Không xác nhận':
+        return '#FF1D1D';
+      case 'Đã xác nhận':
+        return '#F1802E';
       case 'Đang đóng gói':
         return '#09880E';
+      case 'Đã đóng gói':
+        return '#7717C2';
       case 'Đang vận chuyển':
         return '#2480BD';
       case 'Giao hàng thất bại':
@@ -27,9 +33,9 @@ export class StatusColorPipe implements PipeTransform {
         return '#F1802E'
       case 'Đơn hàng bị hủy':
         return '#FF1D1D'
-      case 'Đang trả về':
+      case 'Đơn hàng đang trả về':
         return '#2480BD'
-      case 'Đã nhận lại hàng':
+      case 'Xác nhận đã nhận hàng':
         return '#F1802E'
       case 'Đã hoàn tiền':
         return '#F1802E'
@@ -37,6 +43,14 @@ export class StatusColorPipe implements PipeTransform {
         return '#F1802E'
       case 'Không hoàn tiền':
         return '#FF1D1D'
+      case 'Yêu cầu đổi trả hàng':
+        return '#09880E'
+      case 'Xác nhận đổi hàng':
+        return '#F1802E'
+      case 'Đã đổi hàng':
+        return '#F1802E'
+      case 'Chờ thanh toán':
+        return '#EEF21D'
       case 'Hoạt động':
         return '#09880E'
       case 'Đang kinh doanh':

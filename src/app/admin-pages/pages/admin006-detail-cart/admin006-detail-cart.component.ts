@@ -19,6 +19,8 @@ import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToP
 import { DTOProductInCart } from 'src/app/ecom-pages/shared/dto/DTOProductInCart';
 import { DTOProduct } from 'src/app/ecom-pages/shared/dto/DTOProduct';
 import { ProductAdminService } from '../../shared/service/productAdmin.service';
+import { DTOSize } from 'src/app/ecom-pages/shared/dto/DTOSize';
+import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
 
 
 interface PaymentMethod {
@@ -40,160 +42,163 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   itemBill: DTOBill;
   itemBillInfo: DTOBillInfo;
   itemProduct: DTOProduct;
-  listProductsInCart: DTOProductInCart[] = [
+  listProduct: DTOProduct[] = [];
+  listOfSize: DTOSize[] = [];
+  listProductsInCart: DTOProductInCart[] = [];
+  listProductsInCartTest: DTOProductInCart[] = [
     {
       "Product": {
-          "Code": 125,
-          "IdProduct": "AestzP001123",
-          "Name": "PROTEST02",
-          "CodeProductType": 2,
-          "ProductType": "Sneakers",
-          "CodeBrand": 5,
-          "BrandName": "Vans",
-          "Price": 40000,
-          "Description": null,
-          "Stock": 28,
-          "Sold": 24,
-          "Color": "Xanh dương",
-          "Gender": 2,
-          "Discount": null,
-          "PriceAfterDiscount": 40000,
-          "Status": 0,
-          "ThumbnailImg": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/e4a3fabb-5cda-46cd-9a12-4f9cc3840ab5/air-force-1-07-shoes-NMmm1B.png", 
-          "ListOfImage": [
-              {
-                  "Code": 510,
-                  "IdImage": null,
-                  "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/e4a3fabb-5cda-46cd-9a12-4f9cc3840ab5/air-force-1-07-shoes-NMmm1B.png",
-                  "IsThumbnail": false
-              },
-              {
-                  "Code": 511,
-                  "IdImage": null,
-                  "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-                  "IsThumbnail": false
-              },
-              {
-                  "Code": 512,
-                  "IdImage": null,
-                  "ImgUrl": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/57558712-5ebe-4abb-9984-879f9e896b4c/air-force-1-07-easyon-shoes-lpjTWM.png",
-                  "IsThumbnail": true
-              },
-              {
-                  "Code": 513,
-                  "IdImage": null,
-                  "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-                  "IsThumbnail": false
-              },
-              {
-                  "Code": 514,
-                  "IdImage": null,
-                  "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-                  "IsThumbnail": false
-              },
-              {
-                  "Code": 509,
-                  "IdImage": null,
-                  "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-                  "IsThumbnail": false
-              }
-          ],
-          "ListOfSize": [
-              {
-                  "Code": 1,
-                  "Size": 35,
-"Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 2,
-                  "Size": 36,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 3,
-                  "Size": 37,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 4,
-                  "Size": 38,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 5,
-                  "Size": 39,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 6,
-                  "Size": 40,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 7,
-                  "Size": 41,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 8,
-                  "Size": 42,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 9,
-                  "Size": 43,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 10,
-                  "Size": 44,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 11,
-                  "Size": 45,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 12,
-                  "Size": 46,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 13,
-                  "Size": 47,
-                  "Stock": 0,
-                  "Sold": 0
-              },
-              {
-                  "Code": 14,
-                  "Size": 48,
-                  "Stock": 0,
-                  "Sold": 0
-              }
-          ]
+        "Code": 125,
+        "IdProduct": "AestzP001123",
+        "Name": "PROTEST02",
+        "CodeProductType": 2,
+        "ProductType": "Sneakers",
+        "CodeBrand": 5,
+        "BrandName": "Vans",
+        "Price": 40000,
+        "Description": null,
+        "Stock": 28,
+        "Sold": 24,
+        "Color": "Xanh dương",
+        "Gender": 2,
+        "Discount": null,
+        "PriceAfterDiscount": 40000,
+        "Status": 0,
+        "ThumbnailImg": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/e4a3fabb-5cda-46cd-9a12-4f9cc3840ab5/air-force-1-07-shoes-NMmm1B.png",
+        "ListOfImage": [
+          {
+            "Code": 510,
+            "IdImage": null,
+            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/e4a3fabb-5cda-46cd-9a12-4f9cc3840ab5/air-force-1-07-shoes-NMmm1B.png",
+            "IsThumbnail": false
+          },
+          {
+            "Code": 511,
+            "IdImage": null,
+            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
+            "IsThumbnail": false
+          },
+          {
+            "Code": 512,
+            "IdImage": null,
+            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/57558712-5ebe-4abb-9984-879f9e896b4c/air-force-1-07-easyon-shoes-lpjTWM.png",
+            "IsThumbnail": true
+          },
+          {
+            "Code": 513,
+            "IdImage": null,
+            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
+            "IsThumbnail": false
+          },
+          {
+            "Code": 514,
+            "IdImage": null,
+            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
+            "IsThumbnail": false
+          },
+          {
+            "Code": 509,
+            "IdImage": null,
+            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
+            "IsThumbnail": false
+          }
+        ],
+        "ListOfSize": [
+          {
+            "Code": 1,
+            "Size": 35,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 2,
+            "Size": 36,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 3,
+            "Size": 37,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 4,
+            "Size": 38,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 5,
+            "Size": 39,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 6,
+            "Size": 40,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 7,
+            "Size": 41,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 8,
+            "Size": 42,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 9,
+            "Size": 43,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 10,
+            "Size": 44,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 11,
+            "Size": 45,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 12,
+            "Size": 46,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 13,
+            "Size": 47,
+            "Stock": 0,
+            "Sold": 0
+          },
+          {
+            "Code": 14,
+            "Size": 48,
+            "Stock": 0,
+            "Sold": 0
+          }
+        ]
       },
       "Quantity": 1,
       "SizeSelected": {
-          "Code": 6,
-          "Size": 40,
-          "Stock": 0,
-          "Sold": 0
+        "Code": 6,
+        "Size": 40,
+        "Stock": 0,
+        "Sold": 0
       },
       "TotalPriceOfProduct": 40000
-  }
+    }
   ];
   listStatus: DTOStatus[] = listStatusNoView;
   isClickButton: { [key: number]: boolean } = {};
@@ -203,8 +208,17 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   isShowAlert: boolean = false;
   reasonFail: string;
   isEdit: boolean = false;
+  isProcessAdd: boolean = false;
   specialAddress: string;
   newAddress: string;
+  sizeSelected: DTOSize;
+  selectedSize: { [key: string]: number } = {};
+  stockOfEeachSize: { [Size: string]: number } = {};
+  stockOfSizeSelected: number;
+  inputQuantity: number = 0;
+  priceOfProduct: number = 0;
+  totalPriceOfProduct: number = 0;
+  totalPrictOfBill: number = 0;
   PaymentMethodDropDown: PaymentMethod[] = [
     {
       Code: 0,
@@ -257,6 +271,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @ViewChild('district') childDistrict!: TextDropdownComponent;
   @ViewChild('ward') childWard!: TextDropdownComponent;
   @ViewChild('specific') childSpecific!: TextInputComponent;
+  @ViewChild('search') childSearch!: SearchBarComponent;
 
 
 
@@ -285,7 +300,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.listBillInfo = this.listData;
     this.itemBill = this.itemData;
     this.specialAddress = this.getSpecialAddress(this.itemBill.ShippingAddress);
-    this.setOldValueBill();
   }
 
   getSpecialAddress(address: string): string {
@@ -324,7 +338,9 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     if (value == 0) {
       return 'Ship COD';
     } else if (value == 1) {
-      return 'Momo';
+      return 'QR Payment';
+    } else if (value == 2) {
+      return 'Bank Transfer';
     } else {
       return 'Unknown';
     }
@@ -332,26 +348,40 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
   formatStatus(value: any): string {
     switch (value) {
-      case 2:
+      case 1:
         return 'Chờ xác nhận';
-      case 3:
-        return 'Đang đóng gói';
-      case 4:
-        return 'Đang vận chuyển';
-      case 5:
-        return 'Giao hàng thành công';
-      case 6:
+      case 2:
         return 'Đơn hàng bị hủy';
+      case 3:
+        return 'Không xác nhận';
+      case 4:
+        return 'Đã xác nhận';
+      case 5:
+        return 'Đang đóng gói';
+      case 6:
+        return 'Đã đóng gói';
       case 7:
-        return 'Giao hàng thất bại';
+        return 'Đang vận chuyển';
       case 8:
-        return 'Đang trả về';
+        return 'Giao hàng thành công';
       case 9:
-        return 'Đã nhận lại hàng';
+        return 'Giao hàng thất bại';
       case 10:
-        return 'Đã hoàn tiền';
+        return 'Đơn hàng đang trả về';
       case 11:
+        return 'Xác nhận đã nhận hàng';
+      case 12:
+        return 'Đã hoàn tiền';
+      case 13:
         return 'Không hoàn tiền';
+      case 14:
+        return 'Yêu cầu đổi trả hàng';
+      case 15:
+        return 'Xác nhận đổi hàng';
+      case 16:
+        return 'Đã đổi hàng';
+      case 17:
+        return 'Chờ thanh toán';        
       default:
         return 'Unknow';
     }
@@ -514,7 +544,12 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     } else if (this.itemBill.PaymentMethod == 1) {
       return {
         Code: 1,
-        Method: "Momo"
+        Method: "QR Payment"
+      }
+    } else if (this.itemBill.PaymentMethod == 2) {
+      return {
+        Code: 2,
+        Method: "Bank Transfer"
       }
     }
     return {};
@@ -570,6 +605,60 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     if ((event.target as HTMLElement).closest('.button-addBill')) {
       this.updateBill('Thêm mới');
     }
+    if ((event.target as HTMLElement).closest('.button-addDetailBill')) {
+      if (this.itemProduct && this.itemProduct !== null) {
+        this.childSearch.clearValue();
+        this.listProduct.push(this.itemProduct);
+        this.isProcessAdd = true;
+        // console.log(this.itemProduct);
+        // console.log(this.listProduct);
+      }
+    }
+    if ((event.target as HTMLElement).closest('.button-accept')){
+      const product: DTOProductInCart = {
+          Product: this.itemProduct,
+          Quantity: this.inputQuantity,
+          TotalPriceOfProduct: this.totalPriceOfProduct,
+          SizeSelected: this.sizeSelected,
+        }
+        if(this.sizeSelected && this.inputQuantity > 0){
+          if(this.listProductsInCart.length >0){
+            this.listProductsInCart.forEach(item => {
+              if(this.itemProduct.IdProduct == item.Product.IdProduct && this.sizeSelected.Size == item.SizeSelected.Size){
+                const totalQuantity = item.Quantity + this.inputQuantity;
+                if(totalQuantity > this.stockOfSizeSelected){
+                  this.notiService.Show("Số lượng còn lại trong kho: "+ this.stockOfSizeSelected, "warning");
+                } else{
+                  item.Quantity += this.inputQuantity;
+                  this.addSuccess();
+                }
+              } else if (this.itemProduct.IdProduct !== item.Product.IdProduct && this.sizeSelected.Size !== item.SizeSelected.Size) {
+                this.listProductsInCart.push(product);
+                this.addSuccess();
+  
+              }
+            });
+          } else{
+            this.listProductsInCart.push(product);
+            this.addSuccess();
+          }
+
+        } else {
+          this.notiService.Show("Vui lòng chọn size và số lượng", "warning");
+        }
+        console.log(this.listProductsInCart);
+        this.totalPrictOfBill = 0;
+        this.listProductsInCart.forEach(item => {
+          this.totalPrictOfBill += item.TotalPriceOfProduct;
+        });
+    }
+    // if((event.target as HTMLElement).closest('.button-x')){
+    //   this.notiService.Show("Xóa thành công", "success");
+    //   this.listProduct = this.listProduct.filter(product => product.IdProduct !== this.itemProduct!.IdProduct);
+    //   this.isProcessAdd = false;
+    //   console.log(this.listProduct);
+    // }
+    
   }
 
   //Nhận text của text-area
@@ -578,16 +667,119 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   }
 
   //Set old value Bill
-  setOldValueBill() {
-
+  addSuccess() {
+    this.inputQuantity = 0;
+    this.totalPriceOfProduct = this.itemProduct.Price;
+    this.notiService.Show("Thêm thành công", "success");
+    this.isProcessAdd = false;
   }
 
-  searchIdProduct(id: string){
-    this.productService.getProductByIdProduct(id).pipe(takeUntil(this.destroy)).subscribe(item => {
-      this.itemProduct = item;
-    })
-    console.log(this.itemProduct);
+  searchIdProduct(id: string) {
+    if(id !== ""){
+      this.productService.getProductByIdProduct(id)
+      .pipe(takeUntil(this.destroy))
+      .subscribe({
+        next: item => {
+          if(item.Stock >0){
+            this.notiService.Show(item.Name + " số lượng còn: " + item.Stock, "success");
+            this.itemProduct = item;
+            this.listOfSize = item.ListOfSize;
+            this.priceOfProduct = item.Price;
+          } else {
+            this.notiService.Show("Số lượng không đủ", "warning");
+          }
+          // console.log(this.itemProduct);
+        },
+        error: err => {
+          if (err.message === 'Product not found or inactive') {
+            this.itemProduct = null;
+            this.notiService.Show("Không có sản phẩm hoặc sản phẩm bị vô hiệu hóa", "warning");
+          } else {
+            console.error('Unexpected error:', err);
+          }
+        }
+      });
+    }
   }
+
+  countStatuses() {
+    // if(this.listOfSize){
+    //   this.stockOfEeachSize = this.listOfSize.reduce((size, stock) => {
+    //     const stocks = stock.Stock;
+    //     return size[stocks]
+    //   }, {});
+    // }
+  }
+
+  getStockOfSize(size: any): void {
+    this.sizeSelected = size;
+    this.stockOfSizeSelected = size.Stock;
+    this.inputQuantity = 0;
+}
+
+  decreaseQuantity() {
+    if (this.stockOfSizeSelected) {
+      if (this.inputQuantity > 0) {
+        this.inputQuantity--;
+        this.totalPriceOfProduct = this.priceOfProduct * this.inputQuantity;
+      }
+    }
+    else {
+      this.notiService.Show("Vui lòng chọn Size", "warning");
+    }
+  }
+
+  increaseQuantity() {
+    if (this.stockOfSizeSelected) {
+      if (this.inputQuantity < this.stockOfSizeSelected) {
+        this.inputQuantity++;
+        this.totalPriceOfProduct = this.priceOfProduct * this.inputQuantity;
+      } else {
+        this.notiService.Show("Số lượng còn lại trong kho là: " + this.stockOfSizeSelected, "warning");
+        this.inputQuantity = this.stockOfSizeSelected;
+      }
+    } else if(this.stockOfSizeSelected == 0){
+      this.notiService.Show("Số lượng còn lại trong kho là: " + this.stockOfSizeSelected, "warning");
+    }
+    else {
+      this.notiService.Show("Vui lòng chọn Size", "warning");
+    }
+  }
+  
+
+
+  checkStockOfSizeSelected() {
+    if (this.stockOfSizeSelected === null || this.stockOfSizeSelected === undefined) {
+      setTimeout(() => {
+        this.notiService.Show("Vui lòng chọn Size", "warning");
+        this.inputQuantity = 0
+      });
+    } else if (this.inputQuantity > this.stockOfSizeSelected) {
+      setTimeout(() => {
+        this.notiService.Show("Số lượng còn lại trong kho là: " + this.stockOfSizeSelected, "warning");
+        this.inputQuantity = this.stockOfSizeSelected
+      });
+    } else if ((this.stockOfSizeSelected !== null && this.stockOfSizeSelected !== undefined) && (this.inputQuantity <= this.stockOfSizeSelected)){
+      this.totalPriceOfProduct = this.priceOfProduct * this.inputQuantity;
+    }
+  }
+
+  // setToListProductInCart(type: string){
+  //   if(type == "ok"){
+  //     alert("ok")
+  //     const product: DTOProductInCart = {
+  //       Product: this.itemProduct,
+  //       Quantity: this.inputQuantity,
+  //       TotalPriceOfProduct: this.totalPriceOfProduct,
+  //       SizeSelected: this.sizeSelected,
+  //     }
+  //     this.listProductsInCart.push(product)
+  //     console.log(this.listProductsInCart);
+  //   } else if(type == "ok"){
+  //     this.listProduct.filter(product => product.IdProduct !== this.itemProduct.IdProduct);
+  //   }
+  // }
+
 
   setNewAddress() {
     this.newAddress = [
@@ -598,18 +790,39 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     ].filter(Boolean).join(', ');
   }
 
+  removeProductInCart(value: DTOProductInCart): void {
+    this.listProductsInCart = this.listProductsInCart.filter(
+      item => !(item.Product.IdProduct === value.Product.IdProduct && item.SizeSelected === value.SizeSelected)
+  );
+    // const index = this.listProductsInCart.findIndex(item => item.Product.IdProduct === value.Product.IdProduct && item.SizeSelected === value.SizeSelected)
+    // if(index !== -1){
+    //   this.listProductsInCart = this.listProductsInCart.slice(index, 1)
+    // }
+    this.notiService.Show("Xóa thành công", "success");
+    this.totalPrictOfBill = 0;
+    this.listProductsInCart.forEach(item => {
+      this.totalPrictOfBill += item.TotalPriceOfProduct;
+    });
+    console.log(this.listProductsInCart);
+}
+
+removeProductOfList(rowIndex: number): void {
+  const adjustedIndex = rowIndex;
+  this.listProduct = this.listProduct.filter((_, index) => index !== adjustedIndex);
+
+}
+
   //Update Bill
   updateBill(type: string) {
     if (type == "Thêm mới") {
       alert('a')
       const requestAddBill: DTOProcessToPayment = {
-        CodeCustomer: 0,
         CustomerName: this.childName.valueTextBox,
         OrdererPhoneNumber: this.childPhoneNumber.valueTextBox,
         PhoneNumber: this.childPhoneNumber.valueTextBox,
         ShippingAddress: this.newAddress,
         PaymentMethod: this.childMethod.value.Code,
-        ListProduct: this.listProductsInCart,
+        ListProduct: this.listProductsInCartTest,
         TotalBill: 0,
         IsGuess: true,
       }
@@ -638,7 +851,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
   }
 
-  log(Type: any){
+  log(Type: any) {
     alert('a')
     console.log(Type.text);
   }

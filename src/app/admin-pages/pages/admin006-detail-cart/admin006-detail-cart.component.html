@@ -12,22 +12,31 @@
                         <div class="codeBill">Mã đơn {{itemBill.Code}}</div>
                         <div class="createAtBill">{{formattedCreateAt(itemBill.CreateAt)}}</div>
                     </ng-container>
-                    <div *ngIf="!isAdd" class="box-button-update">
-                            <component-button *ngIf="!isEdit" class="button-edit" [text]="'Chỉnh sửa'" [classIconFontAwesome]="'fa-pencil'" [color]="'rgb(255, 29, 29)'" [bgColor]="'white'" [borderColor]="'rgb(255, 29, 29)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                    <!-- <div *ngIf="!isAdd" class="box-button-update">
+                        <component-button *ngIf="!isEdit" class="button-edit" [text]="'Chỉnh sửa'"
+                            [classIconFontAwesome]="'fa-pencil'" [color]="'rgb(255, 29, 29)'" [bgColor]="'white'"
+                            [borderColor]="'rgb(255, 29, 29)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                        </component-button>
+                        <ng-container *ngIf="isEdit">
+                            <component-button class="button-update" [text]="'Cập nhật'"
+                                [classIconFontAwesome]="'fa-floppy-disk'" [color]="'rgb(37, 87, 160)'"
+                                [bgColor]="'white'" [borderColor]="'rgb(37, 87, 160)'" [rounded]="3" [borderWidth]="2"
+                                [borderStyle]="'solid'">
                             </component-button>
-                            <ng-container *ngIf="isEdit">
-                                <component-button class="button-update" [text]="'Cập nhật'" [classIconFontAwesome]="'fa-floppy-disk'" [color]="'rgb(37, 87, 160)'" [bgColor]="'white'" [borderColor]="'rgb(37, 87, 160)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
-                                </component-button>
-                                <component-button class="button-restore" [text]="'Khôi phục'" [classIconFontAwesome]="'fa-arrow-rotate-left'" [color]="'rgb(88, 88, 88)'" [bgColor]="'white'" [borderColor]="'rgb(88, 88, 88)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
-                                </component-button>
-                            </ng-container>
-                    </div>
+                            <component-button class="button-restore" [text]="'Khôi phục'"
+                                [classIconFontAwesome]="'fa-arrow-rotate-left'" [color]="'rgb(88, 88, 88)'"
+                                [bgColor]="'white'" [borderColor]="'rgb(88, 88, 88)'" [rounded]="3" [borderWidth]="2"
+                                [borderStyle]="'solid'">
+                            </component-button>
+                        </ng-container>
+                    </div> -->
                     <div *ngIf="isAdd" class="header-addBill">
                         <!-- <p class="resetFilter">Xóa bộ lọc</p>
                         <kendo-autocomplete #autocomplete [data]="" [filterable]="true">
                         </kendo-autocomplete> -->
                         <div class="box-button-addBill">
-                            <component-button class="button-addBill" [color]="'#09880E'" [bgColor]="'white'" [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                            <component-button class="button-addBill" [color]="'#09880E'" [bgColor]="'white'"
+                                [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
                             </component-button>
                         </div>
                     </div>
@@ -35,224 +44,304 @@
                 <component-form [text]="'THÔNG TIN HÓA ĐƠN'">
                     <div *ngIf="!isAdd" class="content-form">
                         <div class="column column1">
-                            <component-text-input #name [label]="'Tên khách hàng'" [widthBlock]="430" [value]="itemBill.CustomerName" [disabled]="isDisabled"></component-text-input>
-                            <component-text-input #phoneNumber [label]="'Số điện thoại'" [widthBlock]="430" [value]="itemBill.PhoneNumber" [disabled]="isDisabled"></component-text-input>
-                            <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" 
-                            [listItem]="PaymentMethodDropDown" textField="Method" valueField="Code" [value]="setDTOPaymentMethod()" [disabled]="isDisabled">
+                            <component-text-input #name [label]="'Tên khách hàng'" [widthBlock]="430"
+                                [value]="itemBill.CustomerName" [disabled]="isDisabled"></component-text-input>
+                            <component-text-input #phoneNumber [label]="'Số điện thoại'" [widthBlock]="430"
+                                [value]="itemBill.PhoneNumber" [disabled]="isDisabled"></component-text-input>
+                            <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
+                                [widthTextBox]="300" [heightTextBox]="30" [listItem]="PaymentMethodDropDown"
+                                textField="Method" valueField="Code" [value]="setDTOPaymentMethod()"
+                                [disabled]="isDisabled">
                             </component-text-dropdown>
-                            <component-text-area #note [label]="'Ghi chú'" [widthBox]="430" [height]="40" [width]="300" [fontsize]="13" [placeholder]="itemBill.Note" [disabled]="isDisabled"></component-text-area>
+                            <component-text-area #note [label]="'Ghi chú'" [widthBox]="430" [height]="40" [width]="300"
+                                [fontsize]="13" [placeholder]="itemBill.Note"
+                                [disabled]="isDisabled"></component-text-area>
                         </div>
 
                         <div class="column column2">
-                            <component-text-dropdown
-                            #province
-                            [label]="'Tỉnh, thành phố'"
-                            [isLoading]="isLoadingProvince"
-                            [widthBlock]="430"
-                            [widthTextBox]="300"
-                            [heightTextBox]="30"
-                            [listItem]="listProvince"
-                            textField="province_name"
-                            valueField="province_name"
-                            [hasEmitValueChange]="1"
-                            [value]="setDTOAddress(3)"
-                            (valueChange)="handleChangeProvince($event)"
-                            [disabled]="isDisabled"
-                            [defaultItem]="defaultValueProvince"
-                            ></component-text-dropdown>
-                            <component-text-dropdown
-                            #district
-                            [label]="'Quận, huyện'" 
-                            [isLoading]="isLoadingDistrict"
-                            [widthBlock]="430"
-                            [widthTextBox]="300"
-                            [heightTextBox]="30"
-                            [listItem]="listDistrict"
-                            textField="district_name"
-                            valueField="district_name"
-                            [hasEmitValueChange]="1"
-                            [value]="setDTOAddress(2)"
-                            (valueChange)="handleChangeDistrict($event)"
-                            [disabled]="isDisableDistrict"
-                            [defaultItem]="defaulValueDistrict"
-                            ></component-text-dropdown>
-                            <component-text-dropdown
-                            #ward
-                            [label]="'Xã, thị trấn'"
-                            [isLoading]="isLoadingWard"
-                            [widthBlock]="430"
-                            [widthTextBox]="300"
-                            [heightTextBox]="30"
-                            [listItem]="listWard"
-                            textField="ward_name"
-                            valueField="ward_name"
-                            [hasEmitValueChange]="1"
-                            [value]="setDTOAddress(1)"
-                            (valueChange)="handleChangeWard($event)"
-                            [disabled]="isDisableWard"
-                            [defaultItem]="defaultValueWard"
-                            ></component-text-dropdown>                            
-                            <component-text-input  #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430" [value]="specialAddress" [disabled]="isDisableWard" (getValue)="setNewAddress()"
-                            ></component-text-input>
+                            <component-text-dropdown #province [label]="'Tỉnh, thành phố'"
+                                [isLoading]="isLoadingProvince" [widthBlock]="430" [widthTextBox]="300"
+                                [heightTextBox]="30" [listItem]="listProvince" textField="province_name"
+                                valueField="province_name" [hasEmitValueChange]="1" [value]="setDTOAddress(3)"
+                                (valueChange)="handleChangeProvince($event)" [disabled]="isDisabled"
+                                [defaultItem]="defaultValueProvince"></component-text-dropdown>
+                            <component-text-dropdown #district [label]="'Quận, huyện'" [isLoading]="isLoadingDistrict"
+                                [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" [listItem]="listDistrict"
+                                textField="district_name" valueField="district_name" [hasEmitValueChange]="1"
+                                [value]="setDTOAddress(2)" (valueChange)="handleChangeDistrict($event)"
+                                [disabled]="isDisableDistrict"
+                                [defaultItem]="defaulValueDistrict"></component-text-dropdown>
+                            <component-text-dropdown #ward [label]="'Xã, thị trấn'" [isLoading]="isLoadingWard"
+                                [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" [listItem]="listWard"
+                                textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
+                                [value]="setDTOAddress(1)" (valueChange)="handleChangeWard($event)"
+                                [disabled]="isDisableWard" [defaultItem]="defaultValueWard"></component-text-dropdown>
+                            <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430"
+                                [value]="specialAddress" [disabled]="isDisableWard"
+                                (getValue)="setNewAddress()"></component-text-input>
                         </div>
 
                     </div>
                     <div *ngIf="isAdd" class="content-form">
                         <div class="column column1">
-                            <component-text-input #name [label]="'Tên khách hàng'" [widthBlock]="430" ></component-text-input>
-                            <component-text-input #phoneNumber [label]="'Số điện thoại'" [widthBlock]="430" ></component-text-input>
-                            <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" 
-                            [listItem]="PaymentMethodDropDown" textField="Method" valueField="Code">
+                            <component-text-input #name [label]="'Tên khách hàng'"
+                                [widthBlock]="430"></component-text-input>
+                            <component-text-input #phoneNumber [label]="'Số điện thoại'"
+                                [widthBlock]="430"></component-text-input>
+                            <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
+                                [widthTextBox]="300" [heightTextBox]="30" [listItem]="PaymentMethodDropDown"
+                                textField="Method" valueField="Code">
                             </component-text-dropdown>
                         </div>
 
                         <div class="column column2">
-                            <component-text-dropdown
-                            #province
-                            [label]="'Tỉnh, thành phố'"
-                            [isLoading]="isLoadingProvince"
-                            [widthBlock]="430"
-                            [widthTextBox]="300"
-                            [heightTextBox]="30"
-                            [listItem]="listProvince"
-                            textField="province_name"
-                            valueField="province_name"
-                            [hasEmitValueChange]="1"
-                            (valueChange)="handleChangeProvince($event)"
-                            [defaultItem]="defaultValueProvince"
-                            ></component-text-dropdown>
-                            <component-text-dropdown 
-                            #district
-                            [label]="'Quận, huyện'" 
-                            [isLoading]="isLoadingDistrict"
-                            [widthBlock]="430"
-                            [widthTextBox]="300"
-                            [heightTextBox]="30"
-                            [listItem]="listDistrict"
-                            textField="district_name"
-                            valueField="district_name"
-                            [hasEmitValueChange]="1"
-                            (valueChange)="handleChangeDistrict($event)"
-                            [disabled]="isDisableDistrict"
-                            [defaultItem]="defaulValueDistrict"
-                            ></component-text-dropdown>
-                            <component-text-dropdown 
-                            #ward
-                            [label]="'Xã, thị trấn'"
-                            [isLoading]="isLoadingWard"
-                            [widthBlock]="430"
-                            [widthTextBox]="300"
-                            [heightTextBox]="30"
-                            [listItem]="listWard"
-                            textField="ward_name"
-                            valueField="ward_name"
-                            [hasEmitValueChange]="1"
-                            (valueChange)="handleChangeWard($event)"
-                            [disabled]="isDisableWard"
-                            [defaultItem]="defaultValueWard"
-                            ></component-text-dropdown>                            
-                            <component-text-input  #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430" [disabled]="isDisableWard" (getValue)="setNewAddress()"></component-text-input>
+                            <component-text-dropdown #province [label]="'Tỉnh, thành phố'"
+                                [isLoading]="isLoadingProvince" [widthBlock]="430" [widthTextBox]="300"
+                                [heightTextBox]="30" [listItem]="listProvince" textField="province_name"
+                                valueField="province_name" [hasEmitValueChange]="1"
+                                (valueChange)="handleChangeProvince($event)"
+                                [defaultItem]="defaultValueProvince"></component-text-dropdown>
+                            <component-text-dropdown #district [label]="'Quận, huyện'" [isLoading]="isLoadingDistrict"
+                                [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" [listItem]="listDistrict"
+                                textField="district_name" valueField="district_name" [hasEmitValueChange]="1"
+                                (valueChange)="handleChangeDistrict($event)" [disabled]="isDisableDistrict"
+                                [defaultItem]="defaulValueDistrict"></component-text-dropdown>
+                            <component-text-dropdown #ward [label]="'Xã, thị trấn'" [isLoading]="isLoadingWard"
+                                [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" [listItem]="listWard"
+                                textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
+                                (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard"
+                                [defaultItem]="defaultValueWard"></component-text-dropdown>
+                            <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430"
+                                [disabled]="isDisableWard" (getValue)="setNewAddress()"></component-text-input>
                         </div>
                     </div>
                 </component-form>
             </div>
 
             <div class="showListDetail">
-                    <div class="header-search-product">
-                        <component-search-bar #search class="searchBar" placeholder="Tìm kiếm theo mã sản phẩm" [width]="400" (getValue)="searchIdProduct($event)"></component-search-bar>
-                        <component-button class="button-addDetailBill" [text]="'Thêm mới sản phẩm'" [color]="'#09880E'" [bgColor]="'white'" [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'"></component-button>
-                    </div>
-                    <div class="grid-custom-container">
-                   <!-- <ng-container *ngIf="!isAdd"> -->
-                    <kendo-grid [data]="listBillInfo">
-                        <kendo-grid-column  field="ImageURL" title="Hình ảnh" [width]="100">
-                            <ng-template kendoGridCellTemplate let-dataItem>
-                                <div class="column column-image">
-                                    <img class="image" [src]="dataItem.ImageURL" alt="">
-                                </div>
-                            </ng-template>
-                        </kendo-grid-column>
-                        <kendo-grid-column  title="Mã và tên sản phẩm">
-                        <ng-template kendoGridCellTemplate let-dataItem>
-                            <div class="column column-id-name">
-                                <div class="idProduct">{{dataItem.IDProduct}}</div>
-                                <div class="nameProduct">{{dataItem.Name}}</div>
-                            </div>
-                        </ng-template>
-                        </kendo-grid-column>   
-                        <kendo-grid-column  field="Size" title="Size" [width]="90">
-                            <ng-template kendoGridCellTemplate let-dataItem>
-                                <div class="column Size">
-                                    <div *ngIf="!isAdd">{{dataItem.Size}}</div>
-                                    <ng-container *ngIf="isAdd">
-                                        <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30"
-                                        [listItem]="dataItem.ListOfSize" textField="Size" valueField="Code" [value]="setDTOPaymentMethod()" [disabled]="isDisabled">
-                                        </component-text-dropdown>
-                                    </ng-container>
-                                </div>
-                            </ng-template>
-                        </kendo-grid-column>
-                        <kendo-grid-column  field="Price" title="Đơn giá" [width]="130">
-                            <ng-template kendoGridCellTemplate let-dataItem>
-                                <div class="column Price">
-                                    <div>{{formatCurrency(dataItem.Price)}}</div>
-                                </div>
-                            </ng-template>
-                        </kendo-grid-column>
-                        <kendo-grid-column  field="Quantity" title="Số lượng" [width]="90">
-                            <ng-template kendoGridCellTemplate let-dataItem>
-                                <div class="column Quantity">
-                                    <div>{{dataItem.Quantity}}</div>
-                                </div>
-                            </ng-template>
-                        </kendo-grid-column>
-                        <kendo-grid-column  field="TotalPrice" title="Tổng tiền" [width]="130">
-                            <ng-template kendoGridCellTemplate let-dataItem>
-                                <div class="column TotalPrice">
-                                    <div>{{formatCurrency(dataItem.TotalPrice)}}</div>
-                                </div>
-                            </ng-template>
-                        </kendo-grid-column>
-                        <kendo-grid-column  field="Status" title="Trạng thái" [width]="170">
-                            <ng-template kendoGridCellTemplate let-dataItem>
-                                <div class="column-Status">
-                                    <div [style.color]="formatStatus(dataItem.Status) | statusColor">
-                                        {{formatStatus(dataItem.Status)}}
-                                    </div>    
-                                </div>
-                            </ng-template>
-                        </kendo-grid-column>
-                        <kendo-grid-column class="column-button" [width]="50">
-                            <ng-template kendoGridCellTemplate let-dataItem>
-                                <div class="block-Action">
-                                    <div (click)="ClickButtonAction(dataItem.Code, $event, dataItem.Status)"
-                                        class="block-buttonAction">
-                                        <component-button class="button-action" [value]="dataItem.Code" text=""
-                                            classIconFontAwesome="fa-ellipsis" [width]="30" [height]="30">
+                <div class="header-search-product" *ngIf="isAdd">
+                    <component-search-bar #search class="searchBar" placeholder="Tìm kiếm theo mã sản phẩm"
+                        [width]="400" (getValue)="searchIdProduct($event)"></component-search-bar>
+                    <component-button *ngIf="!isProcessAdd" class="button-addDetailBill" [text]="'Thêm mới sản phẩm'" [color]="'#09880E'"
+                        [bgColor]="'white'" [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2"
+                        [borderStyle]="'solid'"></component-button>
+                </div>
+                <div class="grid-custom-container">
+                    <ng-container *ngIf="!isAdd">
+                        <kendo-grid [data]="listBillInfo">
+                            <kendo-grid-column field="ImageURL" title="Hình ảnh" [width]="100">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="column column-image">
+                                        <img class="image" [src]="dataItem.ImageURL" alt="">
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+                            <kendo-grid-column title="Mã và tên sản phẩm">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="column column-id-name">
+                                        <div class="idProduct">{{dataItem.IDProduct}}</div>
+                                        <div class="nameProduct">{{dataItem.Name}}</div>
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+                            <kendo-grid-column field="Size" title="Size" [width]="90">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="column Size">
+                                        <div *ngIf="!isAdd">{{dataItem.Size.Size}}</div>
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+                            <kendo-grid-column field="Price" title="Đơn giá" [width]="130">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="column Price">
+                                        <div>{{formatCurrency(dataItem.Price)}}</div>
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+                            <kendo-grid-column field="Quantity" title="Số lượng" [width]="90">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="column Quantity">
+                                        <div>{{dataItem.Quantity}}</div>
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+                            <kendo-grid-column field="TotalPrice" title="Tổng tiền" [width]="130">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="column TotalPrice">
+                                        <div>{{formatCurrency(dataItem.TotalPrice)}}</div>
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+                            <kendo-grid-column field="Status" title="Trạng thái" [width]="170">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="column-Status">
+                                        <div [style.color]="formatStatus(dataItem.Status) | statusColor">
+                                            {{formatStatus(dataItem.Status)}}
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+                            <kendo-grid-column class="column-button" [width]="50">
+                                <ng-template kendoGridCellTemplate let-dataItem>
+                                    <div class="block-Action">
+                                        <div (click)="ClickButtonAction(dataItem.Code, $event, dataItem.Status)"
+                                            class="block-buttonAction">
+                                            <component-button class="button-action" [value]="dataItem.Code" text=""
+                                                classIconFontAwesome="fa-ellipsis" [width]="30" [height]="30">
+                                            </component-button>
+                                        </div>
+                                        <div *ngIf="isClickButton[dataItem.Code]" class="dropDown-action" tabindex="0">
+                                            <component-dropdown-action
+                                                (sendValue)="clickDropDownAction(dataItem, $event)"
+                                                [listItem]="listNextStatus"></component-dropdown-action>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </kendo-grid-column>
+
+                        </kendo-grid>
+                    </ng-container>
+                    <ng-container *ngIf="isAdd">
+                        <div class="grid-listProduct">
+                            <kendo-grid [data]="listProduct">
+                                <kendo-grid-column field="ImageURL" title="Hình ảnh" [width]="100">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column column-image">
+                                            <img class="image" [src]="dataItem.ThumbnailImg" alt="">
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column title="Mã và tên sản phẩm">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column column-id-name">
+                                            <div class="idProduct">{{dataItem.IdProduct}}</div>
+                                            <div class="nameProduct">{{dataItem.Name}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column field="Size" title="Size" [width]="120">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column Size">
+                                            <component-text-dropdown #method [widthBlock]="70" [heightTextBox]="30"
+                                                [rounded]="3" [listItem]="listOfSize" textField="Size" valueField="Code"
+                                                (getValue)="getStockOfSize($event)">
+                                            </component-text-dropdown>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column field="Price" title="Đơn giá" [width]="130">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column Price">
+                                            <div>{{formatCurrency(dataItem.Price)}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column field="Quantity" title="Số lượng" [width]="120">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column-Quantity">
+                                            <component-button [classIconFontAwesome]="'fa-minus'" [width]="20" [text]="''"
+                                                (click)="decreaseQuantity()"></component-button>
+                                            <input class="inputQuantity" [type]="'number'" [min]="0"
+                                                [max]="stockOfSizeSelected" [(ngModel)]="inputQuantity"
+                                                (input)="checkStockOfSizeSelected()">
+                                            <component-button [classIconFontAwesome]="'fa-plus'" [width]="20" [text]="''"
+                                                (click)="increaseQuantity()"></component-button>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column field="TotalPrice" title="Tổng tiền" [width]="140">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column TotalPrice">
+                                            <div>{{formatCurrency(totalPriceOfProduct)}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column class="column-buttonOfAdd" [width]="110">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="block-Action">
+                                            <component-button class="button-x" text="" classIconFontAwesome="fa-xmark" [width]="30" [height]="30"
+                                                (click)="removeProductOfList(rowIndex)">
+                                            </component-button>
+                                            <component-button class="button-accept" text=""
+                                            classIconFontAwesome="fa-check" [width]="30" [height]="30">
                                         </component-button>
-                                    </div>
-                                    <div *ngIf="isClickButton[dataItem.Code]" class="dropDown-action" tabindex="0">
-                                        <component-dropdown-action (sendValue)="clickDropDownAction(dataItem, $event)"
-                                            [listItem]="listNextStatus"></component-dropdown-action>
-                                    </div>
-                                </div>
-                            </ng-template>
-                        </kendo-grid-column>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+
+                            </kendo-grid>
+                        </div>
+                        <!-- GridListProductInCart -->
+                         <div class="labelProductInCart">Sản phẩm hóa đơn</div>
+                         <div class="grid-ListProductInCart">
+                            <kendo-grid [data]="listProductsInCart">
+                                <kendo-grid-column [width]="100">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column column-image">
+                                            <img class="image" [src]="dataItem.Product.ThumbnailImg" alt="">
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column >
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column column-id-name">
+                                            <div class="idProduct">{{dataItem.Product.IdProduct}}</div>
+                                            <div class="nameProduct">{{dataItem.Product.Name}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column [width]="120">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column Size">
+                                            <div class="sizeProduct">{{dataItem.SizeSelected.Size}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column  [width]="130">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column Price">
+                                            <div>{{formatCurrency(dataItem.Product.Price)}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column  [width]="120">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column-Quantity">
+                                            <div class="quantityProduct">{{dataItem.Quantity}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column  [width]="140">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="column TotalPrice">
+                                            <div>{{formatCurrency(dataItem.TotalPriceOfProduct)}}</div>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
+                                <kendo-grid-column class="column-buttonOfAdd" [width]="110">
+                                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                                        <div class="block-Action">
+                                            <component-button class="button-x" text="" classIconFontAwesome="fa-xmark" [width]="30" [height]="30"
+                                                (click)="removeProductInCart(dataItem)">
+                                            </component-button>
+                                        </div>
+                                    </ng-template>
+                                </kendo-grid-column>
     
-                    </kendo-grid>
-                   <!-- </ng-container>
-                   <ng-container *ngIf="isAdd">
-                   </ng-container> -->
+                            </kendo-grid>
+                         </div>
+
+                    </ng-container>
                 </div>
             </div>
         </div>
 
-        
+
         <div class="footer-detail">
             <div class="box-TotalBill">
                 <span class="label-Total">Tổng tiền</span>
                 <span *ngIf="!isAdd" class="TotalBill">{{formatCurrency(itemBill.TotalBill)}}</span>
-                <span *ngIf="isAdd" class="TotalBill">{{formatCurrency(0)}}</span>
+                <span *ngIf="isAdd" class="TotalBill">{{formatCurrency(totalPrictOfBill)}}</span>
 
             </div>
         </div>
