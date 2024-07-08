@@ -603,7 +603,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     if (type == "Thêm mới") {
       alert('a')
       const requestAddBill: DTOProcessToPayment = {
-        CodeCustomer: 0,
         CustomerName: this.childName.valueTextBox,
         OrdererPhoneNumber: this.childPhoneNumber.valueTextBox,
         PhoneNumber: this.childPhoneNumber.valueTextBox,

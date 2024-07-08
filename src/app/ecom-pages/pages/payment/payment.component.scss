@@ -5,6 +5,13 @@
         color: var(--kendo-color-on-primary, #ffffff);
         background-color: var(--kendo-color-primary, #0026fd) !important;
     }
+
+    .k-checkbox:checked{
+        background-color: $color-main;
+        border-color: $color-main;
+        outline: $color-main !important;
+        box-shadow: none !important;
+    }
     app-payment{
         centered {
             display: flex;
@@ -35,6 +42,35 @@
                         font-size: 25px;
                     }
 
+                    .title-item{
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .checkbox-order{
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            gap: 10px;
+                            margin: 0;
+                            padding: 0;
+
+                            div{
+                                padding: 0;
+                                margin: 0 !important;
+                                height: 21px;
+                                display: flex;
+                                align-items: center;
+                            }
+
+                            input{
+                                display: flex;
+                                align-items: center;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+
                     .form-area{
                         margin-top: 30px;
                         .textbox{
@@ -57,7 +93,8 @@
 
                             .area-button-method{
                                 display: flex;
-                                justify-content: space-between;
+                                justify-self: start;
+                                gap: 20px;
 
                                 .method-selected{
                                     display: flex;
