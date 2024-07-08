@@ -22,61 +22,50 @@ import { CartService } from '../../shared/service/cart.service';
   styleUrls: ['./payment.component.scss']
 })
 export class PaymentComponent implements OnInit, OnDestroy {
-  
   listProvince: DTOProvince[]
   listDistrict: DTODistrict[]
   listWard: DTOWard[]
   listProductPayment: DTOProductInCart[]
-  // processToPayment: DTOProcessToPayment ={
-  //   CustomerName: "",
-  //   PhoneNumber: "",
-  //   ListProduct: [],
-  //   ShippingAddress: "",
-  //   PaymentMethod: -1,
-  //   TotalBill: 0,
-  //   IsGuess: true
-  // }
-
+  processToPayment: DTOProcessToPayment ={
+    CodeCustomer: null,
+    CustomerName: "",
+    OrdererPhoneNumber: "",
+    PhoneNumber: "",
+    ListProduct: [],
+    ShippingAddress: "",
+    PaymentMethod: -1,
+    TotalBill: 0,
+    IsGuess: true
+  }
   provinceSelected: DTOProvince
   districtSelected: DTODistrict
   wardSelected: DTOWard
   paymenMethodSelected: DTOPaymentMethod
-
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
-
   isLoadingProvince: boolean = false
   isLoadingDistrict: boolean = false
   isLoadingWard: boolean = false
-
-
   isDisableDistrict: boolean = true
   isDisableWard: boolean = true
   isDisableSpecific: boolean = true
-
   name:string = ""
   numberPhone: string = ""
   specific: string = ""
-
   listPaymentMethod: DTOPaymentMethod[] = [
     {id: 0, text: "COD", icon: "fa-money-bill"},
     {id: 1, text: "QR Payment", icon: "fa-qrcode"},
     {id: 2, text: "Bank Transfer", icon: "fa-credit-card"},
   ]
-  
   defaultValueProvince: DTOProvince = {province_id: "", province_name: '-- Select --',  province_type: ""}
   defaultValueWard: DTOWard = {district_id: "", ward_id: "", ward_name:"-- Select --", ward_type: ""}
   defaulValueDistrict : DTODistrict ={district_id: "", district_name: "-- Select --", district_type: "", province_id: "", lat: "", lng: ""  }
-
   dataProvineFilter: DTOProvince[]
   dataDistrictFilter: DTODistrict[]
   dataWardFilter: DTOWard[]
-
-
   priceSubTotal: number = 0
   priceDelivery: number = 0
   priceCoupon: number = 0
   totalPrice: number = 0
-
   codeCustomer: number = 0
 
   constructor(private cartService: CartService,private userService: UserService ,private router: Router,private paymentService: PaymentService, private notiService: NotiService){
@@ -288,18 +277,18 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   handlePayment():void{
-    // if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
-    //   this.notiService.Show("Payment error", "error")
-    //   return
-    // }
-    // this.processToPayment.CustomerName = this.name
-    // this.processToPayment.PhoneNumber = this.numberPhone
-    // this.processToPayment.ShippingAddress = this.provinceSelected.province_name + ", " + this.districtSelected.district_name + ", " +  this.wardSelected.ward_name + ", " +  this.specific
-    // this.processToPayment.ListProduct = this.listProductPayment
-    // this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
-    // this.processToPayment.TotalBill = this.totalPrice
+    if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
+      this.notiService.Show("Payment error", "error")
+      return
+    }
+    this.processToPayment.CustomerName = this.name
+    this.processToPayment.PhoneNumber = this.numberPhone
+    this.processToPayment.ShippingAddress = this.provinceSelected.province_name + ", " + this.districtSelected.district_name + ", " +  this.wardSelected.ward_name + ", " +  this.specific
+    this.processToPayment.ListProduct = this.listProductPayment
+    this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
+    this.processToPayment.TotalBill = this.totalPrice
 
-    // this.APIPayment(this.processToPayment)
+    this.APIPayment(this.processToPayment)
   }
 
   ngOnDestroy(): void {
