@@ -96,6 +96,14 @@
                             }
                         }
 
+                        .input-max-bill-discount{
+                            kendo-textbox {
+                                input.k-input-inner {
+                                    text-align: center;
+                                }
+                            }
+                        }
+
                         .review-block {
                             width: 100%;
                             display: flex;
