@@ -51,7 +51,8 @@ export const listPageEcom: DTOPageEcom[] = [
                 Code: 3,
                 Position: 'Vị trí 3'
             }
-        ]
+        ],
+        ImgStructure: 'https://i.ibb.co/8xSQNB4/structure-page-ecom.png'
     }
 ]
 

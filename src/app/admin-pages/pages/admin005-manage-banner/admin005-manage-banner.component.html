@@ -1,7 +1,33 @@
 <kendo-drawer-container>
     <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="widthDrawer" [(expanded)]="expanded">
         <ng-template kendoDrawerTemplate>
-            <div class="drawer-custom-container"></div>
+            <div class="drawer-custom-container">
+                <!-- Header của drawer -->
+                <div class="header-drawer">
+                    <i class="fa-solid fa-angles-left icon-back" (click)="drawer.toggle()"></i>
+                    <div *ngIf="contentInDrawer === 'structure'">Xem cấu trúc</div>
+                    <div *ngIf="contentInDrawer === 'update'">Chi tiết banner</div>
+                    <div *ngIf="contentInDrawer === 'add'">Thêm mới banner</div>
+                </div>
+            </div>
+
+            <!-- Content của drawer -->
+            <div class="content-drawer">
+                <!-- Chọn trang hiển thị -->
+                <component-text-dropdown (getValue)="getPageDisplayDrawer($event)" [defaultItem]="defaultPageEcom"
+                    [widthTextBox]="350" [label]="'Chọn trang hiển thị'" [widthBlock]="510" [heightTextBox]="36"
+                    [listItem]="listPageEcom" [valueField]="'Code'" [textField]="'Page'"></component-text-dropdown>
+
+                <!-- Hiển thị hình ảnh cấu trúc -->
+                <div class="img-structure-block" *ngIf="contentInDrawer === 'structure'">
+                    <img [src]="imgStructure" alt="">
+                </div>
+
+
+            </div>
+
+            <!-- Footer của drawer -->
+            <div class="footer-drawer"></div>
         </ng-template>
     </kendo-drawer>
 
@@ -21,7 +47,7 @@
 
                 <!-- Button thêm khuyến mãi-->
                 <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                    borderStyle="solid" [value]="0" (sendValue)="toggleDrawer()" [height]="36"
+                    borderStyle="solid" [value]="0" (sendValue)="openDrawer('add')" [height]="36"
                     classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"></component-button>
             </div>
 
@@ -32,23 +58,25 @@
                 <div class="label-delete-filter" (click)="resetFilter()">Xóa bộ lọc</div>
 
                 <!-- Thanh tìm kiếm -->
-                <component-search-bar #search [width]="400" (getValue)="setFilterSearch($event)"
+                <component-search-bar #search [width]="400" (getValue)="getValueSearch($event)"
                     [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
 
                 <!-- Dropdown lọc kiểu banner -->
                 <component-text-dropdown #bannerType [widthBlock]="170" [widthTextBox]="170" textField="Type"
-                    valueField="Code" [listItem]="listBannerType" [defaultItem]="defaultBannerType" />
+                    valueField="Code" [listItem]="listBannerType" (getValue)="getBannerType($event)"
+                    [defaultItem]="defaultBannerType" />
 
                 <!-- Dropdown lọc trang hiển thị -->
                 <component-text-dropdown #pageDisplay [widthBlock]="180" [widthTextBox]="180" textField="Page"
-                    valueField="Code" [listItem]="listPageEcom" [defaultItem]="defaultPageEcom" />
+                    valueField="Code" [listItem]="listPageEcom" (getValue)="getPageDisplay($event)"
+                    [defaultItem]="defaultPageEcom" />
 
                 <!-- Position hiển thị theo trang hiển thị được chọn -->
                 <component-text-dropdown #position [widthBlock]="160" [widthTextBox]="160" textField="Position"
                     valueField="Code" [listItem]="listPositionOfPage" [defaultItem]="defaultPosition" />
 
                 <!-- Xem cấu trúc -->
-                <div class="label-review-structure" (click)="resetFilter()">Xem cấu trúc</div>
+                <div class="label-review-structure" (click)="openDrawer('structure')">Xem cấu trúc</div>
 
             </div>
         </div>

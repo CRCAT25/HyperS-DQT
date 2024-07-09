@@ -22,6 +22,12 @@ export class Admin005ManageBannerComponent {
   widthDrawer: number = 550;
   // Vị trị xuất hiện của drawer
   positionDrawer: DrawerPosition = "end";
+  // Content bên trong drawer là gì? 'structure': Xem cấu trúc, 'update': Cập nhật, 'add': Thêm mới
+  contentInDrawer: string = '';
+  // Hình ảnh xem trước cấu trúc
+  // Hình ảnh default
+  imgDefault: string = 'https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=';
+  imgStructure: string = this.imgDefault;
 
 
   // Danh sách các trạng thái của banner
@@ -77,17 +83,43 @@ export class Admin005ManageBannerComponent {
     // this.setFilterData();
   }
 
-  // Đóng mở drawer
-  toggleDrawer() {
-    this.childDrawer.toggle();
-  }
-
   // Xóa bộ lọc
   resetFilter() { }
 
-  // Set filter search
-  setFilterSearch(res: any) {
+  setFilterData(){
+
+  }
+
+  // Lấy giá trị từ dropdown Chọn trang hiển thị và set giá trị cho dropdown vị trí
+  getPageDisplay(res: DTOPageEcom){
+    this.listPositionOfPage = res.ListPosition;
+  }
+
+  // Lấy giá trị từ dropdown Chọn loại banner
+  getBannerType(res: DTOBannerType){
+    console.log(res);
+  }
+
+  // Lấy giá trị từ searchbar
+  getValueSearch(res: string){
     // this.filterSearch = { field: 'IdCoupon', operator: 'contains', value: res };
-    // this.setFilterData();
+    this.setFilterData();
+  }
+
+  // Lấy giá trị từ dropdown Chọn trang hiển thị
+  getPageDisplayDrawer(res: DTOPageEcom){
+    if(res.Code === -1){
+      this.imgStructure = this.imgDefault;
+    }
+    else{
+      this.imgStructure = res.ImgStructure;
+    }
+  }
+
+  // Mở drawer để xem cấu trúc
+  openDrawer(type: 'structure' | 'update' | 'add'){
+    this.childDrawer.toggle();
+    this.imgStructure = this.imgDefault;
+    this.contentInDrawer = type;
   }
 }

@@ -3,6 +3,50 @@
 
 ::ng-deep {
     app-admin005-manage-banner {
+        kendo-drawer {
+            .header-drawer {
+                height: 60px;
+                @include center-vertical;
+                font-size: 15px;
+                text-transform: uppercase;
+                font-weight: 600;
+                gap: 10px;
+                padding: 0 20px;
+
+                .icon-back {
+                    font-size: 22px;
+                    cursor: pointer;
+                }
+            }
+
+            .content-drawer {
+                border-top: 2px solid #000;
+                height: calc(100vh - 120px);
+                padding: 20px;
+                color: #000 !important;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                overflow-y: auto;
+
+                .img-structure-block{
+                    height: calc(100% - 36px - 40px);
+                    width: 100%;
+
+                    img{
+                        object-fit: contain;
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+
+            .footer-drawer {
+                height: 60px;
+                @include center-vertical;
+            }
+        }
+
         kendo-drawer-content {
             height: 100%;
 
@@ -59,13 +103,13 @@
                         }
                     }
 
-                    .label-review-structure{
+                    .label-review-structure {
                         font-style: italic;
                         font-weight: 600;
                         color: #069DF1;
                         cursor: pointer;
 
-                        &:hover{
+                        &:hover {
                             text-decoration: underline;
                         }
                     }
