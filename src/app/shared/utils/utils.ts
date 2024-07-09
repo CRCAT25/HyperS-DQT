@@ -78,10 +78,13 @@ export function isNumberInRange(value: any, min: number, max: number): boolean {
 }
 
 /**
- * Kiểm tra xem một chuỗi có rỗng (trống) hay không
- * @param value Chuỗi cần kiểm tra
- * @returns true nếu chuỗi rỗng, ngược lại false
+ * Kiểm tra một số hoặc một list hoặc một chuỗi có rỗng hay không
+ * @param value Số cần kiểm tra
+ * @returns true nếu có giá trị, ngược lại false
  */
-export function isEmpty(value: string): boolean {
-    return value.trim() === '';
+export function isEmpty(value: any){
+    if(value === null || value.length === 0 || value.trim() === ''){
+        return false;
+    }
+    return true;
 }
