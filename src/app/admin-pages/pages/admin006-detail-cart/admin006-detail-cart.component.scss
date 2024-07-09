@@ -2,6 +2,42 @@
 @import '../../shared/style/grid.scss';
 
 ::ng-deep {
+    kendo-popup{
+        .filter-row{
+            display: flex !important;
+            align-items: center !important;
+
+            .filter-img{
+                width: 90px;
+                // padding-left: 10px;
+                .image{
+                    width: 50px;
+                    height: 50px;
+                }
+            }
+            
+            .filter-Name{
+                width: 250px;
+            }
+
+            .filter-IdProduct{
+                width: 160px;
+                font-weight: 600;
+            }
+
+            .filter-Price{
+                display: flex;
+                justify-content: center;
+                width: 100px;
+            }
+
+            .filter-Stock{
+                display: flex;
+                justify-content: center;
+                width: 70px;
+            }
+        }
+    }
     app-admin006-detail-cart {
         display: inline-block;
         font-size: 14px;
@@ -130,6 +166,13 @@
                                 flex-direction: column;
                                 gap: 15px;
 
+                                component-text-area{
+                                    padding-top: 8px;
+                                    kendo-textarea{
+                                        padding: 0;
+                                    }
+                                }
+
                             }
                         }
 
@@ -146,6 +189,8 @@
                             justify-content: space-between;
                             margin-top: 15px;
                             margin-bottom: 15px;
+
+
                             .button-addDetailBill {
                                 justify-content: flex-end;
                                 

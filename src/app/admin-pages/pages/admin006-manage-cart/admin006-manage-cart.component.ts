@@ -20,6 +20,7 @@ import { LayoutService } from '../../shared/service/layout.service';
 import { Router } from '@angular/router';
 import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToPayment';
 import { DTOUpdateBill } from '../../shared/dto/DTOUpdateBill.dto';
+import { isValidNumber } from 'src/app/shared/utils/utils';
 
 @Component({
   selector: 'app-admin006-manage-cart',
@@ -75,6 +76,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   nowDate: string;
   earliestDates: Date;
   obj = document.getElementsByClassName("numberCount");
+  resultAdd: string;
 
   // defaultItemStatusBill: DTOStatus = {
   //   Code: -1,
@@ -399,10 +401,13 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.isAdd = !this.isAdd;
     }
     if ((event.target as HTMLElement).closest('.button-addBill')) {
-      this.getListBill();
-      this.setFilterExpStatus();
-      this.getListBillNowDate();
-      this.getListBillWaitingAllDate();
+      if(this.resultAdd == "Thêm thành công"){
+        this.getListBill();
+        this.setFilterExpStatus();
+        this.getListBillNowDate();
+        this.getListBillWaitingAllDate();
+        this.isAdd = false;
+      }
     }
   }
 

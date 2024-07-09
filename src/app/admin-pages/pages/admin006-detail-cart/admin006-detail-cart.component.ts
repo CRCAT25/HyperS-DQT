@@ -21,6 +21,9 @@ import { DTOProduct } from 'src/app/ecom-pages/shared/dto/DTOProduct';
 import { ProductAdminService } from '../../shared/service/productAdmin.service';
 import { DTOSize } from 'src/app/ecom-pages/shared/dto/DTOSize';
 import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
+import { isAlphabetWithSingleSpace, isValidPhoneNumber } from 'src/app/shared/utils/utils';
+import { FilterDescriptor, State } from '@progress/kendo-data-query';
+import { GridDataResult } from '@progress/kendo-angular-grid';
 
 
 interface PaymentMethod {
@@ -34,6 +37,7 @@ interface PaymentMethod {
 })
 export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @Output() datePicked = new EventEmitter();
+  @Output() sendValue = new EventEmitter();
   @Input() listData: DTOBillInfo[];
   @Input() itemData: DTOBill;
   @Input() isAdd: boolean = false;
@@ -200,6 +204,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       "TotalPriceOfProduct": 40000
     }
   ];
+  isLoading: boolean = true;
   listStatus: DTOStatus[] = listStatusNoView;
   isClickButton: { [key: number]: boolean } = {};
   tempID: number;
@@ -277,6 +282,26 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @ViewChild('road') childRoad!: TextInputComponent;
   @ViewChild('search') childSearch!: SearchBarComponent;
 
+  filterProductActive: FilterDescriptor = { field: 'Status', operator: 'eq', value: 0, ignoreCase: true };
+
+  gridStateProduct: State = {
+    sort: [
+      {
+        "field": "Code",
+        "dir": "asc"
+      }
+    ],
+    filter: {
+      logic: "and",
+      filters: [
+        this.filterProductActive
+      ]
+    }
+  }
+
+  listProductAPI: GridDataResult;
+  listDTOProduct: DTOProduct[];
+  originalListDTOProduct: DTOProduct[];
 
 
   ngOnInit(): void {
@@ -284,6 +309,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.getListBillInfo();
     }
     this.APIGetProvince();
+    this.getListProduct();
   }
 
   ngOnDestroy(): void {
@@ -295,7 +321,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   constructor(private billService: BillService,
     private notiService: NotiService,
     private paymentService: PaymentService,
-    private productService: ProductAdminService) { }
+    private productService: ProductAdminService,
+    private productAdminService: ProductAdminService) { }
 
 
 
@@ -610,7 +637,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     if ((event.target as HTMLElement).closest('.button-addDetailBill')) {
       if (this.itemProduct && this.itemProduct !== null && this.valueSearch !== null) {
         this.valueSearch = null;
-        this.childSearch.clearValue();
         this.listProduct.push(this.itemProduct);
         this.isProcessAdd = true;
       } else {
@@ -702,8 +728,31 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.isProcessAdd = false;
   }
 
+    // Lấy danh sách các product
+    getListProduct() {
+      this.isLoading = true;
+      this.productAdminService.getListProduct(this.gridStateProduct).pipe(takeUntil(this.destroy)).subscribe(list => {
+        this.listProductAPI = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+        this.isLoading = false;
+        this.listDTOProduct = this.listProductAPI.data;
+        this.originalListDTOProduct = [...this.listDTOProduct]; // Copy the original list
+        console.log(this.listDTOProduct);
+      });
+    }
+
+    handleFilter(value: string) {
+      if (value) {
+        this.listDTOProduct = this.originalListDTOProduct.filter(product => 
+          product.Name.toLowerCase().includes(value.toLowerCase())
+        );
+      } else {
+        this.listDTOProduct = [...this.originalListDTOProduct]; // Reset to original list if filter is empty
+      }
+    }
+
   searchIdProduct(id: string) {
-    if(id !== ""){
+    console.log(id);
+    if(id !== null){
       this.productService.getProductByIdProduct(id)
       .pipe(takeUntil(this.destroy))
       .subscribe({
@@ -749,6 +798,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
           }
         }
       });
+    } else {
+      
     }
   }
 
@@ -866,6 +917,43 @@ removeProductOfList(rowIndex: number): void {
 
 }
 
+checkValueForm(){
+  if (!isAlphabetWithSingleSpace(this.childName.valueTextBox) || this.childName.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin họ tên", "error");
+      return false;
+  }
+  if (this.childProvince.value == "Chọn tỉnh, thành phố") {
+      this.notiService.Show("Vui lòng chọn tỉnh, thành phố", "error");
+      return false;
+  }
+  if (this.childDistrict.value == "Chọn huận, huyện") {
+      this.notiService.Show("Vui lòng chọn huận, huyện", "error");
+      return false;
+  }
+  if (this.childWard.value == "Chọn thị xã, trấn") {
+      this.notiService.Show("Vui lòng chọn thị xã, trấn", "error");
+      return false;
+  }
+  if (!isAlphabetWithSingleSpace(this.childRoad.valueTextBox) || this.childRoad.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin đường", "error");
+      return false;
+  }
+  if (!isAlphabetWithSingleSpace(this.childSpecific.valueTextBox) || this.childSpecific.valueTextBox == "") {
+    this.notiService.Show("Vui lòng nhập lại thông tin địa chỉ cụ thể", "error");
+    return false;
+  }
+  if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
+    this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
+    return false;
+  }
+  if (this.listProductsInCart.length <= 0) {
+      this.notiService.Show("Vui lòng thêm sản phẩm", "error");
+      return false;
+  }
+  return true;
+}
+
+
   //Add Bill
   addBill() {
       const requestAddBill: DTOProcessToPayment = {
@@ -887,19 +975,24 @@ removeProductOfList(rowIndex: number): void {
         DTOProceedToPayment: requestAddBill
       }
 
-      console.log(request);
+      
+      if(this.checkValueForm()){
+        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            this.notiService.Show("Thêm mới thành công", "success")
+          }
+        }, error => {
+          console.error('Error:', error);
+        });
+      } else{
+        return;
+      }
 
-      this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.notiService.Show("Thêm mới thành công", "success")
-        }
-      }, error => {
-        console.error('Error:', error);
-      });
+
   }
 
-  log(Type: any) {
-    console.log(Type.text);
+  log(value: any) {
+    console.log(value);
   }
 
   // Update status bill
@@ -928,6 +1021,8 @@ removeProductOfList(rowIndex: number): void {
           this.notiService.Show("Cập nhật trạng thái thành công", "success")
           this.getListBillInfo();
           this.isShowAlert = false;
+          this.sendValue.emit("Thêm thành công");
+
         }
       }, error => {
         console.error('Error:', error);
