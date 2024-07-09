@@ -17,7 +17,7 @@ export class TextDropdownComponent implements OnInit {
   @Input() paddingRight: number;
   @Input() boxShadow: string = 'rgba(0, 0, 0, 0.2) 0px 5px 10px';
   @Input() borderWidth: number = 1;
-  @Input() borderColor: string = '#EFEFEF';
+  @Input() borderColor: string = 'rgb(182, 182, 182)';
   @Input() defaultItem: any;
   @Input() textField: string;
   @Input() valueField: string;

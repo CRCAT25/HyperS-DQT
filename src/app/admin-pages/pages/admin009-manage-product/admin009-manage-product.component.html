@@ -132,9 +132,15 @@
             </kendo-grid-column>
 
             <!-- Đơn giá -->
-            <kendo-grid-column title="Đơn giá" [width]="100">
+            <kendo-grid-column title="Đơn giá" [width]="140">
                 <ng-template kendoGridCellTemplate let-item>
-                    <div class="column-9">{{formatCurrency(item.Price)}}</div>
+                    <div class="column-9">Giá gốc: {{formatCurrency(item.Price)}}</div>
+                    <ng-container *ngIf="item.Discount">
+                        <div class="column-9 column-9-discount">Giảm giá: {{item.Discount}}%</div>
+                    </ng-container>
+                    <ng-container *ngIf="item.Discount">
+                        <div class="column-9">Giảm giá: {{formatCurrency(item.PriceAfterDiscount)}}</div>
+                    </ng-container>
                 </ng-template>
             </kendo-grid-column>
 

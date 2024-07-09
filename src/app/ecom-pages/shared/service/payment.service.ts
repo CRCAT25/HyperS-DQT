@@ -19,7 +19,8 @@ export class PaymentService {
   getHttpOptions(){
     return{
       headers: new HttpHeaders({
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        // 'Access-Control-Allow-Origin': "*"
       })
     }
   }

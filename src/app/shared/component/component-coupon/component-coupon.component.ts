@@ -20,7 +20,7 @@ export class ComponentCouponComponent {
   }
 
   // format date để hiển thị trên giao diện
-  formatDateToDisplay(dateTime: Date): string {
+  formatDateToDisplay(dateTime: string): string {
     const date = new Date(dateTime);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-based

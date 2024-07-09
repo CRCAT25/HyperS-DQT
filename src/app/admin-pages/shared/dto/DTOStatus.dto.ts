@@ -421,7 +421,7 @@ export const listStatusCoupon: DTOStatus[] = [
     {
         Code: 1,
         Status: 'Đợi duyệt',
-        IsChecked: false
+        IsChecked: true
     },
     {
         Code: 2,

@@ -294,8 +294,8 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
       }
       else if (value.Code === 1) {
         this.gridState.sort.push({
-          "field": "Sold",
-          "dir": "asc"
+          "field": "Stock",
+          "dir": "desc"
         })
       }
       else if (value.Code === 2) {

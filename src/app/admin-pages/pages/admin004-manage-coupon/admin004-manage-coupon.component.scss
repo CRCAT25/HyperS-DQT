@@ -13,7 +13,7 @@
                     .header-drawer {
                         height: 60px;
                         @include center-vertical;
-                        font-size: 17px;
+                        font-size: 15px;
                         text-transform: uppercase;
                         font-weight: 600;
                         gap: 10px;
@@ -34,6 +34,7 @@
                         flex-direction: column;
                         gap: 20px;
                         overflow-y: auto;
+                        font-size: 13px !important;
 
                         .date-apply-block {
                             width: 100%;
@@ -92,6 +93,14 @@
                                 input.k-input-inner {
                                     text-align: center;
                                     color: $color-cancel;
+                                }
+                            }
+                        }
+
+                        .input-max-bill-discount{
+                            kendo-textbox {
+                                input.k-input-inner {
+                                    text-align: center;
                                 }
                             }
                         }
