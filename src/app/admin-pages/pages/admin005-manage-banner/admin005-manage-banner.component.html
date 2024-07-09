@@ -15,7 +15,7 @@
             <div class="content-drawer">
                 <!-- Chọn trang hiển thị -->
                 <component-text-dropdown (getValue)="getPageDisplayDrawer($event)" [defaultItem]="defaultPageEcom"
-                    [widthTextBox]="350" [label]="'Chọn trang hiển thị'" [widthBlock]="510" [heightTextBox]="36"
+                    [widthTextBox]="350" [label]="'Trang hiển thị'" [widthBlock]="510" [heightTextBox]="36"
                     [listItem]="listPageEcom" [valueField]="'Code'" [textField]="'Page'"></component-text-dropdown>
 
                 <!-- Hiển thị hình ảnh cấu trúc -->
@@ -23,7 +23,38 @@
                     <img [src]="imgStructure" alt="">
                 </div>
 
+                <ng-container *ngIf="contentInDrawer === 'add'">
+                    <!-- Chọn vị trí hiển thị trong trang được chọn -->
+                    <component-text-dropdown (getValue)="getPageDisplayDrawer($event)" [defaultItem]="defaultPosition"
+                        [widthTextBox]="350" [label]="'Vị trí hiển thị'" [widthBlock]="510" [heightTextBox]="36"
+                        [listItem]="listPositionOfPage" [valueField]="'Code'"
+                        [textField]="'Position'"></component-text-dropdown>
 
+                    <!-- Tiêu đề -->
+                    <component-text-input placeholder="Nhập tiêu đề..." [widthTextBox]="350" [widthBlock]="510"
+                        [heightTextBox]="36" label="Tiêu đề"></component-text-input>
+
+                    <!-- Nội dung -->
+                    <component-text-area class="content-banner" [label]="'Nội dung'" [widthBox]="510"
+                        [width]="350"></component-text-area>
+
+                    <!-- Chọn loại banner -->
+                    <component-text-dropdown (getValue)="getBannerTypeDrawer($event)" [defaultItem]="defaultBannerType"
+                        [widthTextBox]="350" [label]="'Loại banner'" [widthBlock]="510" [heightTextBox]="36"
+                        [listItem]="listBannerType" [valueField]="'Code'"
+                        [textField]="'Type'"></component-text-dropdown>
+
+                    <!-- Nếu loại banner là hình ảnh -->
+                    <ng-container *ngIf="selectedBannerTypeDrawer.Code === 0">
+                        <component-import-image [text]="'Hình ảnh'"></component-import-image>
+                    </ng-container>
+
+                    <!-- Nếu loại banner là video -->
+                    <ng-container *ngIf="selectedBannerTypeDrawer.Code === 1">
+                        <component-text-input placeholder="Nhập đường dẫn của video..." [widthTextBox]="350"
+                            [widthBlock]="510" [heightTextBox]="36" label="Đường dẫn đoạn video"></component-text-input>
+                    </ng-container>
+                </ng-container>
             </div>
 
             <!-- Footer của drawer -->

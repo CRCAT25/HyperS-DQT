@@ -28,15 +28,43 @@
                 flex-direction: column;
                 gap: 20px;
                 overflow-y: auto;
+                font-size: 13px !important;
 
-                .img-structure-block{
+                .img-structure-block {
                     height: calc(100% - 36px - 40px);
                     width: 100%;
 
-                    img{
+                    img {
                         object-fit: contain;
                         width: 100%;
                         height: 100%;
+                    }
+                }
+
+                .content-banner {
+                    .k-label {
+                        margin-top: 8px;
+                    }
+                }
+
+                component-import-image {
+                    width: 510px;
+                    
+                    .p-import-image {
+                        justify-content: space-between;
+
+                        .text-image{
+                            font-weight: 100 !important;
+                        }
+                    }
+                    
+                    .image-container {
+                        img {
+                            width: 350px !important;
+                            max-width: 350px !important;
+                            height: 350px !important;
+                            max-height: 350px !important;
+                        }
                     }
                 }
             }

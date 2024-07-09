@@ -24,9 +24,9 @@ export class Admin005ManageBannerComponent {
   positionDrawer: DrawerPosition = "end";
   // Content bên trong drawer là gì? 'structure': Xem cấu trúc, 'update': Cập nhật, 'add': Thêm mới
   contentInDrawer: string = '';
-  // Hình ảnh xem trước cấu trúc
   // Hình ảnh default
   imgDefault: string = 'https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=';
+  // Hình ảnh xem trước cấu trúc
   imgStructure: string = this.imgDefault;
 
 
@@ -55,6 +55,8 @@ export class Admin005ManageBannerComponent {
     Code: -1,
     Type: '-- Chọn kiểu banner --'
   };
+  // Item loại banner được chọn ở drawer
+  selectedBannerTypeDrawer: DTOBannerType = this.defaultBannerType;
 
 
   @ViewChild('drawer') childDrawer!: DrawerComponent;
@@ -114,12 +116,33 @@ export class Admin005ManageBannerComponent {
     else{
       this.imgStructure = res.ImgStructure;
     }
+    this.listPositionOfPage = res.ListPosition;
+  }
+
+  // Lấy giá trị từ dropdown Chọn loại banner ở drawer
+  getBannerTypeDrawer(res: DTOBannerType){
+    this.selectedBannerTypeDrawer = res;
   }
 
   // Mở drawer để xem cấu trúc
   openDrawer(type: 'structure' | 'update' | 'add'){
     this.childDrawer.toggle();
     this.imgStructure = this.imgDefault;
+    this.selectedBannerTypeDrawer = this.defaultBannerType;
     this.contentInDrawer = type;
+  }
+
+  // Hàm thêm mới banner
+  addBanner(){
+
+  }
+
+  // Hàm cập nhật banner
+  updateBanner(){
+    
+  }
+
+  checkUpdatable(){
+
   }
 }
