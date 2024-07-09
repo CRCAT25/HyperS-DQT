@@ -90,9 +90,9 @@
 
                 <!-- Thanh tìm kiếm -->
                 <component-search-bar #search [width]="400" (getValue)="getValueSearch($event)"
-                    [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
+                    [placeholder]="'Tìm kiếm theo tiêu đề...'"></component-search-bar>
 
-                <!-- Dropdown lọc kiểu banner -->
+                <!-- Dropdown lọc loại banner -->
                 <component-text-dropdown #bannerType [widthBlock]="170" [widthTextBox]="170" textField="Type"
                     valueField="Code" [listItem]="listBannerType" (getValue)="getBannerType($event)"
                     [defaultItem]="defaultBannerType" />
@@ -104,11 +104,104 @@
 
                 <!-- Position hiển thị theo trang hiển thị được chọn -->
                 <component-text-dropdown #position [widthBlock]="160" [widthTextBox]="160" textField="Position"
-                    valueField="Code" [listItem]="listPositionOfPage" [defaultItem]="defaultPosition" />
+                    valueField="Code" [listItem]="listPositionOfPage" [defaultItem]="defaultPosition" (getValue)="getBannerPosition($event)"/>
 
                 <!-- Xem cấu trúc -->
                 <div class="label-review-structure" (click)="openDrawer('structure')">Xem cấu trúc</div>
 
+            </div>
+
+            <div class="label-list-banner">
+                Danh sách Banner
+            </div>
+
+            <div class="grid-custom-container">
+                <kendo-grid [data]="listBanner" [skip]="gridState.skip" [loading]="isLoading"
+                    (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
+                    [pageable]="{ type: 'numeric', pageSizes: true }" [selectable]="{ checkboxOnly: true }">
+
+                    <!-- Loại banner -->
+                    <kendo-grid-column title="Loại banner" [width]="120">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-1">
+                                <div class="banner-type">
+                                    {{checkBannerType(item)}}
+                                </div>
+                                <img [src]="checkBannerImage(item)" alt="">
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Tiêu đề -->
+                    <kendo-grid-column title="Tiêu đề" [width]="350">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-2">
+                                {{item.Title}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Đường dẫn -->
+                    <kendo-grid-column title="Đường dẫn" [width]="600">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-3">
+                                {{item.BannerUrl}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Trang hiển thị -->
+                    <kendo-grid-column title="Trang hiển thị" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-4">
+                                {{item.Page}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Vị trí theo trang -->
+                    <kendo-grid-column title="Vị trí theo trang" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-5">
+                                {{item.Position}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Trạng thái -->
+                    <kendo-grid-column title="Trạng thái" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-6" [style.color]="checkBannerStatus(item) | statusColor">
+                                {{checkBannerStatus(item)}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- ToolBox -->
+                    <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="40">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
+                                <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15"
+                                    color="#000" bgColor="#fff" classIconFontAwesome="fa-ellipsis"
+                                    text=""></component-button>
+                                <div class="list-action" *ngIf="selectedCodeBanner === dataItem.Code">
+                                    <component-dropdown-action
+                                        [listItem]="getListChangeStatus(dataItem.Status)"></component-dropdown-action>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Paging -->
+                    <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+                        <kendo-pager-page-sizes pagerGrid [pageSizes]="listPageSize"></kendo-pager-page-sizes>
+                        <div class="pager-buttons">
+                            <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                            <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
+                            <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                        </div>
+                    </ng-template>
+                </kendo-grid>
             </div>
         </div>
     </kendo-drawer-content>

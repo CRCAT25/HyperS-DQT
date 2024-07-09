@@ -27,12 +27,13 @@ export function isValidNumber(input: string): boolean {
 }
 
 /**
- * Kiểm tra một chuỗi chỉ chứa chữ cái và cho phép duy nhất một khoảng trắng giữa các từ
+ * Kiểm tra một chuỗi chỉ chứa chữ cái (bao gồm chữ cái tiếng Việt) và cho phép duy nhất một khoảng trắng giữa các từ
  * @param input Chuỗi cần kiểm tra
  * @returns true nếu chuỗi chỉ chứa chữ cái và có tối đa một khoảng trắng, ngược lại false
  */
 export function isAlphabetWithSingleSpace(input: string): boolean {
-    const pattern = /^[A-Za-z]+( [A-Za-z]+)?$/; // Biểu thức chính quy kiểm tra chỉ chứa chữ cái (a-z, A-Z) với một khoảng trắng
+    // Biểu thức chính quy kiểm tra chữ cái (a-z, A-Z, và chữ cái tiếng Việt) với tối đa một khoảng trắng
+    const pattern = /^[A-Za-zÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỈỊọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]+( [A-Za-zÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỈỊọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]+)?$/;
     return pattern.test(input);
 }
 
@@ -75,4 +76,16 @@ export function isNonNegativeNumber(value: any): boolean {
  */
 export function isNumberInRange(value: any, min: number, max: number): boolean {
     return typeof value === 'number' && isFinite(value) && value >= min && value <= max;
+}
+
+/**
+ * Kiểm tra một số hoặc một list hoặc một chuỗi có rỗng hay không
+ * @param value Số cần kiểm tra
+ * @returns true nếu có giá trị, ngược lại false
+ */
+export function isEmpty(value: any){
+    if(value === null || value.length === 0 || value.trim() === ''){
+        return false;
+    }
+    return true;
 }
