@@ -5,10 +5,13 @@ import { DTOStatus } from '../../shared/dto/DTOStatus.dto';
 import { DTOBanner, DTOBannerType, DTOPageEcom, DTOPositionInPage, listActionChangeStatusBanner, listBannerType, listPageEcom, listStatusBanner } from '../../shared/dto/DTOBanner.dto';
 import { BannerService } from '../../shared/service/banner.service';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
-import { State } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
 import { takeUntil } from 'rxjs/operators';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
+import { CheckboxlistComponent } from '../../shared/component/checkboxlist/checkboxlist.component';
+import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
+import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
 
 @Component({
   selector: 'app-admin005-manage-banner',
@@ -74,6 +77,27 @@ export class Admin005ManageBannerComponent implements OnInit {
   // GridData của danh sách các banner
   listBanner: GridDataResult;
 
+
+  @ViewChild('drawer') childDrawer!: DrawerComponent;
+  @ViewChild('status') childStatus!: CheckboxlistComponent;
+  @ViewChild('search') childSearch!: SearchBarComponent;
+  @ViewChild('bannerType') childBannerType!: TextDropdownComponent;
+  @ViewChild('pageDisplay') childPageDisplay!: TextDropdownComponent;
+  @ViewChild('position') childPosition!: TextDropdownComponent;
+
+
+  // Filter cho trạng thái của banner
+  filterStatus: CompositeFilterDescriptor = { logic: 'or', filters: [{ field: 'Status', operator: 'eq', value: 0 }] };
+  // Filter cho search
+  filterSearch: FilterDescriptor = { field: 'Title', operator: 'contains', value: null, ignoreCase: true };
+  // Filter cho search
+  filterBannerType: FilterDescriptor = { field: 'BannerType', operator: 'eq', value: null, ignoreCase: true };
+  // Filter cho trang hiển thị
+  filterPage: FilterDescriptor = { field: 'Page', operator: 'eq', value: null, ignoreCase: true };
+  // Filter cho vị trí
+  filterPosition: FilterDescriptor = { field: 'Position', operator: 'eq', value: null, ignoreCase: true };
+
+
   // Khởi tạo State
   gridState: State = {
     skip: 0,
@@ -86,11 +110,9 @@ export class Admin005ManageBannerComponent implements OnInit {
     ],
     filter: {
       logic: "and",
-      filters: []
+      filters: [this.filterStatus]
     }
   }
-
-  @ViewChild('drawer') childDrawer!: DrawerComponent;
 
 
   constructor(private bannerService: BannerService, private notiService: NotiService) { }
@@ -115,35 +137,76 @@ export class Admin005ManageBannerComponent implements OnInit {
 
   // Lấy giá trị từ checklist status
   getValueFromCheckListStatus(res: any) {
-    // const list: DTOStatus[] = res;
-    // if (checklistType === 'status') {
-    //   this.filterStatus.filters = [];
-    //   list.forEach(item => {
-    //     if (item.IsChecked) {
-    //       this.filterStatus.filters.push({ field: 'Status', operator: 'eq', value: item.Code });
-    //     }
-    //   })
-    // }
-    // if (checklistType === 'stage') {
-    //   this.filterStage.filters = [];
-    //   list.forEach(item => {
-    //     if (item.IsChecked) {
-    //       this.filterStage.filters.push({ field: 'Stage', operator: 'eq', value: item.Code });
-    //     }
-    //   })
-    // }
+    const list: DTOStatus[] = res;
+    this.filterStatus.filters = [];
+    list.forEach(item => {
+      if (item.IsChecked) {
+        this.filterStatus.filters.push({ field: 'Status', operator: 'eq', value: item.Code });
+      }
+    })
 
-    // this.setFilterData();
+    this.setFilterData();
+  }
+
+  // Push filter vào gridState
+  pushToGridState(filter: FilterDescriptor, comFilter: CompositeFilterDescriptor) {
+    if (filter) {
+      if (filter.value !== null && filter.value !== '' && filter.value !== -1) {
+        this.gridState.filter.filters.push(filter);
+      }
+    }
+    else if (comFilter) {
+      if (comFilter.filters.length > 0) {
+        this.gridState.filter.filters.push(comFilter);
+      }
+    }
   }
 
   // Xóa bộ lọc
   resetFilter() {
+    // Reset status
+    this.childStatus.resetCheckList([
+      {
+        Code: 0,
+        Status: 'Đang được sử dụng',
+        IsChecked: true
+      },
+      {
+        Code: 1,
+        Status: 'Ngưng hoạt động',
+        IsChecked: false
+      }
+    ])
+    this.filterStatus = { logic: 'or', filters: [{ field: 'Status', operator: 'eq', value: 0 }] };
 
+    // reset search
+    this.childSearch.clearValue();
+    this.filterSearch.value = null;
+
+    // reset loại banner
+    this.childBannerType.resetValue();
+    this.filterBannerType.value = null;
+
+    // reset trang hiển thị
+    this.childPageDisplay.resetValue();
+    this.filterPage.value = null;
+
+     // reset vị trí theo trang
+     this.childPosition.resetValue();
+     this.filterPosition.value = null;
+
+    this.setFilterData();
   }
 
   // Set tất cả filter
   setFilterData() {
-
+    this.gridState.filter.filters = [];
+    this.pushToGridState(null, this.filterStatus);
+    this.pushToGridState(this.filterSearch, null);
+    this.pushToGridState(this.filterPage, null);
+    this.pushToGridState(this.filterPosition, null);
+    this.pushToGridState(this.filterBannerType, null);
+    this.getListBanner();
   }
 
   // Kiểm tra loại banner
@@ -170,20 +233,31 @@ export class Admin005ManageBannerComponent implements OnInit {
   // Lấy giá trị từ dropdown Chọn trang hiển thị và set giá trị cho dropdown vị trí
   getPageDisplay(res: DTOPageEcom) {
     this.listPositionOfPage = res.ListPosition;
-  }
-
-  // Lấy giá trị từ dropdown Chọn loại banner
-  getBannerType(res: DTOBannerType) {
-    console.log(res);
-  }
-
-  // Lấy giá trị từ searchbar
-  getValueSearch(res: string) {
-    // this.filterSearch = { field: 'IdCoupon', operator: 'contains', value: res };
+    if (res.Code !== -1) {
+      this.filterPage.value = res.Page;
+    }
     this.setFilterData();
   }
 
-  // Lấy giá trị từ dropdown Chọn trang hiển thị
+  // Lấy giá trị từ dropdown Chọn loại banner và filter bannertype
+  getBannerType(res: DTOBannerType) {
+    this.filterBannerType.value = res.Code;
+    this.setFilterData();
+  }
+
+  // Lấy giá trị từ dropdown Chọn loại banner và filter bannertype
+  getBannerPosition(res: DTOPositionInPage) {
+    this.filterPosition.value = res.Code;
+    this.setFilterData();
+  }
+
+  // Lấy giá trị từ searchbar và filter theo title
+  getValueSearch(res: string) {
+    this.filterSearch = { field: 'Title', operator: 'contains', value: res };
+    this.setFilterData();
+  }
+
+  // Lấy giá trị từ dropdown Chọn trang hiển thị tại drawer
   getPageDisplayDrawer(res: DTOPageEcom) {
     if (res.Code === -1) {
       this.imgStructure = this.imgDefault;

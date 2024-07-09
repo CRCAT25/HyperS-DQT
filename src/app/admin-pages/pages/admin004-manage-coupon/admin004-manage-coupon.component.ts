@@ -170,7 +170,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // ViewChild drawer content
   @ViewChild('status') childStatus!: CheckboxlistComponent;
   @ViewChild('stage') childStage!: CheckboxlistComponent;
-  @ViewChild('search') chidlSearch!: SearchBarComponent;
+  @ViewChild('search') childSearch!: SearchBarComponent;
   @ViewChild('rangeDateStart') chidlStartDate!: DatepickerComponent;
   @ViewChild('rangeDateEnd') chidlEndDate!: DatepickerComponent;
   @ViewChild('group') childGroup!: TextDropdownComponent;
@@ -444,7 +444,7 @@ export class Admin004ManageCouponComponent implements OnInit {
     this.filterStage.filters = [{ logic: 'or', filters: [] }];
 
     // reset tìm kiếm
-    this.chidlSearch.clearValue();
+    this.childSearch.clearValue();
     this.filterSearch.value = null;
 
     // reset datepicker

@@ -90,9 +90,9 @@
 
                 <!-- Thanh tìm kiếm -->
                 <component-search-bar #search [width]="400" (getValue)="getValueSearch($event)"
-                    [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
+                    [placeholder]="'Tìm kiếm theo tiêu đề...'"></component-search-bar>
 
-                <!-- Dropdown lọc kiểu banner -->
+                <!-- Dropdown lọc loại banner -->
                 <component-text-dropdown #bannerType [widthBlock]="170" [widthTextBox]="170" textField="Type"
                     valueField="Code" [listItem]="listBannerType" (getValue)="getBannerType($event)"
                     [defaultItem]="defaultBannerType" />
@@ -104,7 +104,7 @@
 
                 <!-- Position hiển thị theo trang hiển thị được chọn -->
                 <component-text-dropdown #position [widthBlock]="160" [widthTextBox]="160" textField="Position"
-                    valueField="Code" [listItem]="listPositionOfPage" [defaultItem]="defaultPosition" />
+                    valueField="Code" [listItem]="listPositionOfPage" [defaultItem]="defaultPosition" (getValue)="getBannerPosition($event)"/>
 
                 <!-- Xem cấu trúc -->
                 <div class="label-review-structure" (click)="openDrawer('structure')">Xem cấu trúc</div>
