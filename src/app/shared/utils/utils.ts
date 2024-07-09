@@ -76,3 +76,12 @@ export function isNonNegativeNumber(value: any): boolean {
 export function isNumberInRange(value: any, min: number, max: number): boolean {
     return typeof value === 'number' && isFinite(value) && value >= min && value <= max;
 }
+
+/**
+ * Kiểm tra xem một chuỗi có rỗng (trống) hay không
+ * @param value Chuỗi cần kiểm tra
+ * @returns true nếu chuỗi rỗng, ngược lại false
+ */
+export function isEmpty(value: string): boolean {
+    return value.trim() === '';
+}

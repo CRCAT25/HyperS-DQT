@@ -142,6 +142,7 @@ export class Admin005ManageBannerComponent {
     
   }
 
+  // Kiểm tra input hợp lệ hay không
   checkUpdatable(){
 
   }
