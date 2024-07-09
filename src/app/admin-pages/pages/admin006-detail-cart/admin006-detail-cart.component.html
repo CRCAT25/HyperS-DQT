@@ -48,12 +48,14 @@
                                 [value]="itemBill.CustomerName" [disabled]="isDisabled"></component-text-input>
                             <component-text-input #phoneNumber [label]="'Số điện thoại'" [widthBlock]="430"
                                 [value]="itemBill.PhoneNumber" [disabled]="isDisabled"></component-text-input>
-                            <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
+                                <component-text-input #method [label]="'Phương thức'" [widthBlock]="430"
+                                [value]="setDTOPaymentMethod().Method" [disabled]="isDisabled"></component-text-input>
+                            <!-- <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
                                 [widthTextBox]="300" [heightTextBox]="30" [listItem]="PaymentMethodDropDown"
                                 textField="Method" valueField="Code" [value]="setDTOPaymentMethod()"
                                 [disabled]="isDisabled">
-                            </component-text-dropdown>
-                            <component-text-area #note [label]="'Ghi chú'" [widthBox]="430" [height]="40" [width]="300"
+                            </component-text-dropdown> -->
+                            <component-text-area #note [label]="'Ghi chú'" [widthBox]="430" [height]="76" [width]="300"
                                 [fontsize]="13" [placeholder]="itemBill.Note"
                                 [disabled]="isDisabled"></component-text-area>
                         </div>
@@ -76,6 +78,9 @@
                                 textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
                                 [value]="setDTOAddress(1)" (valueChange)="handleChangeWard($event)"
                                 [disabled]="isDisableWard" [defaultItem]="defaultValueWard"></component-text-dropdown>
+                            <component-text-input #road [label]="'Đường'" [widthBlock]="430"
+                                [value]="roadBiding" [disabled]="isDisableWard"
+                                (getValue)="setNewAddress()"></component-text-input>
                             <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430"
                                 [value]="specialAddress" [disabled]="isDisableWard"
                                 (getValue)="setNewAddress()"></component-text-input>
@@ -88,10 +93,14 @@
                                 [widthBlock]="430"></component-text-input>
                             <component-text-input #phoneNumber [label]="'Số điện thoại'"
                                 [widthBlock]="430"></component-text-input>
-                            <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
+                            <!-- <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
                                 [widthTextBox]="300" [heightTextBox]="30" [listItem]="PaymentMethodDropDown"
                                 textField="Method" valueField="Code">
-                            </component-text-dropdown>
+                            </component-text-dropdown> -->
+                            <!-- <component-text-input #method [label]="'Phương thức'" [widthBlock]="430">
+                            </component-text-input> -->
+                            <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430"
+                            [disabled]="isDisableWard" (getValue)="setNewAddress()"></component-text-input>
                         </div>
 
                         <div class="column column2">
@@ -111,7 +120,7 @@
                                 textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
                                 (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard"
                                 [defaultItem]="defaultValueWard"></component-text-dropdown>
-                            <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430"
+                                <component-text-input #road [label]="'Đường'" [widthBlock]="430"
                                 [disabled]="isDisableWard" (getValue)="setNewAddress()"></component-text-input>
                         </div>
                     </div>
@@ -147,7 +156,7 @@
                             <kendo-grid-column field="Size" title="Size" [width]="90">
                                 <ng-template kendoGridCellTemplate let-dataItem>
                                     <div class="column Size">
-                                        <div *ngIf="!isAdd">{{dataItem.Size.Size}}</div>
+                                        <div *ngIf="!isAdd">{{dataItem.Size}}</div>
                                     </div>
                                 </ng-template>
                             </kendo-grid-column>
@@ -219,7 +228,7 @@
                                         </div>
                                     </ng-template>
                                 </kendo-grid-column>
-                                <kendo-grid-column field="Size" title="Size" [width]="120">
+                                <kendo-grid-column field="Size" title="Size" [width]="160">
                                     <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
                                         <div class="column Size">
                                             <component-text-dropdown #method [widthBlock]="70" [heightTextBox]="30"
@@ -229,10 +238,11 @@
                                         </div>
                                     </ng-template>
                                 </kendo-grid-column>
-                                <kendo-grid-column field="Price" title="Đơn giá" [width]="130">
+                                <kendo-grid-column field="Price" title="Đơn giá" [width]="100">
                                     <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
-                                        <div class="column Price">
+                                        <div class="column-Price">
                                             <div>{{formatCurrency(dataItem.Price)}}</div>
+                                            <div *ngIf="dataItem.Discount" [style.color]="'red'">-{{dataItem.Discount}}%</div>
                                         </div>
                                     </ng-template>
                                 </kendo-grid-column>
