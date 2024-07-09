@@ -58,6 +58,17 @@
                             cursor: pointer;
                         }
                     }
+
+                    .label-review-structure{
+                        font-style: italic;
+                        font-weight: 600;
+                        color: #069DF1;
+                        cursor: pointer;
+
+                        &:hover{
+                            text-decoration: underline;
+                        }
+                    }
                 }
             }
         }

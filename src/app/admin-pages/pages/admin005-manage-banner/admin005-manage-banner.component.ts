@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { DrawerComponent, DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { ReplaySubject } from 'rxjs';
 import { DTOStatus } from '../../shared/dto/DTOStatus.dto';
-import { listStatusBanner } from '../../shared/dto/DTOBanner.dto';
+import { DTOBannerType, DTOPageEcom, DTOPositionInPage, listBannerType, listPageEcom, listStatusBanner } from '../../shared/dto/DTOBanner.dto';
 
 @Component({
   selector: 'app-admin005-manage-banner',
@@ -26,10 +26,32 @@ export class Admin005ManageBannerComponent {
 
   // Danh sách các trạng thái của banner
   listStatusBanner: DTOStatus[] = listStatusBanner;
+  // Danh sách các trang của trang ecom
+  listPageEcom: DTOPageEcom[] = listPageEcom;
+  // Danh sách các vị trí của trang
+  listPositionOfPage: DTOPositionInPage[];
+  // Danh sách các loại banner
+  listBannerType: DTOBannerType[] = listBannerType;
+
+
+  // Item mặc định của dropdown chọn trang hiển thị
+  defaultPageEcom: DTOPageEcom = {
+    Code: -1,
+    Page: '-- Chọn trang hiển thị --',
+  }
+  // Item mặc định của dropdown chọn vị trí
+  defaultPosition: DTOPositionInPage = {
+    Code: -1,
+    Position: '-- Vị trí theo trang --'
+  };
+  // Item mặc định của dropdown loại banner
+  defaultBannerType: DTOBannerType = {
+    Code: -1,
+    Type: '-- Chọn kiểu banner --'
+  };
 
 
   @ViewChild('drawer') childDrawer!: DrawerComponent;
-
 
 
   // Lấy giá trị từ checklist status
