@@ -42,12 +42,12 @@ export class ProductAdminService {
 
     getProductByIdProduct(id: string): Observable<DTOProduct> {
         return this.getListProduct({}).pipe(
-            map((response:DTOResponse) => {
-                const product = response.ObjectReturn.Data.find((item: DTOProduct) => item.IdProduct === id);
+            map((response: DTOResponse) => {
+                const product = response.ObjectReturn.Data.find((item: DTOProduct) => item.IdProduct === id && item.Status === 0);
                 if (product) {
                     return product;
                 } else {
-                    throw new Error('Product not found');
+                    throw new Error('Product not found or inactive');
                 }
             }),
             catchError(error => {
@@ -56,6 +56,7 @@ export class ProductAdminService {
             })
         );
     }
+    
 
     getProductByCode(code: number): Observable<DTOResponse> {
         const httpOptions = this.getHttpOptions();

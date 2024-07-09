@@ -47,7 +47,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   valueSearch: string;
   valueMulti: DTOStatus[] = [
     {
-      Code: 2,
+      Code: 1,
       Status: "Chờ xác nhận",
       Icon: "fa-share",
       IsChecked: false,
@@ -90,7 +90,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   };
   filterStatus: CompositeFilterDescriptor = {
     logic: 'or', filters: [
-      { field: 'Status', operator: 'eq', value: 2 }
+      { field: 'Status', operator: 'eq', value: 1 }
     ]
   };
   filterSearch: CompositeFilterDescriptor = { logic: 'or', filters: [] };
@@ -162,7 +162,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     filter: {
       logic: "and",
       filters: [
-        { field: 'Status', operator: 'eq', value: 2 }
+        { field: 'Status', operator: 'eq', value: 1 }
       ]
     }
   }
@@ -286,7 +286,9 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     if (value == 0) {
       return 'Ship COD';
     } else if (value == 1) {
-      return 'Momo';
+      return 'QR Payment';
+    } else if (value == 2) {
+      return 'Bank Transfer';
     } else {
       return 'Unknown';
     }
@@ -294,26 +296,40 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   formatStatus(value: any): string {
     switch (value) {
-      case 2:
+      case 1:
         return 'Chờ xác nhận';
-      case 3:
-        return 'Đang đóng gói';
-      case 4:
-        return 'Đang vận chuyển';
-      case 5:
-        return 'Giao hàng thành công';
-      case 6:
+      case 2:
         return 'Đơn hàng bị hủy';
+      case 3:
+        return 'Không xác nhận';
+      case 4:
+        return 'Đã xác nhận';
+      case 5:
+        return 'Đang đóng gói';
+      case 6:
+        return 'Đã đóng gói';
       case 7:
-        return 'Giao hàng thất bại';
+        return 'Đang vận chuyển';
       case 8:
-        return 'Đang trả về';
+        return 'Giao hàng thành công';
       case 9:
-        return 'Đã nhận lại hàng';
+        return 'Giao hàng thất bại';
       case 10:
-        return 'Đã hoàn tiền';
+        return 'Đơn hàng đang trả về';
       case 11:
+        return 'Xác nhận đã nhận hàng';
+      case 12:
+        return 'Đã hoàn tiền';
+      case 13:
         return 'Không hoàn tiền';
+      case 14:
+        return 'Yêu cầu đổi trả hàng';
+      case 15:
+        return 'Xác nhận đổi hàng';
+      case 16:
+        return 'Đã đổi hàng';
+      case 17:
+        return 'Chờ thanh toán';        
       default:
         return 'Unknow';
     }
@@ -473,12 +489,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
         
           return acc;
         }, {});
-        console.log(this.formattedCreateAtNoTime(this.statusCountsAllDate[3].earliestDate));
+        // console.log(this.formattedCreateAtNoTime(this.statusCountsAllDate[3].earliestDate));
       }
-      
-    // this.animateValue(this.obj,this.statusCounts[2], 50000);
-    // console.log(typeof(this.statusCounts[2]));
-
   }
 
   //Lowcase string
@@ -623,7 +635,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.itemBill = item;
     this.objItemStatus = value
     this.listBillInfo = item.ListBillInfo;
-    if (this.objItemStatus.value == 1) {
+    if (this.objItemStatus.value == 0) {
         this.isDetail = !this.isDetail;
     } else{
       this.isShowAlert = !this.isShowAlert
@@ -637,7 +649,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   // Update status bill
   updateStatusBill(bill: DTOBill, obj: any) {
-    if (obj.value >= 2) {
+    if (obj.value >= 1) {
       bill.Status = obj.value;
       const requestUpdateBill: DTOUpdateBill = {
         CodeBill: bill.Code,

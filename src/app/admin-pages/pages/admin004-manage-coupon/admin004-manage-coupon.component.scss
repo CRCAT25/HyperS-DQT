@@ -8,9 +8,9 @@
         kendo-drawer-container {
             height: 100%;
 
-            kendo-drawer{
-                .drawer-custom-container{
-                    .header-drawer{
+            kendo-drawer {
+                .drawer-custom-container {
+                    .header-drawer {
                         height: 60px;
                         @include center-vertical;
                         font-size: 17px;
@@ -19,13 +19,13 @@
                         gap: 10px;
                         padding: 0 20px;
 
-                        .icon-back{
+                        .icon-back {
                             font-size: 22px;
                             cursor: pointer;
                         }
                     }
 
-                    .content-drawer{
+                    .content-drawer {
                         border-top: 2px solid #000;
                         height: calc(100vh - 120px);
                         padding: 20px;
@@ -33,48 +33,51 @@
                         display: flex;
                         flex-direction: column;
                         gap: 20px;
-                        
-                        .date-apply-block{
+                        overflow-y: auto;
+
+                        .date-apply-block {
                             width: 100%;
                             justify-content: space-between;
                             @include center-vertical;
 
-                            .date{
-                                width: 350px;;
+                            .date {
+                                width: 350px;
+                                ;
                                 @include center-vertical;
                                 justify-content: space-between;
                             }
                         }
 
-                        .quantity-block{
+                        .quantity-block {
                             width: 100%;
                             justify-content: space-between;
                             @include center-vertical;
 
-                            kendo-textbox{
-                                input.k-input-inner{
+                            kendo-textbox {
+                                input.k-input-inner {
                                     text-align: center;
                                 }
                             }
                         }
 
-                        .text-input-min{
-                            kendo-textbox{
-                                input.k-input-inner{
+                        .text-input-min {
+                            kendo-textbox {
+                                input.k-input-inner {
                                     text-align: center;
                                 }
                             }
                         }
 
-                        .percent-discount-block{
+                        .percent-discount-block {
                             width: 100%;
                             justify-content: space-between;
                             @include center-vertical;
 
-                            .input-percent-discount{
+                            .input-percent-discount {
                                 color: $color-cancel;
-                                kendo-textbox{
-                                    input.k-input-inner{
+
+                                kendo-textbox {
+                                    input.k-input-inner {
                                         text-align: center;
                                         color: $color-cancel;
                                     }
@@ -82,47 +85,95 @@
                             }
                         }
 
-                        .input-direct-discount{
+                        .input-direct-discount {
                             color: $color-cancel;
-                            kendo-textbox{
-                                input.k-input-inner{
+
+                            kendo-textbox {
+                                input.k-input-inner {
                                     text-align: center;
                                     color: $color-cancel;
                                 }
                             }
                         }
 
-                        .review-block{
+                        .input-max-bill-discount{
+                            kendo-textbox {
+                                input.k-input-inner {
+                                    text-align: center;
+                                }
+                            }
+                        }
+
+                        .review-block {
                             width: 100%;
                             display: flex;
                             flex-direction: column;
                             gap: 10px;
 
-                            .label{
+                            .label {
                                 font-size: 14px;
                                 text-transform: uppercase;
                                 font-weight: 600;
+                                cursor: pointer;
+                                width: 87px;
                             }
 
-                            .review{
+                            .review {
                                 width: 100%;
 
-                                .component-coupon{
+                                .component-coupon {
                                     @include center-horizontal;
                                 }
                             }
                         }
 
-                        component-text-area{
-                            .k-label{
+                        component-text-area {
+                            .k-label {
                                 height: 30px;
                                 display: flex;
                                 align-items: center;
                             }
                         }
+
+                        .button-block {
+                            width: 100%;
+                            display: flex;
+                            justify-content: end;
+                            gap: 10px;
+                            .button-update {
+                                .component-button:hover {
+                                    color: #ffffff !important;
+                                    background-color: #2557A0 !important;
+                                }
+                            }
+
+                            .button-send {
+                                .component-button:hover {
+                                    color: #ffffff !important;
+                                    background-color: #069DF1 !important;
+                                    // font-weight: 100 !important;
+                                }
+                            } 
+
+                            .button-approve {
+                                .component-button:hover {
+                                    color: #ffffff !important;
+                                    background-color: #09880E !important;
+                                    // font-weight: 100 !important;
+                                }
+                            } 
+
+                            .button-disapprove {
+                                .component-button:hover {
+                                    color: #ffffff !important;
+                                    background-color: #FF1D1D !important;
+                                    // font-weight: 100 !important;
+                                }
+                            } 
+                        }
                     }
 
-                    .footer-drawer{
+                    .footer-drawer {
                         height: 60px;
                         @include center-vertical;
                         padding: 0 20px;

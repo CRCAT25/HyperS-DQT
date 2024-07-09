@@ -8,148 +8,146 @@ export class DTOStatus {
 
 export const listStatus: DTOStatus[] = [
     {
-        Code: 1,
+        Code: 0,
         Status: "Xem chi tiết",
         Icon: "fa-eye",
         IsChecked: false
     },
     {
-        Code: 2,
+        Code: 1,
         Status: "Chờ xác nhận",
-        Icon: "fa-share",
+        Icon: "fa-clock-rotate-left",
         IsChecked: false,
         ListNextStatus:
             [
                 {
-                    Code: 1,
+                    Code: 0,
                     Status: "Xem chi tiết",
                     Icon: "fa-eye",
                     IsChecked: false
-
                 },
                 {
                     Code: 3,
-                    Status: "Đang đóng gói",
-                    Icon: "fa-share",
-                    IsChecked: false
-
-                },
-                {
-                    Code: 6,
-                    Status: "Đơn hàng bị hủy",
+                    Status: "Không xác nhận",
                     Icon: "fa-circle-xmark",
-                    IsChecked: false
-                }
-            ]
-    },
-    {
-        Code: 3,
-        Status: "Đang đóng gói",
-        Icon: "fa-box",
-        IsChecked: false,
-        ListNextStatus:
-            [
-                {
-                    Code: 1,
-                    Status: "Xem chi tiết",
-                    Icon: "fa-eye",
                     IsChecked: false
 
                 },
                 {
                     Code: 4,
-                    Status: "Đang vận chuyển",
-                    Icon: "fa-cart-flatbed",
+                    Status: "Đã xác nhận",
+                    Icon: "fa-circle-check",
                     IsChecked: false
                 }
             ]
     },
     {
-        Code: 4,
+        Code: 2,
         Status: "Đơn hàng bị hủy",
         Icon: "fa-circle-xmark",
         IsChecked: false,
         ListNextStatus:
         [
             {
-                Code: 1,
+                Code: 0,
                 Status: "Xem chi tiết",
                 Icon: "fa-eye",
                 IsChecked: false
-                
+
+            },
+        ]
+    },
+    {
+        Code: 3,
+        Status: "Không xác nhận",
+        Icon: "fa-circle-xmark",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false
+
+            },
+        ]
+    },
+    {
+        Code: 4,
+        Status: "Đã xác nhận",
+        Icon: "fa-circle-check",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false
+
+            },
+            {
+                Code: 5,
+                Status: "Đang đóng gói",
+                Icon: "fa-box",
+                IsChecked: false
             }
         ]
     },
     {
         Code: 5,
+        Status: "Đang đóng gói",
+        Icon: "fa-box",
+        IsChecked: false,
+        ListNextStatus:
+            [
+                {
+                    Code: 0,
+                    Status: "Xem chi tiết",
+                    Icon: "fa-eye",
+                    IsChecked: false
+
+                },
+                {
+                    Code: 6,
+                    Status: "Đã đóng gói",
+                    Icon: "fa-boxes-stacked",
+                    IsChecked: false
+                }
+            ]
+    },
+    {
+        Code: 6,
+        Status: "Đã đóng gói",
+        Icon: "fa-boxes-stacked",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false
+
+            },
+            {
+                Code: 7,
+                Status: "Đang vận chuyển",
+                Icon: "fa-cart-flatbed",
+                IsChecked: false,
+            }
+        ]
+    },
+    {
+        Code: 7,
         Status: "Đang vận chuyển",
         Icon: "fa-cart-flatbed",
         IsChecked: false,
         ListNextStatus:
             [
                 {
-                    Code: 1,
-                    Status: "Xem chi tiết",
-                    Icon: "fa-eye",
-                    IsChecked: false
-
-                },
-                {
-                    Code: 5,
-                    Status: "Giao hàng thành công",
-                    Icon: "fa-circle-check",
-                    IsChecked: false
-                },
-
-                {
-                    Code: 7,
-                    Status: "Giao hàng thất bại",
-                    Icon: "fa-circle-xmark",
-                    IsChecked: false
-                }
-            ]
-    },
-    {
-        Code: 6,
-        Status: "Giao hàng thành công",
-        Icon: "fa-circle-check",
-        IsChecked: false,
-        ListNextStatus:
-            [
-                {
-                    Code: 1,
-                    Status: "Xem chi tiết",
-                    Icon: "fa-eye",
-                    IsChecked: false
-
-                }
-            ]
-    },
-    {
-        Code: 6,
-        Status: "Đơn hàng bị hủy",
-        Icon: "fa-circle-xmark",
-        IsChecked: false,
-        ListNextStatus:
-            [
-                {
-                    Code: 1,
-                    Status: "Xem chi tiết",
-                    Icon: "fa-eye",
-                    IsChecked: false
-
-                }
-            ]
-    },
-    {
-        Code: 7,
-        Status: "Giao hàng thất bại",
-        Icon: "fa-circle-xmark",
-        IsChecked: false,
-        ListNextStatus:
-            [
-                {
-                    Code: 1,
+                    Code: 0,
                     Status: "Xem chi tiết",
                     Icon: "fa-eye",
                     IsChecked: false
@@ -157,43 +155,49 @@ export const listStatus: DTOStatus[] = [
                 },
                 {
                     Code: 8,
-                    Status: "Đang trả về",
-                    Icon: "fa-cart-flatbed",
-                    IsChecked: false
+                    Status: "Giao hàng thành công",
+                    Icon: "fa-circle-check",
+                    IsChecked: false,
+                },
+
+                {
+                    Code: 9,
+                    Status: "Giao hàng thất bại",
+                    Icon: "fa-circle-xmark",
+                    IsChecked: false,
                 }
             ]
     },
     {
         Code: 8,
-        Status: "Đang trả về",
-        Icon: "fa-rotate-left",
+        Status: "Giao hàng thành công",
+        Icon: "fa-circle-check",
         IsChecked: false,
         ListNextStatus:
             [
                 {
-                    Code: 1,
+                    Code: 0,
                     Status: "Xem chi tiết",
                     Icon: "fa-eye",
                     IsChecked: false
-
                 },
                 {
-                    Code: 9,
-                    Status: "Đã nhận lại hàng",
-                    Icon: "fa-circle-check",
-                    IsChecked: false
+                    Code: 14,
+                    Status: "Yêu cầu đổi trả hàng",
+                    Icon: "fa-arrow-right-arrow-left",
+                    IsChecked: false,
                 }
             ]
     },
     {
         Code: 9,
-        Status: "Đã nhận lại hàng",
-        Icon: "fa-box-open",
+        Status: "Giao hàng thất bại",
+        Icon: "fa-circle-xmark",
         IsChecked: false,
         ListNextStatus:
             [
                 {
-                    Code: 1,
+                    Code: 0,
                     Status: "Xem chi tiết",
                     Icon: "fa-eye",
                     IsChecked: false
@@ -201,12 +205,56 @@ export const listStatus: DTOStatus[] = [
                 },
                 {
                     Code: 10,
+                    Status: "Đang trả về",
+                    Icon: "fa-cart-flatbed",
+                    IsChecked: false
+                }
+            ]
+    },
+    {
+        Code: 10,
+        Status: "Đơn hàng đang trả về",
+        Icon: "fa-rotate-left",
+        IsChecked: false,
+        ListNextStatus:
+            [
+                {
+                    Code: 0,
+                    Status: "Xem chi tiết",
+                    Icon: "fa-eye",
+                    IsChecked: false
+
+                },
+                {
+                    Code: 11,
+                    Status: "Xác nhận đã nhận hàng",
+                    Icon: "fa-circle-check",
+                    IsChecked: false
+                }
+            ]
+    },
+    {
+        Code: 11,
+        Status: "Xác nhận đã nhận hàng",
+        Icon: "fa-box-open",
+        IsChecked: false,
+        ListNextStatus:
+            [
+                {
+                    Code: 0,
+                    Status: "Xem chi tiết",
+                    Icon: "fa-eye",
+                    IsChecked: false
+
+                },
+                {
+                    Code: 12,
                     Status: "Đã hoàn tiền",
                     Icon: "fa-circle-check",
                     IsChecked: false,
                 },
                 {
-                    Code: 11,
+                    Code: 13,
                     Status: "Không hoàn tiền",
                     Icon: "fa-circle-xmark",
                     IsChecked: false,
@@ -214,14 +262,14 @@ export const listStatus: DTOStatus[] = [
             ]
     },
     {
-        Code: 10,
+        Code: 12,
         Status: "Đã hoàn tiền",
         Icon: "fa-circle-check",
         IsChecked: false,
         ListNextStatus:
             [
                 {
-                    Code: 1,
+                    Code: 0,
                     Status: "Xem chi tiết",
                     Icon: "fa-eye",
                     IsChecked: false
@@ -230,46 +278,14 @@ export const listStatus: DTOStatus[] = [
             ]
     },
     {
-        Code: 11,
+        Code: 13,
         Status: "Không hoàn tiền",
         Icon: "fa-circle-xmark",
         IsChecked: false,
         ListNextStatus:
         [
             {
-                Code: 1,
-                Status: "Xem chi tiết",
-                Icon: "fa-eye",
-                IsChecked: false
-                
-            }
-        ]
-    },
-    {
-        Code: 12,
-        Status: "Khách yêu cầu đổi trả",
-        Icon: "fa-arrow-right-arrow-left",
-        IsChecked: false,
-        ListNextStatus:
-        [
-            {
-                Code: 1,
-                Status: "Xem chi tiết",
-                Icon: "fa-eye",
-                IsChecked: false
-                
-            }
-        ]
-    },
-    {
-        Code: 13,
-        Status: "Xác nhận đổi hàng",
-        Icon: "fa-cart-flatbed",
-        IsChecked: false,
-        ListNextStatus:
-        [
-            {
-                Code: 1,
+                Code: 0,
                 Status: "Xem chi tiết",
                 Icon: "fa-eye",
                 IsChecked: false
@@ -279,27 +295,89 @@ export const listStatus: DTOStatus[] = [
     },
     {
         Code: 14,
-        Status: "Đã đổi hàng",
-        Icon: "circle-check",
+        Status: "Yêu cầu đổi trả hàng",
+        Icon: "fa-arrow-right-arrow-left",
         IsChecked: false,
         ListNextStatus:
         [
             {
-                Code: 1,
+                Code: 0,
                 Status: "Xem chi tiết",
                 Icon: "fa-eye",
                 IsChecked: false
                 
+            },
+            {
+                Code: 10,
+                Status: "Đơn hàng đang trả về",
+                Icon: "fa-rotate-left",
+                IsChecked: false,
+            },
+            {
+                Code: 15,
+                Status: "Xác nhận đổi hàng",
+                Icon: "fa-cart-flatbed",
+                IsChecked: false,
+            }
+            ,
+            {
+                Code: 8,
+                Status: "Giao hàng thành công",
+                Icon: "fa-circle-check",
+                IsChecked: false,
+            }  
+        ]
+    },
+    {
+        Code: 15,
+        Status: "Xác nhận đổi hàng",
+        Icon: "fa-cart-flatbed",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false  
+            },
+            {
+                Code: 16,
+                Status: "Đã đổi hàng",
+                Icon: "fa-circle-check",
+                IsChecked: false
             }
         ]
+    },
+    {
+        Code: 16,
+        Status: "Đã đổi hàng",
+        Icon: "fa-circle-check",
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false 
+            }
+        ]
+    },
+    {
+        Code: 17,
+        Status: "Chờ thanh toán",
+        Icon: "fa-coins",
+        IsChecked: false,
+        ListNextStatus:[]
     }
 ]
 
-export const filteredStatusList: DTOStatus[] = listStatus.filter(status => status.Code !== 1);
+export const filteredStatusList: DTOStatus[] = listStatus.filter(status => status.Code !== 0);
 
 export const listStatusNoView: DTOStatus[] = JSON.parse(JSON.stringify(filteredStatusList)).map((item: DTOStatus) => {
     if (item.ListNextStatus) {
-        item.ListNextStatus = item.ListNextStatus.filter((subItem: DTOStatus) => subItem.Code !== 1);
+        item.ListNextStatus = item.ListNextStatus.filter((subItem: DTOStatus) => subItem.Code !== 0);
     }
     return item;
 });
@@ -343,7 +421,7 @@ export const listStatusCoupon: DTOStatus[] = [
     {
         Code: 1,
         Status: 'Đợi duyệt',
-        IsChecked: false
+        IsChecked: true
     },
     {
         Code: 2,
