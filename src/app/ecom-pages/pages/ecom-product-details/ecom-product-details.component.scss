@@ -1,13 +1,17 @@
 @import '../../../../styles.scss';
 ::ng-deep{
     app-ecom-product-details{
+
+        .loading{
+            height: calc(100% - 80px);
+        }
         .main{
             height: 100%;
             width: 100%;
         
             .head-main{
                 @extend centered;
-                margin-top: 80px;
+                padding-top: 80px;
                 .content-area{
                     height: 700px;
                     width: 1200px;

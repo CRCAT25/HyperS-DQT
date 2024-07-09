@@ -167,7 +167,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.paymentService.payment(info).pipe(takeUntil(this.destroy)).subscribe(data => {
       console.log(data);
       try{
-        if(data.StatusCode == 0 && data.ErrorString == ""){
+        if(data.StatusCode == 0){
           if(data.ObjectReturn.ErrorList){
             data.ObjectReturn.ErrorList.forEach((element: any) => {
               this.notiService.Show(element, "error")
@@ -179,10 +179,13 @@ export class PaymentComponent implements OnInit, OnDestroy {
               this.handleDeleteItemCart(element.Product.Code, element.SizeSelected.Code)
             });
           }
-          this.cartService.getCountInCart(this.codeCustomer)
-          this.cartService.emitCartUpdated()
-          this.notiService.Show("Payment Successfully", "success")
-          this.router.navigate(['ecom/home'])
+          console.log(data.ObjectReturn.RedirectUrl);
+          window.location.href = data.ObjectReturn.RedirectUrl
+          // this.cartService.getCountInCart(this.codeCustomer)
+          // this.cartService.emitCartUpdated()
+          // this.notiService.Show("Payment Successfully", "success")
+          // this.router.navigate(['ecom/home'])
+        
         }else{
           this.notiService.Show("Error when payment", "error")
         }
