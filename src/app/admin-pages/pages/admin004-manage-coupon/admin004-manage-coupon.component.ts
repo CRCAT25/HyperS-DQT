@@ -683,7 +683,7 @@ export class Admin004ManageCouponComponent implements OnInit {
     }
 
     if (this.checkUpdatable()) {
-      const buildCoupon = (): any => ({
+      const buildCoupon = (): DTOCoupon => ({
         Code: this.selectedCoupon.Code === -1 ? 0 : this.selectedCoupon.Code,
         IdCoupon: this.childIdCoupon.valueTextBox,
         Description: this.childDescription.value,
