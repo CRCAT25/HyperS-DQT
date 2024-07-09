@@ -53,7 +53,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Ngày kết thúc
   endDate: Date = this.maxDate;
   // Số item mỗi trang
-  pageSize: number = 2;
+  pageSize: number = 5;
   // Loading của grid
   isLoading: boolean = true;
   // Code của coupon được chọn
@@ -77,7 +77,7 @@ export class Admin004ManageCouponComponent implements OnInit {
   // Danh sách các coupon
   listCoupon: GridDataResult;
   // Danh sách các pageSize
-  listPageSize: number[] = [2, 3, 4];
+  listPageSize: number[] = [5, 10, 15];
   // Danh sách đầy đủ các đối tượng khách hàng
   listGroupCustomerApply: GroupCustomer[] = [
     {
@@ -139,7 +139,7 @@ export class Admin004ManageCouponComponent implements OnInit {
 
 
   // Filter cho trạng thái khuyến mãi
-  filterStatus: CompositeFilterDescriptor = { logic: 'or', filters: [{ field: 'Status', operator: 'eq', value: 0 }] };
+  filterStatus: CompositeFilterDescriptor = { logic: 'or', filters: [{ field: 'Status', operator: 'eq', value: 0 }, { field: 'Status', operator: 'eq', value: 1 }] };
   // Filter cho giai đoạn của khuyến mãi
   filterStage: CompositeFilterDescriptor = { logic: 'or', filters: [] };
   // Filter cho ngày
@@ -428,7 +428,7 @@ export class Admin004ManageCouponComponent implements OnInit {
         IsChecked: false
       }
     ]);
-    this.filterStatus.filters = [{ field: 'Status', operator: 'eq', value: 0 }];
+    this.filterStatus.filters = [{ field: 'Status', operator: 'eq', value: 0 }, { field: 'Status', operator: 'eq', value: 1 }];
 
     // reset giai đoạn
     this.childStage.resetCheckList([{
@@ -458,7 +458,7 @@ export class Admin004ManageCouponComponent implements OnInit {
 
     // Reset state
     this.gridState.filter.filters = [this.filterStatus];
-    this.pageSize = 2;
+    this.pageSize = 5;
     this.gridState.skip = 0;
     this.gridState.sort = [
       {
