@@ -12,6 +12,8 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { DatepickerComponent } from '../../shared/component/datepicker/datepicker.component';
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
 import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 interface Gender {
   Code: number
@@ -36,6 +38,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   pageSize: number = 2;
   codeCustomerSelected: number;
   valueSearch: string;
+  permission: string;
 
   // variable Statistics
   valueTotalCustomer: number = 100;
@@ -99,11 +102,22 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   @ViewChild('birthday') childBirthday!: DatepickerComponent;
   @ViewChild('image') childImage!: ImportImageComponent;
 
-  constructor(private accountService: AccountService, private notiService: NotiService) { }
+  constructor(private accountService: AccountService, private notiService: NotiService, private staffService: StaffService) { }
 
   ngOnInit(): void {
+    this.getPermission();
     this.getListCustomer();
     this.getStatistics();
+  }
+
+  // Lấy quyền truy cập
+  getPermission(){
+    this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if(res.StatusCode === 0){
+        const staff: DTOStaff = res.ObjectReturn.Data[0];
+        this.permission = staff.Permission;
+      }
+    })
   }
 
   // Lấy danh sách khách hàng
@@ -174,21 +188,26 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
 
   // Sự kiện click vào button ... tool box
   onClickToolBox(obj: DTOCustomer, event: Event) {
-    if (this.codeCustomerSelected === obj.Code) {
-      this.codeCustomerSelected = null;
+    if(this.permission === 'Admin'){
+      if (this.codeCustomerSelected === obj.Code) {
+        this.codeCustomerSelected = null;
+      }
+      else {
+        this.codeCustomerSelected = obj.Code;
+      }
+  
+      // Remove 'active' class from all cells
+      const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
+      cells.forEach(cell => cell.classList.remove('active'));
+  
+      // Add 'active' class to the clicked cell
+      const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
+      if (cell) {
+        cell.classList.add('active');
+      }
     }
-    else {
-      this.codeCustomerSelected = obj.Code;
-    }
-
-    // Remove 'active' class from all cells
-    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
-    cells.forEach(cell => cell.classList.remove('active'));
-
-    // Add 'active' class to the clicked cell
-    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
-    if (cell) {
-      cell.classList.add('active');
+    else{
+      this.notiService.Show('Bạn không có thẩm quyền để điều chỉnh', 'warning');
     }
   }
 

@@ -131,7 +131,6 @@ export class SidebarComponent implements OnInit {
     this.staffService.getCurrentStaffInfo().subscribe((res: DTOResponse) => {
       if (res.StatusCode === 0) {
         this.currentStaff = res.ObjectReturn.Data[0];
-        console.log(this.currentStaff);
       }
     })
   }
