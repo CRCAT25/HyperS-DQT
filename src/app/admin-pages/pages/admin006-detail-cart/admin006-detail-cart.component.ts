@@ -636,7 +636,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
     if ((event.target as HTMLElement).closest('.button-addDetailBill')) {
       if (this.itemProduct && this.itemProduct !== null && this.valueSearch !== null) {
-        this.valueSearch = null;
         this.listProduct.push(this.itemProduct);
         this.isProcessAdd = true;
       } else {
@@ -779,7 +778,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
               this.notiService.Show(item.Name + " số lượng còn: " + item.Stock, "success");
               this.itemProduct = item;
               this.listOfSize = item.ListOfSize.filter(size => size.Stock > 0)
-              console.log(this.listOfSize);
               this.priceOfProduct = item.Price;
               this.priceProductAfterDiscount = item.Price - ((item.Price * item.Discount)/100);
               // this.totalPriceOfProduct = this.priceProductAfterDiscount;
@@ -895,6 +893,13 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     ].filter(Boolean).join(', ');
   }
 
+  removeProductOfList(rowIndex: number): void {
+    const adjustedIndex = rowIndex;
+    this.listProduct = this.listProduct.filter((_, index) => index !== adjustedIndex);
+    this.isProcessAdd = false;
+  
+  }
+
   removeProductInCart(value: DTOProductInCart): void {
     this.listProductsInCart = this.listProductsInCart.filter(
       item => !(item.Product.IdProduct === value.Product.IdProduct && item.SizeSelected === value.SizeSelected)
@@ -909,12 +914,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.totalPrictOfBill += item.TotalPriceOfProduct;
     });
     console.log(this.listProductsInCart);
-}
-
-removeProductOfList(rowIndex: number): void {
-  const adjustedIndex = rowIndex;
-  this.listProduct = this.listProduct.filter((_, index) => index !== adjustedIndex);
-
 }
 
 checkValueForm(){

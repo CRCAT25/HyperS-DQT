@@ -328,6 +328,7 @@
                                     <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
                                         <div class="column Price">
                                             <div>{{formatCurrency(dataItem.Product.Price)}}</div>
+                                            <div *ngIf="dataItem.Discount" [style.color]="'red'">-{{dataItem.Discount}}%</div>
                                         </div>
                                     </ng-template>
                                 </kendo-grid-column>

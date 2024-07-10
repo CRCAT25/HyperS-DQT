@@ -183,6 +183,11 @@
                         border-bottom: 3px solid black;
                         height: 365px;
 
+                        kendo-combobox{
+                            border: 1px solid black;
+                            width: 730px;
+                        }
+
                         .header-search-product {
                             width: 100%;
                             display: flex;
