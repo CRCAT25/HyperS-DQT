@@ -43,7 +43,7 @@ export const listStatusBanner: DTOStatus[] = [
 export const listPageEcom: DTOPageEcom[] = [
     {
         Code: 0,
-        Page: 'Trang chủ ecom',
+        Page: 'Trang chủ Ecom',
         ListPosition: [
             {
                 Code: 1,

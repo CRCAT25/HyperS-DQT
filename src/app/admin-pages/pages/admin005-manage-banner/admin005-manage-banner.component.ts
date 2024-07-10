@@ -56,6 +56,8 @@ export class Admin005ManageBannerComponent implements OnInit {
   listPageEcom: DTOPageEcom[] = listPageEcom;
   // Danh sách các vị trí của trang
   listPositionOfPage: DTOPositionInPage[];
+  // Danh sách các vị trí của trang trong drawer
+  listPositionOfPageDrawer: DTOPositionInPage[];
   // Danh sách các loại banner
   listBannerType: DTOBannerType[] = listBannerType;
   // Danh sách số trang có thể đổi
@@ -81,6 +83,8 @@ export class Admin005ManageBannerComponent implements OnInit {
   selectedBannerTypeDrawer: DTOBannerType = this.defaultBannerType;
   // GridData của danh sách các banner
   listBanner: GridDataResult;
+  // banner được chọn để cập nhật
+  selectedBannerToUpdate: DTOBanner;
 
 
   // ViewChild bên content
@@ -211,7 +215,7 @@ export class Admin005ManageBannerComponent implements OnInit {
     this.pageSize = 5;
     this.gridState.skip = 0;
     this.gridState.filter.filters.push(this.filterStatus);
-    this.gridState.take = 5; 
+    this.gridState.take = 5;
 
     this.setFilterData();
   }
@@ -279,11 +283,14 @@ export class Admin005ManageBannerComponent implements OnInit {
   getPageDisplayDrawer(res: DTOPageEcom) {
     if (res.Code === -1) {
       this.imgStructure = this.imgDefault;
+      this.listPositionOfPageDrawer = [];
+      this.childPositionDrawer.value = this.defaultPosition;
     }
     else {
       this.imgStructure = res.ImgStructure;
+      this.listPositionOfPageDrawer = res.ListPosition;
     }
-    this.listPositionOfPage = res.ListPosition;
+    this.selectedBannerToUpdate.Page = res.Page;
   }
 
   // Lấy giá trị từ dropdown Chọn loại banner ở drawer
@@ -291,12 +298,52 @@ export class Admin005ManageBannerComponent implements OnInit {
     this.selectedBannerTypeDrawer = res;
   }
 
-  // Mở drawer để xem cấu trúc
+  // Tìm code của trang dựa trên tên trang
+  findCodeFromPage(page: string) {
+    const foundPage = listPageEcom.find(itemPage => itemPage.Page === page);
+    if (foundPage) return foundPage.Code;
+    return -1;
+  }
+
+  // Tìm danh sách các position trong trang dựa trên tên trang
+  findListPositionFromPage(page: string) {
+    const foundPage = listPageEcom.find(itemPage => itemPage.Page === page);
+    if (foundPage) return foundPage.ListPosition;
+    return [];
+  }
+
+  // Tìm tên vị trí của 1 trang dựa trên code position và trang cụ thể
+  findPositionFromCode(page: string, code: number) {
+    const position = this.findListPositionFromPage(page).find(pos => pos.Code === code);
+    if (position) return position.Position;
+    return '';
+  }
+
+  // Tìm loại banner dựa trên banner
+  findBannerTypeFromBanner(banner: DTOBanner): DTOBannerType{
+    const foundType = listBannerType.find(type => type.Code === banner.BannerType);
+    const bannerType: DTOBannerType = {
+      Code: banner.BannerType,
+      Type: foundType ? foundType.Type : this.defaultBannerType.Type
+    }
+    return bannerType;
+  }
+
+  // Mở drawer
   openDrawer(type: 'structure' | 'update' | 'add') {
     this.childDrawer.toggle();
     this.imgStructure = this.imgDefault;
     this.selectedBannerTypeDrawer = this.defaultBannerType;
     this.contentInDrawer = type;
+    this.selectedBannerToUpdate = {
+      Code: 0,
+      Title: '',
+      BannerType: -1,
+      BannerUrl: '',
+      Position: -1,
+      Page: '',
+      Status: 0
+    }
   }
 
   // Hàm thêm mới banner
@@ -322,7 +369,7 @@ export class Admin005ManageBannerComponent implements OnInit {
           ]
       }
       this.bannerService.addBanner(req).subscribe((res: DTOResponse) => {
-        if(res.StatusCode === 0){
+        if (res.StatusCode === 0) {
           this.notiService.Show('Thêm mới banner thành công', 'success');
           this.childDrawer.toggle();
           this.getListBanner();
@@ -333,19 +380,44 @@ export class Admin005ManageBannerComponent implements OnInit {
 
   // Hàm cập nhật banner
   updateBanner() {
-
+    if(this.checkUpdatable()){
+      const banner: DTOBanner = {
+        Code: this.selectedBannerToUpdate.Code,
+        Title: this.childTitleDrawer.valueTextBox,
+        BannerType: this.childBannerTypeDrawer.value.Code,
+        BannerUrl: '',
+        Position: this.childPositionDrawer.value.Code,
+        Page: this.childPageDrawer.value.Page,
+        Status: 0
+      }
+      if(banner.BannerType === 0) banner.BannerUrl = this.childImgDrawer.imageHandle.ImgUrl;
+      if(banner.BannerType === 1) banner.BannerUrl = this.childVideoURLdrawer.valueTextBox;
+      const req: DTOUpdateBannerRequest = {
+        Banner: banner,
+        Properties: ['Title', 'BannerType', 'BannerUrl', 'Position', 'Page']
+      }
+      this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
+        if(res.StatusCode === 0){
+          this.notiService.Show('Cập nhật banner thành công', 'success');
+          this.childDrawer.toggle();
+          this.getListBanner();
+        }
+      }, error => {
+        this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
+      })
+    }
   }
 
   // Cập nhật trạng thái của banner
-  updateStatusBanner(res: any, banner: DTOBanner){
-    if(res.value === 1){
+  updateStatusBanner(res: any, banner: DTOBanner) {
+    if (res.value === 1) {
       banner.Status = 0;
       const req: DTOUpdateBannerRequest = {
         Banner: banner,
         Properties: ['Status']
       }
       this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
-        if(res.StatusCode === 0){
+        if (res.StatusCode === 0) {
           this.notiService.Show('Cập nhật trạng thái thành công', 'success');
           this.getListBanner();
         }
@@ -353,9 +425,18 @@ export class Admin005ManageBannerComponent implements OnInit {
         this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
       })
     }
-    if(res.value === 0){
-      this.childDrawer.toggle();
-      this.contentInDrawer = 'update';
+    if (res.value === 0) {
+      this.openDrawer('update');
+      this.selectedBannerToUpdate = banner;
+      this.listPositionOfPageDrawer = this.findListPositionFromPage(banner.Page);
+      this.getBannerTypeDrawer(this.findBannerTypeFromBanner(banner));
+      // if(banner.BannerType === 0) {
+      //   if(this.childImgDrawer){
+      //     this.childImgDrawer.imageHandle.ImgUrl = banner.BannerUrl;
+      //     this.childImgDrawer.imageHandle.Code = 0;
+      //     console.log(this.childImgDrawer.imageHandle);
+      //   }
+      // }
     }
   }
 
@@ -378,7 +459,7 @@ export class Admin005ManageBannerComponent implements OnInit {
       return false;
     }
     if (this.childBannerTypeDrawer.value.Code === 0) {
-      if (this.childImgDrawer.imageHandle.Code === -1) {
+      if (this.childImgDrawer.imageHandle.ImgUrl === this.imgDefault) {
         this.notiService.Show('Vui lòng chọn hình ảnh', 'error');
         return false;
       }
