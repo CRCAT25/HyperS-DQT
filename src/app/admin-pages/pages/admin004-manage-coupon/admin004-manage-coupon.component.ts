@@ -392,11 +392,11 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
     }
 
     // Remove 'active' class from all cells
-    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="9"]');
+    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="8"]');
     cells.forEach(cell => cell.classList.remove('active'));
 
     // Add 'active' class to the clicked cell
-    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="9"]');
+    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="8"]');
     if (cell) {
       cell.classList.add('active');
     }
@@ -404,7 +404,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="9"]')) {
+    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="8"]')) {
       this.selectedCouponCode = 0;
     }
   }

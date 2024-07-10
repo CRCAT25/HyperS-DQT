@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FileRestrictions, SelectEvent } from '@progress/kendo-angular-upload';
 import { UploadImageService } from '../../service/uploadImage.service';
 import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
+import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 
 type ImagePreview = {
   src: string | ArrayBuffer;
@@ -30,7 +31,7 @@ export class ImportImageComponent implements OnInit {
 
   imageHandle: DTOImageProduct = new DTOImageProduct();
 
-  constructor(private uploadImageService: UploadImageService) { }
+  constructor(private uploadImageService: UploadImageService, private notiService: NotiService) { }
 
   ngOnInit(): void {
     if(this.srcImage){
@@ -64,7 +65,9 @@ export class ImportImageComponent implements OnInit {
           this.fileSelected.emit(this.imageHandle);
         },
         (error) => {
-          console.error('Error uploading image:', error);
+          window.location.reload();
+          this.notiService.Show('Xảy ra lỗi trong quá trình upload ảnh', 'error');
+          // console.error('Error uploading image:', error);
         }
       );
     }
