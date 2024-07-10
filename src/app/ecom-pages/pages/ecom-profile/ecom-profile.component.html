@@ -36,7 +36,7 @@
                             <div class="title-child">
                                 Status
                             </div>
-                            <span>{{handleGetStatusByCode(billSelected.Status).Text}}</span> <span> &nbsp;<i class="fa-solid {{handleGetStatusByCode(billSelected.Status).Icon}}"></i></span>
+                            <span [ngStyle]="{'color': handleGetStatusByCode(billSelected.Status).Color}">{{handleGetStatusByCode(billSelected.Status).Text}}</span> <span> &nbsp;<i [ngStyle]="{'color': handleGetStatusByCode(billSelected.Status).Color}" class="fa-solid {{handleGetStatusByCode(billSelected.Status).Icon}}"></i></span>
                         </div>
 
                         <div class="product-item">
@@ -47,7 +47,7 @@
                                 <div class="info-item">
                                     <div class="area-1">
                                         <div class="img">
-                                            <img src="{{item.ImageUrl}}" alt="">
+                                            <img src="{{item.ImageURL}}" alt="">
                                         </div>
                                         <div class="nameAndQuantity">
                                             <div class="name">
@@ -60,13 +60,14 @@
                                     </div>
                                     
                                     <div class="price">
-                                        {{item.Price}}
+                                        {{item.Price}} VND
                                     </div>
 
-                                    <div class="button-return">
-                                        <i class="fa-solid fa-reply"></i>
+                                    <div class="btn-return-area">
+                                        <div *ngIf="billSelected.Status == 8" class="button-return">
+                                            <i class="fa-solid fa-reply"></i>
+                                        </div>
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -74,9 +75,12 @@
                         
 
                         <div class="btn-area">
-                            <div *ngIf="billSelected.Status == 1" class="btn-cancel">
-                                Cancel Order
+                            <div *ngIf="billSelected.Status == 1">
+                                <div (click)="handleCancelOrder()"  class="btn-cancel">
+                                    Cancel Order
+                                </div>
                             </div>
+                          
                         </div>
 
                     </div>
@@ -128,6 +132,11 @@
                 </div>
             
                 <div class="body">
+                    <div class="address-area">
+                        <div (click)="log()" class="btn-add-address">
+                            + Add Address
+                        </div>
+                    </div>
                     <div class="order-area">
                         <div class="title">
                             Order tracking
@@ -159,7 +168,7 @@
                                         Start Date: <span>{{formatDateTime(item.CreateAt)}}</span>
                                     </div>
             
-                                    <div class="status-area">
+                                    <div [ngStyle]="{'color': handleGetStatusByCode(item.Status).Color}" class="status-area">
                                         <div class="status-text">{{handleGetStatusByCode(item.Status).Text}}</div>
                                         <i class="fa-solid {{handleGetStatusByCode(item.Status).Icon}}"></i>
                                     </div>
