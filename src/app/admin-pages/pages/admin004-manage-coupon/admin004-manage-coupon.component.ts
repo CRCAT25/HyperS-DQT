@@ -55,7 +55,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
   // Ngày kết thúc
   endDate: Date = this.maxDate;
   // Số item mỗi trang
-  pageSize: number = 5;
+  pageSize: number = 15;
   // Loading của grid
   isLoading: boolean = true;
   // Code của coupon được chọn
@@ -81,7 +81,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
   // Danh sách các coupon
   listCoupon: GridDataResult;
   // Danh sách các pageSize
-  listPageSize: number[] = [5, 10, 15];
+  listPageSize: number[] = [15, 25, 40];
   // Danh sách đầy đủ các đối tượng khách hàng
   listGroupCustomerApply: GroupCustomer[] = [
     {
@@ -473,7 +473,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
 
     // Reset state
     this.gridState.filter.filters = [this.filterStatus];
-    this.pageSize = 5;
+    this.pageSize = 15;
     this.gridState.skip = 0;
     this.gridState.sort = [
       {

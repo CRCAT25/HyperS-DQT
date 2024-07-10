@@ -35,7 +35,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   currentDate: Date = new Date();
   minDate: Date = new Date(1900, 1, 1);
   maxDate: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
-  pageSize: number = 2;
+  pageSize: number = 5;
   codeCustomerSelected: number;
   valueSearch: string;
   permission: string;
@@ -58,7 +58,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
     }
   ];
   listCustomer: GridDataResult;
-  listPageSize: number[] = [2, 3, 4];
+  listPageSize: number[] = [5, 10, 15];
   selectedCodeCustomer: number[];
 
   // variables object

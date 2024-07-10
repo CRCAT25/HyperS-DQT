@@ -281,13 +281,13 @@
                             padding: 0 !important;
                         }
 
-                        th.k-table-th[aria-colindex="6"] {
+                        th.k-table-th[aria-colindex="5"] {
                             .k-column-title {
                                 margin: auto;
                             }
                         }
 
-                        th.k-table-th[aria-colindex="8"],
+                        th.k-table-th[aria-colindex="6"],
                         th.k-table-th[aria-colindex="7"] {
                             .k-link {
                                 display: flex;
@@ -295,7 +295,7 @@
                             }
                         }
 
-                        td.k-table-td[aria-colindex="9"] {
+                        td.k-table-td[aria-colindex="8"] {
                             background-color: #fff;
                             box-shadow: $box-shadow2;
                             height: 44px;

@@ -45,7 +45,7 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
   // Hình ảnh xem trước cấu trúc
   imgStructure: string = this.imgDefault;
   // Số item hiển thị trong 1 trang
-  pageSize: number = 5;
+  pageSize: number = 10;
   // Danh sách có đang load hay không
   isLoading: boolean = true;
   // Code của banner được chọn
@@ -65,7 +65,7 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
   // Danh sách các loại banner
   listBannerType: DTOBannerType[] = listBannerType;
   // Danh sách số trang có thể đổi
-  listPageSize: number[] = [5, 10, 15];
+  listPageSize: number[] = [10, 20, 30];
 
 
   // Item mặc định của dropdown chọn trang hiển thị
@@ -227,10 +227,10 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
     this.childPosition.resetValue();
     this.filterPosition.value = null;
 
-    this.pageSize = 5;
+    this.pageSize = 10;
     this.gridState.skip = 0;
     this.gridState.filter.filters.push(this.filterStatus);
-    this.gridState.take = 5;
+    this.gridState.take = this.pageSize;
 
     this.setFilterData();
   }
