@@ -1,7 +1,13 @@
 import { DTOStatus } from "./DTOStatus.dto";
 
 export class DTOBanner{
-
+    Code: number
+    Title: string
+    BannerType: number
+    BannerUrl: string
+    Position: number
+    Page: string
+    Status: number
 }
 
 export class DTOPositionInPage{
@@ -37,7 +43,7 @@ export const listStatusBanner: DTOStatus[] = [
 export const listPageEcom: DTOPageEcom[] = [
     {
         Code: 0,
-        Page: 'Trang chủ ecom',
+        Page: 'Trang chủ Ecom',
         ListPosition: [
             {
                 Code: 1,
@@ -51,7 +57,21 @@ export const listPageEcom: DTOPageEcom[] = [
                 Code: 3,
                 Position: 'Vị trí 3'
             }
-        ]
+        ],
+        ImgStructure: 'https://i.ibb.co/8xSQNB4/structure-page-ecom.png'
+    }
+]
+
+export const listActionChangeStatusBanner: DTOStatus[] = [
+    {
+        Code: 0,
+        Status: 'Chỉnh sửa',
+        Icon: 'fa-pencil'
+    },
+    {
+        Code: 1,
+        Status: 'Kích hoạt',
+        Icon: 'fa-circle-check'
     }
 ]
 

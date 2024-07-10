@@ -6,4 +6,4 @@ export class DTOProductInCart{
     Quantity: number = 0;
     TotalPriceOfProduct: number;
     SizeSelected: DTOSize
-}
+}   

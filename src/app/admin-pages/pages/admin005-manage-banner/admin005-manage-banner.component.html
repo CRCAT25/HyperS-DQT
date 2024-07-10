@@ -1,7 +1,100 @@
 <kendo-drawer-container>
     <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="widthDrawer" [(expanded)]="expanded">
         <ng-template kendoDrawerTemplate>
-            <div class="drawer-custom-container"></div>
+            <div class="drawer-custom-container">
+                <!-- Header của drawer -->
+                <div class="header-drawer">
+                    <i class="fa-solid fa-angles-left icon-back" (click)="drawer.toggle()"></i>
+                    <div *ngIf="contentInDrawer === 'structure'">Xem cấu trúc</div>
+                    <div *ngIf="contentInDrawer === 'update'">Chi tiết banner</div>
+                    <div *ngIf="contentInDrawer === 'add'">Thêm mới banner</div>
+                </div>
+            </div>
+
+            <!-- Content của drawer -->
+            <div class="content-drawer">
+                <!-- Chọn trang hiển thị -->
+                <component-text-dropdown #pageDrawer (getValue)="getPageDisplayDrawer($event)"
+                    [defaultItem]="defaultPageEcom" [widthTextBox]="350" [label]="'Trang hiển thị'" [widthBlock]="510"
+                    [heightTextBox]="36" [listItem]="listPageEcom" [valueField]="'Code'" [textField]="'Page'"
+                    [value]="{Code: findCodeFromPage(selectedBannerToUpdate.Page), Page: selectedBannerToUpdate.Page}"></component-text-dropdown>
+
+                <!-- Hiển thị hình ảnh cấu trúc -->
+                <div class="img-structure-block" *ngIf="contentInDrawer === 'structure'">
+                    <img [src]="imgStructure" alt="">
+                </div>
+
+                <ng-container *ngIf="contentInDrawer === 'add' || contentInDrawer === 'update'">
+                    <!-- Chọn vị trí hiển thị trong trang được chọn -->
+                    <component-text-dropdown #positionDrawer [defaultItem]="defaultPosition" [widthTextBox]="350"
+                        [label]="'Vị trí hiển thị'" [widthBlock]="510" [heightTextBox]="36"
+                        [value]="{Code: selectedBannerToUpdate.Position, Position: findPositionFromCode(selectedBannerToUpdate.Page, selectedBannerToUpdate.Position)}"
+                        [listItem]="listPositionOfPageDrawer" [valueField]="'Code'"
+                        [textField]="'Position'"></component-text-dropdown>
+
+                    <!-- Tiêu đề -->
+                    <component-text-input #titleDrawer placeholder="Nhập tiêu đề..." [widthTextBox]="350"
+                        [widthBlock]="510" [heightTextBox]="36" [value]="selectedBannerToUpdate.Title"
+                        label="Tiêu đề"></component-text-input>
+
+                    <!-- Chọn loại banner -->
+                    <component-text-dropdown #bannerTypeDrawer (getValue)="getBannerTypeDrawer($event)"
+                        [defaultItem]="defaultBannerType" [widthTextBox]="350" [label]="'Loại banner'"
+                        [value]="{Code: selectedBannerToUpdate.BannerType, Type: checkBannerType(selectedBannerToUpdate)}"
+                        [widthBlock]="510" [heightTextBox]="36" [listItem]="listBannerType" [valueField]="'Code'"
+                        [textField]="'Type'"></component-text-dropdown>
+
+                    <!-- Nếu loại banner là hình ảnh -->
+                    <ng-container *ngIf="selectedBannerTypeDrawer.Code === 0">
+                        <component-import-image #imgDrawer [srcImage]="selectedBannerToUpdate.BannerUrl"
+                            [text]="'Hình ảnh'"></component-import-image>
+                    </ng-container>
+
+                    <!-- Nếu loại banner là video -->
+                    <ng-container *ngIf="selectedBannerTypeDrawer.Code === 1">
+                        <component-text-input #videoURLdrawer [value]="selectedBannerToUpdate.BannerUrl"
+                            placeholder="Nhập đường dẫn của video..." [widthTextBox]="350" [widthBlock]="510"
+                            [heightTextBox]="36" label="Đường dẫn đoạn video"></component-text-input>
+                    </ng-container>
+
+                    <!-- Trạng thái -->
+                    <component-text-input [readOnly]="true"
+                        [color]="checkBannerStatus(selectedBannerToUpdate) | statusColor" [widthTextBox]="350"
+                        [widthBlock]="510" [heightTextBox]="36" [value]="checkBannerStatus(selectedBannerToUpdate)"
+                        label="Trạng thái"></component-text-input>
+
+                    <!-- Button thêm banner-->
+                    <ng-container *ngIf="contentInDrawer === 'add'">
+                        <component-button class="button-add" (sendValue)="addBanner()" [borderWidth]="2" color="#09880E"
+                            borderColor="#09880E" borderStyle="solid" [value]="0" [height]="36"
+                            classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"
+                            [width]="120"></component-button>
+                    </ng-container>
+
+                    <!-- Các nút cập nhật banner-->
+                    <ng-container *ngIf="contentInDrawer === 'update'">
+                        <div class="group-button-update">
+                            <ng-container *ngIf="selectedBannerToUpdate.Status === 1">
+                                <!-- Button kích hoạt -->
+                                <component-button class="button-active" [borderWidth]="2" color="#09880E"
+                                    borderColor="#09880E" borderStyle="solid" [value]="1"
+                                    (sendValue)="updateStatusBanner({value: 1}, selectedBannerToUpdate); drawer.toggle()"
+                                    classIconFontAwesome="fa-circle-check" bgColor="#fff" text="Kích hoạt"
+                                    [width]="120"></component-button>
+                            </ng-container>
+
+                            <!-- Button cập nhật -->
+                            <component-button class="button-update" [borderWidth]="2" color="#2557A0"
+                                borderColor="#2557A0" borderStyle="solid" [value]="1" (sendValue)="updateBanner()"
+                                classIconFontAwesome="fa-floppy-disk" bgColor="#fff" text="Cập nhật"
+                                [width]="120"></component-button>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+
+            <!-- Footer của drawer -->
+            <div class="footer-drawer"></div>
         </ng-template>
     </kendo-drawer>
 
@@ -19,9 +112,9 @@
                     </div>
                 </div>
 
-                <!-- Button thêm khuyến mãi-->
+                <!-- Button thêm banner-->
                 <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                    borderStyle="solid" [value]="0" (sendValue)="toggleDrawer()" [height]="36"
+                    borderStyle="solid" [value]="0" (sendValue)="openDrawer('add')" [height]="36"
                     classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"></component-button>
             </div>
 
@@ -32,24 +125,120 @@
                 <div class="label-delete-filter" (click)="resetFilter()">Xóa bộ lọc</div>
 
                 <!-- Thanh tìm kiếm -->
-                <component-search-bar #search [width]="400" (getValue)="setFilterSearch($event)"
-                    [placeholder]="'Tìm kiếm theo mã khuyến mãi'"></component-search-bar>
+                <component-search-bar #search [width]="400" (getValue)="getValueSearch($event)"
+                    [placeholder]="'Tìm kiếm theo tiêu đề...'"></component-search-bar>
 
-                <!-- Dropdown lọc kiểu banner -->
+                <!-- Dropdown lọc loại banner -->
                 <component-text-dropdown #bannerType [widthBlock]="170" [widthTextBox]="170" textField="Type"
-                    valueField="Code" [listItem]="listBannerType" [defaultItem]="defaultBannerType" />
+                    valueField="Code" [listItem]="listBannerType" (getValue)="getBannerType($event)"
+                    [defaultItem]="defaultBannerType" />
 
                 <!-- Dropdown lọc trang hiển thị -->
                 <component-text-dropdown #pageDisplay [widthBlock]="180" [widthTextBox]="180" textField="Page"
-                    valueField="Code" [listItem]="listPageEcom" [defaultItem]="defaultPageEcom" />
+                    valueField="Code" [listItem]="listPageEcom" (getValue)="getPageDisplay($event)"
+                    [defaultItem]="defaultPageEcom" />
 
                 <!-- Position hiển thị theo trang hiển thị được chọn -->
                 <component-text-dropdown #position [widthBlock]="160" [widthTextBox]="160" textField="Position"
-                    valueField="Code" [listItem]="listPositionOfPage" [defaultItem]="defaultPosition" />
+                    valueField="Code" [listItem]="listPositionOfPage" [defaultItem]="defaultPosition"
+                    (getValue)="getBannerPosition($event)" />
 
                 <!-- Xem cấu trúc -->
-                <div class="label-review-structure" (click)="resetFilter()">Xem cấu trúc</div>
+                <div class="label-review-structure" (click)="openDrawer('structure')">Xem cấu trúc</div>
 
+            </div>
+
+            <div class="label-list-banner">
+                Danh sách Banner
+            </div>
+
+            <div class="grid-custom-container">
+                <kendo-grid [data]="listBanner" [skip]="gridState.skip" [loading]="isLoading"
+                    (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
+                    [pageable]="{ type: 'numeric', pageSizes: true }" [selectable]="{ checkboxOnly: true }">
+
+                    <!-- Loại banner -->
+                    <kendo-grid-column title="Loại banner" [width]="120">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-1">
+                                <div class="banner-type">
+                                    {{checkBannerType(item)}}
+                                </div>
+                                <img [src]="checkBannerImage(item)" alt="">
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Tiêu đề -->
+                    <kendo-grid-column title="Tiêu đề" [width]="300">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-2">
+                                {{item.Title}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Đường dẫn -->
+                    <kendo-grid-column title="Đường dẫn" [width]="600">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-3">
+                                {{item.BannerUrl}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Trang hiển thị -->
+                    <kendo-grid-column title="Trang hiển thị" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-4">
+                                {{item.Page}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Vị trí theo trang -->
+                    <kendo-grid-column title="Vị trí theo trang" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-5">
+                                {{item.Position}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Trạng thái -->
+                    <kendo-grid-column title="Trạng thái" [width]="150">
+                        <ng-template kendoGridCellTemplate let-item>
+                            <div class="column-6" [style.color]="checkBannerStatus(item) | statusColor">
+                                {{checkBannerStatus(item)}}
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- ToolBox -->
+                    <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="50">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                            <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
+                                <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15"
+                                    color="#000" bgColor="#fff" classIconFontAwesome="fa-ellipsis"
+                                    text=""></component-button>
+                                <div class="list-action" *ngIf="selectedCodeBanner === dataItem.Code">
+                                    <component-dropdown-action (sendValue)="updateStatusBanner($event, dataItem)"
+                                        [listItem]="getListChangeStatus(dataItem.Status)"></component-dropdown-action>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Paging -->
+                    <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+                        <kendo-pager-page-sizes pagerGrid [pageSizes]="listPageSize"></kendo-pager-page-sizes>
+                        <div class="pager-buttons">
+                            <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                            <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
+                            <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                        </div>
+                    </ng-template>
+                </kendo-grid>
             </div>
         </div>
     </kendo-drawer-content>

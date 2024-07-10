@@ -3,70 +3,283 @@
 
 ::ng-deep {
     app-admin005-manage-banner {
-        kendo-drawer-content {
+        height: 100%;
+
+        kendo-drawer-container {
             height: 100%;
 
-            .content-container {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-                position: relative;
-
-                .header-filter-status {
-                    gap: 10px;
+            kendo-drawer {
+                .header-drawer {
+                    height: 60px;
                     @include center-vertical;
-                    padding: 6px 0 10px 0;
-                    justify-content: space-between;
-                    overflow-x: auto;
+                    font-size: 15px;
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    gap: 10px;
+                    padding: 0 20px;
 
-                    .block-filter-status {
-                        gap: 10px;
-                        @include center-vertical;
+                    .icon-back {
+                        font-size: 22px;
+                        cursor: pointer;
+                    }
+                }
 
-                        .label-filter {
-                            font-weight: 600;
-                            text-transform: uppercase;
-                            font-size: 14px;
-                            width: 100px;
-                            text-wrap: nowrap;
+                .content-drawer {
+                    border-top: 2px solid #000;
+                    height: calc(100vh - 120px);
+                    padding: 20px;
+                    color: #000 !important;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    overflow-y: auto;
+                    font-size: 13px !important;
+
+                    .img-structure-block {
+                        height: calc(100% - 36px - 40px);
+                        width: 100%;
+
+                        img {
+                            object-fit: contain;
+                            width: 100%;
+                            height: 100%;
                         }
                     }
 
-                    .button-add {
+                    .content-banner {
+                        .k-label {
+                            margin-top: 8px;
+                        }
+                    }
+
+                    component-import-image {
+                        width: 510px;
+
+                        .p-import-image {
+                            justify-content: space-between;
+
+                            .text-image {
+                                font-weight: 100 !important;
+                            }
+
+                            .text-icon-container {
+                                padding-top: 6px !important;
+                            }
+                        }
+
+                        .image-container {
+                            img {
+                                width: 350px !important;
+                                max-width: 350px !important;
+                                height: 350px !important;
+                                max-height: 350px !important;
+                            }
+                        }
+                    }
+
+                    component-button.button-add {
+                        display: flex;
+                        justify-content: end;
+
                         .component-button:hover {
                             color: #fff !important;
                             background-color: #09880E !important;
                         }
                     }
+
+                    .group-button-update {
+                        display: flex;
+                        justify-content: end;
+                        gap: 10px;
+
+                        .button-update {
+                            .component-button:hover {
+                                color: #ffffff !important;
+                                background-color: #2557A0 !important;
+                            }
+                        }
+
+                        .button-active {
+                            .component-button:hover {
+                                color: #ffffff !important;
+                                background-color: #09880E !important;
+                            }
+                        }
+                    }
                 }
 
-                .header-filter-search {
-                    gap: 10px;
+                .footer-drawer {
+                    height: 60px;
                     @include center-vertical;
-                    padding: 6px 0 10px 0;
-                    overflow-x: auto;
+                }
+            }
 
-                    .label-delete-filter {
-                        width: 110px;
-                        text-decoration: underline;
-                        color: rgb(255, 68, 68);
-                        text-wrap: nowrap;
+            kendo-drawer-content {
+                height: 100%;
 
-                        &:hover {
-                            color: red;
-                            cursor: pointer;
+                .content-container {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    position: relative;
+
+                    .header-filter-status {
+                        gap: 10px;
+                        @include center-vertical;
+                        padding: 6px 0 10px 0;
+                        justify-content: space-between;
+                        overflow-x: auto;
+
+                        .block-filter-status {
+                            gap: 10px;
+                            @include center-vertical;
+
+                            .label-filter {
+                                font-weight: 600;
+                                text-transform: uppercase;
+                                font-size: 14px;
+                                width: 100px;
+                                text-wrap: nowrap;
+                            }
+                        }
+
+                        .button-add {
+                            .component-button:hover {
+                                color: #fff !important;
+                                background-color: #09880E !important;
+                            }
                         }
                     }
 
-                    .label-review-structure{
-                        font-style: italic;
-                        font-weight: 600;
-                        color: #069DF1;
-                        cursor: pointer;
+                    .header-filter-search {
+                        gap: 10px;
+                        @include center-vertical;
+                        padding: 6px 0 10px 0;
+                        overflow-x: auto;
 
-                        &:hover{
+                        .label-delete-filter {
+                            width: 110px;
                             text-decoration: underline;
+                            color: rgb(255, 68, 68);
+                            text-wrap: nowrap;
+
+                            &:hover {
+                                color: red;
+                                cursor: pointer;
+                            }
+                        }
+
+                        .label-review-structure {
+                            font-style: italic;
+                            font-weight: 600;
+                            color: #069DF1;
+                            cursor: pointer;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+
+                    .label-list-banner {
+                        padding: 6px 0 10px 0;
+                        height: 40px;
+                        font-weight: 600;
+                        @include center-vertical;
+                        font-size: 14px;
+                        text-transform: uppercase;
+                    }
+
+                    .grid-custom-container {
+                        height: calc(100vh - 52px - 56px - 60px - 40px - 50px);
+
+                        kendo-grid {
+                            .column-1 {
+                                img {
+                                    height: 38px;
+                                    width: 38px;
+                                    object-fit: cover;
+                                    border-radius: 3px;
+                                    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 6px;
+                                }
+                            }
+
+                            .column-2 {
+                                font-weight: 600;
+                            }
+
+                            th.k-table-th[aria-colindex="1"],
+                            th.k-table-th[aria-colindex="4"],
+                            th.k-table-th[aria-colindex="5"] {
+                                .k-column-title {
+                                    margin: auto;
+                                }
+                            }
+
+                            .column-1,
+                            .column-4,
+                            .column-5 {
+                                text-align: center;
+                            }
+
+                            th.k-table-th[aria-colindex="6"] {
+                                .k-link {
+                                    display: flex;
+                                    justify-content: end;
+                                }
+                            }
+
+                            .column-6 {
+                                text-align: right;
+                                text-wrap: nowrap;
+                                text-overflow: ellipsis;
+                            }
+
+
+                            td.k-table-td[aria-colindex="7"] {
+                                background-color: #fff;
+                                box-shadow: $box-shadow2;
+                                height: 79px;
+                                @include center-horizontal;
+                                overflow: visible;
+                                z-index: 0;
+                                border-left: 1px solid #2e2e2e !important;
+
+                                .button-tool-box {
+                                    margin: auto;
+                                    box-shadow: $box-shadow3;
+                                }
+
+                                .component-button:hover {
+                                    background: #464646 !important;
+                                    color: #fff !important;
+                                }
+                            }
+
+                            .tool-box-container {
+                                position: relative;
+                                @include center;
+                                margin: auto;
+
+                                .list-action {
+                                    position: absolute;
+                                    left: -169px;
+                                    top: 0;
+
+                                    component-dropdown-action {
+                                        width: 169px;
+
+                                        component-button {
+                                            width: 169px;
+                                        }
+                                    }
+                                }
+                            }
+
+                            td.active {
+                                z-index: 100 !important;
+                            }
                         }
                     }
                 }

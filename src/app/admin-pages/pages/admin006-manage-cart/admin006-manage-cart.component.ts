@@ -1,3 +1,4 @@
+import { DataBill } from './../../../ecom-pages/pages/ecom-profile/dataBill';
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DTOStatus, listStatus, filteredStatusList } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
@@ -19,6 +20,7 @@ import { LayoutService } from '../../shared/service/layout.service';
 import { Router } from '@angular/router';
 import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToPayment';
 import { DTOUpdateBill } from '../../shared/dto/DTOUpdateBill.dto';
+import { isValidNumber } from 'src/app/shared/utils/utils';
 
 @Component({
   selector: 'app-admin006-manage-cart',
@@ -74,6 +76,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   nowDate: string;
   earliestDates: Date;
   obj = document.getElementsByClassName("numberCount");
+  resultAdd: string;
 
   // defaultItemStatusBill: DTOStatus = {
   //   Code: -1,
@@ -397,6 +400,15 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     if((event.target as HTMLElement).closest('.button-add')){
       this.isAdd = !this.isAdd;
     }
+    if ((event.target as HTMLElement).closest('.button-addBill')) {
+      if(this.resultAdd == "Thêm thành công"){
+        this.getListBill();
+        this.setFilterExpStatus();
+        this.getListBillNowDate();
+        this.getListBillWaitingAllDate();
+        this.isAdd = false;
+      }
+    }
   }
 
 
@@ -411,7 +423,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   getListBill() {
     this.isLoading = true;
     this.billService.getListBill(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
-      this.listBillPage = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      const typeDTOBill: DTOBill[] = list.ObjectReturn.Data;
+      this.listBillPage = { data: typeDTOBill, total: list.ObjectReturn.Total };
       // console.log(this.listBillPage.data);   
        this.isLoading = false;
 
@@ -546,6 +559,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   // Set filter tất cả
   setFilterData() {
+    this.gridState.skip = 0;
     this.gridState.filter.filters = [];
     this.pushToGridState(null, this.filterDate);
     this.pushToGridState(null, this.filterStatus);
@@ -636,6 +650,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.objItemStatus = value
     this.listBillInfo = item.ListBillInfo;
     if (this.objItemStatus.value == 0) {
+      console.log(this.itemBill);
         this.isDetail = !this.isDetail;
     } else{
       this.isShowAlert = !this.isShowAlert

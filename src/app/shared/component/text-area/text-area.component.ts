@@ -19,7 +19,7 @@ export class TextAreaComponent {
   @Input() labelWidth: number;
   @Input() rounded: number = 5;
   @Input() label: string = 'Tiêu đề';
-  @Input() fontsize: number = 15;
+  @Input() fontsize: number = 13;
   @Input() widthBox: number = 300;
   @Input() value: any = '';
   @Input() disabled: boolean = false;
