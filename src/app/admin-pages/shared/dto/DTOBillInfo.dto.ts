@@ -10,5 +10,7 @@ export class DTOBillInfo {
     Quantity: number;
     TotalPrice: number;
     Status: number;
+    Discount: number;
+    PriceAfterDiscount: number;
 }
 

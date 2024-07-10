@@ -1,4 +1,4 @@
-import { DTOStatus, listStatus, listStatusNoView } from '../../shared/dto/DTOStatus.dto';
+import { DTOStatus, listStatus, listStatusNoView, listStatusOfBillInfo } from '../../shared/dto/DTOStatus.dto';
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild, Type } from '@angular/core';
 import { DTOBillInfo } from '../../shared/dto/DTOBillInfo.dto';
 import { DTOBill } from '../../shared/dto/DTOBill.dto';
@@ -205,7 +205,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
   ];
   isLoading: boolean = true;
-  listStatus: DTOStatus[] = listStatusNoView;
+  listStatus: DTOStatus[] = listStatusOfBillInfo;
   isClickButton: { [key: number]: boolean } = {};
   tempID: number;
   listNextStatus: DTOStatus[];
@@ -219,6 +219,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   sizeSelected: DTOSize;
   selectedSize: { [key: string]: number } = {};
   stockOfEeachSize: { [Size: string]: number } = {};
+  discountOfEeachId: { [Id: string]: number } = {};
   stockOfSizeSelected: number;
   valueSearch: string;
   inputQuantity: number = 0;
@@ -226,6 +227,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   priceOfProduct: number = 0;
   totalPriceOfProduct: number = 0;
   totalPrictOfBill: number = 0;
+  discountProduct: number;
   PaymentMethodDropDown: PaymentMethod[] = [
     {
       Code: 0,
@@ -256,6 +258,10 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   districtSelected: DTODistrict
   wardSelected: DTOWard
 
+  defaultValueProvince: DTOProvince = { province_id: "", province_name: 'Chọn tỉnh, thành phố', province_type: "" }
+  defaultValueWard: DTOWard = { district_id: "", ward_id: "", ward_name: "Chọn huận, huyện", ward_type: "" }
+  defaulValueDistrict: DTODistrict = { district_id: "", district_name: "Chọn thị xã, trấn", district_type: "", province_id: "", lat: "", lng: "" }
+
   provinceBiding: string;
   districtBiding: string;
   wardBiding: string;
@@ -267,9 +273,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   // oldWardBiding: string;
   // oldSpecificBiding: string;
 
-  defaultValueProvince: DTOProvince = { province_id: "", province_name: 'Chọn tỉnh, thành phố', province_type: "" }
-  defaultValueWard: DTOWard = { district_id: "", ward_id: "", ward_name: "Chọn huận, huyện", ward_type: "" }
-  defaulValueDistrict: DTODistrict = { district_id: "", district_name: "Chọn thị xã, trấn", district_type: "", province_id: "", lat: "", lng: "" }
+
 
   @ViewChild('name') childName!: TextInputComponent;
   @ViewChild('phoneNumber') childPhoneNumber!: TextInputComponent;
@@ -404,13 +408,19 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       case 13:
         return 'Không hoàn tiền';
       case 14:
-        return 'Yêu cầu đổi trả hàng';
+        return 'Yêu cầu đổi hàng';
       case 15:
-        return 'Xác nhận đổi hàng';
-      case 16:
-        return 'Đã đổi hàng';
+        return 'Yêu cầu trả hàng';
       case 17:
-        return 'Chờ thanh toán';        
+        return 'Chờ thanh toán';
+      case 18:
+        return 'Xác nhận đổi hàng';
+      case 19:
+        return 'Đã đổi hàng';
+      case 20:
+        return 'Từ chối đổi hàng';
+      case 21:
+        return 'Từ chối trả hàng';
       default:
         return 'Unknow';
     }
@@ -636,74 +646,80 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
     if ((event.target as HTMLElement).closest('.button-addDetailBill')) {
       if (this.itemProduct && this.itemProduct !== null && this.valueSearch !== null) {
+        // if(this.valueSearch == this.itemProduct.IdProduct){
+        //   this.notiService.Show("Sản phẩm đang được chọn", "warning");
+        // } else {
         this.listProduct.push(this.itemProduct);
         this.isProcessAdd = true;
+        // }
       } else {
         this.notiService.Show("Vui lòng nhập mã sản phẩm", "warning");
       }
     }
-    if ((event.target as HTMLElement).closest('.button-accept')){
+    if ((event.target as HTMLElement).closest('.button-accept')) {
       const product: DTOProductInCart = {
-          Product: this.itemProduct,
-          Quantity: this.inputQuantity,
-          TotalPriceOfProduct: this.totalPriceOfProduct,
-          SizeSelected: this.sizeSelected,
-        }
-        if(this.sizeSelected && this.inputQuantity > 0){
-          if(this.listProductsInCart.length > 0){
-            const productExist = this.listProductsInCart.find(item => item.Product.IdProduct === this.itemProduct.IdProduct && item.SizeSelected.Size === this.sizeSelected.Size);
-            if(productExist){
-              const totalQuantity = productExist.Quantity + this.inputQuantity;
-              if(totalQuantity > this.stockOfSizeSelected){
-                  this.notiService.Show("Số lượng còn lại trong kho: "+ this.stockOfSizeSelected, "warning");
-              } else {
-                productExist.Quantity += this.inputQuantity;
-                productExist.TotalPriceOfProduct = (this.itemProduct.Price - ((this.itemProduct.Price * this.itemProduct.Discount)/100)) * totalQuantity;
-                // productExist.TotalPriceOfProduct = this.itemProduct.Price * totalQuantity;
-                this.addSuccess();
-              }
-            }
-            else{
-              this.listProductsInCart.push(product);
+        Product: this.itemProduct,
+        Quantity: this.inputQuantity,
+        TotalPriceOfProduct: this.totalPriceOfProduct,
+        SizeSelected: this.sizeSelected,
+      }
+      if (this.sizeSelected && this.inputQuantity > 0) {
+        if (this.listProductsInCart.length > 0) {
+          const productExist = this.listProductsInCart.find(item => item.Product.IdProduct === this.itemProduct.IdProduct && item.SizeSelected.Size === this.sizeSelected.Size);
+          if (productExist) {
+            const totalQuantity = productExist.Quantity + this.inputQuantity;
+            if (totalQuantity > this.stockOfSizeSelected) {
+              this.notiService.Show("Số lượng còn lại trong kho: " + this.stockOfSizeSelected, "warning");
+            } else {
+              this.totalPriceOfProduct = 0;
+              productExist.Quantity += this.inputQuantity;
+              productExist.TotalPriceOfProduct = (this.itemProduct.Price - ((this.itemProduct.Price * this.itemProduct.Discount) / 100)) * totalQuantity;
+              // productExist.TotalPriceOfProduct = this.itemProduct.Price * totalQuantity;
               this.addSuccess();
             }
-            //For listProductInCart để push product vào
-
-            // for (let i = 0; i < this.listProductsInCart.length; i++) {
-            //   let item = this.listProductsInCart[i];
-            //   console.log(item);
-            //   if(this.itemProduct.IdProduct == item.Product.IdProduct && this.sizeSelected.Size == item.SizeSelected.Size){
-            //     const totalQuantity = item.Quantity + this.inputQuantity;
-            //     if(totalQuantity > this.stockOfSizeSelected){
-            //       this.notiService.Show("Số lượng còn lại trong kho: "+ this.stockOfSizeSelected, "warning");
-            //     } else{
-            //       console.log('b');
-            //       item.Quantity += this.inputQuantity;
-            //       item.TotalPriceOfProduct = this.itemProduct.Price * totalQuantity;
-            //       this.addSuccess();
-            //       break;
-            //     }
-            //   } else if (this.sizeSelected.Size !== item.SizeSelected.Size) {
-            //     console.log('a');
-            //     this.listProductsInCart.push(product);
-            //     this.addSuccess();
-            //     break;
-            //   }
-            // }
-
-          } else{
+          }
+          else {
             this.listProductsInCart.push(product);
             this.addSuccess();
           }
+          //For listProductInCart để push product vào
+
+          // for (let i = 0; i < this.listProductsInCart.length; i++) {
+          //   let item = this.listProductsInCart[i];
+          //   console.log(item);
+          //   if(this.itemProduct.IdProduct == item.Product.IdProduct && this.sizeSelected.Size == item.SizeSelected.Size){
+          //     const totalQuantity = item.Quantity + this.inputQuantity;
+          //     if(totalQuantity > this.stockOfSizeSelected){
+          //       this.notiService.Show("Số lượng còn lại trong kho: "+ this.stockOfSizeSelected, "warning");
+          //     } else{
+          //       console.log('b');
+          //       item.Quantity += this.inputQuantity;
+          //       item.TotalPriceOfProduct = this.itemProduct.Price * totalQuantity;
+          //       this.addSuccess();
+          //       break;
+          //     }
+          //   } else if (this.sizeSelected.Size !== item.SizeSelected.Size) {
+          //     console.log('a');
+          //     this.listProductsInCart.push(product);
+          //     this.addSuccess();
+          //     break;
+          //   }
+          // }
 
         } else {
-          this.notiService.Show("Vui lòng chọn size và số lượng", "warning");
+          this.totalPriceOfProduct = 0;
+          this.listProductsInCart.push(product);
+          this.addSuccess();
         }
-        // console.log(this.listProductsInCart);
-        this.totalPrictOfBill = 0;
-        this.listProductsInCart.forEach(item => {
-          this.totalPrictOfBill += item.TotalPriceOfProduct;
-        });
+
+      } else {
+        this.notiService.Show("Vui lòng chọn size và số lượng", "warning");
+      }
+      // console.log(this.listProductsInCart);
+      this.totalPrictOfBill = 0;
+      this.listProductsInCart.forEach(item => {
+        this.totalPrictOfBill += item.TotalPriceOfProduct;
+      });
     }
     // if((event.target as HTMLElement).closest('.button-x')){
     //   this.notiService.Show("Xóa thành công", "success");
@@ -711,7 +727,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     //   this.isProcessAdd = false;
     //   console.log(this.listProduct);
     // }
-    
+
   }
 
   //Nhận text của text-area
@@ -727,77 +743,83 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.isProcessAdd = false;
   }
 
-    // Lấy danh sách các product
-    getListProduct() {
-      this.isLoading = true;
-      this.productAdminService.getListProduct(this.gridStateProduct).pipe(takeUntil(this.destroy)).subscribe(list => {
-        this.listProductAPI = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-        this.isLoading = false;
-        this.listDTOProduct = this.listProductAPI.data;
-        this.originalListDTOProduct = [...this.listDTOProduct]; // Copy the original list
-        console.log(this.listDTOProduct);
-      });
-    }
+  // Lấy danh sách các product
+  getListProduct() {
+    this.isLoading = true;
+    this.productAdminService.getListProduct(this.gridStateProduct).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listProductAPI = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      this.isLoading = false;
+      this.listDTOProduct = this.listProductAPI.data;
+      this.originalListDTOProduct = [...this.listDTOProduct]; // Copy the original list
+      console.log(this.listDTOProduct);
+    });
+  }
 
-    handleFilter(value: string) {
-      if (value) {
-        this.listDTOProduct = this.originalListDTOProduct.filter(product => 
-          product.Name.toLowerCase().includes(value.toLowerCase())
-        );
-      } else {
-        this.listDTOProduct = [...this.originalListDTOProduct]; // Reset to original list if filter is empty
-      }
+  handleFilter(value: string) {
+    if (value) {
+      this.listDTOProduct = this.originalListDTOProduct.filter(product =>
+        product.Name.toLowerCase().includes(value.toLowerCase())
+      );
+    } else {
+      this.listDTOProduct = [...this.originalListDTOProduct]; // Reset to original list if filter is empty
     }
+  }
 
   searchIdProduct(id: string) {
     console.log(id);
-    if(id !== null){
+    if (id !== null) {
       this.productService.getProductByIdProduct(id)
-      .pipe(takeUntil(this.destroy))
-      .subscribe({
-        next: item => {
-          if(item.Stock >0){
-            if(this.itemProduct){
-              if(id !== this.itemProduct.IdProduct ){
-                this.listProduct = [];
-                this.inputQuantity = 0;
+        .pipe(takeUntil(this.destroy))
+        .subscribe({
+          next: item => {
+            if (item.Stock > 0) {
+              if (this.itemProduct) {
+                if (id !== this.itemProduct.IdProduct) {
+                  this.listProduct = [];
+                  this.inputQuantity = 0;
+                  this.valueSearch = id;
+                  this.notiService.Show(item.Name + " số lượng còn: " + item.Stock, "success");
+                  this.itemProduct = item;
+                  this.listOfSize = item.ListOfSize.filter(size => size.Stock > 0)
+                  this.priceOfProduct = item.Price;
+                  // this.discountProduct = item.Discount;
+                  this.discountOfEeachId[id] = item.Discount;
+                  this.sizeSelected = null;
+                  this.priceProductAfterDiscount = item.Price - ((item.Price * item.Discount) / 100);
+                  // this.totalPriceOfProduct = this.priceProductAfterDiscount;
+                  this.isProcessAdd = false;
+                }
+                // else if(id == this.itemProduct.IdProduct ){
+                //   this.notiService.Show("Sản phẩm đang được chọn", "warning");
+                // }
+              } else {
                 this.valueSearch = id;
                 this.notiService.Show(item.Name + " số lượng còn: " + item.Stock, "success");
                 this.itemProduct = item;
                 this.listOfSize = item.ListOfSize.filter(size => size.Stock > 0)
                 this.priceOfProduct = item.Price;
-                this.priceProductAfterDiscount = item.Price - ((item.Price * item.Discount)/100);
+                // this.discountProduct = item.Discount;
+                this.discountOfEeachId[id] = item.Discount;
+                this.sizeSelected = null;
+                this.priceProductAfterDiscount = item.Price - ((item.Price * item.Discount) / 100);
                 // this.totalPriceOfProduct = this.priceProductAfterDiscount;
-                this.isProcessAdd = false;
-              }
-              else if(id == this.itemProduct.IdProduct ){
-                this.notiService.Show("Sản phẩm đang được chọn", "warning");
               }
             } else {
-              this.valueSearch = id;
-              this.notiService.Show(item.Name + " số lượng còn: " + item.Stock, "success");
-              this.itemProduct = item;
-              this.listOfSize = item.ListOfSize.filter(size => size.Stock > 0)
-              this.priceOfProduct = item.Price;
-              this.priceProductAfterDiscount = item.Price - ((item.Price * item.Discount)/100);
-              // this.totalPriceOfProduct = this.priceProductAfterDiscount;
+              this.notiService.Show("Số lượng không đủ", "warning");
             }
-          } else {
-            this.notiService.Show("Số lượng không đủ", "warning");
+            // console.log(this.itemProduct);
+          },
+          error: err => {
+            if (err.message === 'Product not found or inactive') {
+              this.itemProduct = null;
+              this.notiService.Show("Không có sản phẩm hoặc sản phẩm bị vô hiệu hóa", "warning");
+            } else {
+              console.error('Unexpected error:', err);
+            }
           }
-          // console.log(this.itemProduct);
-        },
-        error: err => {
-          if (err.message === 'Product not found or inactive') {
-            this.itemProduct = null;
-            this.notiService.Show("Không có sản phẩm hoặc sản phẩm bị vô hiệu hóa", "warning");
-          } else {
-            console.error('Unexpected error:', err);
-          }
-        }
-      });
+        });
     } else {
-      
+
     }
   }
 
@@ -814,10 +836,10 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.sizeSelected = size;
     this.stockOfSizeSelected = size.Stock;
     this.inputQuantity = 0;
-}
+  }
 
   decreaseQuantity() {
-    if (this.stockOfSizeSelected) {
+    if (this.stockOfSizeSelected && this.sizeSelected !== null) {
       if (this.inputQuantity > 0) {
         this.inputQuantity--;
         this.totalPriceOfProduct = this.priceProductAfterDiscount * this.inputQuantity;
@@ -829,7 +851,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   }
 
   increaseQuantity() {
-    if (this.stockOfSizeSelected) {
+    if (this.stockOfSizeSelected && this.sizeSelected !== null) {
       if (this.inputQuantity < this.stockOfSizeSelected) {
         this.inputQuantity++;
         this.totalPriceOfProduct = this.priceProductAfterDiscount * this.inputQuantity;
@@ -840,14 +862,14 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
         this.notiService.Show("Số lượng còn lại trong kho là: " + this.stockOfSizeSelected, "warning");
         this.inputQuantity = this.stockOfSizeSelected;
       }
-    } else if(this.stockOfSizeSelected == 0){
+    } else if (this.stockOfSizeSelected == 0) {
       this.notiService.Show("Số lượng còn lại trong kho là: " + this.stockOfSizeSelected, "warning");
     }
     else {
       this.notiService.Show("Vui lòng chọn Size", "warning");
     }
   }
-  
+
 
 
   checkStockOfSizeSelected() {
@@ -859,10 +881,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     } else if (this.inputQuantity > this.stockOfSizeSelected) {
       setTimeout(() => {
         this.notiService.Show("Số lượng còn lại trong kho là: " + this.stockOfSizeSelected, "warning");
-        this.inputQuantity = this.stockOfSizeSelected
+        this.inputQuantity = this.stockOfSizeSelected;
+        this.totalPriceOfProduct = this.priceProductAfterDiscount * this.stockOfSizeSelected;
       });
-    } else if ((this.stockOfSizeSelected !== null && this.stockOfSizeSelected !== undefined) && (this.inputQuantity <= this.stockOfSizeSelected)){
-      this.totalPriceOfProduct = this.priceOfProduct * this.inputQuantity;
+    } else if ((this.stockOfSizeSelected !== null && this.stockOfSizeSelected !== undefined) && (this.inputQuantity <= this.stockOfSizeSelected)) {
+      this.totalPriceOfProduct = this.priceProductAfterDiscount * this.inputQuantity;
     }
   }
 
@@ -897,13 +920,13 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     const adjustedIndex = rowIndex;
     this.listProduct = this.listProduct.filter((_, index) => index !== adjustedIndex);
     this.isProcessAdd = false;
-  
+
   }
 
   removeProductInCart(value: DTOProductInCart): void {
     this.listProductsInCart = this.listProductsInCart.filter(
       item => !(item.Product.IdProduct === value.Product.IdProduct && item.SizeSelected === value.SizeSelected)
-  );
+    );
     // const index = this.listProductsInCart.findIndex(item => item.Product.IdProduct === value.Product.IdProduct && item.SizeSelected === value.SizeSelected)
     // if(index !== -1){
     //   this.listProductsInCart = this.listProductsInCart.slice(index, 1)
@@ -914,78 +937,79 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.totalPrictOfBill += item.TotalPriceOfProduct;
     });
     console.log(this.listProductsInCart);
-}
+  }
 
-checkValueForm(){
-  if (!isAlphabetWithSingleSpace(this.childName.valueTextBox) || this.childName.valueTextBox == "") {
+  checkValueForm() {
+    if (!isAlphabetWithSingleSpace(this.childName.valueTextBox) || this.childName.valueTextBox == "") {
       this.notiService.Show("Vui lòng nhập lại thông tin họ tên", "error");
       return false;
-  }
-  if (this.childProvince.value == "Chọn tỉnh, thành phố") {
+    }
+    if (this.childProvince.value == "Chọn tỉnh, thành phố") {
       this.notiService.Show("Vui lòng chọn tỉnh, thành phố", "error");
       return false;
-  }
-  if (this.childDistrict.value == "Chọn huận, huyện") {
+    }
+    if (this.childDistrict.value == "Chọn huận, huyện") {
       this.notiService.Show("Vui lòng chọn huận, huyện", "error");
       return false;
-  }
-  if (this.childWard.value == "Chọn thị xã, trấn") {
+    }
+    if (this.childWard.value == "Chọn thị xã, trấn") {
       this.notiService.Show("Vui lòng chọn thị xã, trấn", "error");
       return false;
-  }
-  if (!isAlphabetWithSingleSpace(this.childRoad.valueTextBox) || this.childRoad.valueTextBox == "") {
+    }
+    if (!isAlphabetWithSingleSpace(this.childRoad.valueTextBox) || this.childRoad.valueTextBox == "") {
       this.notiService.Show("Vui lòng nhập lại thông tin đường", "error");
       return false;
-  }
-  if (!isAlphabetWithSingleSpace(this.childSpecific.valueTextBox) || this.childSpecific.valueTextBox == "") {
-    this.notiService.Show("Vui lòng nhập lại thông tin địa chỉ cụ thể", "error");
-    return false;
-  }
-  if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
-    this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
-    return false;
-  }
-  if (this.listProductsInCart.length <= 0) {
+    }
+    if (this.childSpecific.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin địa chỉ cụ thể", "error");
+      return false;
+    }
+    if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
+      return false;
+    }
+    if (this.listProductsInCart.length <= 0) {
       this.notiService.Show("Vui lòng thêm sản phẩm", "error");
       return false;
+    }
+    return true;
   }
-  return true;
-}
 
 
   //Add Bill
   addBill() {
-      const requestAddBill: DTOProcessToPayment = {
-        CustomerName: this.childName.valueTextBox,
-        OrdererPhoneNumber: this.childPhoneNumber.valueTextBox,
-        PhoneNumber: this.childPhoneNumber.valueTextBox,
-        ShippingAddress: this.newAddress,
-        PaymentMethod: 0,
-        // PaymentMethod: this.childMethod.value.Code,
-        ListProduct: this.listProductsInCart,
-        TotalBill: 0,
-        IsGuess: true,
-      }
+    const requestAddBill: DTOProcessToPayment = {
+      CustomerName: this.childName.valueTextBox,
+      OrdererPhoneNumber: this.childPhoneNumber.valueTextBox,
+      PhoneNumber: this.childPhoneNumber.valueTextBox,
+      ShippingAddress: this.newAddress,
+      PaymentMethod: 0,
+      // PaymentMethod: this.childMethod.value.Code,
+      ListProduct: this.listProductsInCart,
+      TotalBill: 0,
+      IsGuess: true,
+    }
 
-      console.log(requestAddBill);
+    console.log(requestAddBill);
 
-      const request: DTOUpdateBillRequest = {
-        DTOUpdateBill: null,
-        DTOProceedToPayment: requestAddBill
-      }
+    const request: DTOUpdateBillRequest = {
+      DTOUpdateBill: null,
+      DTOProceedToPayment: requestAddBill
+    }
 
-      
-      if(this.checkValueForm()){
-        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-          if (res.StatusCode === 0) {
-            this.notiService.Show("Thêm mới thành công", "success")
-          }
-        }, error => {
-          console.error('Error:', error);
-        });
-      } else{
-        return;
-      }
+
+    if (this.checkValueForm()) {
+      this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          this.notiService.Show("Thêm mới thành công", "success")
+          this.sendValue.emit(0)
+        }
+      }, error => {
+        console.error('Error:', error);
+      });
+    } else {
+      return;
+    }
 
 
   }
@@ -1020,7 +1044,7 @@ checkValueForm(){
           this.notiService.Show("Cập nhật trạng thái thành công", "success")
           this.getListBillInfo();
           this.isShowAlert = false;
-          this.sendValue.emit("Thêm thành công");
+          this.sendValue.emit(0);
 
         }
       }, error => {
