@@ -12,6 +12,11 @@ import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { CheckboxlistComponent } from '../../shared/component/checkboxlist/checkboxlist.component';
 import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
 import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
+import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
+import { TextAreaComponent } from 'src/app/shared/component/text-area/text-area.component';
+import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
+import { isEmpty } from 'src/app/shared/utils/utils';
+import { DTOUpdateBannerRequest } from '../../shared/dto/DTOUpdateBannerRequest.dto';
 
 @Component({
   selector: 'app-admin005-manage-banner',
@@ -38,7 +43,7 @@ export class Admin005ManageBannerComponent implements OnInit {
   // Hình ảnh xem trước cấu trúc
   imgStructure: string = this.imgDefault;
   // Số item hiển thị trong 1 trang
-  pageSize: number = 2;
+  pageSize: number = 5;
   // Danh sách có đang load hay không
   isLoading: boolean = true;
   // Code của banner được chọn
@@ -54,7 +59,7 @@ export class Admin005ManageBannerComponent implements OnInit {
   // Danh sách các loại banner
   listBannerType: DTOBannerType[] = listBannerType;
   // Danh sách số trang có thể đổi
-  listPageSize: number[] = [2, 3, 4];
+  listPageSize: number[] = [5, 10, 15];
 
 
   // Item mặc định của dropdown chọn trang hiển thị
@@ -78,12 +83,20 @@ export class Admin005ManageBannerComponent implements OnInit {
   listBanner: GridDataResult;
 
 
+  // ViewChild bên content
   @ViewChild('drawer') childDrawer!: DrawerComponent;
   @ViewChild('status') childStatus!: CheckboxlistComponent;
   @ViewChild('search') childSearch!: SearchBarComponent;
   @ViewChild('bannerType') childBannerType!: TextDropdownComponent;
   @ViewChild('pageDisplay') childPageDisplay!: TextDropdownComponent;
   @ViewChild('position') childPosition!: TextDropdownComponent;
+  // ViewChild trong drawer
+  @ViewChild('pageDrawer') childPageDrawer!: TextDropdownComponent;
+  @ViewChild('positionDrawer') childPositionDrawer!: TextDropdownComponent;
+  @ViewChild('titleDrawer') childTitleDrawer!: TextInputComponent;
+  @ViewChild('bannerTypeDrawer') childBannerTypeDrawer!: TextDropdownComponent;
+  @ViewChild('imgDrawer') childImgDrawer!: ImportImageComponent;
+  @ViewChild('videoURLdrawer') childVideoURLdrawer!: TextInputComponent;
 
 
   // Filter cho trạng thái của banner
@@ -191,9 +204,14 @@ export class Admin005ManageBannerComponent implements OnInit {
     this.childPageDisplay.resetValue();
     this.filterPage.value = null;
 
-     // reset vị trí theo trang
-     this.childPosition.resetValue();
-     this.filterPosition.value = null;
+    // reset vị trí theo trang
+    this.childPosition.resetValue();
+    this.filterPosition.value = null;
+
+    this.pageSize = 5;
+    this.gridState.skip = 0;
+    this.gridState.filter.filters.push(this.filterStatus);
+    this.gridState.take = 5; 
 
     this.setFilterData();
   }
@@ -283,7 +301,34 @@ export class Admin005ManageBannerComponent implements OnInit {
 
   // Hàm thêm mới banner
   addBanner() {
-
+    if (this.checkUpdatable()) {
+      const banneURL: string = this.childBannerTypeDrawer.value.Code === 0
+        ? this.childImgDrawer.imageHandle.ImgUrl
+        : this.childVideoURLdrawer.valueTextBox;
+      const banner: DTOBanner = {
+        Code: 0,
+        Title: this.childTitleDrawer.valueTextBox,
+        BannerType: this.childBannerTypeDrawer.value.Code,
+        BannerUrl: banneURL,
+        Position: this.childPositionDrawer.value.Code,
+        Page: this.childPageDrawer.value.Page,
+        Status: 0
+      }
+      const req: DTOUpdateBannerRequest = {
+        Banner: banner,
+        Properties:
+          ['Title', 'BannerType', 'BannerUrl',
+            'Position', 'Page', 'Status'
+          ]
+      }
+      this.bannerService.addBanner(req).subscribe((res: DTOResponse) => {
+        if(res.StatusCode === 0){
+          this.notiService.Show('Thêm mới banner thành công', 'success');
+          this.childDrawer.toggle();
+          this.getListBanner();
+        }
+      })
+    }
   }
 
   // Hàm cập nhật banner
@@ -291,9 +336,60 @@ export class Admin005ManageBannerComponent implements OnInit {
 
   }
 
+  // Cập nhật trạng thái của banner
+  updateStatusBanner(res: any, banner: DTOBanner){
+    if(res.value === 1){
+      banner.Status = 0;
+      const req: DTOUpdateBannerRequest = {
+        Banner: banner,
+        Properties: ['Status']
+      }
+      this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
+        if(res.StatusCode === 0){
+          this.notiService.Show('Cập nhật trạng thái thành công', 'success');
+          this.getListBanner();
+        }
+      }, error => {
+        this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
+      })
+    }
+    if(res.value === 0){
+      this.childDrawer.toggle();
+      this.contentInDrawer = 'update';
+    }
+  }
+
   // Kiểm tra input hợp lệ hay không
   checkUpdatable() {
-
+    if (this.childPageDrawer.value.Code === -1) {
+      this.notiService.Show('Vui lòng chọn trang hiển thị', 'error');
+      return false;
+    }
+    if (this.childPositionDrawer.value.Code === -1) {
+      this.notiService.Show('Vui lòng chọn vị trí của trang', 'error');
+      return false;
+    }
+    if (isEmpty(this.childTitleDrawer.valueTextBox)) {
+      this.notiService.Show('Vui lòng nhập tiêu đề của banner', 'error');
+      return false;
+    }
+    if (this.childBannerTypeDrawer.value.Code === -1) {
+      this.notiService.Show('Vui lòng chọn loại banner', 'error');
+      return false;
+    }
+    if (this.childBannerTypeDrawer.value.Code === 0) {
+      if (this.childImgDrawer.imageHandle.Code === -1) {
+        this.notiService.Show('Vui lòng chọn hình ảnh', 'error');
+        return false;
+      }
+    }
+    if (this.childBannerTypeDrawer.value.Code === 1) {
+      if (isEmpty(this.childVideoURLdrawer.valueTextBox)) {
+        this.notiService.Show('Vui lòng nhập đường dẫn video', 'error');
+        return false;
+      }
+    }
+    return true;
   }
 
   // Thao tác paging
