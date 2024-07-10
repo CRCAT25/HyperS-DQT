@@ -344,6 +344,7 @@ export class Admin005ManageBannerComponent implements OnInit {
       Page: '',
       Status: 0
     }
+    if(type === 'add') this.listPositionOfPageDrawer = [];
   }
 
   // Hàm thêm mới banner
@@ -430,13 +431,6 @@ export class Admin005ManageBannerComponent implements OnInit {
       this.selectedBannerToUpdate = banner;
       this.listPositionOfPageDrawer = this.findListPositionFromPage(banner.Page);
       this.getBannerTypeDrawer(this.findBannerTypeFromBanner(banner));
-      // if(banner.BannerType === 0) {
-      //   if(this.childImgDrawer){
-      //     this.childImgDrawer.imageHandle.ImgUrl = banner.BannerUrl;
-      //     this.childImgDrawer.imageHandle.Code = 0;
-      //     console.log(this.childImgDrawer.imageHandle);
-      //   }
-      // }
     }
   }
 
