@@ -72,6 +72,15 @@
                             }
                         }
                     }
+
+                    component-button.button-add {
+                        display: flex;
+                        justify-content: end;
+                        .component-button:hover {
+                            color: #fff !important;
+                            background-color: #09880E !important;
+                        }
+                    }
                 }
 
                 .footer-drawer {
@@ -169,6 +178,10 @@
                                     border-radius: 3px;
                                     box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 6px;
                                 }
+                            }
+
+                            .column-2{
+                                font-weight: 600;
                             }
 
                             th.k-table-th[aria-colindex="1"],
