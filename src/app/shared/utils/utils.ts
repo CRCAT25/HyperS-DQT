@@ -29,11 +29,11 @@ export function isValidNumber(input: string): boolean {
 /**
  * Kiểm tra một chuỗi chỉ chứa chữ cái (bao gồm chữ cái tiếng Việt) và cho phép duy nhất một khoảng trắng giữa các từ
  * @param input Chuỗi cần kiểm tra
- * @returns true nếu chuỗi chỉ chứa chữ cái và có tối đa một khoảng trắng, ngược lại false
+ * @returns true nếu chuỗi chỉ chứa chữ cái và có tối đa một khoảng trắng giữa các từ, ngược lại false
  */
 export function isAlphabetWithSingleSpace(input: string): boolean {
-    // Biểu thức chính quy kiểm tra chữ cái (a-z, A-Z, và chữ cái tiếng Việt) với tối đa một khoảng trắng
-    const pattern = /^[A-Za-zÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỈỊọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]+( [A-Za-zÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỈỊọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]+)?$/;
+    // Biểu thức chính quy kiểm tra chữ cái (a-z, A-Z, và chữ cái tiếng Việt) với duy nhất một khoảng trắng giữa các từ
+    const pattern = /^[A-Za-zÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỈỊọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]+(?: [A-Za-zÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểễếỄỆỈỊọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]+)*$/;
     return pattern.test(input);
 }
 

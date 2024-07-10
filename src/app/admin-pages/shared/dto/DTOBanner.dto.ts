@@ -65,8 +65,8 @@ export const listPageEcom: DTOPageEcom[] = [
 export const listActionChangeStatusBanner: DTOStatus[] = [
     {
         Code: 0,
-        Status: 'Xem chi tiết',
-        Icon: 'fa-eye'
+        Status: 'Chỉnh sửa',
+        Icon: 'fa-pencil'
     },
     {
         Code: 1,

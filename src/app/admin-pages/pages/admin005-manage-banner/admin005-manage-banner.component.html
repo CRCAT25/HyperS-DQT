@@ -14,30 +14,31 @@
             <!-- Content của drawer -->
             <div class="content-drawer">
                 <!-- Chọn trang hiển thị -->
-                <component-text-dropdown #pageDrawer (getValue)="getPageDisplayDrawer($event)" [defaultItem]="defaultPageEcom"
-                    [widthTextBox]="350" [label]="'Trang hiển thị'" [widthBlock]="510" [heightTextBox]="36"
-                    [listItem]="listPageEcom" [valueField]="'Code'" [textField]="'Page'"></component-text-dropdown>
+                <component-text-dropdown #pageDrawer (getValue)="getPageDisplayDrawer($event)"
+                    [defaultItem]="defaultPageEcom" [widthTextBox]="350" [label]="'Trang hiển thị'" [widthBlock]="510"
+                    [heightTextBox]="36" [listItem]="listPageEcom" [valueField]="'Code'"
+                    [textField]="'Page'"></component-text-dropdown>
 
                 <!-- Hiển thị hình ảnh cấu trúc -->
                 <div class="img-structure-block" *ngIf="contentInDrawer === 'structure'">
                     <img [src]="imgStructure" alt="">
                 </div>
 
-                <ng-container *ngIf="contentInDrawer === 'add'">
+                <ng-container *ngIf="contentInDrawer === 'add' || contentInDrawer === 'update'">
                     <!-- Chọn vị trí hiển thị trong trang được chọn -->
-                    <component-text-dropdown #positionDrawer [defaultItem]="defaultPosition"
-                        [widthTextBox]="350" [label]="'Vị trí hiển thị'" [widthBlock]="510" [heightTextBox]="36"
+                    <component-text-dropdown #positionDrawer [defaultItem]="defaultPosition" [widthTextBox]="350"
+                        [label]="'Vị trí hiển thị'" [widthBlock]="510" [heightTextBox]="36"
                         [listItem]="listPositionOfPage" [valueField]="'Code'"
                         [textField]="'Position'"></component-text-dropdown>
 
                     <!-- Tiêu đề -->
-                    <component-text-input #titleDrawer placeholder="Nhập tiêu đề..." [widthTextBox]="350" [widthBlock]="510"
-                        [heightTextBox]="36" label="Tiêu đề"></component-text-input>
+                    <component-text-input #titleDrawer placeholder="Nhập tiêu đề..." [widthTextBox]="350"
+                        [widthBlock]="510" [heightTextBox]="36" label="Tiêu đề"></component-text-input>
 
                     <!-- Chọn loại banner -->
-                    <component-text-dropdown #bannerTypeDrawer (getValue)="getBannerTypeDrawer($event)" [defaultItem]="defaultBannerType"
-                        [widthTextBox]="350" [label]="'Loại banner'" [widthBlock]="510" [heightTextBox]="36"
-                        [listItem]="listBannerType" [valueField]="'Code'"
+                    <component-text-dropdown #bannerTypeDrawer (getValue)="getBannerTypeDrawer($event)"
+                        [defaultItem]="defaultBannerType" [widthTextBox]="350" [label]="'Loại banner'"
+                        [widthBlock]="510" [heightTextBox]="36" [listItem]="listBannerType" [valueField]="'Code'"
                         [textField]="'Type'"></component-text-dropdown>
 
                     <!-- Nếu loại banner là hình ảnh -->
@@ -47,14 +48,18 @@
 
                     <!-- Nếu loại banner là video -->
                     <ng-container *ngIf="selectedBannerTypeDrawer.Code === 1">
-                        <component-text-input #videoURLdrawer placeholder="Nhập đường dẫn của video..." [widthTextBox]="350"
-                            [widthBlock]="510" [heightTextBox]="36" label="Đường dẫn đoạn video"></component-text-input>
+                        <component-text-input #videoURLdrawer placeholder="Nhập đường dẫn của video..."
+                            [widthTextBox]="350" [widthBlock]="510" [heightTextBox]="36"
+                            label="Đường dẫn đoạn video"></component-text-input>
                     </ng-container>
 
                     <!-- Button thêm banner-->
-                    <component-button class="button-add" (sendValue)="addBanner()" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                        borderStyle="solid" [value]="0" [height]="36" classIconFontAwesome="fa-plus" bgColor="#fff"
-                        text="Thêm mới" [width]="120"></component-button>
+                    <ng-container *ngIf="contentInDrawer === 'add'">
+                        <component-button class="button-add" (sendValue)="addBanner()" [borderWidth]="2" color="#09880E"
+                            borderColor="#09880E" borderStyle="solid" [value]="0" [height]="36"
+                            classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"
+                            [width]="120"></component-button>
+                    </ng-container>
                 </ng-container>
             </div>
 
@@ -187,7 +192,7 @@
                                     color="#000" bgColor="#fff" classIconFontAwesome="fa-ellipsis"
                                     text=""></component-button>
                                 <div class="list-action" *ngIf="selectedCodeBanner === dataItem.Code">
-                                    <component-dropdown-action
+                                    <component-dropdown-action (sendValue)="updateStatusBanner($event, dataItem)"
                                         [listItem]="getListChangeStatus(dataItem.Status)"></component-dropdown-action>
                                 </div>
                             </div>

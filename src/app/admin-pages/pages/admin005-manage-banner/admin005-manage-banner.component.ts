@@ -336,6 +336,29 @@ export class Admin005ManageBannerComponent implements OnInit {
 
   }
 
+  // Cập nhật trạng thái của banner
+  updateStatusBanner(res: any, banner: DTOBanner){
+    if(res.value === 1){
+      banner.Status = 0;
+      const req: DTOUpdateBannerRequest = {
+        Banner: banner,
+        Properties: ['Status']
+      }
+      this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
+        if(res.StatusCode === 0){
+          this.notiService.Show('Cập nhật trạng thái thành công', 'success');
+          this.getListBanner();
+        }
+      }, error => {
+        this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
+      })
+    }
+    if(res.value === 0){
+      this.childDrawer.toggle();
+      this.contentInDrawer = 'update';
+    }
+  }
+
   // Kiểm tra input hợp lệ hay không
   checkUpdatable() {
     if (this.childPageDrawer.value.Code === -1) {
