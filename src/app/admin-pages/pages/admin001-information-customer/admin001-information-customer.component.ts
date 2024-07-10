@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AccountService } from '../../shared/service/account.service';
 import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
@@ -24,7 +24,7 @@ interface Gender {
   templateUrl: './admin001-information-customer.component.html',
   styleUrls: ['./admin001-information-customer.component.scss']
 })
-export class Admin001InformationCustomerComponent implements OnInit {
+export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   // variable Subject
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
 
@@ -303,5 +303,10 @@ export class Admin001InformationCustomerComponent implements OnInit {
     this.childBirthday.datePicker.writeValue(null);
     this.selectedCodeCustomer = [];
     this.childImage.imageHandle = new DTOImageProduct();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

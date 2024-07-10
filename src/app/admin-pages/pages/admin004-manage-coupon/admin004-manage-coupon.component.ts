@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DrawerComponent, DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { DTOStatus, listStageCoupon, listStatusCoupon } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';
@@ -27,7 +27,7 @@ interface GroupCustomer {
   templateUrl: './admin004-manage-coupon.component.html',
   styleUrls: ['./admin004-manage-coupon.component.scss']
 })
-export class Admin004ManageCouponComponent implements OnInit {
+export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
   // variable Subject
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
 
@@ -782,5 +782,10 @@ export class Admin004ManageCouponComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

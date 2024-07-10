@@ -6,11 +6,11 @@
     <ng-template kendoDrawerHeaderTemplate>
       <div class="header-drawer">
         <div class="image">
-          <img src="../../../../assets/johnwick.jpg" alt="">
+          <img [src]="currentStaff?.ImageUrl || ''" alt="">
         </div>
         <div class="tag-name">
-          <div class="name">Đỗ Quốc Thành</div>
-          <div class="position">Quản lý</div>
+          <div class="name">{{currentStaff ? currentStaff.Name : 'Tài khoản ẩn danh'}}</div>
+          <div class="position">{{currentStaff ? currentStaff.Permission : 'Nhân viên mặc định'}}</div>
         </div>
       </div>
     </ng-template>

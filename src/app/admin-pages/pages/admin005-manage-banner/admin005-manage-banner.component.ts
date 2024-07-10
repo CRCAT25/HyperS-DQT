@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DrawerComponent, DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { ReplaySubject } from 'rxjs';
 import { DTOStatus } from '../../shared/dto/DTOStatus.dto';
@@ -23,7 +23,7 @@ import { DTOUpdateBannerRequest } from '../../shared/dto/DTOUpdateBannerRequest.
   templateUrl: './admin005-manage-banner.component.html',
   styleUrls: ['./admin005-manage-banner.component.scss']
 })
-export class Admin005ManageBannerComponent implements OnInit {
+export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
   // variable Subject
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
 
@@ -506,5 +506,10 @@ export class Admin005ManageBannerComponent implements OnInit {
     if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="7"]')) {
       this.selectedCodeBanner = 0;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }
