@@ -219,7 +219,7 @@
                     [pageable]="{ type: 'numeric', pageSizes: true }" [selectable]="{ checkboxOnly: true }">
 
                     <!-- Checkbox -->
-                    <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+                    <!-- <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column> -->
 
                     <!-- Mã khuyến mãi -->
                     <kendo-grid-column title="Khuyến mãi" [width]="150">
@@ -295,7 +295,7 @@
 
 
                     <!-- ToolBox -->
-                    <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="40">
+                    <kendo-grid-column [sticky]="true" [resizable]="true" [width]="40">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
                                 <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15"

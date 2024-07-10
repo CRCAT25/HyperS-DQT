@@ -2,6 +2,9 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { DTOModule, listModule } from '../../shared/dto/DTOModule.dto';
 import { Router } from '@angular/router';
 import { LayoutService } from '../../shared/service/layout.service';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 @Component({
   selector: 'app-sidebar-admin',
@@ -13,8 +16,9 @@ export class SidebarComponent implements OnInit {
   expandDrawer = true;
   listItemsDrawer: DTOModule[] = listModule;
   listModuleAndSub: DTOModule[] = [];
+  currentStaff: DTOStaff;
 
-  constructor(private router: Router, private layoutService: LayoutService) { }
+  constructor(private router: Router, private layoutService: LayoutService, private staffService: StaffService) { }
 
   ngOnInit(): void {
     const breadcrumbLS: string = localStorage.getItem('breadcrumb');
@@ -36,12 +40,14 @@ export class SidebarComponent implements OnInit {
     })
 
     // Ngoại lệ đối với Quản lý tài khoản
-    if(listBreadCrumbSplit[0] === 'Quản lý tài khoản'){
+    if (listBreadCrumbSplit[0] === 'Quản lý tài khoản') {
       accountModule.IsExpanded = true;
       accountModule.IsSelected = true;
       const childAccountModule: DTOModule = accountModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
       childAccountModule.IsSelected = true;
     }
+
+    this.getCurrentStaff();
   }
 
 
@@ -60,7 +66,7 @@ export class SidebarComponent implements OnInit {
   // Sự kiện khi chọn vào item drawer
   onSelectItemDrawer(item: DTOModule): void {
     // Ngoại lệ đối với Quản lý tài khoản
-    if(item.ModuleName !== 'Quản lý tài khoản'){
+    if (item.ModuleName !== 'Quản lý tài khoản') {
       const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
       accountModule.IsExpanded = false;
       accountModule.IsSelected = false;
@@ -118,5 +124,14 @@ export class SidebarComponent implements OnInit {
     }
     // Trả về undefined nếu không tìm thấy module hoặc không có subModule
     return [];
+  }
+
+  // Lấy thông tin của staff hiện tại đang đăng nhập
+  getCurrentStaff() {
+    this.staffService.getCurrentStaffInfo().subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        this.currentStaff = res.ObjectReturn.Data[0];
+      }
+    })
   }
 }

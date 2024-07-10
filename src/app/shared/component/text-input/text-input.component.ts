@@ -52,7 +52,7 @@ export class TextInputComponent implements OnInit {
   onKeyDown(event: KeyboardEvent) {
     if (this.typeValue === 'number') {
       // Cho phép các ký tự số và các phím chức năng như backspace
-      if (!['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key) && !this.isNumber(event.key)) {
+      if (!['Backspace', 'Delete', 'Home', 'End'].includes(event.key) && !this.isNumber(event.key)) {
         event.preventDefault();
       }
     }

@@ -93,22 +93,22 @@ export const listModule: DTOModule[] = [
         IsExpanded: false,
         BreadCrumb: 'Đơn hàng'
     },
-    {
-        RouteLink: '/admin/manage-schedule',
-        ModuleName: 'Quản lý lịch làm việc',
-        ClassIconFontAwesome: 'fa-calendar-days',
-        IsChild: false,
-        IsSelected: false,
-        IsExpanded: false,
-        BreadCrumb: 'Quản lý lịch làm việc'
-    },
-    {
-        RouteLink: '/admin/calculate-salary',
-        ModuleName: 'Tính lương',
-        ClassIconFontAwesome: 'fa-money-check-dollar',
-        IsChild: false,
-        IsSelected: false,
-        IsExpanded: false,
-        BreadCrumb: 'Tính lương'
-    }
+    // {
+    //     RouteLink: '/admin/manage-schedule',
+    //     ModuleName: 'Quản lý lịch làm việc',
+    //     ClassIconFontAwesome: 'fa-calendar-days',
+    //     IsChild: false,
+    //     IsSelected: false,
+    //     IsExpanded: false,
+    //     BreadCrumb: 'Quản lý lịch làm việc'
+    // },
+    // {
+    //     RouteLink: '/admin/calculate-salary',
+    //     ModuleName: 'Tính lương',
+    //     ClassIconFontAwesome: 'fa-money-check-dollar',
+    //     IsChild: false,
+    //     IsSelected: false,
+    //     IsExpanded: false,
+    //     BreadCrumb: 'Tính lương'
+    // }
 ]

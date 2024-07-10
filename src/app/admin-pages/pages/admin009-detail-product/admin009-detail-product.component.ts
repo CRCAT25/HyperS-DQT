@@ -105,6 +105,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   @ViewChild('stock') childStock!: TextInputComponent;
   @ViewChild('listimage') childListImage!: ImportMultiImageComponent;
   @ViewChild('desciption') childDescription!: TextAreaComponent;
+  @ViewChild('discount') childDiscount!: TextInputComponent;
 
   constructor(private productAdminService: ProductAdminService, private notiService: NotiService, private router: Router) { }
 
@@ -204,6 +205,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     // reset số lượng đã bán
     this.childSold.resetValue();
     this.childSold.valueTextBox = '0';
+    // reset giảm giá
+    this.childDiscount.valueTextBox = '0'
     // reset mô tả
     this.childDescription.resetValue();
     // reset hình ảnh
@@ -224,6 +227,19 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     return '';
   }
 
+  // Kiểm tra giá trị bên trong input giảm giá theo phần trăm
+  checkInputDiscount(res: any) {
+    if (res > 100 || res < 0) {
+      this.notiService.Show('Giảm giá không hợp lệ', 'error');
+      this.childDiscount.valueTextBox = '0'
+      return;
+    }
+    if (res > 80) {
+      this.notiService.Show('Giảm giá khá lớn', 'warning');
+      return;
+    }
+  }
+
   // Khôi phục lại thông tin sản phẩm
   restoreProduct(res: any) {
     this.childId.valueTextBox = this.productSelected.IdProduct;
@@ -237,6 +253,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     this.childSold.valueTextBox = this.productSelected.Sold.toString();
     this.childListImage.listImageHandler = this.productSelected.ListOfImage;
     this.childDescription.value = this.productSelected.Description;
+    this.childDiscount.valueTextBox = this.productSelected.Discount.toString();
     this.listSizeHandle = this.productSelected.ListOfSize;
     this.getProductSelected();
     this.notiService.Show("Khôi phục thành công", "success");
@@ -354,6 +371,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       CodeBrand: this.childBrand.value.Code,
       BrandName: this.childBrand.value.Name,
       Color: this.childColor.value.Color,
+      Discount: parseInt(this.childDiscount.valueTextBox),
       Stock: 0,
       Sold: 0,
       Gender: this.childGender.value.Code,
@@ -433,6 +451,9 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     }
     if (this.productSelected.Description !== this.childDescription.value) {
       listProps.push('Description');
+    }
+    if (this.productSelected.Discount !== parseInt(this.childDiscount.valueTextBox)) {
+      listProps.push('Discount');
     }
     return listProps;
   }

@@ -16,8 +16,8 @@
                 <!-- Chọn trang hiển thị -->
                 <component-text-dropdown #pageDrawer (getValue)="getPageDisplayDrawer($event)"
                     [defaultItem]="defaultPageEcom" [widthTextBox]="350" [label]="'Trang hiển thị'" [widthBlock]="510"
-                    [heightTextBox]="36" [listItem]="listPageEcom" [valueField]="'Code'"
-                    [textField]="'Page'"></component-text-dropdown>
+                    [heightTextBox]="36" [listItem]="listPageEcom" [valueField]="'Code'" [textField]="'Page'"
+                    [value]="{Code: findCodeFromPage(selectedBannerToUpdate.Page), Page: selectedBannerToUpdate.Page}"></component-text-dropdown>
 
                 <!-- Hiển thị hình ảnh cấu trúc -->
                 <div class="img-structure-block" *ngIf="contentInDrawer === 'structure'">
@@ -28,30 +28,40 @@
                     <!-- Chọn vị trí hiển thị trong trang được chọn -->
                     <component-text-dropdown #positionDrawer [defaultItem]="defaultPosition" [widthTextBox]="350"
                         [label]="'Vị trí hiển thị'" [widthBlock]="510" [heightTextBox]="36"
-                        [listItem]="listPositionOfPage" [valueField]="'Code'"
+                        [value]="{Code: selectedBannerToUpdate.Position, Position: findPositionFromCode(selectedBannerToUpdate.Page, selectedBannerToUpdate.Position)}"
+                        [listItem]="listPositionOfPageDrawer" [valueField]="'Code'"
                         [textField]="'Position'"></component-text-dropdown>
 
                     <!-- Tiêu đề -->
                     <component-text-input #titleDrawer placeholder="Nhập tiêu đề..." [widthTextBox]="350"
-                        [widthBlock]="510" [heightTextBox]="36" label="Tiêu đề"></component-text-input>
+                        [widthBlock]="510" [heightTextBox]="36" [value]="selectedBannerToUpdate.Title"
+                        label="Tiêu đề"></component-text-input>
 
                     <!-- Chọn loại banner -->
                     <component-text-dropdown #bannerTypeDrawer (getValue)="getBannerTypeDrawer($event)"
                         [defaultItem]="defaultBannerType" [widthTextBox]="350" [label]="'Loại banner'"
+                        [value]="{Code: selectedBannerToUpdate.BannerType, Type: checkBannerType(selectedBannerToUpdate)}"
                         [widthBlock]="510" [heightTextBox]="36" [listItem]="listBannerType" [valueField]="'Code'"
                         [textField]="'Type'"></component-text-dropdown>
 
                     <!-- Nếu loại banner là hình ảnh -->
                     <ng-container *ngIf="selectedBannerTypeDrawer.Code === 0">
-                        <component-import-image #imgDrawer [text]="'Hình ảnh'"></component-import-image>
+                        <component-import-image #imgDrawer [srcImage]="selectedBannerToUpdate.BannerUrl"
+                            [text]="'Hình ảnh'"></component-import-image>
                     </ng-container>
 
                     <!-- Nếu loại banner là video -->
                     <ng-container *ngIf="selectedBannerTypeDrawer.Code === 1">
-                        <component-text-input #videoURLdrawer placeholder="Nhập đường dẫn của video..."
-                            [widthTextBox]="350" [widthBlock]="510" [heightTextBox]="36"
-                            label="Đường dẫn đoạn video"></component-text-input>
+                        <component-text-input #videoURLdrawer [value]="selectedBannerToUpdate.BannerUrl"
+                            placeholder="Nhập đường dẫn của video..." [widthTextBox]="350" [widthBlock]="510"
+                            [heightTextBox]="36" label="Đường dẫn đoạn video"></component-text-input>
                     </ng-container>
+
+                    <!-- Trạng thái -->
+                    <component-text-input [readOnly]="true"
+                        [color]="checkBannerStatus(selectedBannerToUpdate) | statusColor" [widthTextBox]="350"
+                        [widthBlock]="510" [heightTextBox]="36" [value]="checkBannerStatus(selectedBannerToUpdate)"
+                        label="Trạng thái"></component-text-input>
 
                     <!-- Button thêm banner-->
                     <ng-container *ngIf="contentInDrawer === 'add'">
@@ -59,6 +69,26 @@
                             borderColor="#09880E" borderStyle="solid" [value]="0" [height]="36"
                             classIconFontAwesome="fa-plus" bgColor="#fff" text="Thêm mới"
                             [width]="120"></component-button>
+                    </ng-container>
+
+                    <!-- Các nút cập nhật banner-->
+                    <ng-container *ngIf="contentInDrawer === 'update'">
+                        <div class="group-button-update">
+                            <ng-container *ngIf="selectedBannerToUpdate.Status === 1">
+                                <!-- Button kích hoạt -->
+                                <component-button class="button-active" [borderWidth]="2" color="#09880E"
+                                    borderColor="#09880E" borderStyle="solid" [value]="1"
+                                    (sendValue)="updateStatusBanner({value: 1}, selectedBannerToUpdate); drawer.toggle()"
+                                    classIconFontAwesome="fa-circle-check" bgColor="#fff" text="Kích hoạt"
+                                    [width]="120"></component-button>
+                            </ng-container>
+
+                            <!-- Button cập nhật -->
+                            <component-button class="button-update" [borderWidth]="2" color="#2557A0"
+                                borderColor="#2557A0" borderStyle="solid" [value]="1" (sendValue)="updateBanner()"
+                                classIconFontAwesome="fa-floppy-disk" bgColor="#fff" text="Cập nhật"
+                                [width]="120"></component-button>
+                        </div>
                     </ng-container>
                 </ng-container>
             </div>
@@ -140,7 +170,7 @@
                     </kendo-grid-column>
 
                     <!-- Tiêu đề -->
-                    <kendo-grid-column title="Tiêu đề" [width]="350">
+                    <kendo-grid-column title="Tiêu đề" [width]="300">
                         <ng-template kendoGridCellTemplate let-item>
                             <div class="column-2">
                                 {{item.Title}}
@@ -185,7 +215,7 @@
                     </kendo-grid-column>
 
                     <!-- ToolBox -->
-                    <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="40">
+                    <kendo-grid-column [sticky]="true" [resizable]="true" [width]="50">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
                                 <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15"

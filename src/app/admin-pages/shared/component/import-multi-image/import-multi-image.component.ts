@@ -1,3 +1,4 @@
+import { NotiService } from './../../../../ecom-pages/shared/service/noti.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UploadImageService } from '../../service/uploadImage.service';
 import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
@@ -19,7 +20,7 @@ export class ImportMultiImageComponent implements OnInit {
     allowedExtensions: [".jpg", ".png"],
   };
 
-  constructor(private uploadImageService: UploadImageService) { }
+  constructor(private uploadImageService: UploadImageService, private notiService: NotiService) { }
 
   ngOnInit(): void {
     this.listImageHandler = this.listImage;
@@ -48,7 +49,9 @@ export class ImportMultiImageComponent implements OnInit {
           });
         },
         (error) => {
-          console.error('Error uploading image:', error);
+          this.notiService.Show('Xảy ra lỗi trong quá trình upload ảnh', 'error');
+          window.location.reload();
+          // console.error('Error uploading image:', error);
         }
       );
     }
