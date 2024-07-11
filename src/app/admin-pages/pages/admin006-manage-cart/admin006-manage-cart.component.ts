@@ -1,4 +1,4 @@
-import { DataBill } from './../../../ecom-pages/pages/ecom-profile/dataBill';
+
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DTOStatus, listStatus, filteredStatusList } from '../../shared/dto/DTOStatus.dto';
 import { CompositeFilterDescriptor, FilterDescriptor, State } from '@progress/kendo-data-query';

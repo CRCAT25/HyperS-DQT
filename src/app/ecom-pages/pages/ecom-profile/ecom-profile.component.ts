@@ -10,6 +10,10 @@ import { DTOBill } from 'src/app/admin-pages/shared/dto/DTOBill.dto';
 import { NotiService } from '../../shared/service/noti.service';
 import { DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { Router } from '@angular/router';
+import { DTOUpdateBill } from 'src/app/admin-pages/shared/dto/DTOUpdateBill.dto';
+import { DTOUpdateBillRequest } from 'src/app/admin-pages/shared/dto/DTOUpdateBillRequest.dto';
+import { DTOProcessToPayment } from '../../shared/dto/DTOProcessToPayment';
+import { DTOBillInfo } from 'src/app/admin-pages/shared/dto/DTOBillInfo.dto';
 
 @Component({
   selector: 'app-ecom-profile',
@@ -73,71 +77,112 @@ export class EcomProfileComponent implements OnInit {
     })
   }
 
-  handleGetStatusByCode(Code: number): DTOStaTusByCode{
+  APIUpdateBill(info: DTOUpdateBillRequest):void{
+    this.isLoading = true
+    this.billService.updateStatusBill(info).pipe(takeUntil(this.destroy)).subscribe(data => {
+      if(data.ErrorString == "" && data.StatusCode == 0){
+        this.notiService.Show("Cancel order successfully", "success")
+        this.APIGetListBillCustomer()
+        this.expanded = false
+      }else{
+        this.notiService.Show("Error: " + data.ErrorString, "error")
+      }
+    })
+  }
+
+  handleGetStatusBillByCode(Code: number): DTOStaTusByCode{
     let result: DTOStaTusByCode
     switch(Code){
-      // case 2: 
-      //   return {Code: Code ,Text: "Waiting for confirmation", Icon: "fa-hourglass-start", Color: ""}
-      // case 3:
-      //   return {Code: Code ,Text: "Being packed", Icon: "fa-box", Color: ""}
-      // case 4:
-      //   return {Code: Code ,Text: "Order canceled", Icon: "fa-xmark", Color: ""}
-      // case 5:
-      //   return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: ""}
-      // case 6:
-      //   return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: ""}
-      // case 7:
-      //   return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: ""}
-      // case 8:
-      //   return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: ""}
-      // case 9:
-      //   return {Code: Code ,Text: "Goods received", Icon: "fa-clipboard-check", Color: ""}
-      // case 10:
-      //   return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: ""}
-      // case 11:
-      //   return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: ""}
-      // case 12:
-      //   return {Code: Code ,Text: "Requests a return/exchange", Icon: "fa-code-pull-request", Color: ""}
-      // case 13:
-      //   return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: ""}
-      // case 14:
-      //   return {Code: Code ,Text: "Exchange completed", Icon: "fa-check", Color: ""}
       case 1:
-        return {Code: Code ,Text: "Waiting for confirmation", Icon: "fa-hourglass-start", Color: ""}
+        return {Code: Code ,Text: "Waiting for confirmation", Icon: "fa-hourglass-start", Color: "#ffcc00"}
       case 2:
-        return {Code: Code ,Text: "Order canceled", Icon: "fa-xmark", Color: ""}
+        return {Code: Code ,Text: "Order canceled", Icon: "fa-xmark", Color: "#cc3300"}
       case 3:
-        return {Code: Code ,Text: "Not confirmed", Icon: "fa-ban", Color: ""}
+        return {Code: Code ,Text: "Not confirmed", Icon: "fa-ban", Color: "#cc3300"}
       case 4:
-        return {Code: Code ,Text: "Confirmed", Icon: "fa-check", Color: ""}
+        return {Code: Code ,Text: "Confirmed", Icon: "fa-check", Color: "#339900"}
       case 5:
-        return {Code: Code ,Text: "Being packaged", Icon: "fa-box-open", Color: ""}
+        return {Code: Code ,Text: "Being packaged", Icon: "fa-box-open", Color: "#ffcc00"}
       case 6:
-        return {Code: Code ,Text: "Packaged", Icon: "fa-box", Color: ""}
+        return {Code: Code ,Text: "Packaged", Icon: "fa-box", Color: "#ffcc00"}
       case 7:
-        return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: ""}
+        return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: "#ffcc00"}
       case 8 :
-        return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: ""}
+        return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: "#339900"}
       case 9:
-        return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: ""}
+        return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: "#cc3300"}
       case 10:
-        return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: ""}
+        return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: "#ffcc00"}
       case 11: 
-        return {Code: Code ,Text: "Accept return", Icon: "fa-dolly", Color: ""}
+        return {Code: Code ,Text: "Confirm receipt", Icon: "fa-dolly", Color: "#339900"}
       case 12:
-        return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: ""}
+        return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: "#339900"}
       case 13:
-        return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: ""}
+        return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: "#cc3300"}
       case 14:
-        return {Code: Code ,Text: "Requests a return/exchange", Icon: "fa-code-pull-request", Color: ""}
-      case 15:
-        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: ""}
+        return {Code: Code ,Text: "Requests a return/exchange", Icon: "fa-code-pull-request", Color: "#ffcc00"}
       case 16:
-        return {Code: Code ,Text: "Exchange completed", Icon: "fa-check", Color: ""}
+        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: "#339900"}
       case 17:
-        return {Code: Code ,Text: "Watting payment", Icon: "fa-stopwatch", Color: ""}
+        return {Code: Code ,Text: "Watting payment", Icon: "fa-stopwatch", Color: "#ffcc00"}
+      case 20:
+        return {Code: Code ,Text: "Refuse to exchange", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Refuse to return", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Fulfill the order", Icon: "fa-check", Color: "#339900"}
       }
-      
+      return result
+  }
+
+  handleGetStatusBillInfoByCode(Code: number): DTOStaTusByCode{
+    let result: DTOStaTusByCode
+    switch(Code){
+      case 1:
+        return {Code: Code ,Text: "Waiting for confirmation", Icon: "fa-hourglass-start", Color: "#ffcc00"}
+      case 2:
+        return {Code: Code ,Text: "Order canceled", Icon: "fa-xmark", Color: "#cc3300"}
+      case 3:
+        return {Code: Code ,Text: "Not confirmed", Icon: "fa-ban", Color: "#cc3300"}
+      case 4:
+        return {Code: Code ,Text: "Confirmed", Icon: "fa-check", Color: "#339900"}
+      case 5:
+        return {Code: Code ,Text: "Being packaged", Icon: "fa-box-open", Color: "#ffcc00"}
+      case 6:
+        return {Code: Code ,Text: "Packaged", Icon: "fa-box", Color: "#ffcc00"}
+      case 7:
+        return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: "#ffcc00"}
+      case 8 :
+        return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: "#339900"}
+      case 9:
+        return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: "#cc3300"}
+      case 10:
+        return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: "#ffcc00"}
+      case 11: 
+        return {Code: Code ,Text: "Confirm receipt", Icon: "fa-dolly", Color: "#339900"}
+      case 12:
+        return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: "#339900"}
+      case 13:
+        return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: "#cc3300"}
+      case 14:
+        return {Code: Code ,Text: "Requests a change", Icon: "fa-arrows-rotate", Color: "#ffcc00"}
+      case 15:
+        return {Code: Code ,Text: "Requests a return", Icon: "fa-reply", Color: "#ffcc00"}
+      case 16:
+        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: "#339900"}
+      case 17:
+        return {Code: Code ,Text: "Watting payment", Icon: "fa-stopwatch", Color: "#ffcc00"}
+      case 18:
+        return {Code: Code ,Text: "Accept exchange", Icon: "fa-check", Color: "#339900"}
+      case 19:
+        return {Code: Code ,Text: "Exchanged goods", Icon: "fa-check", Color: "#339900"}  
+      case 20:
+        return {Code: Code ,Text: "Refuse to exchange", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Refuse to return", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Fulfill the order", Icon: "fa-check", Color: "#339900"}
+      }
       return result
   }
 
@@ -174,4 +219,51 @@ export class EcomProfileComponent implements OnInit {
     this.router.navigate(["ecom/home"])
   }
 
-}
+  handleCancelOrder():void{
+    this.billSelected.ListBillInfo.forEach(element => {
+      element.Status = 2
+    });
+    const updateBill:DTOUpdateBill = {
+      CodeBill: this.billSelected.Code,
+      Status: 2,
+      ListOfBillInfo: this.billSelected.ListBillInfo,
+      Note: ""
+    }
+    const processToPayment: DTOProcessToPayment = null
+    const updateBillRes: DTOUpdateBillRequest = {
+      DTOUpdateBill: updateBill,
+      DTOProceedToPayment: processToPayment
+    }
+    this.APIUpdateBill(updateBillRes)
+  }
+
+  handleReturnAndChangeBillInfo(billInfo: DTOBillInfo, func: string):void{
+    const item = this.billSelected.ListBillInfo.find(data => data.Code == billInfo.Code)
+    if(item){
+      if(func == "return"){
+        item.Status = 15
+      }
+      else if(func == "change"){
+        item.Status = 14
+      }
+
+    }
+
+    const updateBill:DTOUpdateBill = {
+      CodeBill: this.billSelected.Code,
+      Status: 14,
+      ListOfBillInfo: this.billSelected.ListBillInfo,
+      Note: ""
+    }
+    const processToPayment: DTOProcessToPayment = null
+    const updateBillRes: DTOUpdateBillRequest = {
+      DTOUpdateBill: updateBill,
+      DTOProceedToPayment: processToPayment
+    }
+    this.APIUpdateBill(updateBillRes)
+  }
+
+  log(){
+    console.log(this.billSelected.ListBillInfo);
+    }
+  }
