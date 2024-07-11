@@ -5,12 +5,14 @@ import { takeUntil } from 'rxjs/operators';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
-import { State } from '@progress/kendo-data-query';
-import { DTOBrand } from 'src/app/ecom-pages/shared/dto/DTOBrand';
 import { GridDataResult, SelectionEvent } from '@progress/kendo-angular-grid';
-import { ProductAdminService } from '../../shared/service/productAdmin.service';
 import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
+import { BrandAdminService } from '../../shared/service/brandAdmin.service';
+import { DTOBrand } from 'src/app/ecom-pages/shared/dto/DTOBrand';
+import { isEmpty } from 'src/app/shared/utils/utils';
+import { DTOUpdateBrandRequest } from '../../shared/dto/DTOUpdateBrandRequest.dto';
+import { ProductTypeAdminService } from '../../shared/service/productTypeAdmin.service';
 
 @Component({
   selector: 'app-admin009-manage-category-product',
@@ -53,13 +55,15 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   constructor(
     private staffService: StaffService,
     private notiService: NotiService,
-    private productAdminService: ProductAdminService
+    private brandAdminService: BrandAdminService,
+    private productTypeService: ProductTypeAdminService
   ) { }
 
 
   ngOnInit(): void {
     this.getPermission();
     this.getListBrand();
+    this.getListProductType();
   }
 
   // Lấy quyền truy cập
@@ -75,10 +79,21 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   // Lấy danh sách các thương hiệu
   getListBrand() {
     this.isBrandLoading = true;
-    this.productAdminService.getListBrand().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+    this.brandAdminService.getListBrand().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
       if (res.StatusCode === 0) {
         this.listBrand = { data: res.ObjectReturn.Data, total: res.ObjectReturn.Total };
         this.isBrandLoading = false;
+      }
+    })
+  }
+
+  // Lấy danh sách các loại sản phẩm
+  getListProductType(){
+    this.isTypeLoading = true;
+    this.productTypeService.getListProductType().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if(res.StatusCode === 0){
+        this.listType = { data: res.ObjectReturn.Data, total: res.ObjectReturn.Total };
+        this.isTypeLoading = false;
       }
     })
   }
@@ -93,6 +108,78 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Binding thông tin thương hiệu được chọn lên form
   bindingToFormBrand() {
+    if (this.selectedBrand.length > 0) {
+      const listBr: DTOBrand[] = this.listBrand.data;
+      const brandSelected: DTOBrand = listBr.find(brand => brand.Code === this.selectedBrand[0]);
+
+      // Binding
+      this.childIdBrand.valueTextBox = brandSelected.IdBrand;
+      this.childNameBrand.valueTextBox = brandSelected.Name;
+      if (brandSelected.ImageUrl === '' || brandSelected.ImageUrl === this.imgDefault) {
+        this.childImgBrand.setImgURL(this.imgDefault);
+      }
+      else {
+        this.childImgBrand.setImgURL(brandSelected.ImageUrl);
+      }
+    }
+  }
+
+  // Reset thông tin trong form thương hiệu
+  resetFormBrand() {
+    this.childIdBrand.resetValue();
+    this.childNameBrand.resetValue();
+    this.childImgBrand.setImgURL(this.imgDefault);
+  }
+
+  // Kiếm tra các input của form brand có hợp lệ hay không
+  checkValidFormBrand() {
+    if (isEmpty(this.childIdBrand.valueTextBox)) {
+      this.notiService.Show('Vui lòng nhập mã thương hiệu', 'error');
+      return false;
+    }
+    if (isEmpty(this.childNameBrand.valueTextBox)) {
+      this.notiService.Show('Vui lòng nhập tên thương hiệu', 'error');
+      return false;
+    }
+    if (this.childImgBrand.imageHandle.ImgUrl === '' || this.childImgBrand.imageHandle.ImgUrl === this.imgDefault) {
+      this.notiService.Show('Vui lòng chọn ảnh cho thương hiệu', 'error');
+      return false;
+    }
+    return true;
+  }
+
+  // Thêm mới 1 thương hiệu
+  addBrand() {
+    if (this.permission === 'Admin') {
+      if (this.checkValidFormBrand()) {
+        const brand: DTOBrand = {
+          Code: 0,
+          IdBrand: this.childIdBrand.valueTextBox,
+          Name: this.childNameBrand.valueTextBox,
+          ImageUrl: this.childImgBrand.imageHandle.ImgUrl
+        }
+        const req: DTOUpdateBrandRequest = {
+          Brand: brand,
+          Properties: ['IdBrand', 'Name', 'ImageUrl']
+        }
+        this.brandAdminService.updateBrand(req).subscribe((res: DTOResponse) => {
+          console.log(res);
+          if(res.StatusCode === 0){
+            this.notiService.Show('Thêm mới thương hiệu thành công', 'success');
+            this.getListBrand();
+            this.resetFormBrand();
+          }
+        }, error => {
+          this.notiService.Show('Thêm mới đã xảy ra lỗi: ' + error, 'error')
+        })
+      }
+    }
+    else {
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+    }
+  }
+
+  updateBrand(){
 
   }
 
@@ -100,6 +187,7 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   onClick(event: MouseEvent) {
     if (!(event.target as HTMLElement).closest('.content-form') && !(event.target as HTMLElement).closest('.group-button')) {
       this.selectedBrand = [];
+      this.resetFormBrand();
     }
   }
 

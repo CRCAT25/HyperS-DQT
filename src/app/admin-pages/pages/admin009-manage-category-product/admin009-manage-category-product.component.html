@@ -5,10 +5,10 @@
             <div class="content-form">
                 <div class="block-1">
                     <!-- Mã thương hiệu -->
-                    <component-text-input #idBrand [label]="'Mã thương hiệu'"></component-text-input>
+                    <component-text-input #idBrand [label]="'Mã thương hiệu'" [placeholder]="'Nhập mã thương hiệu...'"></component-text-input>
 
                     <!-- Tên thương hiệu -->
-                    <component-text-input #nameBrand [label]="'Tên thương hiệu'"></component-text-input>
+                    <component-text-input #nameBrand [label]="'Tên thương hiệu'" [placeholder]="'Nhập tên thương hiệu...'"></component-text-input>
                 </div>
                 <div class="block-2">
                     <component-import-image #imgBrand [text]="'Ảnh thương hiệu'"></component-import-image>
@@ -21,12 +21,12 @@
             <!-- Button cập nhật thương hiệu -->
             <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
                 borderStyle="solid" [value]="1" classIconFontAwesome="fa-floppy-disk" bgColor="#fff"
-                text="Cập nhật"></component-button>
+                text="Cập nhật" (sendValue)="updateBrand()"></component-button>
 
             <!-- Button thêm mới thương hiệu -->
             <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
                 borderStyle="solid" [value]="1" classIconFontAwesome="fa-plus" bgColor="#fff"
-                text="Thêm mới thương hiệu"></component-button>
+                text="Thêm mới thương hiệu" (sendValue)="addBrand()"></component-button>
         </div>
 
         <!-- Danh sách thương hiệu -->
@@ -48,8 +48,7 @@
                 <kendo-grid-column title="Mã thương hiệu" [width]="350">
                     <ng-template kendoGridCellTemplate let-item>
                         <div class="column-2">
-                            <!-- {{item.IdBrand}} -->
-                            IdBrand
+                            {{item.IdBrand}}
                         </div>
                     </ng-template>
                 </kendo-grid-column>

@@ -17,6 +17,8 @@ import { Router } from '@angular/router';
 import { ProductAdminService } from '../../shared/service/productAdmin.service';
 import { LayoutService } from '../../shared/service/layout.service';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 interface DropDownPrice {
   Code: number
@@ -44,6 +46,8 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   pageSize: number = 15;
   valueSearch: string;
   codeProductSelected: number;
+  // Role của tài khoản đang được đăng nhập
+  permission: string;
 
   // variable list
   listPageSize: number[] = [15, 25, 50];
@@ -200,16 +204,28 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
     private productAdminService: ProductAdminService,
     private router: Router,
     private layoutService: LayoutService,
-    private notiService: NotiService
+    private notiService: NotiService,
+    private staffService: StaffService
   ) { }
 
   ngOnInit(): void {
     // this.setLayoutStorage('Quản lý sản phẩm/ Danh sách sản phẩm', 'admin/manage-product');
+    this.getPermission();
     this.removeLocalStorage();
     this.getListProductType();
     this.getListBrand();
     this.getListProduct();
     this.getStatistics();
+  }
+
+  // Lấy quyền truy cập
+  getPermission() {
+    this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        const staff: DTOStaff = res.ObjectReturn.Data[0];
+        this.permission = staff.Permission;
+      }
+    })
   }
 
   // Set cho breadcrumb, routerLink
@@ -542,12 +558,17 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
     this.getListProduct();
   }
 
-  goToDetail(res: any, code: number){
-    if(code === 0){
-      this.setLayoutStorage('Quản lý sản phẩm/Thêm mới sản phẩm', 'admin/detail-product')
+  goToDetail(res: any, code: number) {
+    if(this.permission === 'Admin'){
+      if (code === 0) {
+        this.setLayoutStorage('Quản lý sản phẩm/Thêm mới sản phẩm', 'admin/detail-product')
+      }
+      localStorage.setItem('productSelected', code + '');
+      this.router.navigate(['admin/detail-product']);
     }
-    localStorage.setItem('productSelected', code + '');
-    this.router.navigate(['admin/detail-product']);
+    else{
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+    }
   }
 
   ngOnDestroy(): void {
