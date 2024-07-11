@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { DTOUpdateBill } from 'src/app/admin-pages/shared/dto/DTOUpdateBill.dto';
 import { DTOUpdateBillRequest } from 'src/app/admin-pages/shared/dto/DTOUpdateBillRequest.dto';
 import { DTOProcessToPayment } from '../../shared/dto/DTOProcessToPayment';
+import { DTOBillInfo } from 'src/app/admin-pages/shared/dto/DTOBillInfo.dto';
 
 @Component({
   selector: 'app-ecom-profile',
@@ -165,19 +166,41 @@ export class EcomProfileComponent implements OnInit {
   }
 
   handleCancelOrder():void{
+    this.billSelected.ListBillInfo.forEach(element => {
+      element.Status = 2
+    });
     const updateBill:DTOUpdateBill = {
       CodeBill: this.billSelected.Code,
       Status: 2,
       ListOfBillInfo: this.billSelected.ListBillInfo,
       Note: ""
     }
-
     const processToPayment: DTOProcessToPayment = null
-
     const updateBillRes: DTOUpdateBillRequest = {
       DTOUpdateBill: updateBill,
       DTOProceedToPayment: processToPayment
     }
+    this.APIUpdateBill(updateBillRes)
+  }
+
+  handleReturnBillInfo(billInfo: DTOBillInfo):void{
+    const item = this.billSelected.ListBillInfo.find(data => data.Code == billInfo.Code)
+    if(item){
+      item.Status = 15
+    }
+
+    const updateBill:DTOUpdateBill = {
+      CodeBill: this.billSelected.Code,
+      Status: 14,
+      ListOfBillInfo: this.billSelected.ListBillInfo,
+      Note: ""
+    }
+    const processToPayment: DTOProcessToPayment = null
+    const updateBillRes: DTOUpdateBillRequest = {
+      DTOUpdateBill: updateBill,
+      DTOProceedToPayment: processToPayment
+    }
+
 
     this.APIUpdateBill(updateBillRes)
   }

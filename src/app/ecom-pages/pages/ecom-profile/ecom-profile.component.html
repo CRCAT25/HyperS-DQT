@@ -1,7 +1,7 @@
 <app-loading [isLoading]="isLoading"></app-loading>
 
 <kendo-drawer-container>
-    <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="500" [(expanded)]="expanded">
+    <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="600" [(expanded)]="expanded">
         <ng-template kendoDrawerTemplate>
             <div class="main-detail">
                  <div class="title">
@@ -44,31 +44,61 @@
                                 Your shoes
                             </div>
                             <div class="item" *ngFor="let item of billSelected.ListBillInfo">
+                               
                                 <div class="info-item">
-                                    <div class="area-1">
-                                        <div class="img">
-                                            <img src="{{item.ImageURL}}" alt="">
-                                        </div>
-                                        <div class="nameAndQuantity">
-                                            <div class="name">
-                                                {{item.Name}}
-                                            </div>
-                                            <div class="quantity">
-                                                X{{item.Quantity}}
-                                            </div>
-                                        </div>
+                                    <div class="img">
+                                        <img src="{{item.ImageURL}}" alt="">
                                     </div>
-                                    
-                                    <div class="price">
-                                        {{item.Price}} VND
-                                    </div>
+                                    <div class="bill-info-area">
+                                        <div class="area-1">
+                                            <div class="nameAndQuantity">
+                                                <div class="name">
+                                                    {{item.Name}}
+                                                </div>
+                                                <div class="quantity">
+                                                    Qty: {{item.Quantity}}
+                                                </div>
+                                                <div class="status-item">
+                                                    Status: {{handleGetStatusByCode(item.Status).Text}}
+                                                </div>
+                                            </div>
+                                            <div class="price">
+                                                {{item.Price}} VND
+                                            </div>
+                                        </div>
 
-                                    <div class="btn-return-area">
-                                        <div *ngIf="billSelected.Status == 8" class="button-return">
-                                            <i class="fa-solid fa-reply"></i>
+                                        <div class="area-2">
+                                            <div class="btn-return-area">
+                                                <div *ngIf="item.Status == 8">
+                                                    <div (click)="handleReturnBillInfo(item)"  class="button button-return">
+                                                        <i class="fa-solid fa-reply"></i>
+                                                        <div class="text">
+                                                            {{'return' | uppercase}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                               
+                                                <div *ngIf="item.Status == 8" class="button button-change">
+                                                    <i class="fa-solid fa-arrows-rotate"></i>
+                                                    <div class="text">
+                                                        {{'change' | uppercase}}
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="item.Status != 8" class="button button-re-buy">
+                                                    <i class="fa-solid fa-bag-shopping"></i>
+                                                    <div class="text">
+                                                        {{'Repurchase' | uppercase}}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                   
+                                   
+                               
+                                   
                                 </div>
+                              
                             </div>
                         </div>
 
