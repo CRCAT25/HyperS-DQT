@@ -139,6 +139,10 @@
                         }
                     }
 
+                    .column-2{
+                        @include center-horizontal;
+                    }
+
                     .column-9-discount{
                         color: $color-cancel;
                     }

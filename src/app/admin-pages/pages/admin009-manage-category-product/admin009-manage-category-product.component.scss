@@ -1,0 +1,137 @@
+@import './../../../../styles.scss';
+@import '../../shared/style/grid.scss';
+
+::ng-deep {
+    app-admin009-manage-category-product {
+        height: 100%;
+
+        .app-admin009-manage-category-product {
+            height: 100%;
+            display: flex;
+            gap: 60px;
+
+            .block-brand {
+                width: 60%;
+                height: 100%;
+                position: relative;
+
+                .content-form {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .block-1 {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 22px;
+                    }
+
+                    .block-2 {
+                        component-import-image {
+                            .image-container {
+                                padding: 10px 10px 0 0;
+                                font-weight: 100 !important;
+                            }
+
+                            img {
+                                min-width: 70px !important;
+                                width: 80px !important;
+                                height: 80px !important;
+                                min-height: 70px !important;
+                            }
+                        }
+                    }
+                }
+
+                .group-button {
+                    width: 100%;
+                    display: flex;
+                    justify-content: end;
+                    gap: 10px;
+                    padding: 10px 0;
+
+                    .button-add {
+                        .component-button:hover {
+                            color: #fff !important;
+                            background-color: #09880E !important;
+                        }
+                    }
+
+                    .button-update {
+                        .component-button:hover {
+                            color: #ffffff !important;
+                            background-color: #2557A0 !important;
+                        }
+                    }
+                }
+
+                .grid-custom-container {
+                    height: calc(100vh - 60px - 16px - 125px - 100px);
+
+                    kendo-grid {
+                        tr{
+                            cursor: pointer;
+                            color: #000;
+                        }
+
+                        .column-1 {
+                            @include center-horizontal;
+
+                            img {
+                                height: 38px;
+                                width: 38px;
+                                object-fit: cover;
+                                border-radius: 3px;
+                                box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 6px;
+                            }
+                        }
+
+                        .column-2{
+                            font-weight: 600;
+                        }
+
+                        th.k-table-th[aria-colindex="1"] {
+                            .k-column-title {
+                                margin: auto;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .block-type {
+                width: 40%;
+                height: 100%;
+                position: relative;
+
+                .content-form {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 22px;
+                    padding-bottom: 10px;
+                }
+
+                .group-button {
+                    width: 100%;
+                    display: flex;
+                    justify-content: end;
+                    gap: 10px;
+                    padding: 10px 0;
+
+                    .button-add {
+                        .component-button:hover {
+                            color: #fff !important;
+                            background-color: #09880E !important;
+                        }
+                    }
+
+                    .button-update {
+                        .component-button:hover {
+                            color: #ffffff !important;
+                            background-color: #2557A0 !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

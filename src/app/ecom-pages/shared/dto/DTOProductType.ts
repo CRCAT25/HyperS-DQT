@@ -1,4 +1,5 @@
 export class DTOProductType {
-    Code: number;
+    Code: number
+    IdProductType: string
     Name: string
 }

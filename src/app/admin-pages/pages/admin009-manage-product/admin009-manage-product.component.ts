@@ -132,10 +132,12 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   };
   defaultProductType: DTOProductType = {
     Code: -1,
+    IdProductType: null,
     Name: '-- Loại sản phẩm --'
   };
   defaultBrand: DTOBrand = {
     Code: -1,
+    IdBrand: null,
     Name: '-- Thương hiệu --',
     ImageUrl: '',
   };

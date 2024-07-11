@@ -1,1 +1,94 @@
-<p>admin009-manage-category-product works!</p>
+<div class="app-admin009-manage-category-product">
+    <!-- Phần thương hiệu -->
+    <div class="block-brand">
+        <component-form [text]="'Thương hiệu'">
+            <div class="content-form">
+                <div class="block-1">
+                    <!-- Mã thương hiệu -->
+                    <component-text-input #idBrand [label]="'Mã thương hiệu'"></component-text-input>
+
+                    <!-- Tên thương hiệu -->
+                    <component-text-input #nameBrand [label]="'Tên thương hiệu'"></component-text-input>
+                </div>
+                <div class="block-2">
+                    <component-import-image #imgBrand [text]="'Ảnh thương hiệu'"></component-import-image>
+                </div>
+            </div>
+        </component-form>
+
+        <!-- Nhóm các button tương tác -->
+        <div class="group-button">
+            <!-- Button cập nhật thương hiệu -->
+            <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
+                borderStyle="solid" [value]="1" classIconFontAwesome="fa-floppy-disk" bgColor="#fff"
+                text="Cập nhật"></component-button>
+
+            <!-- Button thêm mới thương hiệu -->
+            <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
+                borderStyle="solid" [value]="1" classIconFontAwesome="fa-plus" bgColor="#fff"
+                text="Thêm mới thương hiệu"></component-button>
+        </div>
+
+        <!-- Danh sách thương hiệu -->
+        <div class="grid-custom-container">
+            <kendo-grid [data]="listBrand" kendoGridSelectBy="Code" [selectedKeys]="selectedBrand"
+                (selectionChange)="onSelectionBrandChange($event)" [loading]="isBrandLoading"
+                [selectable]="{ mode: 'single' }">
+
+                <!-- Hình ảnh -->
+                <kendo-grid-column title="Hình ảnh" [width]="200">
+                    <ng-template kendoGridCellTemplate let-item>
+                        <div class="column-1">
+                            <img [src]="item.ImageUrl ? item.ImageUrl : imgDefault" alt="">
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <!-- Mã thương hiệu -->
+                <kendo-grid-column title="Mã thương hiệu" [width]="350">
+                    <ng-template kendoGridCellTemplate let-item>
+                        <div class="column-2">
+                            <!-- {{item.IdBrand}} -->
+                            IdBrand
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <!-- Tên thương hiệu -->
+                <kendo-grid-column title="Tên thương hiệu" [width]="350">
+                    <ng-template kendoGridCellTemplate let-item>
+                        <div class="column-3">
+                            {{item.Name}}
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+            </kendo-grid>
+        </div>
+    </div>
+
+    <!-- Phần loại sản phẩm -->
+    <div class="block-type">
+        <component-form [text]="'Phân loại sản phẩm'">
+            <div class="content-form">
+                <!-- Mã loại sản phẩm -->
+                <component-text-input [label]="'Mã loại sản phẩm'"></component-text-input>
+
+                <!-- Tên loại sản phẩm -->
+                <component-text-input [label]="'Tên loại sản phẩm'"></component-text-input>
+            </div>
+        </component-form>
+
+        <!-- Nhóm các button tương tác -->
+        <div class="group-button">
+            <!-- Button cập nhật thương hiệu -->
+            <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
+                borderStyle="solid" [value]="1" classIconFontAwesome="fa-floppy-disk" bgColor="#fff"
+                text="Cập nhật"></component-button>
+
+            <!-- Button thêm mới thương hiệu -->
+            <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
+                borderStyle="solid" [value]="1" classIconFontAwesome="fa-plus" bgColor="#fff"
+                text="Thêm mới loại"></component-button>
+        </div>
+    </div>
+</div>

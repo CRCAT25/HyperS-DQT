@@ -1,5 +1,6 @@
 export class DTOBrand {
-    Code: number = 0;
-    Name: string;
-    ImageUrl: string;
+    Code: number = 0
+    IdBrand: string
+    Name: string
+    ImageUrl: string
 }
