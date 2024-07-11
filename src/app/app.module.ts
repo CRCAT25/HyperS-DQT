@@ -70,6 +70,7 @@ import { EcomProfileComponent } from './ecom-pages/pages/ecom-profile/ecom-profi
 import { ImportMultiImageDirective } from './admin-pages/shared/directive/importmultiimage.directive';
 import { Admin006DetailCartComponent } from './admin-pages/pages/admin006-detail-cart/admin006-detail-cart.component';
 import { ComponentCouponComponent } from './shared/component/component-coupon/component-coupon.component';
+import { Admin009ManageCategoryProductComponent } from './admin-pages/pages/admin009-manage-category-product/admin009-manage-category-product.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -121,6 +122,7 @@ import { ComponentCouponComponent } from './shared/component/component-coupon/co
     ImportMultiImageDirective,
     Admin006DetailCartComponent,
     ComponentCouponComponent,
+    Admin009ManageCategoryProductComponent,
   ],
   imports: [
     BrowserModule,

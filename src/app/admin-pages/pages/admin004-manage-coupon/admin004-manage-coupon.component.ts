@@ -63,11 +63,11 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
   // Loại khuyến mãi được chọn
   selectedCouponType: number = -1;
   // Ngày nhỏ nhất có thể của chi tiết coupon
-  minDateCoupon: Date = new Date(1900, 1, 1);
+  minDateCoupon: Date = new Date();
   // Ngày lớn nhất có thể của chi tiết coupon
   maxDateCoupon: Date = new Date(this.currentDate.getFullYear() + 0, 12, 30);
   // Ngày bắt đầu của chi tiết coupon
-  startDateCoupon: Date = null;
+  startDateCoupon: Date = new Date();
   // Ngày kết thúc của chi tiết coupon
   endDateCoupon: Date = null;
   // Role của tài khoản đang được đăng nhập

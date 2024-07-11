@@ -24,6 +24,7 @@ export class SidebarComponent implements OnInit {
     const breadcrumbLS: string = localStorage.getItem('breadcrumb');
     const listBreadCrumbSplit: string[] = breadcrumbLS.split('/')
     const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
+    const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
 
 
     const cartModule = listModule.find(item => item.ModuleName === 'Đơn hàng');
@@ -47,6 +48,14 @@ export class SidebarComponent implements OnInit {
       childAccountModule.IsSelected = true;
     }
 
+    // Ngoại lệ đối với Quản lý sản phẩm
+    if (listBreadCrumbSplit[0] === 'Quản lý sản phẩm') {
+      productModule.IsExpanded = true;
+      productModule.IsSelected = true;
+      const childProductModule: DTOModule = productModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
+      childProductModule.IsSelected = true;
+    }
+
     this.getCurrentStaff();
   }
 
@@ -65,12 +74,17 @@ export class SidebarComponent implements OnInit {
 
   // Sự kiện khi chọn vào item drawer
   onSelectItemDrawer(item: DTOModule): void {
-    // Ngoại lệ đối với Quản lý tài khoản
-    if (item.ModuleName !== 'Quản lý tài khoản') {
+    // Ngoại lệ đối với Quản lý tài khoản và quản lý sản phẩm. Dùng để đóng expand khi chọn các item khác trừ những item nào có subModule
+    if (item.ModuleName !== 'Quản lý tài khoản' && item.ModuleName !== 'Quản lý sản phẩm') {
       const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
       accountModule.IsExpanded = false;
       accountModule.IsSelected = false;
       accountModule.SubModule.forEach(sub => sub.IsSelected = false);
+
+      const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
+      productModule.IsExpanded = false;
+      productModule.IsSelected = false;
+      productModule.SubModule.forEach(sub => sub.IsSelected = false);
     }
 
 

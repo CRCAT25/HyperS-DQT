@@ -202,7 +202,7 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.setLayoutStorage('Quản lý sản phẩm', 'admin/manage-product');
+    // this.setLayoutStorage('Quản lý sản phẩm/ Danh sách sản phẩm', 'admin/manage-product');
     this.removeLocalStorage();
     this.getListProductType();
     this.getListBrand();

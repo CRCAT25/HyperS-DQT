@@ -12,6 +12,7 @@ import { Admin007ManageScheduleComponent } from './pages/admin007-manage-schedul
 import { Admin008CalculateSalaryComponent } from './pages/admin008-calculate-salary/admin008-calculate-salary.component';
 import { Admin009ManageProductComponent } from './pages/admin009-manage-product/admin009-manage-product.component';
 import { Admin009DetailProductComponent } from './pages/admin009-detail-product/admin009-detail-product.component';
+import { Admin009ManageCategoryProductComponent } from './pages/admin009-manage-category-product/admin009-manage-category-product.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,7 @@ const routes: Routes = [
       { path: 'calculate-salary', component: Admin008CalculateSalaryComponent },
       { path: 'manage-product', component: Admin009ManageProductComponent },
       { path: 'detail-product', component: Admin009DetailProductComponent },
+      { path: 'manage-category', component: Admin009ManageCategoryProductComponent },
       { path: '', redirectTo: 'manage-cart', pathMatch: 'full' }
       // Add a redirect here if needed, or adjust the main redirect
     ]

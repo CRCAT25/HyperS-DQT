@@ -40,9 +40,29 @@ export const listModule: DTOModule[] = [
         IsExpanded: false
     },
     {
-        RouteLink: '/admin/manage-product',
+        RouteLink: '/admin',
         ModuleName: 'Quản lý sản phẩm',
         ClassIconFontAwesome: 'fa-store',
+        SubModule: [
+            {
+                RouteLink: '/admin/manage-product',
+                ModuleName: 'Danh sách sản phẩm',
+                IsChild: true,
+                IsSelected: false,
+                ParentModule: 'Quản lý sản phẩm',
+                IsExpanded: false,
+                BreadCrumb: 'Quản lý sản phẩm/Danh sách sản phẩm'
+            },
+            {
+                RouteLink: '/admin/manage-category',
+                ModuleName: 'Thương hiệu và phân loại',
+                IsChild: true,
+                IsSelected: false,
+                ParentModule: 'Quản lý sản phẩm',
+                IsExpanded: false,
+                BreadCrumb: 'Quản lý sản phẩm/Thương hiệu và phân loại'
+            }
+        ],
         IsChild: false,
         IsSelected: false,
         IsExpanded: false,
