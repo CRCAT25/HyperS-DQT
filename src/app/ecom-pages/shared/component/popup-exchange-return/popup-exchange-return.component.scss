@@ -1,0 +1,110 @@
+@import "../../../../../styles.scss";
+
+.body{
+    height: calc(100% - 50px);
+    width: 100%;
+    position: absolute;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.137);
+
+    .content{
+        border-radius: 10px;
+        height: 600px;
+        width: 500px;
+        background-color: white;
+        padding: 20px;
+        position: relative;
+
+        .title{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            margin-bottom: 30px;
+            
+        }
+
+        .choose-error-area{
+
+            .title-err{
+                margin-bottom: 20px;
+            }
+            .table-err{
+                height: 100%;
+                background-color: rgb(243, 243, 243);
+                display: flex;
+                flex-wrap: wrap;
+                border-radius: 5px;
+                .item{
+                    margin: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 30px;
+                    padding: 20px;
+                    cursor: pointer;
+                    background-color: white;
+                    border-radius: 10px;
+
+                }
+
+                .seleced{
+                    background-color: $color-main !important;
+                    color: white;
+                }
+            }
+
+            .inputGroup{
+                width: 100%;
+                margin-top: 20px;
+
+                textarea{
+                    width: 100%;
+                    border-radius: 5px;
+                    padding: 10px;
+                    resize: none;
+                }
+            }
+
+            .btn-area{
+                display: flex;
+                position: absolute;
+                bottom: 0;
+
+                width: 460px;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                .btn{
+                    height: 40px;
+                    width: 200px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    border-radius: 10px;
+                    cursor: pointer;
+
+                    &:hover{
+                        cursor: pointer;
+                    }
+                }
+
+                .btn-close{
+                    background-color: rgb(255, 52, 52);
+                }
+
+                .btn-accept{
+                    background-color: #36e0e0;
+                }
+            }
+
+            
+        }
+    }
+}

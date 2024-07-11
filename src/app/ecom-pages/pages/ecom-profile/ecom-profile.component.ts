@@ -90,7 +90,7 @@ export class EcomProfileComponent implements OnInit {
     })
   }
 
-  handleGetStatusByCode(Code: number): DTOStaTusByCode{
+  handleGetStatusBillByCode(Code: number): DTOStaTusByCode{
     let result: DTOStaTusByCode
     switch(Code){
       case 1:
@@ -114,21 +114,75 @@ export class EcomProfileComponent implements OnInit {
       case 10:
         return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: "#ffcc00"}
       case 11: 
-        return {Code: Code ,Text: "Accept return", Icon: "fa-dolly", Color: "#339900"}
+        return {Code: Code ,Text: "Confirm receipt", Icon: "fa-dolly", Color: "#339900"}
       case 12:
         return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: "#339900"}
       case 13:
         return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: "#cc3300"}
       case 14:
         return {Code: Code ,Text: "Requests a return/exchange", Icon: "fa-code-pull-request", Color: "#ffcc00"}
-      case 15:
-        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: "#339900"}
       case 16:
-        return {Code: Code ,Text: "Exchange completed", Icon: "fa-check", Color: "#339900"}
+        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: "#339900"}
       case 17:
         return {Code: Code ,Text: "Watting payment", Icon: "fa-stopwatch", Color: "#ffcc00"}
+      case 20:
+        return {Code: Code ,Text: "Refuse to exchange", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Refuse to return", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Fulfill the order", Icon: "fa-check", Color: "#339900"}
       }
-      
+      return result
+  }
+
+  handleGetStatusBillInfoByCode(Code: number): DTOStaTusByCode{
+    let result: DTOStaTusByCode
+    switch(Code){
+      case 1:
+        return {Code: Code ,Text: "Waiting for confirmation", Icon: "fa-hourglass-start", Color: "#ffcc00"}
+      case 2:
+        return {Code: Code ,Text: "Order canceled", Icon: "fa-xmark", Color: "#cc3300"}
+      case 3:
+        return {Code: Code ,Text: "Not confirmed", Icon: "fa-ban", Color: "#cc3300"}
+      case 4:
+        return {Code: Code ,Text: "Confirmed", Icon: "fa-check", Color: "#339900"}
+      case 5:
+        return {Code: Code ,Text: "Being packaged", Icon: "fa-box-open", Color: "#ffcc00"}
+      case 6:
+        return {Code: Code ,Text: "Packaged", Icon: "fa-box", Color: "#ffcc00"}
+      case 7:
+        return {Code: Code ,Text: "In transit", Icon: "fa-truck", Color: "#ffcc00"}
+      case 8 :
+        return {Code: Code ,Text: "Delivery successful", Icon: "fa-truck-ramp-box", Color: "#339900"}
+      case 9:
+        return {Code: Code ,Text: "Delivery failed", Icon: "fa-ban", Color: "#cc3300"}
+      case 10:
+        return {Code: Code ,Text: "Returning", Icon: "fa-reply", Color: "#ffcc00"}
+      case 11: 
+        return {Code: Code ,Text: "Confirm receipt", Icon: "fa-dolly", Color: "#339900"}
+      case 12:
+        return {Code: Code ,Text: "Money refunded", Icon: "fa-money-bill-transfer", Color: "#339900"}
+      case 13:
+        return {Code: Code ,Text: "Non-refundable", Icon: "fa-money-bill-wheat", Color: "#cc3300"}
+      case 14:
+        return {Code: Code ,Text: "Requests a change", Icon: "fa-arrows-rotate", Color: "#ffcc00"}
+      case 15:
+        return {Code: Code ,Text: "Requests a return", Icon: "fa-reply", Color: "#ffcc00"}
+      case 16:
+        return {Code: Code ,Text: "Exchange confirmation", Icon: "fa-check-double", Color: "#339900"}
+      case 17:
+        return {Code: Code ,Text: "Watting payment", Icon: "fa-stopwatch", Color: "#ffcc00"}
+      case 18:
+        return {Code: Code ,Text: "Accept exchange", Icon: "fa-check", Color: "#339900"}
+      case 19:
+        return {Code: Code ,Text: "Exchanged goods", Icon: "fa-check", Color: "#339900"}  
+      case 20:
+        return {Code: Code ,Text: "Refuse to exchange", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Refuse to return", Icon: "fa-exclamation", Color: "#cc3300"}
+      case 21:
+        return {Code: Code ,Text: "Fulfill the order", Icon: "fa-check", Color: "#339900"}
+      }
       return result
   }
 
@@ -183,10 +237,16 @@ export class EcomProfileComponent implements OnInit {
     this.APIUpdateBill(updateBillRes)
   }
 
-  handleReturnBillInfo(billInfo: DTOBillInfo):void{
+  handleReturnAndChangeBillInfo(billInfo: DTOBillInfo, func: string):void{
     const item = this.billSelected.ListBillInfo.find(data => data.Code == billInfo.Code)
     if(item){
-      item.Status = 15
+      if(func == "return"){
+        item.Status = 15
+      }
+      else if(func == "change"){
+        item.Status = 14
+      }
+
     }
 
     const updateBill:DTOUpdateBill = {
@@ -200,13 +260,10 @@ export class EcomProfileComponent implements OnInit {
       DTOUpdateBill: updateBill,
       DTOProceedToPayment: processToPayment
     }
-
-
     this.APIUpdateBill(updateBillRes)
   }
 
   log(){
     console.log(this.billSelected.ListBillInfo);
+    }
   }
-
-}

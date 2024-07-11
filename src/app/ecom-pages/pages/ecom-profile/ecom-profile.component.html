@@ -1,4 +1,5 @@
 <app-loading [isLoading]="isLoading"></app-loading>
+<app-popup-exchange-return></app-popup-exchange-return>
 
 <kendo-drawer-container>
     <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="600" [(expanded)]="expanded">
@@ -36,7 +37,7 @@
                             <div class="title-child">
                                 Status
                             </div>
-                            <span [ngStyle]="{'color': handleGetStatusByCode(billSelected.Status).Color}">{{handleGetStatusByCode(billSelected.Status).Text}}</span> <span> &nbsp;<i [ngStyle]="{'color': handleGetStatusByCode(billSelected.Status).Color}" class="fa-solid {{handleGetStatusByCode(billSelected.Status).Icon}}"></i></span>
+                            <span [ngStyle]="{'color': handleGetStatusBillByCode(billSelected.Status).Color}">{{handleGetStatusBillByCode(billSelected.Status).Text}}</span> <span> &nbsp;<i [ngStyle]="{'color': handleGetStatusBillByCode(billSelected.Status).Color}" class="fa-solid {{handleGetStatusBillByCode(billSelected.Status).Icon}}"></i></span>
                         </div>
 
                         <div class="product-item">
@@ -59,7 +60,9 @@
                                                     Qty: {{item.Quantity}}
                                                 </div>
                                                 <div class="status-item">
-                                                    Status: {{handleGetStatusByCode(item.Status).Text}}
+                                                    
+                                                    Status: &nbsp; <span >{{handleGetStatusBillInfoByCode(item.Status).Text}} &nbsp; <span [ngStyle]="{'color': handleGetStatusBillInfoByCode(item.Status).Color}"> <i class="fa-solid {{handleGetStatusBillInfoByCode(item.Status).Icon}}"></i></span></span> 
+                                                    
                                                 </div>
                                             </div>
                                             <div class="price">
@@ -70,7 +73,7 @@
                                         <div class="area-2">
                                             <div class="btn-return-area">
                                                 <div *ngIf="item.Status == 8">
-                                                    <div (click)="handleReturnBillInfo(item)"  class="button button-return">
+                                                    <div (click)="handleReturnAndChangeBillInfo(item, 'return')"  class="button button-return">
                                                         <i class="fa-solid fa-reply"></i>
                                                         <div class="text">
                                                             {{'return' | uppercase}}
@@ -78,7 +81,7 @@
                                                     </div>
                                                 </div>
                                                
-                                                <div *ngIf="item.Status == 8" class="button button-change">
+                                                <div (click)="handleReturnAndChangeBillInfo(item, 'change')"  *ngIf="item.Status == 8" class="button button-change">
                                                     <i class="fa-solid fa-arrows-rotate"></i>
                                                     <div class="text">
                                                         {{'change' | uppercase}}
@@ -198,9 +201,9 @@
                                         Start Date: <span>{{formatDateTime(item.CreateAt)}}</span>
                                     </div>
             
-                                    <div [ngStyle]="{'color': handleGetStatusByCode(item.Status).Color}" class="status-area">
-                                        <div class="status-text">{{handleGetStatusByCode(item.Status).Text}}</div>
-                                        <i class="fa-solid {{handleGetStatusByCode(item.Status).Icon}}"></i>
+                                    <div [ngStyle]="{'color': handleGetStatusBillByCode(item.Status).Color}" class="status-area">
+                                        <div class="status-text">{{handleGetStatusBillByCode(item.Status).Text}}</div>
+                                        <i class="fa-solid {{handleGetStatusBillByCode(item.Status).Icon}}"></i>
                                     </div>
             
                                     <div class="button-area">
