@@ -2,6 +2,9 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { DTOModule, listModule } from '../../shared/dto/DTOModule.dto';
 import { Router } from '@angular/router';
 import { LayoutService } from '../../shared/service/layout.service';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 @Component({
   selector: 'app-sidebar-admin',
@@ -13,13 +16,15 @@ export class SidebarComponent implements OnInit {
   expandDrawer = true;
   listItemsDrawer: DTOModule[] = listModule;
   listModuleAndSub: DTOModule[] = [];
+  currentStaff: DTOStaff;
 
-  constructor(private router: Router, private layoutService: LayoutService) { }
+  constructor(private router: Router, private layoutService: LayoutService, private staffService: StaffService) { }
 
   ngOnInit(): void {
     const breadcrumbLS: string = localStorage.getItem('breadcrumb');
     const listBreadCrumbSplit: string[] = breadcrumbLS.split('/')
     const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
+    const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
 
 
     const cartModule = listModule.find(item => item.ModuleName === 'Đơn hàng');
@@ -36,12 +41,22 @@ export class SidebarComponent implements OnInit {
     })
 
     // Ngoại lệ đối với Quản lý tài khoản
-    if(listBreadCrumbSplit[0] === 'Quản lý tài khoản'){
+    if (listBreadCrumbSplit[0] === 'Quản lý tài khoản') {
       accountModule.IsExpanded = true;
       accountModule.IsSelected = true;
       const childAccountModule: DTOModule = accountModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
       childAccountModule.IsSelected = true;
     }
+
+    // Ngoại lệ đối với Quản lý sản phẩm
+    if (listBreadCrumbSplit[0] === 'Quản lý sản phẩm') {
+      productModule.IsExpanded = true;
+      productModule.IsSelected = true;
+      const childProductModule: DTOModule = productModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
+      childProductModule.IsSelected = true;
+    }
+
+    this.getCurrentStaff();
   }
 
 
@@ -59,12 +74,17 @@ export class SidebarComponent implements OnInit {
 
   // Sự kiện khi chọn vào item drawer
   onSelectItemDrawer(item: DTOModule): void {
-    // Ngoại lệ đối với Quản lý tài khoản
-    if(item.ModuleName !== 'Quản lý tài khoản'){
+    // Ngoại lệ đối với Quản lý tài khoản và quản lý sản phẩm. Dùng để đóng expand khi chọn các item khác trừ những item nào có subModule
+    if (item.ModuleName !== 'Quản lý tài khoản' && item.ModuleName !== 'Quản lý sản phẩm') {
       const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
       accountModule.IsExpanded = false;
       accountModule.IsSelected = false;
       accountModule.SubModule.forEach(sub => sub.IsSelected = false);
+
+      const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
+      productModule.IsExpanded = false;
+      productModule.IsSelected = false;
+      productModule.SubModule.forEach(sub => sub.IsSelected = false);
     }
 
 
@@ -118,5 +138,14 @@ export class SidebarComponent implements OnInit {
     }
     // Trả về undefined nếu không tìm thấy module hoặc không có subModule
     return [];
+  }
+
+  // Lấy thông tin của staff hiện tại đang đăng nhập
+  getCurrentStaff() {
+    this.staffService.getCurrentStaffInfo().subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        this.currentStaff = res.ObjectReturn.Data[0];
+      }
+    })
   }
 }

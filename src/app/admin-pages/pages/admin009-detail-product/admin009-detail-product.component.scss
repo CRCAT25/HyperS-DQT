@@ -44,10 +44,20 @@
 
                     .block-1,
                     .block-2,
-                    .block-3 {
+                    .block-3,
+                    .block-4 {
                         display: flex;
                         flex-direction: column;
                         gap: 16px;
+                    }
+
+                    .block-4{
+                        component-text-input{
+                            .k-input-inner{
+                                text-align: center;
+                                color: red;
+                            }
+                        }
                     }
 
                     component-text-area{

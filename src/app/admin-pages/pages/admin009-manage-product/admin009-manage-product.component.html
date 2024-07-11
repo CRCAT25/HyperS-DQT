@@ -75,7 +75,7 @@
             }" [data]="listProduct" [selectable]="{ checkboxOnly: true }">
 
             <!-- Checkbox -->
-            <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+            <!-- <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column> -->
 
             <!-- Hình ảnh -->
             <kendo-grid-column title="Hình ảnh" [width]="100">
@@ -154,7 +154,7 @@
             </kendo-grid-column>
 
             <!-- ToolBox -->
-            <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="50">
+            <kendo-grid-column [sticky]="true" [resizable]="true" [width]="50">
                 <ng-template kendoGridCellTemplate let-dataItem>
                     <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
                         <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15" color="#000"

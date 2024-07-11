@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LayoutService } from './shared/service/layout.service';
 import { listModule } from './shared/dto/DTOModule.dto';
+import { DTOStaff } from './shared/dto/DTOStaff.dto';
+import { DTOResponse } from '../in-layout/Shared/dto/DTORespone';
 
 @Component({
   selector: 'app-admin-pages',
@@ -9,6 +11,8 @@ import { listModule } from './shared/dto/DTOModule.dto';
   styleUrls: ['./admin-pages.component.scss']
 })
 export class AdminPagesComponent implements OnInit, OnDestroy{
+  currentStaff: DTOStaff;
+
   constructor(private router: Router, private layoutService: LayoutService) { }
 
   ngOnInit(): void {
@@ -31,6 +35,8 @@ export class AdminPagesComponent implements OnInit, OnDestroy{
   }
   
   ngOnDestroy(): void {
-    localStorage.removeItem('routerLink');
+    // localStorage.removeItem('routerLink');
+    // localStorage.removeItem('moduleName');
+    // localStorage.removeItem('breadcrumb');
   }
 }

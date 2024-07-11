@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AccountService } from '../../shared/service/account.service';
 import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
@@ -12,6 +12,8 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { DatepickerComponent } from '../../shared/component/datepicker/datepicker.component';
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
 import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 interface Gender {
   Code: number
@@ -24,7 +26,7 @@ interface Gender {
   templateUrl: './admin001-information-customer.component.html',
   styleUrls: ['./admin001-information-customer.component.scss']
 })
-export class Admin001InformationCustomerComponent implements OnInit {
+export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   // variable Subject
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
 
@@ -33,9 +35,10 @@ export class Admin001InformationCustomerComponent implements OnInit {
   currentDate: Date = new Date();
   minDate: Date = new Date(1900, 1, 1);
   maxDate: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
-  pageSize: number = 2;
+  pageSize: number = 5;
   codeCustomerSelected: number;
   valueSearch: string;
+  permission: string;
 
   // variable Statistics
   valueTotalCustomer: number = 100;
@@ -55,7 +58,7 @@ export class Admin001InformationCustomerComponent implements OnInit {
     }
   ];
   listCustomer: GridDataResult;
-  listPageSize: number[] = [2, 3, 4];
+  listPageSize: number[] = [5, 10, 15];
   selectedCodeCustomer: number[];
 
   // variables object
@@ -99,11 +102,22 @@ export class Admin001InformationCustomerComponent implements OnInit {
   @ViewChild('birthday') childBirthday!: DatepickerComponent;
   @ViewChild('image') childImage!: ImportImageComponent;
 
-  constructor(private accountService: AccountService, private notiService: NotiService) { }
+  constructor(private accountService: AccountService, private notiService: NotiService, private staffService: StaffService) { }
 
   ngOnInit(): void {
+    this.getPermission();
     this.getListCustomer();
     this.getStatistics();
+  }
+
+  // Lấy quyền truy cập
+  getPermission(){
+    this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if(res.StatusCode === 0){
+        const staff: DTOStaff = res.ObjectReturn.Data[0];
+        this.permission = staff.Permission;
+      }
+    })
   }
 
   // Lấy danh sách khách hàng
@@ -174,21 +188,26 @@ export class Admin001InformationCustomerComponent implements OnInit {
 
   // Sự kiện click vào button ... tool box
   onClickToolBox(obj: DTOCustomer, event: Event) {
-    if (this.codeCustomerSelected === obj.Code) {
-      this.codeCustomerSelected = null;
+    if(this.permission === 'Admin'){
+      if (this.codeCustomerSelected === obj.Code) {
+        this.codeCustomerSelected = null;
+      }
+      else {
+        this.codeCustomerSelected = obj.Code;
+      }
+  
+      // Remove 'active' class from all cells
+      const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
+      cells.forEach(cell => cell.classList.remove('active'));
+  
+      // Add 'active' class to the clicked cell
+      const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
+      if (cell) {
+        cell.classList.add('active');
+      }
     }
-    else {
-      this.codeCustomerSelected = obj.Code;
-    }
-
-    // Remove 'active' class from all cells
-    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
-    cells.forEach(cell => cell.classList.remove('active'));
-
-    // Add 'active' class to the clicked cell
-    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
-    if (cell) {
-      cell.classList.add('active');
+    else{
+      this.notiService.Show('Bạn không có thẩm quyền để điều chỉnh', 'warning');
     }
   }
 
@@ -303,5 +322,10 @@ export class Admin001InformationCustomerComponent implements OnInit {
     this.childBirthday.datePicker.writeValue(null);
     this.selectedCodeCustomer = [];
     this.childImage.imageHandle = new DTOImageProduct();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

@@ -40,9 +40,29 @@ export const listModule: DTOModule[] = [
         IsExpanded: false
     },
     {
-        RouteLink: '/admin/manage-product',
+        RouteLink: '/admin',
         ModuleName: 'Quản lý sản phẩm',
         ClassIconFontAwesome: 'fa-store',
+        SubModule: [
+            {
+                RouteLink: '/admin/manage-product',
+                ModuleName: 'Danh sách sản phẩm',
+                IsChild: true,
+                IsSelected: false,
+                ParentModule: 'Quản lý sản phẩm',
+                IsExpanded: false,
+                BreadCrumb: 'Quản lý sản phẩm/Danh sách sản phẩm'
+            },
+            {
+                RouteLink: '/admin/manage-category',
+                ModuleName: 'Thương hiệu và phân loại',
+                IsChild: true,
+                IsSelected: false,
+                ParentModule: 'Quản lý sản phẩm',
+                IsExpanded: false,
+                BreadCrumb: 'Quản lý sản phẩm/Thương hiệu và phân loại'
+            }
+        ],
         IsChild: false,
         IsSelected: false,
         IsExpanded: false,
@@ -93,22 +113,22 @@ export const listModule: DTOModule[] = [
         IsExpanded: false,
         BreadCrumb: 'Đơn hàng'
     },
-    {
-        RouteLink: '/admin/manage-schedule',
-        ModuleName: 'Quản lý lịch làm việc',
-        ClassIconFontAwesome: 'fa-calendar-days',
-        IsChild: false,
-        IsSelected: false,
-        IsExpanded: false,
-        BreadCrumb: 'Quản lý lịch làm việc'
-    },
-    {
-        RouteLink: '/admin/calculate-salary',
-        ModuleName: 'Tính lương',
-        ClassIconFontAwesome: 'fa-money-check-dollar',
-        IsChild: false,
-        IsSelected: false,
-        IsExpanded: false,
-        BreadCrumb: 'Tính lương'
-    }
+    // {
+    //     RouteLink: '/admin/manage-schedule',
+    //     ModuleName: 'Quản lý lịch làm việc',
+    //     ClassIconFontAwesome: 'fa-calendar-days',
+    //     IsChild: false,
+    //     IsSelected: false,
+    //     IsExpanded: false,
+    //     BreadCrumb: 'Quản lý lịch làm việc'
+    // },
+    // {
+    //     RouteLink: '/admin/calculate-salary',
+    //     ModuleName: 'Tính lương',
+    //     ClassIconFontAwesome: 'fa-money-check-dollar',
+    //     IsChild: false,
+    //     IsSelected: false,
+    //     IsExpanded: false,
+    //     BreadCrumb: 'Tính lương'
+    // }
 ]

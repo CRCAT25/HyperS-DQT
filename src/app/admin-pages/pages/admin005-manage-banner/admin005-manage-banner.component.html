@@ -215,7 +215,7 @@
                     </kendo-grid-column>
 
                     <!-- ToolBox -->
-                    <kendo-grid-column MakeColumnGridPopUpDirective [sticky]="true" [resizable]="true" [width]="50">
+                    <kendo-grid-column [sticky]="true" [resizable]="true" [width]="50">
                         <ng-template kendoGridCellTemplate let-dataItem>
                             <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
                                 <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15"

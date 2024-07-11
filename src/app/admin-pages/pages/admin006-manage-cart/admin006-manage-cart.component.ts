@@ -76,7 +76,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   nowDate: string;
   earliestDates: Date;
   obj = document.getElementsByClassName("numberCount");
-  resultAdd: string;
+  resultAdd: number;
 
   // defaultItemStatusBill: DTOStatus = {
   //   Code: -1,
@@ -205,7 +205,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   }
 
-  log(){
+  log() {
     console.log(this.listBillAllDate);
   }
 
@@ -327,12 +327,16 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
         return 'Không hoàn tiền';
       case 14:
         return 'Yêu cầu đổi trả hàng';
-      case 15:
-        return 'Xác nhận đổi hàng';
       case 16:
-        return 'Đã đổi hàng';
+        return 'Xác nhận đổi trả';
       case 17:
-        return 'Chờ thanh toán';        
+        return 'Chờ thanh toán';
+      case 20:
+        return 'Từ chối đổi hàng';
+      case 21:
+        return 'Từ chối trả hàng';
+      case 22:
+        return 'Hoàn tất đơn hàng';
       default:
         return 'Unknow';
     }
@@ -384,11 +388,20 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.isShowAlertStatus = false;
     }
     if ((this.isDetail == true || this.isAdd == true) && ((event.target as HTMLElement).closest('#icon-back'))) {
-      this.isDetail = false;
-      this.isAdd = false;
       this.getListBill();
       this.setFilterExpStatus();
       this.getListBillWaitingAllDate();
+
+      const detailCartElement = document.querySelector('.component-detail-cart');
+      if (detailCartElement) {
+        detailCartElement.classList.add('slide-back');
+        setTimeout(() => {
+          detailCartElement.classList.remove('slide-back');
+          this.isDetail = false;
+          this.isAdd = false;
+        }, 200);
+
+      }
     }
     if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonReturnDate'))) {
       this.getListBillWaitingAllDate();
@@ -397,17 +410,21 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.setFilterDate();
       this.isShowAlertStatus = false;
     }
-    if((event.target as HTMLElement).closest('.button-add')){
+    if ((event.target as HTMLElement).closest('.button-add')) {
       this.isAdd = !this.isAdd;
     }
     if ((event.target as HTMLElement).closest('.button-addBill')) {
-      if(this.resultAdd == "Thêm thành công"){
-        this.getListBill();
-        this.setFilterExpStatus();
-        this.getListBillNowDate();
-        this.getListBillWaitingAllDate();
-        this.isAdd = false;
-      }
+      setTimeout(() => {
+        console.log(this.resultAdd);
+        if (this.resultAdd == 0) {
+          this.getListBill();
+          this.setFilterExpStatus();
+          this.getListBillNowDate();
+          this.getListBillWaitingAllDate();
+          this.isAdd = false;
+          this.resultAdd = 1;
+        }
+      }, 1000);
     }
   }
 
@@ -426,7 +443,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       const typeDTOBill: DTOBill[] = list.ObjectReturn.Data;
       this.listBillPage = { data: typeDTOBill, total: list.ObjectReturn.Total };
       // console.log(this.listBillPage.data);   
-       this.isLoading = false;
+      this.isLoading = false;
 
     })
     // console.log(this.gridState)
@@ -446,7 +463,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     })
 
   }
-  
+
   getListBillNowDate() {
     this.isLoading = true;
     this.billService.getListBill(this.gridStateBillNowDate).pipe(takeUntil(this.destroy)).subscribe(list => {
@@ -461,12 +478,12 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     if (!this.listBillWaitingAllDate.data || this.listBillWaitingAllDate.data.length === 0) {
       return null;
     }
-  
+
     const earliestDate = this.listBillWaitingAllDate.data.reduce((earliest, bill) => {
       const createDate = new Date(bill.CreateAt);
       return createDate < earliest ? createDate : earliest;
     }, new Date(this.listBillWaitingAllDate.data[0].CreateAt));
-    
+
     this.earliestDate = this.formattedCreateAtNoTime(earliestDate);
     this.earliestDates = earliestDate;
     this.nowDate = this.formattedCreateAtNoTime(this.endDate);
@@ -477,33 +494,33 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
 
   countStatuses() {
-      if(this.listBillPageAllStatus){
-        this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
-          const status = bill.Status;
-          acc[status] = (acc[status] || 0) + 1;
-          return acc;
-        }, {});
-      }
-  
-      if(this.listBillAllDate){
-        this.statusCountsAllDate = this.listBillAllDate.data.reduce((acc, bill) => {
-          const status = bill.Status;
-          const date = bill.CreateAt;
-        
-          if (!acc[status]) {
-            acc[status] = { count: 0, earliestDate: date };
-          }
-        
-          acc[status].count += 1;
-        
-          if (new Date(date) < new Date(acc[status].earliestDate)) {
-            acc[status].earliestDate = date;
-          }
-        
-          return acc;
-        }, {});
-        // console.log(this.formattedCreateAtNoTime(this.statusCountsAllDate[3].earliestDate));
-      }
+    if (this.listBillPageAllStatus) {
+      this.statusCounts = this.listBillPageAllStatus.data.reduce((acc, bill) => {
+        const status = bill.Status;
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, {});
+    }
+
+    if (this.listBillAllDate) {
+      this.statusCountsAllDate = this.listBillAllDate.data.reduce((acc, bill) => {
+        const status = bill.Status;
+        const date = bill.CreateAt;
+
+        if (!acc[status]) {
+          acc[status] = { count: 0, earliestDate: date };
+        }
+
+        acc[status].count += 1;
+
+        if (new Date(date) < new Date(acc[status].earliestDate)) {
+          acc[status].earliestDate = date;
+        }
+
+        return acc;
+      }, {});
+      // console.log(this.formattedCreateAtNoTime(this.statusCountsAllDate[3].earliestDate));
+    }
   }
 
   //Lowcase string
@@ -592,19 +609,19 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
   }
 
-    // Push filter vào gridStateAllStatus
-    pushTogridStateAllStatus(filter: FilterDescriptor, comFilter: CompositeFilterDescriptor) {
-      if (filter) {
-        if (filter.value && filter.value !== -1) {
-          this.gridStateAllStatus.filter.filters.push(filter);
-        }
-      }
-      else if (comFilter) {
-        if (comFilter.filters.length > 0) {
-          this.gridStateAllStatus.filter.filters.push(comFilter);
-        }
+  // Push filter vào gridStateAllStatus
+  pushTogridStateAllStatus(filter: FilterDescriptor, comFilter: CompositeFilterDescriptor) {
+    if (filter) {
+      if (filter.value && filter.value !== -1) {
+        this.gridStateAllStatus.filter.filters.push(filter);
       }
     }
+    else if (comFilter) {
+      if (comFilter.filters.length > 0) {
+        this.gridStateAllStatus.filter.filters.push(comFilter);
+      }
+    }
+  }
 
   // Reset tất cả các filter
   resetFilter() {
@@ -631,8 +648,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
         "dir": "asc"
       }
     ],
-    this.gridState.take = this.pageSize;
-    this.filterDate.filters= [
+      this.gridState.take = this.pageSize;
+    this.filterDate.filters = [
       { field: 'CreateAt', operator: 'gte', value: this.toLocalString(new Date(), 'start') },
       { field: 'CreateAt', operator: 'lte', value: this.toLocalString(new Date(), 'end') }
     ]
@@ -651,61 +668,91 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.listBillInfo = item.ListBillInfo;
     if (this.objItemStatus.value == 0) {
       console.log(this.itemBill);
-        this.isDetail = !this.isDetail;
-    } else{
+      this.isDetail = !this.isDetail;
+    } else {
       this.isShowAlert = !this.isShowAlert
     }
   }
 
-  //Nhận text của text-area
-  receive(value: any){
+  //Nhận lí do của text-area
+  receive(value: any) {
     this.reasonFail = value;
+
+  }
+
+  //Nhận result của add Bill
+  getResultAdd(result: number) {
+    this.resultAdd = result;
   }
 
   // Update status bill
   updateStatusBill(bill: DTOBill, obj: any) {
     if (obj.value >= 1) {
-      bill.Status = obj.value;
-      const requestUpdateBill: DTOUpdateBill = {
-        CodeBill: bill.Code,
-        Status: obj.value,
-        ListOfBillInfo: bill.ListBillInfo,
-        Note: this.reasonFail,
-      }
-
-      requestUpdateBill.ListOfBillInfo.forEach(billInf => {
-        billInf.Status = obj.value;
-      });
-
-      const request: DTOUpdateBillRequest = {
-        DTOUpdateBill: requestUpdateBill,
-        DTOProceedToPayment: null
-      }
-      this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.notiService.Show("Cập nhật trạng thái thành công", "success")
-          this.getListBillWaitingAllDate();
-          this.getListBill();
-          this.setFilterExpStatus();
-          this.isShowAlert = false;
+      let requestUpdateBill: DTOUpdateBill;
+      if(obj.value == 3 || obj.value == 9 || obj.value == 13 || obj.value == 20 || obj.value == 21){
+        if(this.reasonFail){
+          alert('Có lí do')
+          requestUpdateBill = {
+            CodeBill: bill.Code,
+            Status: obj.value,
+            ListOfBillInfo: bill.ListBillInfo,
+            Note: this.reasonFail,
+          }
+        } else {
+          alert('thiếu lí do')
+          this.notiService.Show("Vui lòng nhập lí do", "warning")
+          return;
         }
-      }, error => {
-        console.error('Error:', error);
-      });
+      } else {
+        alert('Không cần lí do')
+        requestUpdateBill = {
+          CodeBill: bill.Code,
+          Status: obj.value,
+          ListOfBillInfo: bill.ListBillInfo,
+          Note: bill.Note,
+        }
+      }
+
+
+      if(requestUpdateBill){
+        requestUpdateBill.ListOfBillInfo.forEach(billInf => {
+          billInf.Status = obj.value;
+        });
+  
+        console.log(requestUpdateBill);
+  
+        const request: DTOUpdateBillRequest = {
+          DTOUpdateBill: requestUpdateBill,
+          DTOProceedToPayment: null
+        }
+        
+        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            bill.Status = obj.value;
+            this.notiService.Show("Cập nhật trạng thái thành công", "success")
+            this.getListBillWaitingAllDate();
+            this.getListBill();
+            this.setFilterExpStatus();
+            this.isShowAlert = false;
+          }
+        }, error => {
+          console.error('Error:', error);
+        });
+      }
     }
   }
 
-  showAlertAllDate(){
+  showAlertAllDate() {
     this.isShowAlertStatus = !this.isShowAlertStatus;
   }
 
-  returnNowDate(){
+  returnNowDate() {
     this.startDate = this.currentDate;
     this.endDate = this.currentDate;
     this.setFilterDate();
   }
 
- 
+
   test(obj: any) {
     console.log(obj);
   }

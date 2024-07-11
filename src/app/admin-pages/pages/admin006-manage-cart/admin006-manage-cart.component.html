@@ -109,7 +109,7 @@
                         <div [style.color]="formatStatus(dataItem.Status) | statusColor">
                             {{formatStatus(dataItem.Status)}}
                         </div>
-                        <div *ngIf="dataItem.Note !== ''">{{dataItem.Note}}</div>
+                        <!-- <div *ngIf="dataItem.Note !== ''">{{dataItem.Note}}</div> -->
                     </div>
                 </ng-template>
             </kendo-grid-column>
@@ -167,7 +167,7 @@
     <app-admin006-detail-cart [listData]="listBillInfo" [itemData]="itemBill"></app-admin006-detail-cart>
 </ng-container>
 <ng-container *ngIf="isAdd">
-    <app-admin006-detail-cart [isAdd]="isAdd" (sendValue)="resultAdd"></app-admin006-detail-cart>
+    <app-admin006-detail-cart [isAdd]="isAdd" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>
 </ng-container>
 <!-- <component-text-area [label]="'Lí do hủy đơn:'"
 [labelWidth]="100"

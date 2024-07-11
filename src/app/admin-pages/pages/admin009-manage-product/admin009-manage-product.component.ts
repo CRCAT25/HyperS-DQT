@@ -202,7 +202,7 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.setLayoutStorage('Quản lý sản phẩm', 'admin/manage-product');
+    // this.setLayoutStorage('Quản lý sản phẩm/ Danh sách sản phẩm', 'admin/manage-product');
     this.removeLocalStorage();
     this.getListProductType();
     this.getListBrand();
@@ -459,11 +459,11 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
     }
 
     // Remove 'active' class from all cells
-    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
+    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="10"]');
     cells.forEach(cell => cell.classList.remove('active'));
 
     // Add 'active' class to the clicked cell
-    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
+    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="10"]');
     if (cell) {
       cell.classList.add('active');
     }
@@ -528,7 +528,7 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]')) {
+    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="10"]')) {
       this.codeProductSelected = null;
     }
   }

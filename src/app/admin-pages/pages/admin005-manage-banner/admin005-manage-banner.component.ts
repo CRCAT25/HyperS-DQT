@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DrawerComponent, DrawerMode, DrawerPosition } from '@progress/kendo-angular-layout';
 import { ReplaySubject } from 'rxjs';
 import { DTOStatus } from '../../shared/dto/DTOStatus.dto';
@@ -17,13 +17,15 @@ import { TextAreaComponent } from 'src/app/shared/component/text-area/text-area.
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
 import { isEmpty } from 'src/app/shared/utils/utils';
 import { DTOUpdateBannerRequest } from '../../shared/dto/DTOUpdateBannerRequest.dto';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 @Component({
   selector: 'app-admin005-manage-banner',
   templateUrl: './admin005-manage-banner.component.html',
   styleUrls: ['./admin005-manage-banner.component.scss']
 })
-export class Admin005ManageBannerComponent implements OnInit {
+export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
   // variable Subject
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
 
@@ -43,11 +45,13 @@ export class Admin005ManageBannerComponent implements OnInit {
   // Hình ảnh xem trước cấu trúc
   imgStructure: string = this.imgDefault;
   // Số item hiển thị trong 1 trang
-  pageSize: number = 5;
+  pageSize: number = 10;
   // Danh sách có đang load hay không
   isLoading: boolean = true;
   // Code của banner được chọn
   selectedCodeBanner: number = 0;
+  // Role của tài khoản đang được đăng nhập
+  permission: string;
 
 
   // Danh sách các trạng thái của banner
@@ -61,7 +65,7 @@ export class Admin005ManageBannerComponent implements OnInit {
   // Danh sách các loại banner
   listBannerType: DTOBannerType[] = listBannerType;
   // Danh sách số trang có thể đổi
-  listPageSize: number[] = [5, 10, 15];
+  listPageSize: number[] = [10, 20, 30];
 
 
   // Item mặc định của dropdown chọn trang hiển thị
@@ -132,10 +136,21 @@ export class Admin005ManageBannerComponent implements OnInit {
   }
 
 
-  constructor(private bannerService: BannerService, private notiService: NotiService) { }
+  constructor(private bannerService: BannerService, private notiService: NotiService, private staffService: StaffService) { }
 
   ngOnInit(): void {
+    this.getPermission();
     this.getListBanner();
+  }
+
+  // Lấy quyền truy cập
+  getPermission() {
+    this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        const staff: DTOStaff = res.ObjectReturn.Data[0];
+        this.permission = staff.Permission;
+      }
+    })
   }
 
   // Lấy danh sách các banner
@@ -212,10 +227,10 @@ export class Admin005ManageBannerComponent implements OnInit {
     this.childPosition.resetValue();
     this.filterPosition.value = null;
 
-    this.pageSize = 5;
+    this.pageSize = 10;
     this.gridState.skip = 0;
     this.gridState.filter.filters.push(this.filterStatus);
-    this.gridState.take = 5;
+    this.gridState.take = this.pageSize;
 
     this.setFilterData();
   }
@@ -320,7 +335,7 @@ export class Admin005ManageBannerComponent implements OnInit {
   }
 
   // Tìm loại banner dựa trên banner
-  findBannerTypeFromBanner(banner: DTOBanner): DTOBannerType{
+  findBannerTypeFromBanner(banner: DTOBanner): DTOBannerType {
     const foundType = listBannerType.find(type => type.Code === banner.BannerType);
     const bannerType: DTOBannerType = {
       Code: banner.BannerType,
@@ -331,6 +346,10 @@ export class Admin005ManageBannerComponent implements OnInit {
 
   // Mở drawer
   openDrawer(type: 'structure' | 'update' | 'add') {
+    if(this.permission !== 'Admin' && type === 'add'){
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
     this.childDrawer.toggle();
     this.imgStructure = this.imgDefault;
     this.selectedBannerTypeDrawer = this.defaultBannerType;
@@ -344,6 +363,7 @@ export class Admin005ManageBannerComponent implements OnInit {
       Page: '',
       Status: 0
     }
+    if (type === 'add') this.listPositionOfPageDrawer = [];
   }
 
   // Hàm thêm mới banner
@@ -380,63 +400,66 @@ export class Admin005ManageBannerComponent implements OnInit {
 
   // Hàm cập nhật banner
   updateBanner() {
-    if(this.checkUpdatable()){
-      const banner: DTOBanner = {
-        Code: this.selectedBannerToUpdate.Code,
-        Title: this.childTitleDrawer.valueTextBox,
-        BannerType: this.childBannerTypeDrawer.value.Code,
-        BannerUrl: '',
-        Position: this.childPositionDrawer.value.Code,
-        Page: this.childPageDrawer.value.Page,
-        Status: 0
-      }
-      if(banner.BannerType === 0) banner.BannerUrl = this.childImgDrawer.imageHandle.ImgUrl;
-      if(banner.BannerType === 1) banner.BannerUrl = this.childVideoURLdrawer.valueTextBox;
-      const req: DTOUpdateBannerRequest = {
-        Banner: banner,
-        Properties: ['Title', 'BannerType', 'BannerUrl', 'Position', 'Page']
-      }
-      this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
-        if(res.StatusCode === 0){
-          this.notiService.Show('Cập nhật banner thành công', 'success');
-          this.childDrawer.toggle();
-          this.getListBanner();
+    if(this.permission === 'Admin'){
+      if (this.checkUpdatable()) {
+        const banner: DTOBanner = {
+          Code: this.selectedBannerToUpdate.Code,
+          Title: this.childTitleDrawer.valueTextBox,
+          BannerType: this.childBannerTypeDrawer.value.Code,
+          BannerUrl: '',
+          Position: this.childPositionDrawer.value.Code,
+          Page: this.childPageDrawer.value.Page,
+          Status: 0
         }
-      }, error => {
-        this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
-      })
+        if (banner.BannerType === 0) banner.BannerUrl = this.childImgDrawer.imageHandle.ImgUrl;
+        if (banner.BannerType === 1) banner.BannerUrl = this.childVideoURLdrawer.valueTextBox;
+        const req: DTOUpdateBannerRequest = {
+          Banner: banner,
+          Properties: ['Title', 'BannerType', 'BannerUrl', 'Position', 'Page']
+        }
+        this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            this.notiService.Show('Cập nhật banner thành công', 'success');
+            this.childDrawer.toggle();
+            this.getListBanner();
+          }
+        }, error => {
+          this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
+        })
+      }
+    }
+    else{
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
     }
   }
 
   // Cập nhật trạng thái của banner
   updateStatusBanner(res: any, banner: DTOBanner) {
-    if (res.value === 1) {
-      banner.Status = 0;
-      const req: DTOUpdateBannerRequest = {
-        Banner: banner,
-        Properties: ['Status']
-      }
-      this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.notiService.Show('Cập nhật trạng thái thành công', 'success');
-          this.getListBanner();
+    if(this.permission === 'Admin'){
+      if (res.value === 1) {
+        banner.Status = 0;
+        const req: DTOUpdateBannerRequest = {
+          Banner: banner,
+          Properties: ['Status']
         }
-      }, error => {
-        this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
-      })
+        this.bannerService.updateBanner(req).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            this.notiService.Show('Cập nhật trạng thái thành công', 'success');
+            this.getListBanner();
+          }
+        }, error => {
+          this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
+        })
+      }
+      if (res.value === 0) {
+        this.openDrawer('update');
+        this.selectedBannerToUpdate = banner;
+        this.listPositionOfPageDrawer = this.findListPositionFromPage(banner.Page);
+        this.getBannerTypeDrawer(this.findBannerTypeFromBanner(banner));
+      }
     }
-    if (res.value === 0) {
-      this.openDrawer('update');
-      this.selectedBannerToUpdate = banner;
-      this.listPositionOfPageDrawer = this.findListPositionFromPage(banner.Page);
-      this.getBannerTypeDrawer(this.findBannerTypeFromBanner(banner));
-      // if(banner.BannerType === 0) {
-      //   if(this.childImgDrawer){
-      //     this.childImgDrawer.imageHandle.ImgUrl = banner.BannerUrl;
-      //     this.childImgDrawer.imageHandle.Code = 0;
-      //     console.log(this.childImgDrawer.imageHandle);
-      //   }
-      // }
+    else{
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
     }
   }
 
@@ -512,5 +535,10 @@ export class Admin005ManageBannerComponent implements OnInit {
     if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="7"]')) {
       this.selectedCodeBanner = 0;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }
