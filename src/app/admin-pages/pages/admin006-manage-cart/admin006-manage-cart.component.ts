@@ -674,9 +674,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
   }
 
-  //Nhận text của text-area
+  //Nhận lí do của text-area
   receive(value: any) {
     this.reasonFail = value;
+
   }
 
   //Nhận result của add Bill
@@ -687,33 +688,57 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   // Update status bill
   updateStatusBill(bill: DTOBill, obj: any) {
     if (obj.value >= 1) {
-      bill.Status = obj.value;
-      const requestUpdateBill: DTOUpdateBill = {
-        CodeBill: bill.Code,
-        Status: obj.value,
-        ListOfBillInfo: bill.ListBillInfo,
-        Note: this.reasonFail,
-      }
-
-      requestUpdateBill.ListOfBillInfo.forEach(billInf => {
-        billInf.Status = obj.value;
-      });
-
-      const request: DTOUpdateBillRequest = {
-        DTOUpdateBill: requestUpdateBill,
-        DTOProceedToPayment: null
-      }
-      this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.notiService.Show("Cập nhật trạng thái thành công", "success")
-          this.getListBillWaitingAllDate();
-          this.getListBill();
-          this.setFilterExpStatus();
-          this.isShowAlert = false;
+      let requestUpdateBill: DTOUpdateBill;
+      if(obj.value == 3 || obj.value == 9 || obj.value == 13 || obj.value == 20 || obj.value == 21){
+        if(this.reasonFail){
+          alert('Có lí do')
+          requestUpdateBill = {
+            CodeBill: bill.Code,
+            Status: obj.value,
+            ListOfBillInfo: bill.ListBillInfo,
+            Note: this.reasonFail,
+          }
+        } else {
+          alert('thiếu lí do')
+          this.notiService.Show("Vui lòng nhập lí do", "warning")
+          return;
         }
-      }, error => {
-        console.error('Error:', error);
-      });
+      } else {
+        alert('Không cần lí do')
+        requestUpdateBill = {
+          CodeBill: bill.Code,
+          Status: obj.value,
+          ListOfBillInfo: bill.ListBillInfo,
+          Note: bill.Note,
+        }
+      }
+
+
+      if(requestUpdateBill){
+        requestUpdateBill.ListOfBillInfo.forEach(billInf => {
+          billInf.Status = obj.value;
+        });
+  
+        console.log(requestUpdateBill);
+  
+        const request: DTOUpdateBillRequest = {
+          DTOUpdateBill: requestUpdateBill,
+          DTOProceedToPayment: null
+        }
+        
+        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            bill.Status = obj.value;
+            this.notiService.Show("Cập nhật trạng thái thành công", "success")
+            this.getListBillWaitingAllDate();
+            this.getListBill();
+            this.setFilterExpStatus();
+            this.isShowAlert = false;
+          }
+        }, error => {
+          console.error('Error:', error);
+        });
+      }
     }
   }
 
