@@ -228,6 +228,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   totalPriceOfProduct: number = 0;
   totalPrictOfBill: number = 0;
   discountProduct: number;
+  setStatusBill: number;
   PaymentMethodDropDown: PaymentMethod[] = [
     {
       Code: 0,
@@ -332,9 +333,12 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
 
   getListBillInfo() {
-    this.listBillInfo = this.listData;
-    console.log(this.listBillInfo);
     this.itemBill = this.itemData;
+    this.listBillInfo = this.listData;
+    console.log("itemBill");
+    console.log(this.itemBill);
+    console.log("b");
+    console.log(this.itemBill.ListBillInfo);
     this.specialAddress = this.getSpecialAddress(this.itemBill.ShippingAddress);
   }
 
@@ -379,6 +383,10 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
   }
 
+  // formatNote(note: string): string {
+  //   // Replace each instance of ' - ' with '\n- '
+  //   return note.replace(/ - /g, '\n ');
+  // }
   formatStatus(value: any): string {
     switch (value) {
       case 1:
@@ -1018,38 +1026,162 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     console.log(value);
   }
 
+  //Kiểm tra status của Bill và BillInfo
+  // checkStatusBill(status: number){
+  //   console.log("c");
+  //   console.log(this.itemBill.ListBillInfo);
+  //   //Bill status = "Khách yêu cầu đổi trả"
+  //   if(status == 14 || status == 15){
+  //     this.setStatusBill = 14;
+  //     //Bill status = "Xác nhận đổi trả" hoặc vẫn giữ "Khách yêu cầu đổi trả"
+  //   } else if (status !== 14 && status !== 15 && status !== 20 && status !== 21){ 
+  //       //Bill status = "Khách yêu cầu đổi trả"
+  //       if(this.itemBill.ListBillInfo.find(status => status.Status == 14 || status.Status == 15)){
+  //         alert('a')
+  //         this.setStatusBill = 14;
+  //         //Bill status = "Xác nhận đổi trả"
+  //       } else {
+  //         this.setStatusBill = 16;
+  //       }
+  //   } else if ((status !== 14 && status !== 15) && (status == 20 || status == 21)){ 
+  //     if(this.itemBill.Status == 14){
+  //       if(this.itemBill.ListBillInfo.find(status => status.Status !== 20 && status.Status !== 21)){
+  //         this.setStatusBill = 14;
+  //       } else{
+  //         if(this.itemBill.ListBillInfo.find(status => status.Status !== 20)){
+  //           this.setStatusBill = 22;
+  //         } else {
+  //           this.setStatusBill = 20;
+  //         }
+
+  //         if(this.itemBill.ListBillInfo.find(status => status.Status !== 21)){
+  //           this.setStatusBill = 22;
+  //         } else {
+  //           this.setStatusBill = 21;
+  //         }
+  //       }
+  //     }
+  //   } 
+  //   // else if (status == 19 || status == 12 || status == 13){
+
+  //   // }
+    
+  // }
+
+  checkStatusBill(status: number){
+    console.log("c");
+    console.log(this.itemBill.ListBillInfo);
+    
+    // Case 1: status is 14 or 15
+    if (status === 14 || status === 15) {
+        this.setStatusBill = 14;
+    } 
+    // Case 2: status is not 14, 15, 20, or 21
+    else if (status !== 14 && status !== 15 && status !== 20 && status !== 21) {
+        if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status === 14 || item.Status === 15))) {
+            this.setStatusBill = 14;
+        } else {
+            this.setStatusBill = 16;
+        }
+    } 
+    // Case 3: status is 20 or 21
+    else if (status === 20 || status === 21) {
+      alert('a')
+        if (this.itemBill.Status === 14) {
+          if(status == 20){
+            alert('b')
+            if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status !== 20 && item.Status !== 8))) {
+              console.log(this.itemBill.ListBillInfo);
+              if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 14 || item.Status == 15))) {
+                alert('c')
+                this.setStatusBill = 14;
+              } else {
+                this.setStatusBill = 22;
+              }
+            } else {
+              this.setStatusBill = 20;
+            }
+          } else if(status == 21){
+            if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status !== 21 && item.Status !== 8))) {
+              if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 14 || item.Status == 15))) {
+                this.setStatusBill = 14;
+              } else {
+                this.setStatusBill = 22;
+              }
+            } else {
+              this.setStatusBill = 21;
+            }
+          }
+        } else if(this.itemBill.Status === 20 || this.itemBill.Status === 21){
+
+        }
+    }
+}
+
   // Update status bill
   updateStatusBillInfo(obj: any) {
-    if (obj.value >= 2) {
+    if (obj.value >= 1) {
+      this.checkStatusBill(obj.value);
+      alert(this.setStatusBill)
+      let requestUpdateBill: DTOUpdateBill;
       this.itemBill.Status = obj.value;
-      const requestUpdateBill: DTOUpdateBill = {
-        CodeBill: this.itemBill.Code,
-        Status: obj.value,
-        ListOfBillInfo: this.itemBill.ListBillInfo,
-        Note: this.reasonFail,
-      }
-
-      requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
-        if (billInfo.Code == this.itemBillInfo.Code) {
-          billInfo.Status = obj.value;
+      if(obj.value == 13 || obj.value == 14 || obj.value == 15 || obj.value == 20 || obj.value == 21){
+        if(this.reasonFail){
+          let reasonBill;
+          if (this.itemBill.Note && this.itemBill.Note !== null) {
+            reasonBill = this.itemBill.Note + "\n" + "- " + this.itemBillInfo.IDProduct + "_" + this.itemBillInfo.Size + ": " + obj.value + ": " + this.reasonFail;
+        } else {
+            reasonBill = "- " + this.itemBillInfo.IDProduct + "_" + this.itemBillInfo.Size + ": " + obj.value + ": " + this.reasonFail;
         }
-      })
-
-      const request: DTOUpdateBillRequest = {
-        DTOUpdateBill: requestUpdateBill,
-        DTOProceedToPayment: null
-      }
-      this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.notiService.Show("Cập nhật trạng thái thành công", "success")
-          this.getListBillInfo();
-          this.isShowAlert = false;
-          this.sendValue.emit(0);
-
+          // const reasonBill: string = this.itemBill.Note + "\n" + "- " +this.itemBillInfo.IDProduct+"_"+this.itemBillInfo.Size+": "+obj.value+": "+this.reasonFail;
+          requestUpdateBill = {
+            CodeBill: this.itemBill.Code,
+            Status: this.setStatusBill,
+            ListOfBillInfo: this.itemBill.ListBillInfo,
+            Note: reasonBill,
+          }
+        } else {
+          this.notiService.Show("Vui lòng nhập lí do", "warning")
+          return;
         }
-      }, error => {
-        console.error('Error:', error);
-      });
+      } else {
+        requestUpdateBill = {
+          CodeBill: this.itemBill.Code,
+          Status: this.setStatusBill,
+          ListOfBillInfo: this.itemBill.ListBillInfo,
+          Note: this.itemBill.Note,
+        }
+      }
+      // const requestUpdateBill: DTOUpdateBill = {
+      //   CodeBill: this.itemBill.Code,
+      //   Status: obj.value,
+      //   ListOfBillInfo: this.itemBill.ListBillInfo,
+      //   Note: reasonBill,
+      // }
+
+      if(requestUpdateBill){
+        requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
+          if (billInfo.Code == this.itemBillInfo.Code) {
+            billInfo.Status = obj.value;
+          }
+        })
+  
+        const request: DTOUpdateBillRequest = {
+          DTOUpdateBill: requestUpdateBill,
+          DTOProceedToPayment: null
+        }
+        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            this.notiService.Show("Cập nhật trạng thái thành công", "success")
+            this.getListBillInfo();
+            this.isShowAlert = false;
+            this.sendValue.emit(0);
+  
+          }
+        }, error => {
+          console.error('Error:', error);
+        });
+      }
     }
   }
 }
