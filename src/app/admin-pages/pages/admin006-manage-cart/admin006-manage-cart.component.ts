@@ -691,7 +691,6 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       let requestUpdateBill: DTOUpdateBill;
       if(obj.value == 3 || obj.value == 9 || obj.value == 13 || obj.value == 20 || obj.value == 21){
         if(this.reasonFail){
-          alert('Có lí do')
           requestUpdateBill = {
             CodeBill: bill.Code,
             Status: obj.value,
@@ -699,12 +698,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
             Note: this.reasonFail,
           }
         } else {
-          alert('thiếu lí do')
           this.notiService.Show("Vui lòng nhập lí do", "warning")
           return;
         }
       } else {
-        alert('Không cần lí do')
         requestUpdateBill = {
           CodeBill: bill.Code,
           Status: obj.value,

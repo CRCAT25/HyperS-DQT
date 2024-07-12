@@ -22,8 +22,8 @@
                 <div class="contentDefault">
                     <div class="contentQuestion">Xác nhận thay đổi trạng thái đơn hàng?</div>
                     <div class="contentWarning">Đơn hàng sẽ không thể quay về trạng thái cũ</div>
-                    <ng-container *ngIf="value == 3 || value == 9 || value == 13">
-                        <component-text-area [height]="70" [width]="270" [widthBox]="320" [label]="'Lý do:'" (valueTextArea)="sendReasonText($event)"></component-text-area>
+                    <ng-container *ngIf="value == 3 || value == 9 || value == 13 || value == 14 || value == 15 || value == 20 || value == 21">
+                        <component-text-area [fontsize]="15" [height]="70" [width]="270" [widthBox]="320" [label]="'Lý do:'" (valueTextArea)="sendReasonText($event)"></component-text-area>
                     </ng-container>
 
 

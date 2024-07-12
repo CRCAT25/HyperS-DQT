@@ -181,12 +181,6 @@ export const listStatus: DTOStatus[] = [
                     Icon: "fa-eye",
                     IsChecked: false
                 },
-                {
-                    Code: 14,
-                    Status: "Yêu cầu đổi trả hàng",
-                    Icon: "fa-arrow-right-arrow-left",
-                    IsChecked: false,
-                }
             ]
     },
     {
@@ -346,12 +340,6 @@ export const listStatus: DTOStatus[] = [
                 Icon: "fa-eye",
                 IsChecked: false  
             },
-            {
-                Code: 22,
-                Status: "Hoàn tất đơn",
-                Icon: "fa-circle-check",
-                IsChecked: false
-            }
         ]
     },
     {
@@ -359,25 +347,60 @@ export const listStatus: DTOStatus[] = [
         Status: "Chờ thanh toán",
         Icon: "fa-coins",
         IsChecked: false,
-        ListNextStatus:[]
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false  
+            },
+        ]
     },
     {
         Code: 20,
         Status: "Từ chối đổi hàng",
         Icon: "fa-circle-xmark",
         IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false  
+            },
+        ]
     },
     {
         Code: 21,
         Status: "Từ chối trả hàng",
         Icon: "fa-circle-xmark",
         IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false  
+            },
+        ]
     },
     {
         Code: 22,
         Status: "Hoàn tất đơn",
         Icon: "fa-circle-check",
-        IsChecked: false
+        IsChecked: false,
+        ListNextStatus:
+        [
+            {
+                Code: 0,
+                Status: "Xem chi tiết",
+                Icon: "fa-eye",
+                IsChecked: false  
+            },
+        ]
     }
     
 ]

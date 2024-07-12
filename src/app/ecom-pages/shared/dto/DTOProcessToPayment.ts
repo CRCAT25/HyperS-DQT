@@ -9,5 +9,6 @@ export class DTOProcessToPayment {
     PaymentMethod: number;
     ListProduct: DTOProductInCart[];
     TotalBill: number;
+    CouponApplied?: string;
     IsGuess: boolean;
 }
