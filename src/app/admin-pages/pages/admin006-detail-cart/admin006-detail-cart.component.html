@@ -49,15 +49,15 @@
                                 [value]="itemBill.CustomerName" [disabled]="isDisabled"></component-text-input>
                             <component-text-input [label]="'Số điện thoại'" [widthBlock]="430"
                                 [value]="itemBill.PhoneNumber" [disabled]="isDisabled"></component-text-input>
-                            <component-text-input [label]="'Phương thức'" [widthBlock]="430"
-                                [value]="setDTOPaymentMethod().Method" [disabled]="isDisabled"></component-text-input>
-                            <!-- <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
+                                <!-- <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
                                 [widthTextBox]="300" [heightTextBox]="30" [listItem]="PaymentMethodDropDown"
                                 textField="Method" valueField="Code" [value]="setDTOPaymentMethod()"
                                 [disabled]="isDisabled">
                             </component-text-dropdown> -->
-                            <component-text-area [label]="'Ghi chú'" [widthBox]="430" [height]="67" [width]="300"
-                                [fontsize]="13" [placeholder]="itemBill.Note"></component-text-area>
+                            <component-text-input [label]="'Số người nhận'" [widthBlock]="430"
+                            [value]="itemBill.PhoneNumber" [disabled]="isDisabled"></component-text-input>
+                            <component-text-input [label]="'Phương thức'" [widthBlock]="430"
+                            [value]="setDTOPaymentMethod().Method" [disabled]="isDisabled"></component-text-input>
                         </div>
 
                         <div class="column column2">
@@ -369,6 +369,9 @@
 
 
         <div class="footer-detail">
+            <component-text-area *ngIf="!isAdd" [label]="'Ghi chú'" [widthBox]="470" [height]="80" [width]="400"
+            [fontsize]="13" [placeholder]="itemBill.Note"></component-text-area>
+            <div></div>
             <div class="box-TotalBill">
                 <span class="label-Total">Tổng tiền</span>
                 <span *ngIf="!isAdd" class="TotalBill">{{formatCurrency(itemBill.TotalBill)}}</span>
