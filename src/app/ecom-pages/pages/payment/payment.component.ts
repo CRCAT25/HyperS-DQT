@@ -38,7 +38,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
     PaymentMethod: -1,
     TotalBill: 0,
     IsGuess: true,
-    CouponAppied: ""
+    CouponApplied: ""
   }
   provinceSelected: DTOProvince
   districtSelected: DTODistrict
@@ -181,7 +181,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
   APIPayment(info: DTOProcessToPayment):void{
     this.paymentService.payment(info).pipe(takeUntil(this.destroy)).subscribe(data => {
-      console.log(data);
+
       try{
         if(data.StatusCode == 0){
           if(data.ObjectReturn.ErrorList){
@@ -195,8 +195,12 @@ export class PaymentComponent implements OnInit, OnDestroy {
               this.handleDeleteItemCart(element.Product.Code, element.SizeSelected.Code)
             });
           }
-          console.log(data.ObjectReturn.RedirectUrl);
-          window.location.href = data.ObjectReturn.RedirectUrl
+          if(!data.ObjectReturn.RedirectUrl){
+            window.location.href = "http://localhost:4200/HyperS/ecom/home?status=success"
+          }else{
+            window.location.href = data.ObjectReturn.RedirectUrl
+          }
+
         }else{
           this.notiService.Show("Error when payment", "error")
         }
@@ -223,9 +227,13 @@ export class PaymentComponent implements OnInit, OnDestroy {
   APIApplyCoupon(info: DTOApplyCouponRequest){
     console.log(info);
     this.paymentService.applyCoupon(info).pipe(takeUntil(this.destroy)).subscribe(data => {
+      if(data.StatusCode == 0 && data.ErrorString == ""){
         this.appliedCoupon = data.ObjectReturn.Data[0]
-        console.log(this.appliedCoupon);
         this.handleCalTotalPrice()
+      }else{
+        this.notiService.Show(data.ErrorString, "error")
+      }
+       
     })
   }
   
@@ -359,11 +367,14 @@ export class PaymentComponent implements OnInit, OnDestroy {
       }
       this.processToPayment.IsGuess = false
     }
+
+    this.processToPayment.CouponApplied = this.appliedCoupon.IdCoupon
     this.processToPayment.CustomerName = this.name
     this.processToPayment.ShippingAddress = this.provinceSelected.province_name + ", " + this.districtSelected.district_name + ", " +  this.wardSelected.ward_name + ", " + this.road + ", " +this.specific
     this.processToPayment.ListProduct = this.listProductPayment
     this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
     this.processToPayment.TotalBill = this.totalPrice
+    console.log(this.processToPayment);
     this.APIPayment(this.processToPayment)
   }
 

@@ -992,6 +992,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       PhoneNumber: this.childPhoneNumber.valueTextBox,
       ShippingAddress: this.newAddress,
       PaymentMethod: 0,
+      CouponApplied: "",
       // PaymentMethod: this.childMethod.value.Code,
       ListProduct: this.listProductsInCart,
       TotalBill: 0,

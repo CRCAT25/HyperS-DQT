@@ -11,5 +11,5 @@ export class DTOProcessToPayment {
     TotalBill: number;
     CouponApplied?: string;
     IsGuess: boolean;
-    CouponAppied: string
+
 }
