@@ -23,10 +23,10 @@
     
             <div class="price-area">
                 <div *ngIf="product.PriceAfterDiscount < product.Price" class="price-sale">
-                    {{product.PriceAfterDiscount | number: '1.0-0'}}đ
+                    {{product.PriceAfterDiscount | number: '1.0-0'}} vnd
                 </div>
                 <span [ngClass]="{'price-discount': product.PriceAfterDiscount < product.Price, 'price': product.PriceAfterDiscount >= product.Price}" class="price">
-                    {{ product.Price | number: '1.0-0'}}đ
+                    {{ product.Price | number: '1.0-0'}} vnd
                 </span>
             </div>
         </div>

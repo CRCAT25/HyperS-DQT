@@ -63,21 +63,26 @@ export class EcomCartComponent implements OnInit{
   }
 
   APIGetListCartProduct(){
+    this.isLoading = true
     this.cartService.getListCartProduct(this.requestGetListCart).pipe(takeUntil(this.destroy)).subscribe(data =>{
       if(data.ErrorString != "" || data.StatusCode != 0){
         this.notificationService.Show("😭, Erorr when fetching data", "error")
       }
       this.cart = data.ObjectReturn
+      this.isLoading = false
     })
   }
 
   APIGetListCustomerCart(codeCustomer: number):void{
+    this.isLoading = true
     this.cartService.getListCustomerCart(codeCustomer).pipe(takeUntil(this.destroy)).subscribe(data => {
       this.cart = data.ObjectReturn
+      this.isLoading = false
     })
   }
 
   APIAddProductToCart(cart: DTOAddToCart, type: string){
+    this.isLoading = true
     this.productService.addProductToCart(cart).pipe(takeUntil(this.destroy)).subscribe(data => {
       if(data.StatusCode == 0 && data.ErrorString == ''){
         if(this.codeCustomer == 0){
@@ -103,6 +108,7 @@ export class EcomCartComponent implements OnInit{
       }else{
         this.notificationService.Show(data.ErrorString, "error")
       }
+      this.isLoading = false
     })
 
   }

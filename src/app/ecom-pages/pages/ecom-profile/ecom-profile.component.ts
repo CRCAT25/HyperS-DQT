@@ -14,6 +14,8 @@ import { DTOUpdateBill } from 'src/app/admin-pages/shared/dto/DTOUpdateBill.dto'
 import { DTOUpdateBillRequest } from 'src/app/admin-pages/shared/dto/DTOUpdateBillRequest.dto';
 import { DTOProcessToPayment } from '../../shared/dto/DTOProcessToPayment';
 import { DTOBillInfo } from 'src/app/admin-pages/shared/dto/DTOBillInfo.dto';
+import { DTOProduct } from '../../shared/dto/DTOProduct';
+import { ProductService } from '../../shared/service/product.service';
 
 @Component({
   selector: 'app-ecom-profile',
@@ -30,13 +32,21 @@ export class EcomProfileComponent implements OnInit {
   expanded: boolean = false
   billSelected: DTOBill
   isLoading: boolean = true
+  errorString: string = ""
+
+  openPopErr: boolean = false
+  action: number = 0
+
+  productRepurchase: DTOProduct
+
   
 
   constructor(
     private userService: UserService, 
     private billService: BillService,
     private notiService: NotiService,
-    private router: Router
+    private router: Router,
+    private productService:ProductService
   ){
     this.APIGetProfile()
     this.APIGetListBillCustomer()
@@ -85,9 +95,28 @@ export class EcomProfileComponent implements OnInit {
         this.APIGetListBillCustomer()
         this.expanded = false
       }else{
+        console.log(data.ErrorString);
         this.notiService.Show("Error: " + data.ErrorString, "error")
       }
     })
+  }
+
+  APIGetProductByID(id: string):void{
+    this.productService.getProductByIDProduct(id).pipe(takeUntil(this.destroy)).subscribe(data => {
+      console.log(data);
+    })
+  }
+
+  receiveData(data: string) {
+    this.errorString = data;
+    if(this.action == 1){
+      this.handleCancelOrder()
+    }
+  }
+
+  handleActionCancelOrder(){
+    this.action = 1
+    this.openPopErr = true
   }
 
   handleGetStatusBillByCode(Code: number): DTOStaTusByCode{
@@ -227,7 +256,7 @@ export class EcomProfileComponent implements OnInit {
       CodeBill: this.billSelected.Code,
       Status: 2,
       ListOfBillInfo: this.billSelected.ListBillInfo,
-      Note: ""
+      Note: this.errorString
     }
     const processToPayment: DTOProcessToPayment = null
     const updateBillRes: DTOUpdateBillRequest = {
@@ -263,7 +292,17 @@ export class EcomProfileComponent implements OnInit {
     this.APIUpdateBill(updateBillRes)
   }
 
-  log(){
-    console.log(this.billSelected.ListBillInfo);
-    }
+  handleProductClick(product: DTOProduct){
+    localStorage.setItem('productSelected', JSON.stringify(product))
+    this.navigateToDetail()
   }
+
+  navigateToDetail() {
+    this.router.navigate(['ecom/product-detail'])
+  }
+
+  log(item: any){
+    // console.log(item);
+    this.APIGetProductByID("NIKE17583")
+  }
+}

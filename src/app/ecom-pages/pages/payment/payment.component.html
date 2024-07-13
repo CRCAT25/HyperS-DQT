@@ -100,6 +100,14 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="textbox coupon-area">
+                    <div class="title title-method">
+                        Coupon
+                    </div>
+                    <kendo-textbox (blur)="APIApplyCoupon(applyCouponRequest)" [(ngModel)]="applyCouponRequest.IdCoupon" class="input" placeholder="Type your coupon"></kendo-textbox>
+                    
+                </div>
             </div>
             
         </div>
@@ -114,7 +122,7 @@
                             Subtotal
                         </div>
                         <div class="price-child">
-                            {{priceSubTotal}}
+                            {{priceSubTotal | number: '1.0-0'}} vnd
                         </div>
                     </div>
                     <div class="sub-total">
@@ -122,15 +130,15 @@
                             Delivery
                         </div>
                         <div class="price-child">
-                            {{priceDelivery}}
+                            {{priceDelivery | number: '1.0-0'}} vnd
                         </div>
                     </div>
                     <div class="sub-total">
                         <div class="title-child">
                             Coupon
                         </div>
-                        <div class="price-child">
-                            {{priceCoupon}}
+                        <div class="price-coupon">
+                            <span *ngIf="priceCoupon > 0">-</span> {{priceCoupon | number: '1.0-0'}} vnd
                         </div>
                     </div>
                 </div>
@@ -142,7 +150,7 @@
                             Total price
                         </div>
                         <div class="price-child">
-                            {{totalPrice}}
+                            {{totalPrice | number: '1.0-0'}} vnd
                         </div>
                     </div>
                     <div class="under-line"></div>

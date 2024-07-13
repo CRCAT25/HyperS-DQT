@@ -1,10 +1,26 @@
+<app-loading [isLoading]="isLoading"></app-loading>
 <div class="main">
     <div class="content">
-        <div class="form">
+        <div *ngIf="type == 'thanks'" class="form-thanks">
+            <div class="card">
+                <i class="fa-solid fa-check"></i>
+                 <p class="cookieHeading">Succeeded Signup!</p>
+                 <p class="cookieDescription">please check your mail to comfirm singup <br><a href="#">Read cookies policies</a>.</p>
+               
+                 <div class="buttonContainer">
+                   <button (click)="handleNavigate('account/login')" class="acceptButton">Back to login</button>
+                 </div>
+                 
+               
+               </div>
+               
+               
+        </div>
+        <div *ngIf="type == 'signup'" class="form">
             <div class="image">
                 <img src="https://hypebeastnz.com/cdn/shop/files/image_f3ceadf0-be68-42e4-8a97-aacb2ab6e779_2048x.jpg?v=1690882984" alt="">
             </div>
-            <div class="info">
+            <div  class="info">
                 <div>
                     <div class="title">
                         Become member

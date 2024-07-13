@@ -15,6 +15,7 @@ export class LoginComponent {
   showPassword: string = 'password'
   username: string = "";
   password: string = ""
+  isLoading: boolean = false
 
   constructor(private router: Router, private accoutService: AuthService, private notiService: NotiService,private cartService: CartService){}
 
@@ -29,6 +30,7 @@ export class LoginComponent {
   }
 
   APILogin(username: string ,password: string):void{
+    this.isLoading = true
     this.accoutService.login(username, password).pipe(takeUntil(this.destroy)).subscribe(data => {
       try{
         if(data.StatusCode == 0 && data.ObjectReturn.ResultLogin.Succeeded == true && data.ErrorString == ""){
@@ -50,7 +52,7 @@ export class LoginComponent {
         this.notiService.Show(data.ErrorString, "error")
       }
       finally{
-
+        this.isLoading = false
       }
     })
   }

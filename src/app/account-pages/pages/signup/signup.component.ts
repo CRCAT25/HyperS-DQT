@@ -18,6 +18,7 @@ export class SignupComponent implements OnDestroy {
   showRePassword: string = "password"
   formInfoSignUp: FormGroup
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
+  isLoading: boolean = false
 
   infoSingup: DTOSignup = {
     Name: "",
@@ -25,6 +26,8 @@ export class SignupComponent implements OnDestroy {
     PhoneNumber: "",
     Password: ""
   }
+
+  type: string = "signup"
 
   constructor(private router: Router, private authService: AuthService){
     this.formInfoSignUp = new FormGroup({
@@ -39,8 +42,13 @@ export class SignupComponent implements OnDestroy {
   }
 
   APISignup(info: DTOSignup):void{
+    this.isLoading = true
     this.authService.signup(info).pipe(takeUntil(this.destroy)).subscribe((data) => {
       console.log(data);
+      if(data.ObjectReturn.Succeeded == true){
+        this.type = 'thanks'
+      }
+      this.isLoading = false
     })
   }
 

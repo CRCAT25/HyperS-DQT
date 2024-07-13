@@ -71,10 +71,10 @@
                         
                         <div class="price-area">
                             <div  class="final-price">
-                                {{item.Product.PriceAfterDiscount | number: '1.0-0'}}$
+                                {{item.Product.PriceAfterDiscount | number: '1.0-0'}} vnd
                             </div>
                             <div class="origin-price">
-                                {{item.Product.Price | number: '1.0-0'}}$
+                                {{item.Product.Price | number: '1.0-0'}} vnd
                             </div>
                         </div>
 
@@ -91,7 +91,7 @@
                                 Total:
                             </div>
                             <div>
-                                {{item.TotalPriceOfProduct | number: '1.0-0'}}$
+                                {{item.TotalPriceOfProduct | number: '1.0-0'}} vnd
                             </div>
                         </div>
                         <div (click)="handleClickFunction(item, 'Delete')" class="delete-area">
@@ -145,7 +145,7 @@
                             Total price
                         </div>
                         <div class="text-total-price">
-                            {{totalPrice}}
+                            {{totalPrice | number: '1.0-0'}} vnd
                         </div>
                     </div>
                     <div (click)="handleCheckout()" class="btn-checkout">

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DTOResponeAddress } from '../dto/DTOResponeAddress';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { DTOProcessToPayment } from '../dto/DTOProcessToPayment';
+import { DTOApplyCouponRequest } from '../dto/DTOApplyCouponRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class PaymentService {
   urlGetDistrict = "https://vapi.vnappmob.com/api/province/district/"
   urlGetWard = "https://vapi.vnappmob.com/api/province/ward/"
   urlPayment = "https://hypersapi.onrender.com/api/cart/ProceedToPayment"
+  urlApplyCoupon = "https://hypersapi.onrender.com/api/bill/ApplyCoupon"
 
   getHttpOptions(){
     return{
@@ -48,6 +50,12 @@ export class PaymentService {
   payment(info: DTOProcessToPayment):Observable<DTOResponse>{
     const httpOption = this.getHttpOptions()
     return this.httpClient.post<DTOResponse>(this.urlPayment, info, httpOption).pipe()
+  }
+
+  applyCoupon(info: DTOApplyCouponRequest):Observable<DTOResponse>{
+    const httpOption = this.getHttpOptions()
+    const body = info
+    return this.httpClient.post<DTOResponse>(this.urlApplyCoupon, body, httpOption).pipe()
   }
 
 }
