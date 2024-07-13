@@ -9,6 +9,8 @@
 
 .body{
     margin-top: 2px;
+    height: calc(100vh - 50px);
+    overflow-y: auto;
     // width: 1920px;
     // object-fit: contain;
 

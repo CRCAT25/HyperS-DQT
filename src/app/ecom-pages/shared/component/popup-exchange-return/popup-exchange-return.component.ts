@@ -1,5 +1,6 @@
 import { Component, Input, Output,EventEmitter } from '@angular/core';
 import { DataError } from '../../data/dataErrorr';
+import { NotiService } from '../../service/noti.service';
 
 @Component({
   selector: 'app-popup-exchange-return',
@@ -11,8 +12,11 @@ export class PopupExchangeReturnComponent {
   listErrorString: any[] = []
   ErrorString: string
   valueErr: string = ""
-  @Input() expanded: boolean = false
+  @Input() expanded: boolean = true;
+  @Output() expandedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() outError = new EventEmitter<string>();
+
+  constructor(private notiService: NotiService){}
 
 
   handleChooseErr(data: any) {
@@ -23,19 +27,37 @@ export class PopupExchangeReturnComponent {
 
     const index = this.listErrorString.findIndex(i => i.id === data.id);
     if (index !== -1) {
-        this.listErrorString.splice(index, 1); // Correct usage of splice to remove 1 element at index
+        this.listErrorString.splice(index, 1); 
     } else {
-        this.listErrorString.push(item); // Adding item if it doesn't exist in listErrorString
+        this.listErrorString.push(item); 
     }
 
 }
 
 
   handleSendErr():void{
-    this.listErrorString.forEach(element => {
-      this.valueErr +=',' + element
-    });
+    if(this.valueErr == "" && this.listErrorString.length == 0){
+      this.notiService.Show("Please give my your problem 🤗", "error")
+      return
+    }
+    this.valueErr = this.listErrorString.map(element => element.text).join(',');
     this.outError.emit(this.valueErr)
+    this.toggleExpanded()
+  }
+
+  handleClose():void{
+    this.expanded = false
+  }
+
+  toggleExpanded() {
+    this.ErrorString = ""
+    this.listErrorString = []
+    this.dataError.forEach(element => {
+      element.select = false
+    });
+    this.expanded = !this.expanded;
+    this.expandedChange.emit(this.expanded);
+    
   }
 
 }

@@ -10,4 +10,5 @@ export class DTOProcessToPayment {
     ListProduct: DTOProductInCart[];
     TotalBill: number;
     IsGuess: boolean;
+    CouponAppied: string
 }

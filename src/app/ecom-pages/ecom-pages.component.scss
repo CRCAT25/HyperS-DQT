@@ -1,188 +1,22 @@
 ::ng-deep{
+  app-ecom-pages{
+    overflow: hidden;
+    // .header{
+    //   height: 50px;
+    //   position: sticky;
+
+    // }
+    // .content{
+    //   height: calc(100vh - 50px);
+    //   // overflow-y: auto;
+    // }
+  }
     .k-notification-group{
         left: 20px !important;
         bottom: 20px !important;
         font-size: 50px !important;
     }
-
-    // .k-list-optionlabel.k-selected {
-    //     background-color: #1a6634;
-    //   }
-    //   .k-checkbox:checked {
-    //     accent-color: #1a6634;
-    //     background-color: #1a6634;
-    //     border: 1px solid #1a6634;
-    //   }
     
-    //   .k-checkbox:focus {
-    //     box-shadow: none;
-    //   }
-    
-    
-    //   .k-list-optionlabel {
-    //     color: black;
-    //   }
-    //   .k-list-optionlabel.k-selected:hover {
-    //     background-color: #1a6634;
-    //   }
-    
-    //   .k-list-item.k-selected {
-    //     background-color: #1a6634;
-    //   }
-    
-    //   .k-list-item{
-    //     &:hover{
-    //       background-color: #1a6634;
-    //       color: white;
-    //     }
-    //   }
-    
-    //   .k-list-item.k-selected:hover {
-    //     background-color: #1a6634;
-    //   }
-    
-    //   .k-dropdownlist{
-    //     border: 2px solid transparent;
-    //     &:hover{
-    //       border-color: #1a6634;
-    //       background-color: white;
-    //     }
-    //   }
-    //   //icon
-    // .k-i-caret-alt-down{
-    //   &::before{
-    //       content: "\e015";
-    //   }
-    
-    // }
-    
-    // .k-i-caret-alt-right{
-    //   &::before{
-    //       content: "\e014";
-    //   }
-    // }
-    
-    // .checkbox{
-    //   border-color: #1A6634;
-    //       &:checked:focus{
-    //           box-shadow: none;
-    //       }
-    //       &:hover{
-    //           background-color: #1A6634;
-    //       }
-    // }
-    
-    // .k-dropdownlist{
-    //   background-color: white;
-    // }
-    
-    // kendo-list{
-    //   background-color: red;
-    // }
-    
-    // .k-treeview-item {
-    //   > .k-seleced{
-    //       background-color: #1A6634 !important;
-    //   }
-    // }
-    
-    
-    // .k-input-values{
-    //   max-height: 27px;
-    // }
-    
-    // .k-multiselecttree{
-    //   width: 100%;
-    //   white-space: nowrap;
-    //   border: 2px solid transparent;
-    //   cursor: pointer;
-    //   overflow: auto;
-    //   &:hover{
-    //       border-color: #1A6634;
-    //   }
-    // }
-    
-    // .k-multiselect{
-    //   overflow: auto; 
-    //   border: 2px solid transparent;
-    //   cursor: pointer;
-    //   &:hover{
-    //       border-color: #1A6634;
-    //   }
-    // }
-    
-    // .k-dropdowntree{
-    //   background-color: white;
-    //   box-shadow: none;
-    
-    //   border: 1px solid #DBDEE7;
-    //   cursor: pointer;
-    //   &:hover{
-    //       border-color: #1A6634;
-    //       background-color: white;
-    //   }
-    // }
-    
-    // .k-treeview-leaf{
-    //   width: 100%;
-    //   height: 100%;
-    //   cursor: pointer;
-    //   border-radius: 3px;
-    //   box-shadow: none !important;
-    //   &:hover{
-    //       background-color: #1A6634;
-    //       color: white;
-    //   }
-    // }
-    
-    // .k-treeview-leaf.k-selected{
-    //   background-color: #1A6634;
-    // }
-    
-    // .k-treeview-item.k-selected{
-    //   background-color: red;
-    // }
-    
-    // .k-chip{
-    //   height: 23px;
-    //   background-color: white;
-    //   border: 0px;
-    //   flex-direction: row-reverse;
-    
-    //   &:hover{
-    //       background-color: #1A6634;
-    //       color: white;
-    //   }
-    
-    //   .k-chip-actions{
-    //      .k-i-x-circle{
-    //       color: #DBDEE7;
-    //       &::before{
-    //           content: "\e11b";
-    //       }
-    //      }
-    //   }
-    // }
-    
-    // .k-table-row {
-    //   margin-left: 50px;
-    // }
-    
-    
-    // //header table treelist
-    // .k-table-th{
-    //   height: 40px;
-    //   align-items: center;
-    //   justify-content: center;
-    // }
-    
-    // //mutiselectree
-    
-    // .department-filter{
-    //   .k-checkbox-md{
-    //       display: none;
-    //   }
-    // }
     
 }
 

@@ -1,11 +1,11 @@
-<div class="body">
+<div *ngIf="expanded" class="body">
     <div class="content">
         <div class="title">
             We sincerely apologize
         </div>  
         <div class="choose-error-area">
             <div class="title-err">
-                please give me your problem
+                Please give me your problem 🤗
             </div>
             <div class="table-err">
                 <div *ngFor="let data of dataError">
@@ -17,11 +17,10 @@
             </div>
             <div class="inputGroup">
                 <textarea [(ngModel)]="valueErr" (resize)="false" placeholder="Type your problem" rows="8"  type="text" required="" autocomplete="off" ></textarea>
-                <!-- <label for="name">Your problem</label> -->
             </div>
 
             <div class="btn-area">
-                <div  class="btn btn-close">
+                <div (click)="toggleExpanded()"  class="btn btn-close">
                     Close
                 </div>
 

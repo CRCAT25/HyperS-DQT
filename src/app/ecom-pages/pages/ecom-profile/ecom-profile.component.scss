@@ -1,4 +1,4 @@
-    @import '../../../../styles.scss';
+@import '../../../../styles.scss';
 
 ::ng-deep{
     app-ecom-profile{
@@ -36,9 +36,14 @@
 
                 .product-item{
                     margin-top: 20px;
+
+                    .list-item{
+                        overflow-y: auto;
+                        height: 420px;
+                    }
                     
                     .item{
-                        margin: 10px 0;
+                        margin: 20px 5px;
                         .info-item{
                             display: flex;
                             gap: 20px;

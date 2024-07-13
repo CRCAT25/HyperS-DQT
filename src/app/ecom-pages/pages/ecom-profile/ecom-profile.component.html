@@ -1,5 +1,5 @@
 <app-loading [isLoading]="isLoading"></app-loading>
-<app-popup-exchange-return></app-popup-exchange-return>
+<app-popup-exchange-return [(expanded)]="openPopErr" (outError)="receiveData($event)"></app-popup-exchange-return>
 
 <kendo-drawer-container>
     <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="600" [(expanded)]="expanded">
@@ -44,72 +44,78 @@
                             <div class="title-child">
                                 Your shoes
                             </div>
-                            <div class="item" *ngFor="let item of billSelected.ListBillInfo">
+                            <div class="list-item">
+                                <div class="item" *ngFor="let item of billSelected.ListBillInfo">
                                
-                                <div class="info-item">
-                                    <div class="img">
-                                        <img src="{{item.ImageURL}}" alt="">
-                                    </div>
-                                    <div class="bill-info-area">
-                                        <div class="area-1">
-                                            <div class="nameAndQuantity">
-                                                <div class="name">
-                                                    {{item.Name}}
-                                                </div>
-                                                <div class="quantity">
-                                                    Qty: {{item.Quantity}}
-                                                </div>
-                                                <div class="status-item">
-                                                    
-                                                    Status: &nbsp; <span >{{handleGetStatusBillInfoByCode(item.Status).Text}} &nbsp; <span [ngStyle]="{'color': handleGetStatusBillInfoByCode(item.Status).Color}"> <i class="fa-solid {{handleGetStatusBillInfoByCode(item.Status).Icon}}"></i></span></span> 
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="price">
-                                                {{item.Price}} VND
-                                            </div>
+                                    <div class="info-item">
+                                        <div class="img">
+                                            <img src="{{item.ImageURL}}" alt="">
                                         </div>
-
-                                        <div class="area-2">
-                                            <div class="btn-return-area">
-                                                <div *ngIf="item.Status == 8">
-                                                    <div (click)="handleReturnAndChangeBillInfo(item, 'return')"  class="button button-return">
-                                                        <i class="fa-solid fa-reply"></i>
-                                                        <div class="text">
-                                                            {{'return' | uppercase}}
+                                        <div class="bill-info-area">
+                                            <div class="area-1">
+                                                <div class="nameAndQuantity">
+                                                    <div class="name">
+                                                        {{item.Name}}
+                                                    </div>
+                                                    <div class="quantity">
+                                                        Qty: {{item.Quantity}}
+                                                    </div>
+                                                    <div class="status-item">
+                                                        
+                                                        Status: &nbsp; <span >{{handleGetStatusBillInfoByCode(item.Status).Text}} &nbsp; <span [ngStyle]="{'color': handleGetStatusBillInfoByCode(item.Status).Color}"> <i class="fa-solid {{handleGetStatusBillInfoByCode(item.Status).Icon}}"></i></span></span> 
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="price">
+                                                    {{item.Price}} VND
+                                                </div>
+                                            </div>
+    
+                                            <div class="area-2">
+                                                <div class="btn-return-area">
+                                                    <div *ngIf="item.Status == 8">
+                                                        <div (click)="handleReturnAndChangeBillInfo(item, 'return')"  class="button button-return">
+                                                            <i class="fa-solid fa-reply"></i>
+                                                            <div class="text">
+                                                                {{'return' | uppercase}}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                               
-                                                <div (click)="handleReturnAndChangeBillInfo(item, 'change')"  *ngIf="item.Status == 8" class="button button-change">
-                                                    <i class="fa-solid fa-arrows-rotate"></i>
-                                                    <div class="text">
-                                                        {{'change' | uppercase}}
+                                                   
+                                                    <div (click)="handleReturnAndChangeBillInfo(item, 'change')"  *ngIf="item.Status == 8" class="button button-change">
+                                                        <i class="fa-solid fa-arrows-rotate"></i>
+                                                        <div class="text">
+                                                            {{'change' | uppercase}}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div *ngIf="item.Status != 8" class="button button-re-buy">
-                                                    <i class="fa-solid fa-bag-shopping"></i>
-                                                    <div class="text">
-                                                        {{'Repurchase' | uppercase}}
+                                                    <div *ngIf="item.Status != 8">
+                                                        <div (click)="log(item)"  class="button button-re-buy">
+                                                            <i class="fa-solid fa-bag-shopping"></i>
+                                                            <div class="text">
+                                                                {{'Repurchase' | uppercase}}
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                   
                                                 </div>
                                             </div>
                                         </div>
+                                       
+                                       
+                                   
+                                       
                                     </div>
-                                   
-                                   
-                               
-                                   
+                                  
                                 </div>
-                              
                             </div>
+                           
                         </div>
 
                         
 
                         <div class="btn-area">
                             <div *ngIf="billSelected.Status == 1">
-                                <div (click)="handleCancelOrder()"  class="btn-cancel">
+                                <div (click)="handleActionCancelOrder()"  class="btn-cancel">
                                     Cancel Order
                                 </div>
                             </div>
@@ -159,14 +165,10 @@
                             Logout
                         </div>
                     </div>
-                    
-            
-                  
                 </div>
-            
                 <div class="body">
                     <div class="address-area">
-                        <div (click)="log()" class="btn-add-address">
+                        <div class="btn-add-address">
                             + Add Address
                         </div>
                     </div>

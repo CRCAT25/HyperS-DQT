@@ -16,6 +16,8 @@ import { DTOGuessCartProduct } from '../../shared/dto/DTOGuessCartProduct';
 import { UserService } from '../../shared/service/user.service';
 import { CartService } from '../../shared/service/cart.service';
 import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
+import { DTOApplyCouponRequest } from '../../shared/dto/DTOApplyCouponRequest';
+import { DTOAppliedCoupon } from '../../shared/dto/DTOAppliedCoupon';
 
 @Component({
   selector: 'app-payment',
@@ -35,7 +37,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
     ShippingAddress: "",
     PaymentMethod: -1,
     TotalBill: 0,
-    IsGuess: true
+    IsGuess: true,
+    CouponAppied: ""
   }
   provinceSelected: DTOProvince
   districtSelected: DTODistrict
@@ -53,6 +56,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   recipientPhone: string = ""
   road: string = ""
   specific: string = ""
+
   listPaymentMethodUser: DTOPaymentMethod[] = [
     {id: 0, text: "COD", icon: "fa-money-bill"},
     {id: 1, text: "QR Payment", icon: "fa-qrcode"},
@@ -60,11 +64,23 @@ export class PaymentComponent implements OnInit, OnDestroy {
   ]
 
   listPaymentMethodGuess: DTOPaymentMethod[] = [
-    // {id: 0, text: "COD", icon: "fa-money-bill"},
     {id: 1, text: "QR Payment", icon: "fa-qrcode"},
     {id: 2, text: "Bank Transfer", icon: "fa-credit-card"},
   ]
 
+  applyCouponRequest: DTOApplyCouponRequest = {
+    IdCoupon: "",
+    TotalBill: 0,
+    IsGuess: true
+  }
+
+  appliedCoupon: DTOAppliedCoupon = {
+    IdCoupon: "",
+    MaxBillDiscount: 0,
+    CouponType: -1,
+    DirectDiscount: 0,
+    PercentDiscount: 0,
+  }
 
   defaultValueProvince: DTOProvince = {province_id: "", province_name: '-- Select --',  province_type: ""}
   defaultValueWard: DTOWard = {district_id: "", ward_id: "", ward_name:"-- Select --", ward_type: ""}
@@ -89,8 +105,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.GETCaheItemSelected()
     if(this.codeCustomer){
       this.APIGetUser()
+      this.applyCouponRequest.IsGuess = false
     }
-
   }
 
   GETCaheItemSelected():void{
@@ -181,11 +197,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
           }
           console.log(data.ObjectReturn.RedirectUrl);
           window.location.href = data.ObjectReturn.RedirectUrl
-          // this.cartService.getCountInCart(this.codeCustomer)
-          // this.cartService.emitCartUpdated()
-          // this.notiService.Show("Payment Successfully", "success")
-          // this.router.navigate(['ecom/home'])
-        
         }else{
           this.notiService.Show("Error when payment", "error")
         }
@@ -208,6 +219,15 @@ export class PaymentComponent implements OnInit, OnDestroy {
       }
     })
   }
+
+  APIApplyCoupon(info: DTOApplyCouponRequest){
+    console.log(info);
+    this.paymentService.applyCoupon(info).pipe(takeUntil(this.destroy)).subscribe(data => {
+        this.appliedCoupon = data.ObjectReturn.Data[0]
+        console.log(this.appliedCoupon);
+        this.handleCalTotalPrice()
+    })
+  }
   
   handleCalTotalPrice():void{
     this.priceCoupon = 0
@@ -217,7 +237,14 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.listProductPayment.forEach(element => {
       this.priceSubTotal += element.TotalPriceOfProduct
     });
+    if(this.appliedCoupon.IdCoupon){
+      if(this.appliedCoupon.CouponType == 0){
+        this.priceCoupon = (this.priceSubTotal * (this.appliedCoupon.PercentDiscount / 100))
+      }
+    }
+
     this.totalPrice = (this.priceSubTotal + this.priceDelivery) - this.priceCoupon
+    this.applyCouponRequest.TotalBill = this.totalPrice
   }
 
   handleChangeProvince():void{

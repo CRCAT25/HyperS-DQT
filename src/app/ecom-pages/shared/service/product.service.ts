@@ -15,11 +15,13 @@ export class ProductService {
 
 
   urlGetListProduct = "https://hypersapi.onrender.com/api/Product/GetListProduct"
-  urlGetProductByID = "https://hypersapi.onrender.com/api/Product/GetProduct"
+  urlGetProductByCode = "https://hypersapi.onrender.com/api/Product/GetProduct"
   urlGetListProductType = "https://hypersapi.onrender.com/api/Product/GetListProductType"
   urlGetListBrand = "https://hypersapi.onrender.com/api/Brand/GetAllBrands"
   urlUpdateProduct = "https://hypersapi.onrender.com/api/Product/UpdateProduct"
   urlAddProductToCart = "https://hypersapi.onrender.com/api/Product/AddProductToCart"
+  urlGetProductByID = "https://hypersapi.onrender.com/api/Product/GetProductByID"
+
 
   getHttpOptions() {
     return {
@@ -47,7 +49,7 @@ export class ProductService {
     const body = {
       'Code': id
     }
-    return this.httpClient.post<DTOResponse>(this.urlGetProductByID, body, httpOptions)
+    return this.httpClient.post<DTOResponse>(this.urlGetProductByCode, body, httpOptions)
       .pipe();
   }
 
@@ -77,5 +79,11 @@ export class ProductService {
     const httpOption = this.getHttpOptions()
     const body = cart
     return this.httpClient.post<DTOResponse>(this.urlAddProductToCart, body, httpOption).pipe()
+  }
+
+  getProductByIDProduct(id: string):Observable<DTOResponse>{
+    const httpOption = this.getHttpOptions();
+    const body = id
+    return this.httpClient.post<DTOResponse>(this.urlGetProductByID,'NIKE17583', httpOption).pipe()
   }
 }

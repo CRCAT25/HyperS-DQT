@@ -6,6 +6,7 @@ import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { DataSecondContent } from '../../shared/data/dataSecondPages';
+import { CartService } from '../../shared/service/cart.service';
 
 @Component({
   selector: 'app-featured',
@@ -21,25 +22,32 @@ export class FeaturedComponent implements OnDestroy {
   }
 
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
+  codeCustomer: number
+  isLoading: boolean = false
 
 
-  constructor(private productService: ProductService, private router: Router){
-    // this.APIGetListProduct();
+  constructor(private cartService: CartService,private productService: ProductService, private router: Router){
     this.APIGetListProductDesc(this.filterProductDesc)
+    this.codeCustomer = Number(localStorage.getItem('codeCustomer'))
   }
 
   ngOnInit(): void {
-    // this.APIGetListProduct()
+    this.cartService.emitCartUpdated()
+    this.cartService.setTotalItemProduct(this.codeCustomer)
   }
 
 
   APIGetListProductDesc(filter: State): void {
+    this.isLoading = true
     this.productService.getListProduct(filter).pipe(takeUntil(this.destroy)).subscribe(data => {
       if(data.ErrorString != "" || data.StatusCode != 0){
         alert("Lỗi khi lấy api ")
+        this.isLoading = false
         return
+        
       }
       this.ListProductDesc = data.ObjectReturn.Data
+      this.isLoading = false
     })
   }
 
