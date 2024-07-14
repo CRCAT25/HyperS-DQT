@@ -21,12 +21,12 @@
             <!-- Button cập nhật thương hiệu -->
             <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
                 borderStyle="solid" [value]="1" classIconFontAwesome="fa-floppy-disk" bgColor="#fff"
-                text="Cập nhật" (sendValue)="updateBrand()"></component-button>
+                text="Cập nhật" (sendValue)="manageBrand('update')"></component-button>
 
             <!-- Button thêm mới thương hiệu -->
             <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
                 borderStyle="solid" [value]="1" classIconFontAwesome="fa-plus" bgColor="#fff"
-                text="Thêm mới thương hiệu" (sendValue)="addBrand()"></component-button>
+                text="Thêm mới thương hiệu" (sendValue)="manageBrand('add')"></component-button>
         </div>
 
         <!-- Danh sách thương hiệu -->
@@ -70,10 +70,10 @@
         <component-form [text]="'Phân loại sản phẩm'">
             <div class="content-form">
                 <!-- Mã loại sản phẩm -->
-                <component-text-input [label]="'Mã loại sản phẩm'"></component-text-input>
+                <component-text-input #idProductType [label]="'Mã loại sản phẩm'" [placeholder]="'Nhập mã loại sản phẩm...'"></component-text-input>
 
                 <!-- Tên loại sản phẩm -->
-                <component-text-input [label]="'Tên loại sản phẩm'"></component-text-input>
+                <component-text-input #nameProductType [label]="'Tên loại sản phẩm'" [placeholder]="'Nhập tên loại sản phẩm...'"></component-text-input>
             </div>
         </component-form>
 
@@ -82,12 +82,38 @@
             <!-- Button cập nhật thương hiệu -->
             <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
                 borderStyle="solid" [value]="1" classIconFontAwesome="fa-floppy-disk" bgColor="#fff"
-                text="Cập nhật"></component-button>
+                text="Cập nhật" (sendValue)="manageProductType('update')"></component-button>
 
             <!-- Button thêm mới thương hiệu -->
             <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
                 borderStyle="solid" [value]="1" classIconFontAwesome="fa-plus" bgColor="#fff"
-                text="Thêm mới loại"></component-button>
+                text="Thêm mới loại" (sendValue)="manageProductType('add')"></component-button>
+        </div>
+
+        <!-- Danh sách loại sản phẩm -->
+        <div class="grid-custom-container">
+            <kendo-grid [data]="listType" kendoGridSelectBy="Code" [selectedKeys]="selectedType"
+                (selectionChange)="onSelectionTypeChange($event)" [loading]="isTypeLoading"
+                [selectable]="{ mode: 'single' }">
+
+                <!-- Mã loại sản phẩm -->
+                <kendo-grid-column title="Mã loại sản phẩm" [width]="150">
+                    <ng-template kendoGridCellTemplate let-item>
+                        <div class="column-1">
+                            {{item.IdProductType}}
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+
+                <!-- Tên loại sản phẩm -->
+                <kendo-grid-column title="Tên loại sản phẩm" [width]="150">
+                    <ng-template kendoGridCellTemplate let-item>
+                        <div class="column-2">
+                            {{item.Name}}
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+            </kendo-grid>
         </div>
     </div>
 </div>

@@ -132,6 +132,21 @@
                         }
                     }
                 }
+
+                .grid-custom-container {
+                    height: calc(100vh - 60px - 16px - 125px - 100px);
+
+                    kendo-grid {
+                        tr{
+                            cursor: pointer;
+                            color: #000;
+                        }
+
+                        .column-1 {
+                            font-weight: 600;
+                        }
+                    }
+                }
             }
         }
     }
