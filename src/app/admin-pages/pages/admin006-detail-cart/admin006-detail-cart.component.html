@@ -48,7 +48,7 @@
                             <component-text-input [label]="'Tên khách hàng'" [widthBlock]="430"
                                 [value]="itemBill.CustomerName" [disabled]="isDisabled"></component-text-input>
                             <component-text-input [label]="'Số điện thoại'" [widthBlock]="430"
-                                [value]="itemBill.PhoneNumber" [disabled]="isDisabled"></component-text-input>
+                                [value]="itemBill.OrdererPhoneNumber" [disabled]="isDisabled"></component-text-input>
                                 <!-- <component-text-dropdown #method [label]="'Phương thức'" [widthBlock]="430"
                                 [widthTextBox]="300" [heightTextBox]="30" [listItem]="PaymentMethodDropDown"
                                 textField="Method" valueField="Code" [value]="setDTOPaymentMethod()"
@@ -91,15 +91,6 @@
                             </component-text-dropdown> -->
                             <!-- <component-text-input #method [label]="'Phương thức'" [widthBlock]="430">
                             </component-text-input> -->
-                            <component-text-input #road [label]="'Đường'" [widthBlock]="430" [disabled]="isDisableWard"
-                            (getValue)="setNewAddress()"></component-text-input>
-                            <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430"
-                                [disabled]="isDisableWard" (getValue)="setNewAddress()"></component-text-input>
-                        </div>
-
-                        <div class="column column2">
-                            <component-text-input #phoneNumber [label]="'Số điện thoại'"
-                                [widthBlock]="430"></component-text-input>
                             <component-text-dropdown #district [label]="'Quận, huyện'" [isLoading]="isLoadingDistrict"
                                 [widthBlock]="430" [widthTextBox]="300" [heightTextBox]="30" [listItem]="listDistrict"
                                 textField="district_name" valueField="district_name" [hasEmitValueChange]="1"
@@ -110,6 +101,41 @@
                                 textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
                                 (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard"
                                 [defaultItem]="defaultValueWard"></component-text-dropdown>
+                            <!-- <component-text-input #coupon [label]="'Voucher'"
+                                [widthBlock]="430"></component-text-input> -->
+                            <div class="input-voucher">
+                                <span class="lable-input-voucher">Voucher:</span>
+                                <kendo-combobox #coupon [data]="listDTOCoupon" textField="IdCoupon" valueField="IdCoupon" value="IdCoupon"
+                                [valuePrimitive]="true" [filterable]="true" (filterChange)="handleCoupon($event)" [disabled]="isDisabledVoucher"
+                                placeholder="Nhập voucher" (valueChange)="searchIdCoupon($event)">
+                                <ng-template kendoComboBoxHeaderTemplate>
+                                    <div class="filter-row" style="padding-left: 10px; font-weight: 600;">
+                                        <span class="filter-Voucher">Voucher</span>
+                                        <span class="filter-Min">Giá giảm</span>
+                                        <span class="filter-Max">Tối đa</span>
+                                    </div>
+                                </ng-template>
+                                <ng-template kendoComboBoxItemTemplate let-dataItem>
+                                    <div class="filter-row">
+                                        <span class="filter-Voucher">{{ dataItem.IdCoupon}}</span>
+                                        <span class="filter-Min">{{formatCouponType(dataItem)}}</span>
+                                        <span class="filter-Max">{{ formatCurrency(dataItem.MaxBillDiscount) }}</span>
+                                    </div>
+                                </ng-template>
+                            </kendo-combobox>
+                            </div>
+
+                        </div>
+
+                        <div class="column column2">
+                            <component-text-input #ordererPhoneNumber [label]="'Số điện thoại'"
+                                [widthBlock]="430"></component-text-input>
+                            <component-text-input #phoneNumber [label]="'Số người nhận'"
+                                [widthBlock]="430"></component-text-input>
+                            <component-text-input #road [label]="'Đường'" [widthBlock]="430" [disabled]="isDisableWard"
+                                (getValue)="setNewAddress()"></component-text-input>
+                            <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="430"
+                                [disabled]="isDisableWard" (getValue)="setNewAddress()"></component-text-input>
                         </div>
                     </div>
                 </component-form>
@@ -153,7 +179,7 @@
                 <div class="grid-custom-container">
                     <ng-container *ngIf="!isAdd">
                         <kendo-grid [data]="listBillInfo">
-                            <kendo-grid-column field="ImageURL" title="Hình ảnh" [width]="100">
+                            <kendo-grid-column field="ImageURL" title="Hình ảnh" [width]="90">
                                 <ng-template kendoGridCellTemplate let-dataItem>
                                     <div class="column column-image">
                                         <img class="image" [src]="dataItem.ImageURL" alt="">
@@ -184,7 +210,7 @@
                                     </div>
                                 </ng-template>
                             </kendo-grid-column>
-                            <kendo-grid-column field="Quantity" title="Số lượng" [width]="110">
+                            <kendo-grid-column field="Quantity" title="Số lượng" [width]="90">
                                 <ng-template kendoGridCellTemplate let-dataItem>
                                     <div class="column Quantity">
                                         <div>{{dataItem.Quantity}}</div>
@@ -198,12 +224,13 @@
                                     </div>
                                 </ng-template>
                             </kendo-grid-column>
-                            <kendo-grid-column field="Status" title="Trạng thái" [width]="170">
+                            <kendo-grid-column field="Status" title="Trạng thái" [width]="200">
                                 <ng-template kendoGridCellTemplate let-dataItem>
                                     <div class="column-Status">
                                         <div [style.color]="formatStatus(dataItem.Status) | statusColor">
                                             {{formatStatus(dataItem.Status)}}
                                         </div>
+                                         <div *ngIf="dataItem.Note !== ''">{{dataItem.Note}}</div>
                                     </div>
                                 </ng-template>
                             </kendo-grid-column>
@@ -369,13 +396,29 @@
 
 
         <div class="footer-detail">
-            <component-text-area *ngIf="!isAdd" [label]="'Ghi chú'" [widthBox]="470" [height]="80" [width]="400"
+            <component-text-area *ngIf="!isAdd" [label]="'Ghi chú'" [widthBox]="540" [height]="80" [width]="470"
             [fontsize]="13" [placeholder]="itemBill.Note"></component-text-area>
             <div></div>
-            <div class="box-TotalBill">
-                <span class="label-Total">Tổng tiền</span>
-                <span *ngIf="!isAdd" class="TotalBill">{{formatCurrency(itemBill.TotalBill)}}</span>
-                <span *ngIf="isAdd" class="TotalBill">{{formatCurrency(totalPrictOfBill)}}</span>
+            <div class="box-totalBill">
+                <div class="row-voucher" *ngIf="!isAdd">
+                    <span class="label-voucher">Voucher</span>
+                    <span *ngIf="itemBill.CouponApplied" class="voucher">{{itemBill.CouponApplied}}</span>
+                    <span *ngIf="!itemBill.CouponApplied" class="voucher">Không có</span>
+                </div>
+                <div class="row-voucher" *ngIf="!isAdd">
+                    <span class="label-voucher">Khuyến mãi</span>
+                    <span *ngIf="itemBill.CouponDiscount" class="voucher" style="color: red;">- {{formatCurrency(itemBill.CouponDiscount)}}</span>
+                    <span *ngIf="!itemBill.CouponDiscount" class="voucher" style="color: red;">- {{formatCurrency(0)}}</span>
+                </div>
+                <div class="row-voucher" *ngIf="isAdd">
+                    <span class="label-voucher">Khuyến mãi</span>
+                    <span class="voucher" style="color: red;">- {{formatCurrency(numberCoupon)}}</span>
+                </div>
+                <div class="row-totalBill">
+                    <span class="label-total">Tổng tiền</span>
+                    <span *ngIf="!isAdd" class="totalBill">{{formatCurrency(itemBill.TotalBill)}}</span>
+                    <span *ngIf="isAdd" class="totalBill">{{formatCurrency(totalPrictOfBill)}}</span>
+                </div>
 
             </div>
         </div>

@@ -41,8 +41,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   listBillAllDate: GridDataResult;
   listBillWaitingAllDate: GridDataResult;
   listBillNowDate: GridDataResult;
-  pageSize: number = 4;
-  listPageSize: number[] = [1, 2, 3, 4];
+  pageSize: number = 5;
+  listPageSize: number[] = [5,10,15];
   idButton: number;
   isClickButton: { [key: number]: boolean } = {};
   tempID: number;
@@ -76,7 +76,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   nowDate: string;
   earliestDates: Date;
   obj = document.getElementsByClassName("numberCount");
-  resultAdd: number;
+  resultAdd: number = 1;
 
   // defaultItemStatusBill: DTOStatus = {
   //   Code: -1,
@@ -403,20 +403,37 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
       }
     }
-    if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonReturnDate'))) {
+    if (this.isShowAlertStatus == true && ((event.target as HTMLElement).closest('.buttonAccept'))) {
       this.getListBillWaitingAllDate();
       this.childRangeDateStart.defaultDate = this.earliestDates;
       this.startDate = this.earliestDates;
       this.setFilterDate();
       this.isShowAlertStatus = false;
+
     }
+
+    if((event.target as HTMLElement).closest('.buttonAccept')){
+      setTimeout(() => {
+      if(this.resultAdd == 0){
+          this.getListBill();
+          this.setFilterExpStatus();
+          this.getListBillWaitingAllDate();
+        setTimeout(() => {
+          this.isDetail = false;
+          this.resultAdd = 1;
+        }, 500);
+      }
+    }, 500);
+
+    }
+
     if ((event.target as HTMLElement).closest('.button-add')) {
       this.isAdd = !this.isAdd;
     }
     if ((event.target as HTMLElement).closest('.button-addBill')) {
       setTimeout(() => {
         console.log(this.resultAdd);
-        if (this.resultAdd == 0) {
+        if (this.resultAdd === 0) {
           this.getListBill();
           this.setFilterExpStatus();
           this.getListBillNowDate();
@@ -442,9 +459,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.billService.getListBill(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
       const typeDTOBill: DTOBill[] = list.ObjectReturn.Data;
       this.listBillPage = { data: typeDTOBill, total: list.ObjectReturn.Total };
-      // console.log(this.listBillPage.data);   
       this.isLoading = false;
-
     })
     // console.log(this.gridState)
   }
@@ -682,6 +697,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   //Nhận result của add Bill
   getResultAdd(result: number) {
+    console.log(result + " resultAdd");
     this.resultAdd = result;
   }
 

@@ -44,13 +44,25 @@ export class StatusColorPipe implements PipeTransform {
       case 'Không hoàn tiền':
         return '#FF1D1D'
       case 'Yêu cầu đổi trả hàng':
-        return '#09880E'
+        return '#1D4CF2'
       case 'Xác nhận đổi hàng':
+        return '#F1802E'
+      case 'Xác nhận đổi trả':
         return '#F1802E'
       case 'Đã đổi hàng':
         return '#F1802E'
       case 'Chờ thanh toán':
         return '#8F8F8F'
+      case 'Yêu cầu đổi hàng':
+        return '#1D4CF2'
+      case 'Yêu cầu trả hàng':
+        return '#1D4CF2'
+      case 'Từ chối đổi hàng':
+        return '#FF1D1D'
+      case 'Từ chối trả hàng':
+        return '#FF1D1D'
+      case 'Hoàn tất đơn hàng':
+        return '#F1802E'
       case 'Hoạt động':
         return '#09880E'
       case 'Đang được sử dụng':

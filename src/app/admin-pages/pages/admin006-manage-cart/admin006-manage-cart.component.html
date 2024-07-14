@@ -134,7 +134,7 @@
 
 
             <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
-                <kendo-pager-page-sizes pagerGrid [pageSizes]="[1,2,3,4]"></kendo-pager-page-sizes>
+                <kendo-pager-page-sizes pagerGrid [pageSizes]="[5,10,15]"></kendo-pager-page-sizes>
                 <div class="pager-buttons">
                     <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
                     <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
@@ -164,7 +164,7 @@
 </div>
 
 <ng-container *ngIf="isDetail">
-    <app-admin006-detail-cart [listData]="listBillInfo" [itemData]="itemBill"></app-admin006-detail-cart>
+    <app-admin006-detail-cart [listData]="listBillInfo" [itemData]="itemBill" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>
 </ng-container>
 <ng-container *ngIf="isAdd">
     <app-admin006-detail-cart [isAdd]="isAdd" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>

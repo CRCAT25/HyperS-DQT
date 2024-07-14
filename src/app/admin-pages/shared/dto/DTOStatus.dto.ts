@@ -222,7 +222,7 @@ export const listStatus: DTOStatus[] = [
                 {
                     Code: 11,
                     Status: "Xác nhận đã nhận hàng",
-                    Icon: "fa-circle-check",
+                    Icon: "fa-box-open",
                     IsChecked: false
                 }
             ]
@@ -389,7 +389,7 @@ export const listStatus: DTOStatus[] = [
     },
     {
         Code: 22,
-        Status: "Hoàn tất đơn",
+        Status: "Hoàn tất đơn hàng",
         Icon: "fa-circle-check",
         IsChecked: false,
         ListNextStatus:
@@ -442,11 +442,11 @@ export const listStatusOfBillInfo: DTOStatus[] = [
         Icon: "fa-rotate-left",
         IsChecked: false,
         ListNextStatus:
-            [,
+            [
                 {
                     Code: 11,
                     Status: "Xác nhận đã nhận hàng",
-                    Icon: "fa-circle-check",
+                    Icon: "fa-box-open",
                     IsChecked: false
                 }
             ]

@@ -2,9 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { State } from '@progress/kendo-data-query';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { DTOUpdateCouponRequest } from '../dto/DTOUpdateCouponRequest.dto';
+import { DTOCoupon } from '../dto/DTOCoupon.dto';
 
 @Injectable({
     providedIn: 'root'
@@ -57,5 +58,22 @@ export class CouponService {
                     return throwError(error);
                 })
             );
+    }
+
+    getCouponByIdCoupon(id: string): Observable<DTOCoupon> {
+        return this.getListCoupon({}).pipe(
+            map((response: DTOResponse) => {
+                const coupon = response.ObjectReturn.Data.find((item: DTOCoupon) => item.IdCoupon === id);
+                if (coupon) {
+                    return coupon;
+                } else {
+                    throw new Error('Coupon not found or inactive');
+                }
+            }),
+            catchError(error => {
+                console.error('Error retrieving coupon:', error);
+                return throwError(error);
+            })
+        );
     }
 }
