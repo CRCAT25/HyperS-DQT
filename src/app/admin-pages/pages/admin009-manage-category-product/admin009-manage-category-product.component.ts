@@ -88,10 +88,10 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   }
 
   // Lấy danh sách các loại sản phẩm
-  getListProductType(){
+  getListProductType() {
     this.isTypeLoading = true;
     this.productTypeService.getListProductType().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-      if(res.StatusCode === 0){
+      if (res.StatusCode === 0) {
         this.listType = { data: res.ObjectReturn.Data, total: res.ObjectReturn.Total };
         this.isTypeLoading = false;
       }
@@ -152,25 +152,29 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   addBrand() {
     if (this.permission === 'Admin') {
       if (this.checkValidFormBrand()) {
-        const brand: DTOBrand = {
+        const listIdBrand: string[] = this.listBrand.data.map(item => item.IdBrand);
+        if (listIdBrand.includes(this.childIdBrand.valueTextBox)) {
+          this.notiService.Show('Tên thương hiệu đã bị trùng', 'error');
+          return;
+        }
+        const brand: { Code: number, IdBrand: string, BrandName: string, ImageUrl: string } = {
           Code: 0,
           IdBrand: this.childIdBrand.valueTextBox,
-          Name: this.childNameBrand.valueTextBox,
+          BrandName: this.childNameBrand.valueTextBox,
           ImageUrl: this.childImgBrand.imageHandle.ImgUrl
         }
         const req: DTOUpdateBrandRequest = {
           Brand: brand,
-          Properties: ['IdBrand', 'Name', 'ImageUrl']
+          Properties: ['IdBrand', 'BrandName', 'ImageUrl'] // Lỗi DTO backend nên sửa Name thành BrandName. Chú ý
         }
         this.brandAdminService.updateBrand(req).subscribe((res: DTOResponse) => {
-          console.log(res);
-          if(res.StatusCode === 0){
+          if (res.StatusCode === 0) {
             this.notiService.Show('Thêm mới thương hiệu thành công', 'success');
             this.getListBrand();
             this.resetFormBrand();
           }
         }, error => {
-          this.notiService.Show('Thêm mới đã xảy ra lỗi: ' + error, 'error')
+          this.notiService.Show('Thêm mới đã xảy ra lỗi: ' + error, 'error');
         })
       }
     }
@@ -179,13 +183,45 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
     }
   }
 
-  updateBrand(){
-
+  updateBrand() {
+    if (this.permission === 'Admin') {
+      if (this.checkValidFormBrand()) {
+        const listIdBrand: string[] = this.listBrand.data.map(item => item.IdBrand);
+        if (!listIdBrand.includes(this.childIdBrand.valueTextBox)) {
+          this.notiService.Show('Tên thương hiệu không tồn tại', 'error');
+          return;
+        }
+        const brand: { Code: number, IdBrand: string, BrandName: string, ImageUrl: string } = {
+          Code: this.selectedBrand[0],
+          IdBrand: this.childIdBrand.valueTextBox,
+          BrandName: this.childNameBrand.valueTextBox,
+          ImageUrl: this.childImgBrand.imageHandle.ImgUrl
+        }
+        const req: DTOUpdateBrandRequest = {
+          Brand: brand,
+          Properties: ['IdBrand', 'BrandName', 'ImageUrl'] // Lỗi DTO backend nên sửa Name thành BrandName. Chú ý
+        }
+        this.brandAdminService.updateBrand(req).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            this.notiService.Show('Cập nhật thương hiệu thành công', 'success');
+            this.getListBrand();
+            this.resetFormBrand();
+          }
+        }, error => {
+          this.notiService.Show('Cập nhật đã xảy ra lỗi: ' + error, 'error')
+        })
+      }
+    }
+    else {
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+    }
   }
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('.content-form') && !(event.target as HTMLElement).closest('.group-button')) {
+    if (!(event.target as HTMLElement).closest('.content-form')
+      && !(event.target as HTMLElement).closest('.group-button')
+      && !(event.target as HTMLElement).closest('tr')) {
       this.selectedBrand = [];
       this.resetFormBrand();
     }

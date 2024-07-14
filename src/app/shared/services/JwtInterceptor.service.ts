@@ -24,6 +24,9 @@ export class JwtInterceptor implements HttpInterceptor{
                 if(error.status == 401){
                     this.router.navigate(["account/login"])
                 }
+                else if(error.status == 403){
+                    this.router.navigate(["ecom/home"])
+                }
                 return throwError(error);
             })
         )
