@@ -13,6 +13,7 @@ import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToP
 export class BillService {
     private direct = 'https://hypersapi.onrender.com';
     private urlGetListBill = this.direct + "/api/bill/GetListBill";
+    private urlGetBill = this.direct + "/api/bill/GetBill";
     private urlUpdateBill = "https://hypersapi.onrender.com/api/bill/UpdateBill"
 
 
@@ -36,6 +37,15 @@ export class BillService {
             })
           );
     }
+
+    getBillByCode(code: number): Observable<DTOResponse> {
+      const httpOptions = this.getHttpOptions();
+      const body = {
+          'Code': code
+      }
+      return this.httpClient.post<DTOResponse>(this.urlGetBill, body, httpOptions)
+          .pipe();
+  }
 
     updateBill(req: DTOUpdateBillRequest): Observable<any> {
         const httpOptions = this.getHttpOptions();

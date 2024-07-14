@@ -38,6 +38,24 @@
                 width: 250px;
             }
 
+            .filter-Voucher{
+                display: flex;
+                justify-content: flex-start;
+                width: 120px;
+            }
+
+            .filter-Min{
+                display: flex;
+                justify-content: center;
+                width: 70px;
+            }
+
+            .filter-Max{
+                display: flex;
+                justify-content: flex-end;
+                width: 95px;
+            }
+
             .filter-IdProduct{
                 width: 160px;
                 font-weight: 600;
@@ -199,8 +217,20 @@
                                         padding: 0;
                                     }
                                 }
-
                             }
+
+                            .input-voucher{
+                                display: flex;
+                                justify-content: space-between;
+                                width: 430px;
+
+                                kendo-combobox{
+                                    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
+                                    border: 1px solid rgb(128, 128, 128);
+                                    width: 300px;
+                                }
+                            }
+
                         }
 
                     }
@@ -301,10 +331,18 @@
                                 border-radius: 5px;
                             }
 
-                            th.k-table-th[aria-colindex="7"],
+                            th.k-table-th[aria-colindex="7"]{
+                                display: flex ;
+                                justify-content: flex-end ;
+                            }
+
                             .column-Status {
                                 display: flex;
-                                justify-content: flex-end;
+                                flex-direction: column;
+                                text-align: right;           
+                                gap: 5px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
                             }
 
                             th.k-table-th[aria-colindex="8"] {
@@ -414,21 +452,40 @@
                     padding-top: 10px;
 
 
-                    .box-TotalBill {
-                        display: flex;
-                        gap: 35px;
+                    .box-totalBill {
                         box-shadow: $box-shadow3;
                         border-radius: 5px;
                         padding: 10px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
 
-                        .label-Total {
-                            font-size: 17px;
-                            font-weight: 600;
+                        .row-voucher{
+                            display: flex;
+                            justify-content: space-between;
+
+                            .label-voucher {
+                                font-size: 15px;
+                            }
+    
+                            .voucher {
+                                font-size: 15px;
+                            }  
                         }
 
-                        .TotalBill {
-                            font-size: 17px;
-                            font-weight: 600;
+                        .row-totalBill{
+                            display: flex;
+                            gap: 35px;
+
+                            .label-total {
+                                font-size: 17px;
+                                font-weight: 600;
+                            }
+    
+                            .totalBill {
+                                font-size: 15px;
+                                font-weight: 600;
+                            }
                         }
                     }
                 }

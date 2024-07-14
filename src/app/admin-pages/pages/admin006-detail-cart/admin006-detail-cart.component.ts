@@ -24,6 +24,8 @@ import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-b
 import { isAlphabetWithSingleSpace, isValidPhoneNumber } from 'src/app/shared/utils/utils';
 import { FilterDescriptor, State } from '@progress/kendo-data-query';
 import { GridDataResult } from '@progress/kendo-angular-grid';
+import { CouponService } from '../../shared/service/coupon.service';
+import { DTOCoupon } from '../../shared/dto/DTOCoupon.dto';
 
 
 interface PaymentMethod {
@@ -229,6 +231,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   totalPrictOfBill: number = 0;
   discountProduct: number;
   setStatusBill: number;
+  idCoupon: string = null;
+  minCoupon: number = 0;
+  maxCoupon: number = 0;
+  numberCoupon: number = 0;
+  isDisabledVoucher: boolean = true;
   PaymentMethodDropDown: PaymentMethod[] = [
     {
       Code: 0,
@@ -277,6 +284,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
 
   @ViewChild('name') childName!: TextInputComponent;
+  @ViewChild('ordererPhoneNumber') childOrdererPhoneNumber!: TextInputComponent;
   @ViewChild('phoneNumber') childPhoneNumber!: TextInputComponent;
   @ViewChild('method') childMethod!: TextDropdownComponent;
   @ViewChild('note') childNote!: TextAreaComponent;
@@ -285,9 +293,13 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @ViewChild('ward') childWard!: TextDropdownComponent;
   @ViewChild('specific') childSpecific!: TextInputComponent;
   @ViewChild('road') childRoad!: TextInputComponent;
+  @ViewChild('coupon') childCoupon!: SearchBarComponent;
   @ViewChild('search') childSearch!: SearchBarComponent;
 
+
   filterProductActive: FilterDescriptor = { field: 'Status', operator: 'eq', value: 0, ignoreCase: true };
+  filterCouponActive: FilterDescriptor = { field: 'Status', operator: 'eq', value: 2, ignoreCase: true };
+  filterCouponAllCount: FilterDescriptor = { field: 'ApplyTo', operator: 'eq', value: 0, ignoreCase: true };
 
   gridStateProduct: State = {
     sort: [
@@ -304,6 +316,27 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
   }
 
+  gridStateCoupon: State = {
+    sort: [
+      {
+        "field": "Code",
+        "dir": "asc"
+      }
+    ],
+    filter: {
+      logic: "and",
+      filters: [
+        this.filterCouponActive,
+        this.filterCouponAllCount
+      ]
+    }
+  }
+
+
+
+  listCouponAPI: GridDataResult;
+  listDTOCoupon: DTOCoupon[];
+  originalListDTOCoupon: DTOCoupon[];
   listProductAPI: GridDataResult;
   listDTOProduct: DTOProduct[];
   originalListDTOProduct: DTOProduct[];
@@ -314,6 +347,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.getListBillInfo();
     }
     this.APIGetProvince();
+    this.getListCoupon();
     this.getListProduct();
   }
 
@@ -327,7 +361,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     private notiService: NotiService,
     private paymentService: PaymentService,
     private productService: ProductAdminService,
-    private productAdminService: ProductAdminService) { }
+    private productAdminService: ProductAdminService,
+    private couponService: CouponService) { }
 
 
 
@@ -335,10 +370,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   getListBillInfo() {
     this.itemBill = this.itemData;
     this.listBillInfo = this.listData;
-    console.log("itemBill");
-    console.log(this.itemBill);
-    console.log("b");
-    console.log(this.itemBill.ListBillInfo);
     this.specialAddress = this.getSpecialAddress(this.itemBill.ShippingAddress);
   }
 
@@ -432,6 +463,13 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       default:
         return 'Unknow';
     }
+  }
+
+  // Kiểm tra giá trị giảm giá
+  formatCouponType(coupon: DTOCoupon) {
+    if (coupon.CouponType === 0) return coupon.PercentDiscount + '%';
+    if (coupon.CouponType === 1) return this.formatCurrency(coupon.DirectDiscount);
+    return 'Lỗi giá trị giảm giá';
   }
 
   APIGetProvince(): void {
@@ -605,7 +643,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   ClickButtonAction(id: number, event: Event, idStatus: number) {
     const status = this.listStatus.find(status => status.Code === idStatus);
     this.listNextStatus = status ? status.ListNextStatus : null;
-
     if (this.tempID !== id) {
       this.isClickButton[this.tempID] = false;
     }
@@ -625,9 +662,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
   //Check show alert
   clickDropDownAction(item: DTOBillInfo, value: any) {
-    this.itemBillInfo = item;
-    this.objItemStatus = value
-    this.isShowAlert = !this.isShowAlert;
+    if(this.itemBill.Status !== 22){
+      this.itemBillInfo = item;
+      this.objItemStatus = value
+      this.isShowAlert = !this.isShowAlert;
+    }
   }
 
   @HostListener('document:click', ['$event'])
@@ -672,6 +711,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
         SizeSelected: this.sizeSelected,
       }
       if (this.sizeSelected && this.inputQuantity > 0) {
+        this.isDisabledVoucher = false;
         if (this.listProductsInCart.length > 0) {
           const productExist = this.listProductsInCart.find(item => item.Product.IdProduct === this.itemProduct.IdProduct && item.SizeSelected.Size === this.sizeSelected.Size);
           if (productExist) {
@@ -690,30 +730,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
             this.listProductsInCart.push(product);
             this.addSuccess();
           }
-          //For listProductInCart để push product vào
-
-          // for (let i = 0; i < this.listProductsInCart.length; i++) {
-          //   let item = this.listProductsInCart[i];
-          //   console.log(item);
-          //   if(this.itemProduct.IdProduct == item.Product.IdProduct && this.sizeSelected.Size == item.SizeSelected.Size){
-          //     const totalQuantity = item.Quantity + this.inputQuantity;
-          //     if(totalQuantity > this.stockOfSizeSelected){
-          //       this.notiService.Show("Số lượng còn lại trong kho: "+ this.stockOfSizeSelected, "warning");
-          //     } else{
-          //       console.log('b');
-          //       item.Quantity += this.inputQuantity;
-          //       item.TotalPriceOfProduct = this.itemProduct.Price * totalQuantity;
-          //       this.addSuccess();
-          //       break;
-          //     }
-          //   } else if (this.sizeSelected.Size !== item.SizeSelected.Size) {
-          //     console.log('a');
-          //     this.listProductsInCart.push(product);
-          //     this.addSuccess();
-          //     break;
-          //   }
-          // }
-
         } else {
           this.totalPriceOfProduct = 0;
           this.listProductsInCart.push(product);
@@ -723,18 +739,14 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       } else {
         this.notiService.Show("Vui lòng chọn size và số lượng", "warning");
       }
-      // console.log(this.listProductsInCart);
       this.totalPrictOfBill = 0;
       this.listProductsInCart.forEach(item => {
         this.totalPrictOfBill += item.TotalPriceOfProduct;
       });
+      if(this.idCoupon && this.idCoupon !== null){
+        this.searchIdCoupon(this.idCoupon);
+      }
     }
-    // if((event.target as HTMLElement).closest('.button-x')){
-    //   this.notiService.Show("Xóa thành công", "success");
-    //   this.listProduct = this.listProduct.filter(product => product.IdProduct !== this.itemProduct!.IdProduct);
-    //   this.isProcessAdd = false;
-    //   console.log(this.listProduct);
-    // }
 
   }
 
@@ -747,8 +759,31 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   addSuccess() {
     this.inputQuantity = 0;
     this.totalPriceOfProduct += this.itemProduct.Price * this.inputQuantity;
+
+
     this.notiService.Show("Thêm thành công", "success");
-    this.isProcessAdd = false;
+  }
+
+  // Lấy danh sách coupon
+  getListCoupon() {
+    this.isLoading = true;
+    this.couponService.getListCoupon(this.gridStateCoupon).pipe(takeUntil(this.destroy)).subscribe(data => {
+      this.listCouponAPI = { data: data.ObjectReturn.Data, total: data.ObjectReturn.Total }
+      this.listDTOCoupon = this.listCouponAPI.data;
+      this.originalListDTOCoupon = [...this.listDTOCoupon];
+      this.isLoading = false;
+    })
+  }
+
+  // Search coupon trong combobox
+  handleCoupon(value: string) {
+    if (value) {
+      this.listDTOCoupon = this.originalListDTOCoupon.filter(coupon =>
+        coupon.IdCoupon.toLowerCase().includes(value.toLowerCase())
+      );
+    } else {
+      this.listDTOCoupon = [...this.originalListDTOCoupon]; // Reset to original list if filter is empty
+    }
   }
 
   // Lấy danh sách các product
@@ -756,26 +791,72 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.productAdminService.getListProduct(this.gridStateProduct).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listProductAPI = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
-      this.isLoading = false;
       this.listDTOProduct = this.listProductAPI.data;
       this.originalListDTOProduct = [...this.listDTOProduct]; // Copy the original list
-      console.log(this.listDTOProduct);
+      this.isLoading = false;
     });
   }
 
+
+  // Search product trong combobox
   handleFilter(value: string) {
-    if (value) {
+    if (value && this.listProductsInCart.length > 0) {
       this.listDTOProduct = this.originalListDTOProduct.filter(product =>
         product.Name.toLowerCase().includes(value.toLowerCase())
       );
     } else {
-      this.listDTOProduct = [...this.originalListDTOProduct]; // Reset to original list if filter is empty
+      this.listDTOProduct = [...this.originalListDTOProduct];
+    }
+  }
+
+  searchIdCoupon(id: string) {
+    // console.log(id);
+    if (id !== null && id !== undefined && this.listProductsInCart.length > 0) {
+      this.idCoupon = id;
+      this.couponService.getCouponByIdCoupon(id)
+        .pipe(takeUntil(this.destroy))
+        .subscribe({
+          next: item => {
+            if (item.RemainingQuantity > 0) {
+              this.idCoupon = item.IdCoupon;
+              if(item.DirectDiscount){
+                this.minCoupon = item.DirectDiscount;
+              } else if(item.PercentDiscount){
+                this.minCoupon = (this.totalPrictOfBill * item.PercentDiscount) / 100;
+              }
+
+              if(item.MaxBillDiscount){
+                this.maxCoupon = item.MaxBillDiscount;
+              }
+
+              if(this.minCoupon > this.maxCoupon){
+                this.numberCoupon = this.maxCoupon;
+              } else {
+                this.numberCoupon = this.minCoupon;
+              }
+
+              this.totalPrictOfBill -= this.numberCoupon;
+            } else {
+              this.notiService.Show("Số lượng không đủ", "warning");
+            }
+          },
+          error: err => {
+            if (err.message === 'Coupon not found or inactive') {
+              this.itemProduct = null;
+              this.notiService.Show("Không có voucher hoặc voucher bị vô hiệu hóa", "warning");
+            } else {
+              console.error('Unexpected error:', err);
+            }
+          }
+        });
+    } else {
+      this.notiService.Show("Vui lòng thêm sản phẩm", "warning");
     }
   }
 
   searchIdProduct(id: string) {
-    console.log(id);
-    if (id !== null) {
+    // console.log(id);
+    if (id !== null && id !== undefined) {
       this.productService.getProductByIdProduct(id)
         .pipe(takeUntil(this.destroy))
         .subscribe({
@@ -783,6 +864,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
             if (item.Stock > 0) {
               if (this.itemProduct) {
                 if (id !== this.itemProduct.IdProduct) {
+                  console.log(this.listProduct);
                   this.listProduct = [];
                   this.inputQuantity = 0;
                   this.valueSearch = id;
@@ -797,9 +879,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
                   // this.totalPriceOfProduct = this.priceProductAfterDiscount;
                   this.isProcessAdd = false;
                 }
-                // else if(id == this.itemProduct.IdProduct ){
-                //   this.notiService.Show("Sản phẩm đang được chọn", "warning");
-                // }
               } else {
                 this.valueSearch = id;
                 this.notiService.Show(item.Name + " số lượng còn: " + item.Stock, "success");
@@ -810,12 +889,10 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
                 this.discountOfEeachId[id] = item.Discount;
                 this.sizeSelected = null;
                 this.priceProductAfterDiscount = item.Price - ((item.Price * item.Discount) / 100);
-                // this.totalPriceOfProduct = this.priceProductAfterDiscount;
               }
             } else {
               this.notiService.Show("Số lượng không đủ", "warning");
             }
-            // console.log(this.itemProduct);
           },
           error: err => {
             if (err.message === 'Product not found or inactive') {
@@ -863,9 +940,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       if (this.inputQuantity < this.stockOfSizeSelected) {
         this.inputQuantity++;
         this.totalPriceOfProduct = this.priceProductAfterDiscount * this.inputQuantity;
-        // this.priceProductAfterDiscount = item.Price - ((item.Price * item.Discount)/100);
-        // console.log(this.priceProductAfterDiscount);
-        // this.totalPriceOfProduct = this.priceProductAfterDiscount;
       } else {
         this.notiService.Show("Số lượng còn lại trong kho là: " + this.stockOfSizeSelected, "warning");
         this.inputQuantity = this.stockOfSizeSelected;
@@ -897,21 +971,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
   }
 
-  // setToListProductInCart(type: string){
-  //   if(type == "ok"){
-  //     alert("ok")
-  //     const product: DTOProductInCart = {
-  //       Product: this.itemProduct,
-  //       Quantity: this.inputQuantity,
-  //       TotalPriceOfProduct: this.totalPriceOfProduct,
-  //       SizeSelected: this.sizeSelected,
-  //     }
-  //     this.listProductsInCart.push(product)
-  //     console.log(this.listProductsInCart);
-  //   } else if(type == "ok"){
-  //     this.listProduct.filter(product => product.IdProduct !== this.itemProduct.IdProduct);
-  //   }
-  // }
 
 
   setNewAddress() {
@@ -935,15 +994,21 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.listProductsInCart = this.listProductsInCart.filter(
       item => !(item.Product.IdProduct === value.Product.IdProduct && item.SizeSelected === value.SizeSelected)
     );
-    // const index = this.listProductsInCart.findIndex(item => item.Product.IdProduct === value.Product.IdProduct && item.SizeSelected === value.SizeSelected)
-    // if(index !== -1){
-    //   this.listProductsInCart = this.listProductsInCart.slice(index, 1)
-    // }
+
     this.notiService.Show("Xóa thành công", "success");
     this.totalPrictOfBill = 0;
     this.listProductsInCart.forEach(item => {
       this.totalPrictOfBill += item.TotalPriceOfProduct;
     });
+    if(this.listProductsInCart.length == 0){
+      this.isDisabledVoucher = true;
+      this.numberCoupon = 0;
+    } else {
+      if(this.idCoupon && this.idCoupon !== null){
+        this.searchIdCoupon(this.idCoupon);
+      }
+    }
+
     console.log(this.listProductsInCart);
   }
 
@@ -964,7 +1029,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.notiService.Show("Vui lòng chọn thị xã, trấn", "error");
       return false;
     }
-    if (!isAlphabetWithSingleSpace(this.childRoad.valueTextBox) || this.childRoad.valueTextBox == "") {
+    if (this.childRoad.valueTextBox == "") {
       this.notiService.Show("Vui lòng nhập lại thông tin đường", "error");
       return false;
     }
@@ -988,11 +1053,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   addBill() {
     const requestAddBill: DTOProcessToPayment = {
       CustomerName: this.childName.valueTextBox,
-      OrdererPhoneNumber: this.childPhoneNumber.valueTextBox,
+      OrdererPhoneNumber: this.childOrdererPhoneNumber.valueTextBox,
       PhoneNumber: this.childPhoneNumber.valueTextBox,
       ShippingAddress: this.newAddress,
       PaymentMethod: 0,
-      CouponApplied: "",
+      CouponApplied: this.idCoupon,
       // PaymentMethod: this.childMethod.value.Code,
       ListProduct: this.listProductsInCart,
       TotalBill: 0,
@@ -1028,96 +1093,80 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   }
 
   //Kiểm tra status của Bill và BillInfo
-  // checkStatusBill(status: number){
-  //   console.log("c");
-  //   console.log(this.itemBill.ListBillInfo);
-  //   //Bill status = "Khách yêu cầu đổi trả"
-  //   if(status == 14 || status == 15){
-  //     this.setStatusBill = 14;
-  //     //Bill status = "Xác nhận đổi trả" hoặc vẫn giữ "Khách yêu cầu đổi trả"
-  //   } else if (status !== 14 && status !== 15 && status !== 20 && status !== 21){ 
-  //       //Bill status = "Khách yêu cầu đổi trả"
-  //       if(this.itemBill.ListBillInfo.find(status => status.Status == 14 || status.Status == 15)){
-  //         alert('a')
-  //         this.setStatusBill = 14;
-  //         //Bill status = "Xác nhận đổi trả"
-  //       } else {
-  //         this.setStatusBill = 16;
-  //       }
-  //   } else if ((status !== 14 && status !== 15) && (status == 20 || status == 21)){ 
-  //     if(this.itemBill.Status == 14){
-  //       if(this.itemBill.ListBillInfo.find(status => status.Status !== 20 && status.Status !== 21)){
-  //         this.setStatusBill = 14;
-  //       } else{
-  //         if(this.itemBill.ListBillInfo.find(status => status.Status !== 20)){
-  //           this.setStatusBill = 22;
-  //         } else {
-  //           this.setStatusBill = 20;
-  //         }
-
-  //         if(this.itemBill.ListBillInfo.find(status => status.Status !== 21)){
-  //           this.setStatusBill = 22;
-  //         } else {
-  //           this.setStatusBill = 21;
-  //         }
-  //       }
-  //     }
-  //   } 
-  //   // else if (status == 19 || status == 12 || status == 13){
-
-  //   // }
-    
-  // }
-
-  checkStatusBill(status: number){
-    console.log("c");
-    console.log(this.itemBill.ListBillInfo);
-    
-    // Case 1: status is 14 or 15
+  checkStatusBill(status: number) {
+    // Case 1: status là 14 hoặc 15
     if (status === 14 || status === 15) {
-        this.setStatusBill = 14;
-    } 
-    // Case 2: status is not 14, 15, 20, or 21
-    else if (status !== 14 && status !== 15 && status !== 20 && status !== 21) {
-        if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status === 14 || item.Status === 15))) {
-            this.setStatusBill = 14;
-        } else {
-            this.setStatusBill = 16;
-        }
-    } 
-    // Case 3: status is 20 or 21
-    else if (status === 20 || status === 21) {
-      alert('a')
-        if (this.itemBill.Status === 14) {
-          if(status == 20){
-            alert('b')
-            if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status !== 20 && item.Status !== 8))) {
-              console.log(this.itemBill.ListBillInfo);
-              if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 14 || item.Status == 15))) {
-                alert('c')
-                this.setStatusBill = 14;
-              } else {
-                this.setStatusBill = 22;
-              }
-            } else {
-              this.setStatusBill = 20;
-            }
-          } else if(status == 21){
-            if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status !== 21 && item.Status !== 8))) {
-              if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 14 || item.Status == 15))) {
-                this.setStatusBill = 14;
-              } else {
-                this.setStatusBill = 22;
-              }
-            } else {
-              this.setStatusBill = 21;
-            }
-          }
-        } else if(this.itemBill.Status === 20 || this.itemBill.Status === 21){
-
-        }
+      this.setStatusBill = 14;
     }
-}
+    // Case 2: status là 10 hoặc 11 hoặc 18
+    // status !== 14 && status !== 15 && status !== 20 && status !== 21 && status !== 12 && status !== 13 && status !== 19
+    else if (status === 10 || status === 11 || status === 18) {
+      if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status === 14 || item.Status === 15))) {
+        this.setStatusBill = 14;
+      } else {
+        this.setStatusBill = 16;
+      }
+    }
+    // Case 3: status là 20 hoặc 21
+    else if (status === 20 || status === 21) {
+      if (this.itemBill.Status === 14) {
+        if (status == 20) {
+          if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status !== 20 && item.Status !== 8))) {
+            if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 14 || item.Status == 15))) {
+              this.setStatusBill = 14;
+            }
+            else if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 10 || item.Status == 11 || item.Status == 18))) {
+              this.setStatusBill = 16;
+            }
+            else {
+              this.setStatusBill = 22;
+            }
+          } else {
+            this.setStatusBill = 20;
+          }
+        } else if (status == 21) {
+          if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status !== 21 && item.Status !== 8))) {
+            if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 14 || item.Status == 15))) {
+              this.setStatusBill = 14;
+            }
+            else if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 10 || item.Status == 11 || item.Status == 18))) {
+              this.setStatusBill = 16;
+            }
+            else {
+              this.setStatusBill = 22;
+            }
+          } else {
+            this.setStatusBill = 21;
+          }
+        }
+      }
+      else if (this.itemBill.Status === 16) {
+        if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 10 || item.Status == 11 || item.Status == 18))) {
+          this.setStatusBill = 16;
+        }
+      }
+    }
+    // Case 4: status là 12 hoặc 13 hoặc 19
+    else {
+      if (this.itemBill.Status === 14) {
+        if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 14 || item.Status == 15))) {
+          this.setStatusBill = 14;
+        }
+        else {
+          this.setStatusBill = 22;
+        }
+      }
+      else if (this.itemBill.Status === 16) {
+        if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status == 10 || item.Status == 11 || item.Status == 18))) {
+          this.setStatusBill = 16;
+        }
+        else {
+          this.setStatusBill = 22;
+        }
+      }
+    }
+
+  }
 
   // Update status bill
   updateStatusBillInfo(obj: any) {
@@ -1126,21 +1175,28 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       alert(this.setStatusBill)
       let requestUpdateBill: DTOUpdateBill;
       this.itemBill.Status = obj.value;
-      if(obj.value == 13 || obj.value == 14 || obj.value == 15 || obj.value == 20 || obj.value == 21){
-        if(this.reasonFail){
+      if (obj.value == 13 || obj.value == 14 || obj.value == 15 || obj.value == 20 || obj.value == 21) {
+        if (this.reasonFail && this.reasonFail !== null) {
           let reasonBill;
           if (this.itemBill.Note && this.itemBill.Note !== null) {
-            reasonBill = this.itemBill.Note + "\n" + "- " + this.itemBillInfo.IDProduct + "_" + this.itemBillInfo.Size + ": " + obj.value + ": " + this.reasonFail;
-        } else {
-            reasonBill = "- " + this.itemBillInfo.IDProduct + "_" + this.itemBillInfo.Size + ": " + obj.value + ": " + this.reasonFail;
-        }
-          // const reasonBill: string = this.itemBill.Note + "\n" + "- " +this.itemBillInfo.IDProduct+"_"+this.itemBillInfo.Size+": "+obj.value+": "+this.reasonFail;
+            reasonBill = this.itemBill.Note + "\n" + "- " + this.itemBillInfo.IDProduct + "_" + this.itemBillInfo.Size + ": " + this.formatStatus(obj.value) + ": " + this.reasonFail;
+          } else {
+            reasonBill = "- " + this.itemBillInfo.IDProduct + "_" + this.itemBillInfo.Size + ": " + this.formatStatus(obj.value) + ": " + this.reasonFail;
+          }
           requestUpdateBill = {
             CodeBill: this.itemBill.Code,
             Status: this.setStatusBill,
             ListOfBillInfo: this.itemBill.ListBillInfo,
             Note: reasonBill,
           }
+
+          requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
+            if (billInfo.Code == this.itemBillInfo.Code) {
+              billInfo.Note = this.reasonFail;
+              billInfo.Status = obj.value;
+            }
+          })
+          this.reasonFail = null;
         } else {
           this.notiService.Show("Vui lòng nhập lí do", "warning")
           return;
@@ -1152,32 +1208,27 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
           ListOfBillInfo: this.itemBill.ListBillInfo,
           Note: this.itemBill.Note,
         }
-      }
-      // const requestUpdateBill: DTOUpdateBill = {
-      //   CodeBill: this.itemBill.Code,
-      //   Status: obj.value,
-      //   ListOfBillInfo: this.itemBill.ListBillInfo,
-      //   Note: reasonBill,
-      // }
 
-      if(requestUpdateBill){
         requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
           if (billInfo.Code == this.itemBillInfo.Code) {
             billInfo.Status = obj.value;
           }
         })
-  
+      }
+
+      if (requestUpdateBill) {
         const request: DTOUpdateBillRequest = {
           DTOUpdateBill: requestUpdateBill,
           DTOProceedToPayment: null
         }
         this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+          console.log(res);
           if (res.StatusCode === 0) {
             this.notiService.Show("Cập nhật trạng thái thành công", "success")
-            this.getListBillInfo();
+            // this.getListBillInfo();
             this.isShowAlert = false;
+            this.isLoading = true;
             this.sendValue.emit(0);
-  
           }
         }, error => {
           console.error('Error:', error);
