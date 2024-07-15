@@ -72,6 +72,10 @@ import { Admin006DetailCartComponent } from './admin-pages/pages/admin006-detail
 import { ComponentCouponComponent } from './shared/component/component-coupon/component-coupon.component';
 import { Admin009ManageCategoryProductComponent } from './admin-pages/pages/admin009-manage-category-product/admin009-manage-category-product.component';
 import { PopupExchangeReturnComponent } from './ecom-pages/shared/component/popup-exchange-return/popup-exchange-return.component';
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import 'hammerjs';
+
+
 
 @NgModule({
   declarations: [
@@ -148,7 +152,8 @@ import { PopupExchangeReturnComponent } from './ecom-pages/shared/component/popu
     NotificationModule,
     FormsModule,
     ReactiveFormsModule,
-    PopupModule
+    PopupModule,
+    ChartsModule
   ],
   providers: [LayoutService,StatusColorPipe, {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}],
   bootstrap: [AppComponent]

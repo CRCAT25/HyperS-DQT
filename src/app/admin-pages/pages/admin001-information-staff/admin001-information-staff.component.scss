@@ -1,0 +1,252 @@
+@import '../../../../styles.scss';
+@import '../../shared/style/grid.scss';
+
+::ng-deep {
+    app-admin001-information-staff {
+        height: 100%;
+
+        .admin001-info-staff {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
+            position: relative;
+
+            .header-filter-statistics {
+                display: flex;
+                justify-content: space-between;
+
+                .box-filter{
+                    @include center-vertical;
+                    gap: 20px;
+                    padding: 6px 0 12px 0;
+                    .label-filter {
+                        font-weight: 600;
+                        font-size: 14px;
+                        text-wrap: nowrap;
+                    }
+                }
+
+                .box-button{
+                    @include center-vertical;
+                    gap: 20px;
+                    padding: 6px 0 12px 0;
+
+                    .button-add {
+                        .component-button:hover {
+                            background-color: #09880E !important;
+                            color: white !important;
+                        }
+                    }
+
+                    .button-update {
+                        .component-button:hover {
+                            background-color: rgb(37, 87, 160) !important;
+                            color: white !important;
+                        }
+                    }
+                }
+
+
+            }
+
+            .content-form-staff-custom {
+                padding-bottom: 10px;
+                gap: 80px !important;
+                display: flex;
+                align-items: center;
+
+                .block-1,
+                .block-2,
+                .block-3 {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                }
+
+                .block-2 {
+                    .date-picker-born {
+                        display: flex;
+                        @include center-vertical;
+                        justify-content: space-between;
+                    }
+
+                    kendo-datepicker {
+                        width: 260px !important;
+                        flex-direction: row !important;
+                    }
+                }
+
+                .block-3 {
+
+                }
+
+                .block-4 {
+                    align-self: normal;
+                    display: flex;
+
+                    .label-import-image {
+                        padding-top: 8px;
+                        width: 90px;
+                    }
+
+                    .text-icon-container {
+                        padding-top: 4px;
+                    }
+
+                    component-import-image {
+                        .p-import-image{
+                            gap: 20px !important;
+                        }
+                        img {
+                            width: 103px !important;
+                            height: 103px !important;
+                            min-height: 100px !important;
+                        }
+                    }
+
+                    .image-container {
+                        padding-top: 8px !important;
+                    }
+
+                    i#icon-delete{
+                        display: none;
+                    }
+                }
+            }
+
+            .filter-search-container {
+                @include center-vertical;
+                justify-content: space-between;
+                gap: 20px;
+                padding: 10px 0;
+
+                .filter-search {
+                    height: 30px;
+                    display: flex;
+                    @include center-vertical;
+                    gap: 30px;
+
+                    .label-filter-search {
+                        text-transform: uppercase;
+                        font-weight: 600;
+                        font-size: 14px;
+                    }
+                }
+
+                .button-action-form {
+                    display: flex;
+                    gap: 10px;
+
+                    .button-add {
+                        .component-button:hover {
+                            color: #fff !important;
+                            background-color: #09880E !important;
+                        }
+                    }
+                }
+            }
+
+            .grid-custom-container {
+                height: calc(100vh - 61px - 78px - 187px - 56px - 30px - 40px);
+
+                kendo-grid {
+                    height: 100%;
+
+                    tr.k-table-row {
+                        max-height: 60px;
+                        height: 60px;
+                        cursor: pointer;
+                        color: #000 !important;
+                    }
+
+                    th.k-table-th[aria-colindex="1"],
+                    th.k-table-th[aria-colindex="4"],
+                    th.k-table-th[aria-colindex="5"],
+                    th.k-table-th[aria-colindex="6"] {
+                        .k-column-title {
+                            margin: auto;
+                        }
+                    }
+
+                    th.k-table-th[aria-colindex="7"] {
+                        .k-link {
+                            display: flex;
+                            justify-content: end;
+                        }
+                    }
+
+
+                    .column-2 {
+                        text-align: center;
+                        @include center-horizontal;
+
+                        img {
+                            height: 38px;
+                            width: 38px;
+                            object-fit: cover;
+                            border-radius: 3px;
+                            box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 6px;
+                        }
+                    }
+
+                    .column-3{
+                        .id{
+                            font-weight: 600;
+                        }
+                    }
+
+                    .column-5,
+                    .column-6 {
+                        text-align: center;
+                    }
+
+                    .column-7 {
+                        text-align: right;
+                    }
+
+                    td.k-table-td[aria-colindex="8"] {
+                        background-color: #fff;
+                        box-shadow: $box-shadow2;
+                        height: 44px;
+                        @include center-horizontal;
+                        overflow: visible;
+                        z-index: 0;
+                        border-left: 1px solid #2e2e2e !important;
+
+                        .button-tool-box {
+                            margin: auto;
+                            box-shadow: $box-shadow3;
+                        }
+
+                        .component-button:hover {
+                            background: #464646 !important;
+                            color: #fff !important;
+                        }
+                    }
+
+                    .tool-box-container{
+                        position: relative;
+                        @include center;
+                        margin: auto;
+
+                        .list-action{
+                            position: absolute;
+                            left: -169px;
+                            top: 0;
+
+                            component-dropdown-action{
+                                width: 169px;
+
+                                component-button{
+                                    width: 169px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+}

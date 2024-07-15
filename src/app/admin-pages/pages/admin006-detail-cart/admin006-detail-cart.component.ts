@@ -26,6 +26,7 @@ import { FilterDescriptor, State } from '@progress/kendo-data-query';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CouponService } from '../../shared/service/coupon.service';
 import { DTOCoupon } from '../../shared/dto/DTOCoupon.dto';
+import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 
 
 interface PaymentMethod {
@@ -232,10 +233,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   discountProduct: number;
   setStatusBill: number;
   idCoupon: string = null;
-  minCoupon: number = 0;
+  priceCoupon: number = 0;
   maxCoupon: number = 0;
   numberCoupon: number = 0;
   isDisabledVoucher: boolean = true;
+  nowDate: Date = new Date();
   PaymentMethodDropDown: PaymentMethod[] = [
     {
       Code: 0,
@@ -293,7 +295,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @ViewChild('ward') childWard!: TextDropdownComponent;
   @ViewChild('specific') childSpecific!: TextInputComponent;
   @ViewChild('road') childRoad!: TextInputComponent;
-  @ViewChild('coupon') childCoupon!: SearchBarComponent;
+  @ViewChild('coupon') childCoupon!: ComboBoxComponent;
   @ViewChild('search') childSearch!: SearchBarComponent;
 
 
@@ -813,29 +815,38 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     // console.log(id);
     if (id !== null && id !== undefined && this.listProductsInCart.length > 0) {
       this.idCoupon = id;
+      this.numberCoupon = 0;
+      this.totalPrictOfBill = 0;
+      this.listProductsInCart.forEach(item => {
+        this.totalPrictOfBill += item.TotalPriceOfProduct;
+      });
       this.couponService.getCouponByIdCoupon(id)
         .pipe(takeUntil(this.destroy))
         .subscribe({
           next: item => {
             if (item.RemainingQuantity > 0) {
-              this.idCoupon = item.IdCoupon;
-              if(item.DirectDiscount){
-                this.minCoupon = item.DirectDiscount;
-              } else if(item.PercentDiscount){
-                this.minCoupon = (this.totalPrictOfBill * item.PercentDiscount) / 100;
-              }
-
-              if(item.MaxBillDiscount){
-                this.maxCoupon = item.MaxBillDiscount;
-              }
-
-              if(this.minCoupon > this.maxCoupon){
-                this.numberCoupon = this.maxCoupon;
+              if(this.totalPrictOfBill >= item.MinBillPrice){
+                  this.idCoupon = item.IdCoupon;
+                  if(item.DirectDiscount){
+                    this.priceCoupon = item.DirectDiscount;
+                  } else if(item.PercentDiscount){
+                    this.priceCoupon = (this.totalPrictOfBill * item.PercentDiscount) / 100;
+                  }
+    
+                  if(item.MaxBillDiscount){
+                    this.maxCoupon = item.MaxBillDiscount;
+                  }
+    
+                  if(this.priceCoupon > this.maxCoupon){
+                    this.numberCoupon = this.maxCoupon;
+                  } else {
+                    this.numberCoupon = this.priceCoupon;
+                  }
+    
+                  this.totalPrictOfBill -= this.numberCoupon;
               } else {
-                this.numberCoupon = this.minCoupon;
+                this.notiService.Show("Yêu cầu đơn tối thiểu là: "+ this.formatCurrency(item.MinBillPrice), "warning");
               }
-
-              this.totalPrictOfBill -= this.numberCoupon;
             } else {
               this.notiService.Show("Số lượng không đủ", "warning");
             }
@@ -850,7 +861,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
           }
         });
     } else {
-      this.notiService.Show("Vui lòng thêm sản phẩm", "warning");
+      this.numberCoupon = 0;
+      this.totalPrictOfBill = 0;
+      this.listProductsInCart.forEach(item => {
+        this.totalPrictOfBill += item.TotalPriceOfProduct;
+      });
     }
   }
 
@@ -1060,7 +1075,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       CouponApplied: this.idCoupon,
       // PaymentMethod: this.childMethod.value.Code,
       ListProduct: this.listProductsInCart,
-      TotalBill: 0,
+      TotalBill: this.totalPrictOfBill,
       IsGuess: true,
     }
 
