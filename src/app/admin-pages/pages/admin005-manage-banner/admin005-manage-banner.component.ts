@@ -13,7 +13,6 @@ import { CheckboxlistComponent } from '../../shared/component/checkboxlist/check
 import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
 import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
 import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
-import { TextAreaComponent } from 'src/app/shared/component/text-area/text-area.component';
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
 import { isEmpty } from 'src/app/shared/utils/utils';
 import { DTOUpdateBannerRequest } from '../../shared/dto/DTOUpdateBannerRequest.dto';
@@ -346,7 +345,7 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
 
   // Mở drawer
   openDrawer(type: 'structure' | 'update' | 'add') {
-    if(this.permission !== 'Admin' && type === 'add'){
+    if(this.permission !== 'Admin' && this.permission === 'EventManager' && type === 'add'){
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }
@@ -400,7 +399,7 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
 
   // Hàm cập nhật banner
   updateBanner() {
-    if(this.permission === 'Admin'){
+    if(this.permission === 'Admin' || this.permission === 'EventManager'){
       if (this.checkUpdatable()) {
         const banner: DTOBanner = {
           Code: this.selectedBannerToUpdate.Code,
@@ -435,7 +434,7 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
 
   // Cập nhật trạng thái của banner
   updateStatusBanner(res: any, banner: DTOBanner) {
-    if(this.permission === 'Admin'){
+    if(this.permission === 'Admin' || this.permission === 'EventManager'){
       if (res.value === 1) {
         banner.Status = 0;
         const req: DTOUpdateBannerRequest = {

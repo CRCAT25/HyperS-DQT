@@ -152,6 +152,10 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Reset thông tin trong form thương hiệu và loại sản phẩm
   resetForm() {
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
     this.childIdBrand.resetValue();
     this.childNameBrand.resetValue();
     this.childImgBrand.setImgURL(this.imgDefault);
@@ -191,7 +195,7 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Quản lý brand: thêm mới hoặc cập nhật
   manageBrand(action: 'add' | 'update') {
-    if (this.permission !== 'Admin') {
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }
@@ -238,7 +242,7 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Quản lý loại sản phẩm: thêm mới hoặc cập nhật
   manageProductType(action: 'add' | 'update') {
-    if (this.permission !== 'Admin') {
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }

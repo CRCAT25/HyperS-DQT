@@ -13,6 +13,7 @@ export class StaffService {
 
     private urlGetCurrentStaffInfo = this.direct + "/api/Staff/GetCurrentStaffInfo";
     private urlGetListStaff = this.direct + "/api/Staff/GetListStaff";
+    private urlGetListRole = this.direct + "/api/Auth/GetListRoles";
 
     constructor(private httpClient: HttpClient) { }
 
@@ -41,6 +42,17 @@ export class StaffService {
             .pipe(
                 catchError(error => {
                     console.error('Error retrieving current staff:', error);
+                    return throwError(error);
+                })
+            );
+    }
+
+    getListRoleStaff(): Observable<DTOResponse> {
+        const httpOptions = this.getHttpOptions();
+        return this.httpClient.post<DTOResponse>(this.urlGetListRole, {}, httpOptions)
+            .pipe(
+                catchError(error => {
+                    console.error('Error retrieving list role:', error);
                     return throwError(error);
                 })
             );
