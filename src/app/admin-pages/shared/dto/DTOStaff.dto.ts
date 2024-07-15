@@ -4,7 +4,7 @@ export class DTOStaff {
     Name: string
     ImageUrl: string
     Gender: number
-    Birthday: Date
+    Birthday: string
     PhoneNumber: string
     Email: string
     Address: string
