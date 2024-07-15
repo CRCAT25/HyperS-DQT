@@ -148,8 +148,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       this.productSelected.Color = '-- Màu sắc --';
       this.productSelected.CodeBrand = -1;
       this.productSelected.CodeProductType = -1;
-      this.childStartSize.valueTextBox = '35';
-      this.childEndSize.valueTextBox = '48';
+      if(this.childStartSize) this.childStartSize.valueTextBox = '35';
+      if(this.childEndSize) this.childEndSize.valueTextBox = '48';
     }
     else {
       this.productAdminService.getProductByCode(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
