@@ -13,15 +13,41 @@
             position: relative;
 
             .header-filter-statistics {
-                @include center-vertical;
-                gap: 20px;
-                padding: 6px 0 12px 0;
+                display: flex;
+                justify-content: space-between;
 
-                .label-filter {
-                    font-weight: 600;
-                    font-size: 14px;
-                    text-wrap: nowrap;
+                .box-filter{
+                    @include center-vertical;
+                    gap: 20px;
+                    padding: 6px 0 12px 0;
+                    .label-filter {
+                        font-weight: 600;
+                        font-size: 14px;
+                        text-wrap: nowrap;
+                    }
                 }
+
+                .box-button{
+                    @include center-vertical;
+                    gap: 20px;
+                    padding: 6px 0 12px 0;
+
+                    .button-add {
+                        .component-button:hover {
+                            background-color: #09880E !important;
+                            color: white !important;
+                        }
+                    }
+
+                    .button-update {
+                        .component-button:hover {
+                            background-color: rgb(37, 87, 160) !important;
+                            color: white !important;
+                        }
+                    }
+                }
+
+
             }
 
             .content-form-staff-custom {

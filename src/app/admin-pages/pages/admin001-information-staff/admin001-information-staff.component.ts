@@ -16,6 +16,7 @@ import { DatepickerComponent } from '../../shared/component/datepicker/datepicke
 import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/text-dropdown.component';
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
 import { DTOUpdateStaffRequest } from '../../shared/dto/DTOUpdateStaffRequest.dto';
+import { DTORole } from '../../shared/dto/DTORole.dto';
 
 interface Gender {
   Code: number
@@ -43,7 +44,8 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   listPageSize: number[] = [5, 10, 15];
   codeStaffSelected: number;
   newAddress: string;
-
+  isUpdate: boolean = false;
+  listRoles: DTORole[] = [];
   listGender: Gender[] = [
     {
       Code: 0,
@@ -145,6 +147,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.getListStaff();
     this.getPermission();
     this.APIGetProvince();
+    this.getListRole();
     this.getStatistics();
   }
 
@@ -237,7 +240,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       } finally {
         this.isLoadingProvince = false
       }
-
     })
   }
 
@@ -344,7 +346,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   // Set filter tất cả
   setFilterData() {
     this.gridState.filter.filters = [];
-    // this.pushToGridState(null, this.filterSearch);
+    this.pushToGridState(null, this.filterSearch);
     this.pushToGridState(null, this.filterAllStatistics);
     this.getListStaff();
     console.log(this.gridState);
@@ -390,6 +392,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.selectedCodeStaff.push(e.selectedRows[0]?.dataItem.Code);
     this.isDisableDistrict = true;
     this.isDisableWard = true;
+    this.isUpdate = true;
     const selectedCustomer = e.selectedRows[0]?.dataItem; // Là object Customer sau khi chọn 1 row của grid
     this.bindSelectedCustomerToForm(selectedCustomer);
   }
@@ -467,6 +470,25 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       Icon: "fa-circle-check",
     }]
     return [];
+  }
+
+  // Lấy danh sách các role
+  getListRole(){
+    // this.staffService.getListRoles().pipe(takeUntil(this.destroy)).subscribe((data) => {
+    //   try {
+    //     if (data) {
+
+    //       this.listRoles = data
+    //     } else {
+    //       this.notiService.Show("Error when fetching data", "error")
+    //     }
+    //   } catch {
+
+    //   } finally {
+    //     this.isLoadingProvince = false
+    //   }
+    // })
+    // console.log(this.listRoles);
   }
 
     // Cập nhật trạng thái của nhân viên

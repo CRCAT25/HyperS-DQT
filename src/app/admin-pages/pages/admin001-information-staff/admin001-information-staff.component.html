@@ -1,18 +1,35 @@
 <div class="admin001-info-staff">
     <div class="header-filter-statistics">
-        <div class="label-filter">LỌC DỮ LIỆU</div>
+        <div class="box-filter">
+            <div class="label-filter">LỌC DỮ LIỆU</div>
+            <!-- Tổng số lượng nhân viên -->
+            <component-statistics #accountActive [isSelectedDefault]="true" [valueField]="valueTotalStaff"
+                textField="Tổng số lượng tài khoản"
+                (getSelected)="pushStatisticsToAllStatistics(filterAllStaff, $event)"></component-statistics>
 
-        <!-- Tổng số lượng nhân viên -->
-        <component-statistics #accountActive [isSelectedDefault]="true" [valueField]="valueTotalStaff"
-        textField="Tổng số lượng tài khoản" (getSelected)="pushStatisticsToAllStatistics(filterAllStaff, $event)"></component-statistics>
+            <!-- Số lượng tài khoản hoạt động -->
+            <component-statistics #accountActive textField="Tài khoản đang hoạt động"
+                [valueField]="valueTotalStaffActive" color="#09880E"
+                (getSelected)="pushStatisticsToAllStatistics(filterStaffActive, $event)"></component-statistics>
 
-        <!-- Số lượng tài khoản hoạt động -->
-        <component-statistics #accountActive textField="Tài khoản đang hoạt động" [valueField]="valueTotalStaffActive"
-            color="#09880E" (getSelected)="pushStatisticsToAllStatistics(filterStaffActive, $event)"></component-statistics>
+            <!-- Số lượng tài khoản vô hiệu hóa -->
+            <component-statistics #accountActive textField="Tài khoản bị vô hiệu hóa"
+                [valueField]="valueTotalStaffDisable" color="#FF1D1D"
+                (getSelected)="pushStatisticsToAllStatistics(filterStaffDisable, $event)"></component-statistics>
 
-        <!-- Số lượng tài khoản vô hiệu hóa -->
-        <component-statistics #accountActive textField="Tài khoản bị vô hiệu hóa" [valueField]="valueTotalStaffDisable"
-            color="#FF1D1D" (getSelected)="pushStatisticsToAllStatistics(filterStaffDisable, $event)"></component-statistics>
+        </div>
+
+        <div class="box-button">
+            <component-button *ngIf="isUpdate" class="button-update" [color]="'rgb(37, 87, 160)'" [bgColor]="'white'" [text]="'Cập nhật'" [classIconFontAwesome]="'fa-floppy-disk'"
+                [borderColor]="'rgb(37, 87, 160)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+            </component-button>
+
+            <component-button class="button-add" [color]="'#09880E'" [bgColor]="'white'" [text]="'Thêm mới nhân viên'"
+                [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+            </component-button>
+
+
+        </div>
     </div>
 
     <div class="form">
@@ -53,8 +70,8 @@
                     <component-text-dropdown #district [label]="'Quận, huyện'" [isLoading]="isLoadingDistrict"
                         [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listDistrict"
                         textField="district_name" valueField="district_name" [hasEmitValueChange]="1"
-                        (valueChange)="handleChangeDistrict($event)" [disabled]="isDisableDistrict" [value]="districtBiding"
-                        [defaultItem]="defaulValueDistrict"></component-text-dropdown>
+                        (valueChange)="handleChangeDistrict($event)" [disabled]="isDisableDistrict"
+                        [value]="districtBiding" [defaultItem]="defaulValueDistrict"></component-text-dropdown>
 
                 </div>
 
@@ -68,6 +85,11 @@
                         [widthTextBox]="260"></component-text-input>
                     <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="370"
                         [widthTextBox]="260"></component-text-input>
+                    <component-text-dropdown #ward [label]="'Xã, thị trấn'" [isLoading]="isLoadingWard"
+                        [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listWard"
+                        textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
+                        (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard" [value]="wardBiding"
+                        [defaultItem]="defaultValueWard"></component-text-dropdown>
                 </div>
 
                 <div class="block-4">

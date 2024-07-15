@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { DTOResponeAddress } from 'src/app/ecom-pages/shared/dto/DTOResponeAddress';
 import { DTOStaff } from '../dto/DTOStaff.dto';
 import { DTOUpdateStaffRequest } from '../dto/DTOUpdateStaffRequest.dto';
-
+import { DTORole } from '../dto/DTORole.dto';
 @Injectable({
     providedIn: 'root'
 })
@@ -20,6 +20,7 @@ export class StaffService {
     private urlGetDistrict = "https://vapi.vnappmob.com/api/province/district/"
     private urlGetWard = "https://vapi.vnappmob.com/api/province/ward/"
     private urlUpdateStaff = this.direct + "/api/Auth/UpdateStaff";
+    private urlGetListRoles = this.direct + "/api/Auth/GetListRoles";
 
     constructor(private httpClient: HttpClient) { }
 
@@ -87,12 +88,12 @@ export class StaffService {
     updateStaff(req: DTOUpdateStaffRequest): Observable<any> {
         const httpOptions = this.getHttpOptions();
         return this.httpClient.post(this.urlUpdateStaff, req, httpOptions)
-          .pipe(
-            catchError(error => {
-              console.error('Error updating product:', error);
-              return throwError(error);
-            })
-          );
-      }
+            .pipe(
+                catchError(error => {
+                    console.error('Error updating product:', error);
+                    return throwError(error);
+                })
+            );
+    }
 
 }
