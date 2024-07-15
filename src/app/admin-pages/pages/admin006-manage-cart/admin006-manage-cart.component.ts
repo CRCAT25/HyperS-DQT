@@ -433,13 +433,15 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     if ((event.target as HTMLElement).closest('.button-addBill')) {
       setTimeout(() => {
         console.log(this.resultAdd);
-        if (this.resultAdd === 0) {
+        if (this.resultAdd == 0) {
           this.getListBill();
           this.setFilterExpStatus();
           this.getListBillNowDate();
           this.getListBillWaitingAllDate();
-          this.isAdd = false;
-          this.resultAdd = 1;
+          setTimeout(() => {
+            this.isAdd = false;
+            this.resultAdd = 1;
+          }, 500);
         }
       }, 1000);
     }

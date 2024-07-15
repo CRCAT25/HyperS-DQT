@@ -1,6 +1,6 @@
 export class DTOStaff {
     Code: number
-    IdStaff: number
+    IdStaff: string
     Name: string
     ImageUrl: string
     Gender: number

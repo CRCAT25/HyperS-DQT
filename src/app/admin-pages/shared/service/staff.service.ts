@@ -4,6 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { State } from '@progress/kendo-data-query';
 import { catchError } from 'rxjs/operators';
+import { DTOResponeAddress } from 'src/app/ecom-pages/shared/dto/DTOResponeAddress';
+import { DTOStaff } from '../dto/DTOStaff.dto';
+import { DTOUpdateStaffRequest } from '../dto/DTOUpdateStaffRequest.dto';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +16,10 @@ export class StaffService {
 
     private urlGetCurrentStaffInfo = this.direct + "/api/Staff/GetCurrentStaffInfo";
     private urlGetListStaff = this.direct + "/api/Staff/GetListStaff";
+    private urlGetProvince = "https://vapi.vnappmob.com/api/province/"
+    private urlGetDistrict = "https://vapi.vnappmob.com/api/province/district/"
+    private urlGetWard = "https://vapi.vnappmob.com/api/province/ward/"
+    private urlUpdateStaff = this.direct + "/api/Auth/UpdateStaff";
 
     constructor(private httpClient: HttpClient) { }
 
@@ -45,5 +52,47 @@ export class StaffService {
                 })
             );
     }
+
+    getProvince(): Observable<DTOResponeAddress> {
+        const httpOption = this.getHttpOptions()
+        const body = {}
+        return this.httpClient.get<any>(this.urlGetProvince)
+    }
+
+    getDistrict(province_id: string): Observable<any> {
+        const httpOption = this.getHttpOptions()
+        const body = {}
+        const url = `${this.urlGetDistrict}${province_id}`
+        return this.httpClient.get<any>(url)
+    }
+
+    getWard(district_id: string): Observable<any> {
+        const httpOption = this.getHttpOptions()
+        const body = {}
+        const url = `${this.urlGetWard}${district_id}`
+        return this.httpClient.get<any>(url)
+    }
+
+    // updateStaff(req: { CodeAccount: number, CodeStatus: number }): Observable<any> {
+    //     const httpOptions = this.getHttpOptions();
+    //     return this.httpClient.post(this.urlUpdateStaff, req, httpOptions)
+    //         .pipe(
+    //             catchError(error => {
+    //                 console.error('Error updating customer:', error);
+    //                 return throwError(error);
+    //             })
+    //         );
+    // }
+
+    updateStaff(req: DTOUpdateStaffRequest): Observable<any> {
+        const httpOptions = this.getHttpOptions();
+        return this.httpClient.post(this.urlUpdateStaff, req, httpOptions)
+          .pipe(
+            catchError(error => {
+              console.error('Error updating product:', error);
+              return throwError(error);
+            })
+          );
+      }
 
 }
