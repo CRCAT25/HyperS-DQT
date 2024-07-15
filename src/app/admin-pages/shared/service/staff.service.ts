@@ -20,7 +20,7 @@ export class StaffService {
     private urlGetDistrict = "https://vapi.vnappmob.com/api/province/district/"
     private urlGetWard = "https://vapi.vnappmob.com/api/province/ward/"
     private urlUpdateStaff = this.direct + "/api/Auth/UpdateStaff";
-    private urlGetListRoles = this.direct + "/api/Auth/GetListRoles";
+    private urlGetListRole = this.direct + "/api/Auth/GetListRoles";
 
     constructor(private httpClient: HttpClient) { }
 
@@ -91,6 +91,17 @@ export class StaffService {
             .pipe(
                 catchError(error => {
                     console.error('Error updating product:', error);
+                    return throwError(error);
+                })
+            );
+    }
+
+    getListRoleStaff(): Observable<DTOResponse> {
+        const httpOptions = this.getHttpOptions();
+        return this.httpClient.post<DTOResponse>(this.urlGetListRole, {}, httpOptions)
+            .pipe(
+                catchError(error => {
+                    console.error('Error retrieving list role:', error);
                     return throwError(error);
                 })
             );

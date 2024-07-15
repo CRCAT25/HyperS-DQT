@@ -23,13 +23,13 @@
         <component-form [isDisabled]="true" text="Thông tin khách hàng">
             <div class="content-form content-form-customer-custom">
                 <div class="block-1">
-                    <!-- Mã người dùng -->
-                    <component-text-input placeholder="Nhập mã người dùng..." #id [widthTextBox]="260"
-                        [widthBlock]="370" label="Mã người dùng"></component-text-input>
+                    <!-- Mã khách hàng -->
+                    <component-text-input placeholder="Nhập mã khách hàng..." #id [widthTextBox]="260"
+                        [widthBlock]="370" label="Mã khách hàng"></component-text-input>
 
-                    <!-- Tên người dùng -->
-                    <component-text-input placeholder="Nhập tên người dùng..." #name [widthTextBox]="260"
-                        [widthBlock]="370" label="Tên người dùng"></component-text-input>
+                    <!-- Tên khách hàng -->
+                    <component-text-input placeholder="Nhập tên khách hàng..." #name [widthTextBox]="260"
+                        [widthBlock]="370" label="Tên khách hàng"></component-text-input>
 
                     <!-- Email -->
                     <component-text-input placeholder="Nhập Email..." #email [widthTextBox]="260" [widthBlock]="370"
@@ -97,7 +97,7 @@
             <kendo-grid-column title="Khách hàng" [width]="350">
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-3">
-                        <div class="id">ID: {{item.IDCustomer}}</div>
+                        <!-- <div class="id">ID: {{item.IDCustomer}}</div> -->
                         <div class="name">Tên: {{item.Name}}</div>
                     </div>
                 </ng-template>
@@ -107,8 +107,8 @@
             <kendo-grid-column title="Ngày sinh" [width]="200">
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-4">
-                        <div class="gender">{{checkGender(item.Gender)}}</div>
-                        <div class="birthday">{{formatDisplayDate(item.Birth)}}</div>
+                        <div class="gender">{{item.Gender !== 0 && item.Gender !== 1 ? 'Không có' : checkGender(item.Gender)}}</div>
+                        <div class="birthday">{{item.Birth ? formatDisplayDate(item.Birth) : 'Không có'}}</div>
                     </div>
                 </ng-template>
             </kendo-grid-column>

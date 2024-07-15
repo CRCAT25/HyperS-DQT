@@ -13,6 +13,8 @@ import { DTOBrand } from 'src/app/ecom-pages/shared/dto/DTOBrand';
 import { isEmpty } from 'src/app/shared/utils/utils';
 import { DTOUpdateBrandRequest } from '../../shared/dto/DTOUpdateBrandRequest.dto';
 import { ProductTypeAdminService } from '../../shared/service/productTypeAdmin.service';
+import { DTOProductType } from 'src/app/ecom-pages/shared/dto/DTOProductType';
+import { DTOUpdateProductType } from '../../shared/dto/DTOUpdateProductType.dto';
 
 @Component({
   selector: 'app-admin009-manage-category-product',
@@ -40,6 +42,8 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   imgDefault: string = 'https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=';
   // Code của thương hiệu được chọn
   selectedBrand: number[] = [];
+  // Code của type được chọn
+  selectedType: number[] = [];
 
 
   // Danh sách số trang có thể đổi
@@ -50,6 +54,8 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   @ViewChild('idBrand') childIdBrand!: TextInputComponent;
   @ViewChild('nameBrand') childNameBrand!: TextInputComponent;
   @ViewChild('imgBrand') childImgBrand!: ImportImageComponent;
+  @ViewChild('idProductType') childIdProductType!: TextInputComponent;
+  @ViewChild('nameProductType') childNameProductType!: TextInputComponent;
 
 
   constructor(
@@ -88,10 +94,10 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
   }
 
   // Lấy danh sách các loại sản phẩm
-  getListProductType(){
+  getListProductType() {
     this.isTypeLoading = true;
     this.productTypeService.getListProductType().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-      if(res.StatusCode === 0){
+      if (res.StatusCode === 0) {
         this.listType = { data: res.ObjectReturn.Data, total: res.ObjectReturn.Total };
         this.isTypeLoading = false;
       }
@@ -104,6 +110,14 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
     this.selectedBrand.push(e.selectedRows[0]?.dataItem.Code)
 
     this.bindingToFormBrand();
+  }
+
+  // Sự kiện khi chọn vào hàng bất kỳ của grid loại sản phẩm
+  onSelectionTypeChange(e: SelectionEvent): void {
+    this.selectedType = [];
+    this.selectedType.push(e.selectedRows[0]?.dataItem.Code)
+
+    this.bindingToFormType();
   }
 
   // Binding thông tin thương hiệu được chọn lên form
@@ -124,11 +138,25 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
     }
   }
 
-  // Reset thông tin trong form thương hiệu
-  resetFormBrand() {
+  // Binding thông tin loại sản phẩm được chọn lên form
+  bindingToFormType() {
+    if (this.selectedType.length > 0) {
+      const listType: DTOProductType[] = this.listType.data;
+      const typeSelected: DTOProductType = listType.find(type => type.Code === this.selectedType[0]);
+
+      // Binding
+      this.childIdProductType.valueTextBox = typeSelected.IdProductType;
+      this.childNameProductType.valueTextBox = typeSelected.Name;
+    }
+  }
+
+  // Reset thông tin trong form thương hiệu và loại sản phẩm
+  resetForm() {
     this.childIdBrand.resetValue();
     this.childNameBrand.resetValue();
     this.childImgBrand.setImgURL(this.imgDefault);
+    this.childIdProductType.resetValue();
+    this.childNameProductType.resetValue();
   }
 
   // Kiếm tra các input của form brand có hợp lệ hay không
@@ -148,46 +176,120 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
     return true;
   }
 
-  // Thêm mới 1 thương hiệu
-  addBrand() {
-    if (this.permission === 'Admin') {
-      if (this.checkValidFormBrand()) {
-        const brand: DTOBrand = {
-          Code: 0,
-          IdBrand: this.childIdBrand.valueTextBox,
-          Name: this.childNameBrand.valueTextBox,
-          ImageUrl: this.childImgBrand.imageHandle.ImgUrl
-        }
-        const req: DTOUpdateBrandRequest = {
-          Brand: brand,
-          Properties: ['IdBrand', 'Name', 'ImageUrl']
-        }
-        this.brandAdminService.updateBrand(req).subscribe((res: DTOResponse) => {
-          console.log(res);
-          if(res.StatusCode === 0){
-            this.notiService.Show('Thêm mới thương hiệu thành công', 'success');
-            this.getListBrand();
-            this.resetFormBrand();
-          }
-        }, error => {
-          this.notiService.Show('Thêm mới đã xảy ra lỗi: ' + error, 'error')
-        })
-      }
+  // Kiếm tra các input của form loại sản phẩm có hợp lệ hay không
+  checkValidFormProductType() {
+    if (isEmpty(this.childIdProductType.valueTextBox)) {
+      this.notiService.Show('Vui lòng nhập mã loại sản phẩm', 'error');
+      return false;
     }
-    else {
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+    if (isEmpty(this.childNameProductType.valueTextBox)) {
+      this.notiService.Show('Vui lòng nhập tên loại sản phẩm', 'error');
+      return false;
     }
+    return true;
   }
 
-  updateBrand(){
+  // Quản lý brand: thêm mới hoặc cập nhật
+  manageBrand(action: 'add' | 'update') {
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
 
+    if (!this.checkValidFormBrand()) {
+      return;
+    }
+
+    const listIdBrand: string[] = this.listBrand.data.map(item => item.IdBrand);
+    const brandExists = listIdBrand.includes(this.childIdBrand.valueTextBox);
+
+    if (action === 'add' && brandExists) {
+      this.notiService.Show('Tên thương hiệu đã bị trùng', 'error');
+      return;
+    }
+
+    if (action === 'update' && !brandExists) {
+      this.notiService.Show('Thương hiệu không tồn tại', 'error');
+      return;
+    }
+
+    const brand: { Code: number, IdBrand: string, BrandName: string, ImageUrl: string } = {
+      Code: action === 'add' ? 0 : this.selectedBrand[0],
+      IdBrand: this.childIdBrand.valueTextBox,
+      BrandName: this.childNameBrand.valueTextBox,
+      ImageUrl: this.childImgBrand.imageHandle.ImgUrl
+    }
+
+    const req: DTOUpdateBrandRequest = {
+      Brand: brand,
+      Properties: ['IdBrand', 'BrandName', 'ImageUrl'] // Lỗi DTO backend nên sửa Name thành BrandName. Chú ý
+    }
+
+    this.brandAdminService.updateBrand(req).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        this.notiService.Show(action === 'add' ? 'Thêm mới thương hiệu thành công' : 'Cập nhật thương hiệu thành công', 'success');
+        this.getListBrand();
+        this.resetForm();
+      }
+    }, error => {
+      this.notiService.Show((action === 'add' ? 'Thêm mới' : 'Cập nhật') + ' đã xảy ra lỗi: ' + error, 'error');
+    });
+  }
+
+  // Quản lý loại sản phẩm: thêm mới hoặc cập nhật
+  manageProductType(action: 'add' | 'update') {
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
+
+    if (!this.checkValidFormProductType()) {
+      return;
+    }
+
+    const listIdTypeProduct: string[] = this.listType.data.map(item => item.IdProductType);
+    const productTypeExists = listIdTypeProduct.includes(this.childIdBrand.valueTextBox);
+
+    if (action === 'add' && productTypeExists) {
+      this.notiService.Show('Tên loại sản phẩm đã bị trùng', 'error');
+      return;
+    }
+
+    if (action === 'update' && !productTypeExists) {
+      this.notiService.Show('Loại sản phẩm không tồn tại', 'error');
+      return;
+    }
+
+    const productType: DTOProductType = {
+      Code: action === 'add' ? 0 : this.selectedType[0],
+      IdProductType: this.childIdProductType.valueTextBox,
+      Name: this.childNameProductType.valueTextBox
+    }
+
+    const req: DTOUpdateProductType = {
+      ProductType: productType,
+      Properties: ['IdProductType', 'Name']
+    }
+
+    this.productTypeService.updateProductType(req).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        this.notiService.Show(action === 'add' ? 'Thêm mới loại sản phẩm thành công' : 'Cập nhật loại sản phẩm thành công', 'success');
+        this.getListProductType();
+        this.resetForm();
+      }
+    }, error => {
+      this.notiService.Show((action === 'add' ? 'Thêm mới' : 'Cập nhật') + ' đã xảy ra lỗi: ' + error, 'error');
+    });
   }
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('.content-form') && !(event.target as HTMLElement).closest('.group-button')) {
+    if (!(event.target as HTMLElement).closest('.content-form')
+      && !(event.target as HTMLElement).closest('.group-button')
+      && !(event.target as HTMLElement).closest('tr')) {
       this.selectedBrand = [];
-      this.resetFormBrand();
+      this.selectedType = [];
+      this.resetForm();
     }
   }
 

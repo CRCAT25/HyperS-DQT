@@ -22,6 +22,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     const breadcrumbLS: string = localStorage.getItem('breadcrumb');
+    if(!breadcrumbLS) return;
     const listBreadCrumbSplit: string[] = breadcrumbLS.split('/')
     const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
     const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
@@ -53,7 +54,7 @@ export class SidebarComponent implements OnInit {
       productModule.IsExpanded = true;
       productModule.IsSelected = true;
       const childProductModule: DTOModule = productModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
-      childProductModule.IsSelected = true;
+      if(childProductModule) childProductModule.IsSelected = true;
     }
 
     this.getCurrentStaff();
@@ -147,5 +148,10 @@ export class SidebarComponent implements OnInit {
         this.currentStaff = res.ObjectReturn.Data[0];
       }
     })
+  }
+
+  logOut(){
+    localStorage.removeItem('token');
+    this.router.navigate(['account/login']);
   }
 }

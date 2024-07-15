@@ -14,6 +14,7 @@ import { ImportImageComponent } from '../../shared/component/import-image/import
 import { DTOImageProduct } from 'src/app/ecom-pages/shared/dto/DTOImageProduct';
 import { StaffService } from '../../shared/service/staff.service';
 import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
+import { isEmpty } from 'src/app/shared/utils/utils';
 
 interface Gender {
   Code: number
@@ -292,6 +293,9 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
 
   // format ngày từ string sang string. Ví dụ: "2003-09-25" sang "25-09-2003"
   formatDisplayDate(date: string) {
+    if(isEmpty(date)){
+      return '';
+    }
     const dateSplit = date.split('-');
     return `${dateSplit[2]}-${dateSplit[1]}-${dateSplit[0]}`
   }
@@ -302,7 +306,12 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
     this.childName.valueTextBox = customer.Name;
     this.childEmail.valueTextBox = customer.Email;
     this.childPhoneNumber.valueTextBox = customer.PhoneNumber;
-    this.childGender.value = { Code: customer.Gender, Gender: this.checkGender(customer.Gender) };
+    if(customer.Gender !== 0 && customer.Gender !== 1){
+      this.childGender.value = this.defaultGender;
+    }
+    else{
+      this.childGender.value = { Code: customer.Gender, Gender: this.checkGender(customer.Gender) };
+    }
     this.childBirthday.datePicker.writeValue(new Date(customer.Birth));
     if (!customer.ImageURL) {
       this.childImage.imageHandle = new DTOImageProduct();

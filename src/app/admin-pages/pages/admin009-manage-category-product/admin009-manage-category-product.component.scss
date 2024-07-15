@@ -30,6 +30,7 @@
                             .image-container {
                                 padding: 10px 10px 0 0;
                                 font-weight: 100 !important;
+                                height: 93px;
                             }
 
                             img {
@@ -128,6 +129,21 @@
                         .component-button:hover {
                             color: #ffffff !important;
                             background-color: #2557A0 !important;
+                        }
+                    }
+                }
+
+                .grid-custom-container {
+                    height: calc(100vh - 60px - 16px - 125px - 100px);
+
+                    kendo-grid {
+                        tr{
+                            cursor: pointer;
+                            color: #000;
+                        }
+
+                        .column-1 {
+                            font-weight: 600;
                         }
                     }
                 }

@@ -1,17 +1,28 @@
 @import '../../../../styles.scss';
 
 app-sidebar-admin {
+    position: relative;
+    z-index: 10000;
+
     kendo-drawer-container.drawer-custom {
         height: 100vh !important;
-        
+
         kendo-drawer {
             background-color: $color-main;
             color: #fff;
             border: none;
             position: relative;
             box-shadow: $box-shadow3;
+            height: 100vh;
+
+            .k-drawer-wrapper {
+                height: 100vh;
+            }
 
             ul {
+                height: calc(100vh - 140px);
+                overflow-y: auto;
+
                 li {
                     display: flex;
                     flex-direction: column;
@@ -26,7 +37,8 @@ app-sidebar-admin {
                         padding: 8px 16px;
                         gap: 12px;
 
-                        &:hover{
+                        &:hover {
+                            transition: 0.3s ease-in-out;
                             background-color: #fff !important;
                             color: #000 !important;
                         }
@@ -67,14 +79,17 @@ app-sidebar-admin {
                             top: 0;
                         }
                     }
+
                     .expanded {
                         color: #ffffff;
                         background-color: $color-bg-side-expanded !important;
                     }
+
                     .closed {
                         display: none;
                     }
-                    .item-submodule{
+
+                    .item-submodule {
                         height: 50px;
                         @include center-vertical;
                         font-weight: 600;
@@ -82,14 +97,35 @@ app-sidebar-admin {
                         padding-left: 48px;
                         color: #919191;
 
-                        &:hover{
+                        &:hover {
                             color: #ffffff;
                             transition: 0.5s;
                             margin-left: 5px;
                         }
                     }
-                    .sub-selected{
+
+                    .sub-selected {
                         color: #fff;
+                    }
+
+                    .close-drawer {
+                        position: absolute;
+                        right: -15px;
+                        height: 40px;
+                        width: 40px;
+                        border-radius: 100px;
+                        background-color: $color-main;
+                        color: #fff;
+                        top: 50%;
+                        opacity: 0.2;
+                        @include center;
+                        padding-right: 10px;
+
+                        &:hover {
+                            opacity: 1;
+                            background-color: #000;
+                            transition: 0.4s;
+                        }
                     }
                 }
 
@@ -99,26 +135,28 @@ app-sidebar-admin {
                     box-shadow: none;
                 }
 
-                .k-drawer-item:hover, 
+                .k-drawer-item:hover,
                 .k-drawer-item.k-hover {
                     color: #fff;
                     background-color: $color-main;
                 }
 
                 .k-drawer-item.k-selected {
-                    background: none;   
+                    background: none;
                 }
             }
 
-            .header-drawer{
+            .header-drawer {
                 display: flex;
                 height: 70px;
                 padding: 4px 5px;
                 gap: 16px;
-                .image{
+                border-bottom: 1px solid #fff;
+
+                .image {
                     @include center-vertical;
-                    
-                    img{
+
+                    img {
                         width: 40px;
                         height: 40px;
                         border-radius: 100px;
@@ -126,37 +164,39 @@ app-sidebar-admin {
                     }
                 }
 
-                .tag-name{
+                .tag-name {
                     @include center-horizontal;
                     flex-direction: column;
                     gap: 2px;
 
-                    .name{
+                    .name {
                         font-weight: 600;
                         font-size: 16px;
                     }
                 }
             }
 
-            .button-sign-out{
-                position: absolute;
-                width: 90%;
+            .footer-drawer {
                 height: 50px;
-                border-radius: 4px;
-                background-color: #fff;
-                color: #000;
-                text-transform: uppercase;
-                font-weight: 600;
-                @include center;
-                gap: 16px;
-                margin: auto;
-                cursor: pointer;
-                bottom: 40px;
-                left: 50%;
-                transform: translateX(-50%);
+
+                .button-sign-out {
+                    width: 90%;
+                    height: 50px;
+                    border-radius: 4px;
+                    background-color: #fff;
+                    color: #000;
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    @include center;
+                    gap: 16px;
+                    margin: auto;
+                    cursor: pointer;
+                }
             }
+
+
         }
 
-        
+
     }
 }
