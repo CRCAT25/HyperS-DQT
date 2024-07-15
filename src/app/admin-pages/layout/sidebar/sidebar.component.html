@@ -1,6 +1,6 @@
 <kendo-drawer-container class="drawer-custom">
   <kendo-drawer [width]="268" #drawer [items]="listItemsDrawer" mode="push" [mini]="true" [autoCollapse]="false"
-    [(expanded)]="expandDrawer" >
+    [(expanded)]="expandDrawer">
 
     <!-- Header của drawer -->
     <ng-template kendoDrawerHeaderTemplate>
@@ -27,7 +27,8 @@
         <div *ngIf="!item.IsChild && expandDrawer" class="text module-parent">{{ item.ModuleName }}</div>
 
         <ng-container *ngIf="item.SubModule">
-          <i *ngIf="expandDrawer" class="fa-solid" [ngClass]="{'fa-chevron-down': !item.IsExpanded, 'fa-chevron-up': item.IsExpanded}"></i>
+          <i *ngIf="expandDrawer" class="fa-solid"
+            [ngClass]="{'fa-chevron-down': !item.IsExpanded, 'fa-chevron-up': item.IsExpanded}"></i>
         </ng-container>
 
       </div>
@@ -37,13 +38,20 @@
           {{sub.ModuleName}}
         </div>
       </ng-container>
+
+      <div class="close-drawer" (click)="drawer.toggle()">
+        <i class="fa-solid fa-chevron-left" *ngIf="expandDrawer"></i>
+        <i class="fa-solid fa-chevron-right" *ngIf="!expandDrawer"></i>
+      </div>
     </ng-template>
 
     <!-- Footer của drawer -->
     <ng-template kendoDrawerFooterTemplate>
-      <div class="button-sign-out" (click)="drawer.toggle()">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        <span *ngIf="expandDrawer">Đăng xuất</span>
+      <div class="footer-drawer">
+        <div class="button-sign-out" (click)="logOut()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span *ngIf="expandDrawer">Đăng xuất</span>
+        </div>
       </div>
     </ng-template>
   </kendo-drawer>

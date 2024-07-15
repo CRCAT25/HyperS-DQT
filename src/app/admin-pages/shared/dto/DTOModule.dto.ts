@@ -18,12 +18,12 @@ export const listModule: DTOModule[] = [
         SubModule: [
             {
                 RouteLink: '/admin/manage-user',
-                ModuleName: 'Thông tin người dùng',
+                ModuleName: 'Thông tin khách hàng',
                 IsChild: true,
                 IsSelected: false,
                 ParentModule: 'Quản lý tài khoản',
                 IsExpanded: false,
-                BreadCrumb: 'Quản lý tài khoản/Thông tin người dùng'
+                BreadCrumb: 'Quản lý tài khoản/Thông tin khách hàng'
             },
             {
                 RouteLink: '/admin/manage-staff',

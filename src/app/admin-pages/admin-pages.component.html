@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container" *ngIf="isStaff">
     <div class="sidebar">
-        <app-sidebar-admin></app-sidebar-admin>
+        <app-sidebar-admin #sidebar></app-sidebar-admin>
     </div>
     <div class="content">
         <div class="header">
