@@ -83,9 +83,19 @@ export function isNumberInRange(value: any, min: number, max: number): boolean {
  * @param value Số cần kiểm tra
  * @returns true nếu có không có giá trị, ngược lại false
  */
-export function isEmpty(value: any){
-    if(value === null || value.length === 0 || value === ''){
+export function isEmpty(value: any) {
+    if (value === null || value.length === 0 || value === '') {
         return true;
     }
     return false;
+}
+
+/**
+ * Kiểm tra xem một chuỗi có phải là liên kết nhúng YouTube hợp lệ hay không
+ * @param url Chuỗi cần kiểm tra
+ * @returns true nếu là liên kết nhúng YouTube hợp lệ, ngược lại false
+ */
+export function isValidYouTubeEmbedUrl(url: string): boolean {
+    const pattern = /^https:\/\/www\.youtube\.com\/embed\/[a-zA-Z0-9_-]+$/;
+    return pattern.test(url);
 }

@@ -128,14 +128,14 @@
         <!-- Button thêm mới -->
         <ng-container *ngIf="productSelected.Code === 0">
             <component-button class="button-add" [borderWidth]="2" color="#09880E" borderColor="#09880E"
-                borderStyle="solid" [value]="1" (sendValue)="addProduct($event, 'add')" classIconFontAwesome="fa-plus"
+                borderStyle="solid" [value]="1" (sendValue)="manageProduct('add')" classIconFontAwesome="fa-plus"
                 bgColor="#fff" text="Thêm mới"></component-button>
         </ng-container>
 
         <!-- Button cập nhật -->
         <ng-container *ngIf="productSelected.Code !== 0">
             <component-button class="button-update" [borderWidth]="2" color="#2557A0" borderColor="#2557A0"
-                borderStyle="solid" [value]="1" (sendValue)="addProduct($event, 'update')"
+                borderStyle="solid" [value]="1" (sendValue)="manageProduct('update')"
                 classIconFontAwesome="fa-floppy-disk" bgColor="#fff" text="Cập nhật"></component-button>
         </ng-container>
 
