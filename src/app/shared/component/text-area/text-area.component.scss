@@ -1,3 +1,5 @@
+@import '../../../../styles.scss';
+
 ::ng-deep{
     component-text-area{
         display: inline-block;
@@ -16,6 +18,12 @@
             }
             textarea{
                 height: 100%;
+            }
+
+            .readonly{
+                background-color: $color-readonly !important;
+                pointer-events: none;
+                cursor: pointer;
             }
         }
     }

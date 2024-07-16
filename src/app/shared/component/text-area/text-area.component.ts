@@ -24,6 +24,7 @@ export class TextAreaComponent {
   @Input() value: any = '';
   @Input() disabled: boolean = false;
   @Input() textContent: string = '';
+  @Input() readOnly: boolean = false;
   @Output() valueTextArea = new EventEmitter();
 
   // blur ra rồi emit

@@ -421,7 +421,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           this.isDetail = false;
           this.resultAdd = 1;
-        }, 500);
+        }, 2000);
       }
     }, 500);
 
@@ -443,7 +443,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
             this.resultAdd = 1;
           }, 500);
         }
-      }, 1000);
+      }, 2000);
     }
   }
 
@@ -586,7 +586,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.valueSearch = value;
     this.filterSearch.filters = [];
     this.filterSearch.filters.push({ field: 'CustomerName', operator: 'contains', value: this.valueSearch, ignoreCase: true });
-    this.filterSearch.filters.push({ field: 'PhoneNumber', operator: 'contains', value: this.valueSearch, ignoreCase: true });
+    this.filterSearch.filters.push({ field: 'OrdererPhoneNumber', operator: 'contains', value: this.valueSearch, ignoreCase: true });
     this.setFilterData();
     this.setFilterExpStatus();
   }
@@ -730,29 +730,37 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
 
       if(requestUpdateBill){
-        requestUpdateBill.ListOfBillInfo.forEach(billInf => {
-          billInf.Status = obj.value;
-        });
-  
-        console.log(requestUpdateBill);
-  
-        const request: DTOUpdateBillRequest = {
-          DTOUpdateBill: requestUpdateBill,
-          DTOProceedToPayment: null
-        }
-        
-        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-          if (res.StatusCode === 0) {
-            bill.Status = obj.value;
-            this.notiService.Show("Cập nhật trạng thái thành công", "success")
-            this.getListBillWaitingAllDate();
-            this.getListBill();
-            this.setFilterExpStatus();
-            this.isShowAlert = false;
-          }
-        }, error => {
-          console.error('Error:', error);
-        });
+        // if(obj.value == 22){
+          // let timeDifference = this.currentDate.getTime() - bill.CreateAt.getTime();
+          // const hoursDifference = timeDifference / (1000 * 60 * 60);
+          // if(hoursDifference >= 24){
+            requestUpdateBill.ListOfBillInfo.forEach(billInf => {
+              billInf.Status = obj.value;
+            });
+      
+            console.log(requestUpdateBill);
+      
+            const request: DTOUpdateBillRequest = {
+              DTOUpdateBill: requestUpdateBill,
+              DTOProceedToPayment: null
+            }
+            
+            this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+              if (res.StatusCode === 0) {
+                bill.Status = obj.value;
+                this.notiService.Show("Cập nhật trạng thái thành công", "success")
+                this.getListBillWaitingAllDate();
+                this.getListBill();
+                this.setFilterExpStatus();
+                this.isShowAlert = false;
+              }
+            }, error => {
+              console.error('Error:', error);
+            });
+          // } else {
+          //   this.notiService.Show("Thời gian tạo đơn chưa đủ 24 tiếng", "success")
+          // }
+        // }
       }
     }
   }

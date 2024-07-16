@@ -1,8 +1,87 @@
 @import '../../../../styles.scss';
 
-::ng-deep{
-    app-admin003-dashboard{
+::ng-deep {
+    app-admin003-dashboard {
         padding: 10px;
-        
+
+        .component-dashboard {
+            height: calc(100% - 40px);
+            .row-dashboard1 {
+                padding: 10px;
+                padding-bottom: 5px;
+                height: 420px;
+                background-color: #dbdbdb;
+                display: flex;
+                overflow-x: scroll;
+                gap: 10px;
+                .box-dashboard1{
+                    width: 800px;
+                    background-color: rgb(255, 255, 255);
+                }
+
+                .box-dashboard2{
+                    width: calc(100% - 800px);
+                    background-color: rgb(255, 255, 255);
+
+                    .box-button{
+                        width: 100%;
+                        display: flex;
+                        justify-content: flex-end;
+                        padding: 10px;
+
+                        .button-show-month{   
+                            .k-button-text{
+                                width: 106px;
+                                padding: 6px;
+                                gap: 10px;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                
+                            }
+                        }
+
+                    }
+
+                    .chart-dashboard-year{
+                        height: calc(100% - 32px - 25px);
+                    }
+
+                    kendo-popup{
+
+                        .show-button-month{
+                            display: flex;
+                            flex-wrap: wrap;
+                            width: 275px;
+                            gap: 5px;
+                            border: 5px;
+                            padding: 5px;
+
+                            .button-month{
+                                .component-button{
+                                    &:hover{
+                                        background-color: #b4b2b2 !important;
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+            }
+
+            .row-dashboard2 {
+                padding: 10px;
+                padding-bottom: 0px;
+                padding-top: 0px;
+                height: calc(100% - 415px);
+                background-color: #dbdbdb;
+
+                .chart-dashboard-year{
+                    height: 410px;
+                }
+            }
+        }
     }
 }

@@ -341,8 +341,12 @@
                                 flex-direction: column;
                                 text-align: right;           
                                 gap: 5px;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
+
+                                .text-note{
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    max-width: 150px;
+                                }
                             }
 
                             th.k-table-th[aria-colindex="8"] {

@@ -33,7 +33,7 @@
                 [borderColor]="'red'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="clearDetailStaff()">
             </component-button>
 
-            <component-button class="button-add" [color]="'#09880E'" [bgColor]="'white'" [text]="'Thêm mới nhân viên'"
+            <component-button *ngIf="!isUpdate" class="button-add" [color]="'#09880E'" [bgColor]="'white'" [text]="'Thêm mới nhân viên'"
                 [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="addStaff()">
             </component-button>
 
@@ -54,7 +54,7 @@
                         [widthBlock]="370" label="Tên nhân viên"></component-text-input>
 
                     <!-- Email -->
-                    <component-text-input placeholder="Nhập Email..." #email [widthTextBox]="260" [widthBlock]="370"
+                    <component-text-input placeholder="Nhập Email..." #email [widthTextBox]="260" [widthBlock]="370" [disabled]="isDisabled"
                         label="Email"></component-text-input>
 
                     <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260" [disabled]="isDisabled"
