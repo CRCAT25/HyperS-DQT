@@ -72,6 +72,8 @@ import { Admin006DetailCartComponent } from './admin-pages/pages/admin006-detail
 import { ComponentCouponComponent } from './shared/component/component-coupon/component-coupon.component';
 import { Admin009ManageCategoryProductComponent } from './admin-pages/pages/admin009-manage-category-product/admin009-manage-category-product.component';
 import { PopupExchangeReturnComponent } from './ecom-pages/shared/component/popup-exchange-return/popup-exchange-return.component';
+import { ForgotPasswordComponent } from './account-pages/pages/forgot-password/forgot-password.component';
+import { SafePipePipe } from './ecom-pages/shared/pipe/safe-pipe.pipe';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
 
@@ -130,6 +132,8 @@ import 'hammerjs';
     ComponentCouponComponent,
     Admin009ManageCategoryProductComponent,
     PopupExchangeReturnComponent,
+    ForgotPasswordComponent,
+    SafePipePipe,
   ],
   imports: [
     BrowserModule,

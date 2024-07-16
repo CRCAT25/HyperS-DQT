@@ -30,19 +30,26 @@
         </kendo-popup> -->
 
 
-    <div class="video">
+    <div class="banner1">
         <iframe
-        width="100%"
-        height="900"
-        src="https://www.youtube.com/embed/6Pjw7uFmJDg?controls=0&showinfo=0&modestbranding=1&mute=1&autoplay=1&loop=1&playlist=6Pjw7uFmJDg&modestbranding=1&iv_load_policy=3&fs=0&rel=0"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-    </iframe>
+            *ngIf="isYoutube(dataBanner1?.BannerUrl) == true"
+            width="100%"
+            height="900"
+            [src]="dataBanner1?.BannerUrl + '?controls=0&showinfo=0&modestbranding=1&mute=1&autoplay=1&loop=1&playlist=6Pjw7uFmJDg&modestbranding=1&iv_load_policy=3&fs=0&rel=0' | safePipe"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+
+        
+
+        <div class="image-banner1"  *ngIf="isYoutube(dataBanner1?.BannerUrl) == false">
+            <img src="{{dataBanner1?.BannerUrl}}" alt="">
+        </div>
     
         <div class="title">
             <div class="title-head-first">
-                {{'Stride in Style' | uppercase}}
+                {{dataBanner1?.Title| uppercase}}
             </div>
             <div class="title-head-second">
                 {{  'From Heels to Sneakers, We ve Got Your Fit' | uppercase}}
@@ -102,8 +109,8 @@
                 Trending
             </div>
             <div class="card">
-                <div class="image-area">
-                    <img class="img" src="https://static.nike.com/a/images/f_auto/dpr_1.0,cs_srgb/h_2439,c_limit/67c2358c-39ed-49ec-a068-d5292543a15a/nike-just-do-it.png" alt="">
+                <div *ngIf="isYoutube(dataBanner3?.BannerUrl) == false" class="image-area">
+                    <img class="img" src="{{dataBanner3?.BannerUrl}}" alt="">
                 </div>
                 <div class="text-area">
                     <div class="slogan">
