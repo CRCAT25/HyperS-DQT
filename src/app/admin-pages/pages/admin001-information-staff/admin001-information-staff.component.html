@@ -1,0 +1,230 @@
+<div class="admin001-info-staff">
+    <div class="header-filter-statistics">
+        <div class="box-filter">
+            <div class="label-filter">LỌC DỮ LIỆU</div>
+            <!-- Tổng số lượng nhân viên -->
+            <component-statistics #accountActive [isSelectedDefault]="true" [valueField]="valueTotalStaff"
+                textField="Tổng số lượng tài khoản"
+                (getSelected)="pushStatisticsToAllStatistics(filterAllStaff, $event)"></component-statistics>
+
+            <!-- Số lượng tài khoản bill manager -->
+            <component-statistics #accountActive textField="Bill Manager"
+                [valueField]="valueTotalBillManager" color="#09880E"
+                (getSelected)="pushStatisticsToAllStatistics(filterBillManager, $event)"></component-statistics>
+
+            <!-- Số lượng tài khoản event manager -->
+            <component-statistics #accountActive textField="Event Manager"
+                [valueField]="valueTotalEventManager" color="#FF1D1D"
+                (getSelected)="pushStatisticsToAllStatistics(filterEventManager, $event)"></component-statistics>
+
+             <!-- Số lượng tài khoản product manager -->
+            <component-statistics #accountActive textField="Product Manager"
+                [valueField]="valueTotalProductManager" color="#FFB47E"
+                (getSelected)="pushStatisticsToAllStatistics(filterProductManager, $event)"></component-statistics>
+
+        </div>
+
+        <div class="box-button">
+            <component-button *ngIf="isUpdate" class="button-update" [color]="'rgb(37, 87, 160)'" [bgColor]="'white'" [text]="'Cập nhật'" [classIconFontAwesome]="'fa-floppy-disk'"
+                [borderColor]="'rgb(37, 87, 160)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="updateStaff()">
+            </component-button>
+
+            <component-button *ngIf="isUpdate" class="button-stop" [color]="'red'" [bgColor]="'white'" [text]="'Ngưng cập nhật'" [classIconFontAwesome]="'fa-xmark'"
+                [borderColor]="'red'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="clearDetailStaff()">
+            </component-button>
+
+            <component-button class="button-add" [color]="'#09880E'" [bgColor]="'white'" [text]="'Thêm mới nhân viên'"
+                [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="addStaff()">
+            </component-button>
+
+
+        </div>
+    </div>
+
+    <div class="form">
+        <component-form text="Thông tin nhân viên">
+            <div class="content-form content-form-staff-custom">
+                <div class="block-1">
+                    <!-- Mã người dùng -->
+                    <component-text-input placeholder="Nhập mã nhân viên..." #id [widthTextBox]="260" [widthBlock]="370"
+                        label="Mã nhân viên"></component-text-input>
+
+                    <!-- Tên người dùng -->
+                    <component-text-input placeholder="Nhập tên nhân viên..." #name [widthTextBox]="260"
+                        [widthBlock]="370" label="Tên nhân viên"></component-text-input>
+
+                    <!-- Email -->
+                    <component-text-input placeholder="Nhập Email..." #email [widthTextBox]="260" [widthBlock]="370"
+                        label="Email"></component-text-input>
+
+                    <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260" [disabled]="isDisabled"
+                        [widthBlock]="370" typeValue="number" label="Số điện thoại"></component-text-input>
+
+                </div>
+
+                <div class="block-2">
+                    <component-datepicker #birthday [minDate]="minDate" [maxDate]="maxDate" (datePicked)="getDateChange($event)"
+                        label="Ngày sinh"></component-datepicker>
+                    <!-- Giới tính -->
+                    <component-text-dropdown #gender [widthTextBox]="260" [widthBlock]="370" label="Giới tính"
+                        [defaultItem]="defaultGender" [borderWidth]="1" borderColor="rgb(182, 182, 182)"
+                        [heightTextBox]="30" [listItem]="listGender" textField="Gender"
+                        valueField="Code"></component-text-dropdown>
+
+                    <component-text-dropdown #province [label]="'Tỉnh, thành phố'" [isLoading]="isLoadingProvince"
+                        [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listProvince"
+                        textField="province_name" valueField="province_name" [hasEmitValueChange]="1"
+                        (valueChange)="handleChangeProvince($event)" [value]="provinceBinding"
+                        [defaultItem]="defaultValueProvince"></component-text-dropdown>
+
+                    <component-text-dropdown #district [label]="'Quận, huyện'" [isLoading]="isLoadingDistrict"
+                        [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listDistrict"
+                        textField="district_name" valueField="district_name" [hasEmitValueChange]="1"
+                        (valueChange)="handleChangeDistrict($event)" [disabled]="isDisableDistrict"
+                        [value]="districtBinding" [defaultItem]="defaulValueDistrict"></component-text-dropdown>
+
+                </div>
+
+                <div class="block-3">
+                    <component-text-dropdown #ward [label]="'Xã, thị trấn'" [isLoading]="isLoadingWard"
+                        [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listWard"
+                        textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
+                        (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard" [value]="wardBinding"
+                        [defaultItem]="defaultValueWard"></component-text-dropdown>
+
+                    <component-text-input #road [label]="'Đường'" [widthBlock]="370"
+                        [widthTextBox]="260"></component-text-input>
+
+                    <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="370"
+                        [widthTextBox]="260"></component-text-input>
+
+                    <component-text-dropdown #role [label]="'Chức danh'"
+                        [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listRole"
+                        [hasEmitValueChange]="1"
+                        [defaultItem]="defaultValueRole"></component-text-dropdown>
+                </div>
+
+                <div class="block-4">
+                    <div class="label-import-image">Ảnh đại diện</div>
+                    <component-import-image #image></component-import-image>
+                </div>
+            </div>
+        </component-form>
+    </div>
+
+    <div class="filter-search-container">
+        <!-- Label danh sách nhân viên -->
+        <div class="filter-search">
+            <div class="label-filter-search">DANH SÁCH NHÂN VIÊN</div>
+
+            <!-- Thanh search danh sách nhân viên -->
+            <component-search-bar #search (getValue)="setFilterSearch($event)"
+                placeholder="Tìm kiếm theo mã và tên nhân viên..." [width]="500"></component-search-bar>
+        </div>
+    </div>
+
+    <div class="grid-custom-container">
+        <kendo-grid [data]="listStaff" kendoGridSelectBy="Code" [selectedKeys]="selectedCodeStaff"
+            (selectionChange)="onSelectionChange($event)" [skip]="gridState.skip" [loading]="isLoading"
+            [selectable]="{ mode: 'single' }" (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
+            [pageable]="{
+                type: 'numeric',
+                pageSizes: true,
+            }">
+
+            <!-- Checkbox -->
+            <!-- <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column> -->
+
+            <!-- Hình ảnh -->
+            <kendo-grid-column title="Hình ảnh" [width]="90">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-2">
+                        <img *ngIf="item.ImageUrl" [src]="item.ImageUrl" alt="">
+                        <img *ngIf="!item.ImageUrl" [src]="imageNull.ImgUrl" alt="">
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Mã và Tên nhân viên -->
+            <kendo-grid-column title="Nhân viên" [width]="200">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-3">
+                        <div class="id">ID: {{item.IdStaff}}</div>
+                        <div class="name">Tên: {{item.Name}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Giới tính và ngày sinh nhân viên -->
+            <kendo-grid-column title="Ngày sinh" [width]="150">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-4">
+                        <div class="gender">{{checkGender(item.Gender)}}</div>
+                        <div class="birthday">{{formatDisplayDate(item.Birthday)}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Địa chỉ của nhân viên -->
+            <kendo-grid-column title="Địa chỉ" [width]="350">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-4">
+                        <div class="gender">{{item.Address}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Số điện thoại -->
+            <kendo-grid-column title="Số điện thoại" [width]="200">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-5">
+                        <div class="phone-number">{{item.PhoneNumber}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Email -->
+            <kendo-grid-column title="Email" [width]="200">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-6">
+                        <div class="email">{{item.Email}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Trạng thái -->
+            <kendo-grid-column title="Trạng thái" [width]="150">
+                <ng-template kendoGridCellTemplate let-item>
+                    <div class="column-7">
+                        <div class="status" [style.color]="checkStatus(item.Status) | statusColor">
+                            {{checkStatus(item.Status)}}</div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- ToolBox -->
+            <kendo-grid-column [sticky]="true" [resizable]="true" [width]="50">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <div class="tool-box-container" (click)="onClickToolBox(dataItem, $event)">
+                        <component-button class="button-tool-box" [width]="30" [height]="30" [size]="15" color="#000"
+                            bgColor="#fff" classIconFontAwesome="fa-ellipsis" text=""></component-button>
+                        <div class="list-action" *ngIf="codeStaffSelected === dataItem.Code">
+                            <component-dropdown-action [listItem]="getListChangeStatus(dataItem.Status)"
+                                (sendValue)="updateStatusStaff(dataItem, $event)"></component-dropdown-action>
+                        </div>
+                    </div>
+                </ng-template>
+            </kendo-grid-column>
+
+            <!-- Paging -->
+            <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+                <kendo-pager-page-sizes pagerGrid [pageSizes]="listPageSize"></kendo-pager-page-sizes>
+                <div class="pager-buttons">
+                    <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                    <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
+                    <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                </div>
+            </ng-template>
+        </kendo-grid>
+    </div>
+</div>

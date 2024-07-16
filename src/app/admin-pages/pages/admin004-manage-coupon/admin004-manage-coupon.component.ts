@@ -504,7 +504,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
       this.reviewCoupon = coupon;
       return;
     }
-    if (this.permission === 'Admin') {
+    if (this.permission === 'Admin' || this.permission === 'EventManager') {
       if (newStatus.value === 2) coupon.Status = 1;
       if (newStatus.value === 3) coupon.Status = 2;
       if (newStatus.value === 4) coupon.Status = 3;
@@ -529,7 +529,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
 
   // Đóng drawer
   toggleDrawerToAdd() {
-    if (this.permission === 'Admin') {
+    if (this.permission === 'Admin' || this.permission === 'EventManager') {
       this.selectedCoupon = {
         Code: -1,
         IdCoupon: '',
@@ -596,7 +596,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
 
   // Cập nhật chi tiết khuyến mãi
   updateDetailCoupon() {
-    if (this.permission === 'Admin') {
+    if (this.permission === 'Admin' || this.permission === 'EventManager') {
       if (this.checkUpdatable()) {
         this.reviewCoupon = {
           Code: this.selectedCoupon.Code,
@@ -654,7 +654,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
 
   // Thêm mới khuyến mãi
   addCoupon() {
-    if (this.permission === 'Admin') {
+    if (this.permission === 'Admin' || this.permission === 'EventManager') {
       if (this.checkUpdatable()) {
         this.reviewCoupon = {
           Code: 0,
@@ -711,7 +711,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
 
   // Cập nhật trạng thái bên trong drawer
   updateStatusDrawer(res: any) {
-    if(this.permission === 'Admin'){
+    if(this.permission === 'Admin' || this.permission === 'EventManager'){
       if (res.value === 1 && !this.checkUpdatable()) {
         this.notiService.Show('Vui lòng nhập đủ thông tin để gửi duyệt', 'error');
         return;

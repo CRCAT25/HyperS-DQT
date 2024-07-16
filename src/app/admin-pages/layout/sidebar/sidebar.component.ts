@@ -54,7 +54,7 @@ export class SidebarComponent implements OnInit {
       productModule.IsExpanded = true;
       productModule.IsSelected = true;
       const childProductModule: DTOModule = productModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
-      childProductModule.IsSelected = true;
+      if(childProductModule) childProductModule.IsSelected = true;
     }
 
     this.getCurrentStaff();

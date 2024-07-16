@@ -74,6 +74,10 @@ import { Admin009ManageCategoryProductComponent } from './admin-pages/pages/admi
 import { PopupExchangeReturnComponent } from './ecom-pages/shared/component/popup-exchange-return/popup-exchange-return.component';
 import { ForgotPasswordComponent } from './account-pages/pages/forgot-password/forgot-password.component';
 import { SafePipePipe } from './ecom-pages/shared/pipe/safe-pipe.pipe';
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import 'hammerjs';
+
+
 
 @NgModule({
   declarations: [
@@ -152,7 +156,8 @@ import { SafePipePipe } from './ecom-pages/shared/pipe/safe-pipe.pipe';
     NotificationModule,
     FormsModule,
     ReactiveFormsModule,
-    PopupModule
+    PopupModule,
+    ChartsModule
   ],
   providers: [LayoutService,StatusColorPipe, {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}],
   bootstrap: [AppComponent]

@@ -12,7 +12,9 @@ import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
   styleUrls: ['./admin003-dashboard.component.scss']
 })
 export class Admin003DashboardComponent implements OnInit, OnDestroy {
-  // variable Subject
+  // seriesData: [number, number, number][] = [[1, 1, 10], [2, 2, 20], [3, 3, 30]];
+ seriesData: number[] = [1, 2, 3, 5];
+
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
 
 

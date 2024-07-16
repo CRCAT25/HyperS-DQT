@@ -97,7 +97,7 @@
             <kendo-grid-column title="Khách hàng" [width]="350">
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-3">
-                        <div class="id">ID: {{item.IDCustomer}}</div>
+                        <!-- <div class="id">ID: {{item.IDCustomer}}</div> -->
                         <div class="name">Tên: {{item.Name}}</div>
                     </div>
                 </ng-template>
@@ -107,8 +107,8 @@
             <kendo-grid-column title="Ngày sinh" [width]="200">
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-4">
-                        <div class="gender">{{checkGender(item.Gender)}}</div>
-                        <div class="birthday">{{formatDisplayDate(item.Birth)}}</div>
+                        <div class="gender">{{item.Gender !== 0 && item.Gender !== 1 ? 'Không có' : checkGender(item.Gender)}}</div>
+                        <div class="birthday">{{item.Birth ? formatDisplayDate(item.Birth) : 'Không có'}}</div>
                     </div>
                 </ng-template>
             </kendo-grid-column>

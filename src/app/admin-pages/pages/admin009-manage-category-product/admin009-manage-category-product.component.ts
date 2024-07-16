@@ -191,7 +191,7 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Quản lý brand: thêm mới hoặc cập nhật
   manageBrand(action: 'add' | 'update') {
-    if (this.permission !== 'Admin') {
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }
@@ -238,7 +238,7 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Quản lý loại sản phẩm: thêm mới hoặc cập nhật
   manageProductType(action: 'add' | 'update') {
-    if (this.permission !== 'Admin') {
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }

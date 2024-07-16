@@ -15,6 +15,8 @@ import { ImportMultiImageComponent } from '../../shared/component/import-multi-i
 import { TextAreaComponent } from 'src/app/shared/component/text-area/text-area.component';
 import { DTOSize, listSize } from 'src/app/ecom-pages/shared/dto/DTOSize';
 import { Router } from '@angular/router';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 interface Gender {
   Code: number
@@ -31,6 +33,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   // variables 
   startSize: number = 35;
   endSize: number = 48;
+  // Role của tài khoản đang được đăng nhập
+  permission: string;
 
   // variables object
   productSelected: DTOProduct;
@@ -109,12 +113,28 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   @ViewChild('desciption') childDescription!: TextAreaComponent;
   @ViewChild('discount') childDiscount!: TextInputComponent;
 
-  constructor(private productAdminService: ProductAdminService, private notiService: NotiService, private router: Router) { }
+  constructor(
+    private productAdminService: ProductAdminService, 
+    private notiService: NotiService, 
+    private router: Router,
+    private staffService: StaffService
+  ) { }
 
   ngOnInit(): void {
     this.getProductSelected();
     this.getListProductType();
     this.getListBrand();
+    this.getPermission();
+  }
+
+  // Lấy quyền truy cập
+  getPermission() {
+    this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        const staff: DTOStaff = res.ObjectReturn.Data[0];
+        this.permission = staff.Permission;
+      }
+    })
   }
 
   // Lấy sản phẩm được chọn
@@ -128,8 +148,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       this.productSelected.Color = '-- Màu sắc --';
       this.productSelected.CodeBrand = -1;
       this.productSelected.CodeProductType = -1;
-      this.childStartSize.valueTextBox = '35';
-      this.childEndSize.valueTextBox = '48';
+      if(this.childStartSize) this.childStartSize.valueTextBox = '35';
+      if(this.childEndSize) this.childEndSize.valueTextBox = '48';
     }
     else {
       this.productAdminService.getProductByCode(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
@@ -167,6 +187,10 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Cật nhật sản phẩm
   updateProduct(product: DTOProduct, obj: any, properties: string[], action: string) {
+    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
     if (obj.value >= 0) {
       product.Status = obj.value;
       const request: DTOUpdateProductRequest = {
@@ -186,6 +210,10 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Xóa toàn bộ thông tin sản phẩm
   clearDetailProduct(res: any) {
+    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
     // reset id sản phẩm
     this.childId.resetValue();
     // reset tên sản phẩm
@@ -244,6 +272,10 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Khôi phục lại thông tin sản phẩm
   restoreProduct(res: any) {
+    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
     this.childId.valueTextBox = this.productSelected.IdProduct;
     this.childName.valueTextBox = this.productSelected.Name;
     this.childColor.value = { Color: this.productSelected.Color };
@@ -360,6 +392,10 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Thêm sản phẩm mới
   addProduct(res: any, type: string) {
+    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
     const product: DTOProduct = {
       Code: 0,
       IdProduct: this.childId.valueTextBox,

@@ -527,20 +527,25 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
       this.setLayoutStorage('Quản lý sản phẩm/Chi tiết sản phẩm/Sản phẩm ' + product.Name, 'admin/detail-product');
     }
     if (obj.value >= 0) {
-      product.Status = obj.value;
-      const request: DTOUpdateProductRequest = {
-        Product: product,
-        Properties: ["Status"]
-      }
-      this.productAdminService.updateProduct(request).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.notiService.Show("Cập nhật trạng thái thành công", "success")
-          this.getStatistics();
-          this.getListProduct();
+      if(this.permission === 'Admin' || this.permission === 'ProductManager'){
+        product.Status = obj.value;
+        const request: DTOUpdateProductRequest = {
+          Product: product,
+          Properties: ["Status"]
         }
-      }, error => {
-        console.error('Error:', error);
-      });
+        this.productAdminService.updateProduct(request).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            this.notiService.Show("Cập nhật trạng thái thành công", "success")
+            this.getStatistics();
+            this.getListProduct();
+          }
+        }, error => {
+          console.error('Error:', error);
+        });
+      }
+      else{
+        this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      }
     }
   }
 
@@ -559,7 +564,7 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   }
 
   goToDetail(res: any, code: number) {
-    if(this.permission === 'Admin'){
+    if(this.permission === 'Admin' || this.permission === 'ProductManager'){
       if (code === 0) {
         this.setLayoutStorage('Quản lý sản phẩm/Thêm mới sản phẩm', 'admin/detail-product')
       }
