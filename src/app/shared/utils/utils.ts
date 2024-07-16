@@ -99,3 +99,13 @@ export function isValidYouTubeEmbedUrl(url: string): boolean {
     const pattern = /^https:\/\/www\.youtube\.com\/embed\/[a-zA-Z0-9_-]+$/;
     return pattern.test(url);
 }
+
+/**
+ * Kiểm tra xem một đường dẫn URL có phải là liên kết đến hình ảnh (.png hoặc .jpg) hay không
+ * @param url Đường dẫn cần kiểm tra
+ * @returns true nếu là liên kết đến hình ảnh .png hoặc .jpg, ngược lại false
+ */
+export function isValidImageUrl(url: string): boolean {
+    const pattern = /\.(png|jpg|svg)$/i;
+    return pattern.test(url);
+}

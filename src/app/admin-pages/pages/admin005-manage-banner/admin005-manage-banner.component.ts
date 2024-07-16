@@ -14,7 +14,7 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
 import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
-import { isEmpty, isValidYouTubeEmbedUrl } from 'src/app/shared/utils/utils';
+import { isEmpty, isValidImageUrl, isValidYouTubeEmbedUrl } from 'src/app/shared/utils/utils';
 import { DTOUpdateBannerRequest } from '../../shared/dto/DTOUpdateBannerRequest.dto';
 import { StaffService } from '../../shared/service/staff.service';
 import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
@@ -487,6 +487,11 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
     if (this.childBannerTypeDrawer.value.Code === 0) {
       if (this.childImgDrawer.imageHandle.ImgUrl === this.imgDefault) {
         this.notiService.Show('Vui lòng chọn hình ảnh', 'error');
+        return false;
+      }
+
+      if (!isValidImageUrl(this.childImgDrawer.imageHandle.ImgUrl)) {
+        this.notiService.Show('Sai định dạng hình ảnh. Vui lòng nhập lại theo định dạng .jpg / .png / .svg', 'error');
         return false;
       }
     }
