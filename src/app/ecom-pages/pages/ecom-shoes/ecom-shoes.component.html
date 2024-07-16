@@ -3,12 +3,28 @@
     <div class="content">
         <div class="sidebar">
             <div class="content-sidebar">
+                    <!-- <div class="filter filter-gender">
+                        <div class="title">
+                            Hot
+                        </div>
+                      
+                            <div class="gender">
+                                <label class="custom-checkbox">
+                                    <input [(ngModel)]="isSale" name="dummy" type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <div>
+                                    Sale
+                                </div>
+                            </div>
+             
+                    </div> -->
                     <div class="filter filter-type">
                         <div class="title">
                             Category
                         </div>
-                        <div *ngFor="let type of listProductType">
-                            <div class="type">
+                        <div *ngFor="let type of listProductType; let i = index">
+                            <div *ngIf="i < categoryCount" class="type">
                                 <label class="custom-checkbox">
                                     <input [checked]="isCheckedInputCategory(type)" (change)="handleSelectedCatelogy(type)" name="dummy" type="checkbox">
                                     <span class="checkmark"></span>
@@ -17,8 +33,9 @@
                                     {{type.Name}}
                                 </div>
                             </div>
-                        
                         </div>
+                        <div *ngIf="isShowMoreCategory == true" (click)="handleShowMoreCategory()" class="show-more hide">Hide category</div>
+                        <div *ngIf="isShowMoreCategory == false" (click)="handleShowMoreCategory()" class="show-more show">Show more category</div>
                     </div>
         
                     <div class="filter filter-gender">
@@ -61,10 +78,11 @@
                         <div class="title">
                             Brand
                         </div>
-                        <div *ngFor="let brand of listBrand">
-                            <div class="brand">
+                        <div *ngFor="let brand of listBrand; let i = index">
+                            
+                            <div *ngIf="i < brandCount" class="brand">
                                 <label class="custom-checkbox">
-                                    <input (change)="handleSelectedBrand(brand)" name="dummy" type="checkbox">
+                                    <input [checked]="handleCheckBrand(brand.Code)" (change)="handleSelectedBrand(brand)" name="dummy" type="checkbox">
                                     <span class="checkmark"></span>
                                 </label>
                                 <div>
@@ -73,6 +91,8 @@
                             </div>
                         
                         </div>
+                        <div *ngIf="isShowMoreBrand == true" (click)="handleShowMoreBrand()" class="show-more hide">Hide brand</div>
+                        <div *ngIf="isShowMoreBrand == false" (click)="handleShowMoreBrand()" class="show-more show">Show more brand</div>
                     </div>
         
                     <div (click)="handleApplyFilter()" class="btn-apply"> 
@@ -96,17 +116,21 @@
                 </div>
               
             </div>
-            <div class="grid-show">
+            <div *ngIf="ListProduct.length > 0" class="grid-show">
                 <div class="product-list">
                     <div class="item" *ngFor="let product of ListProduct">
                         <app-ecom-product-card [product]="product"></app-ecom-product-card>
                     </div>
                 </div>
-                <div class="load-area">
+                <div *ngIf="isShowLoadMore" class="load-area">
                     <div (click)="handleLoadMore()" class="btn-load-more">
                         {{'load more' | uppercase}}
                     </div>
                 </div>
+            </div>
+
+            <div *ngIf="ListProduct.length <= 0" class="no-data">
+                No data in here 😭
             </div>
             
         </div>

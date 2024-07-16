@@ -391,7 +391,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   }
 
   // Thêm sản phẩm mới
-  addProduct(res: any, type: string) {
+  manageProduct(type: string) {
     if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;

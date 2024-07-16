@@ -14,7 +14,7 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { SearchBarComponent } from 'src/app/shared/component/search-bar/search-bar.component';
 import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
-import { isEmpty } from 'src/app/shared/utils/utils';
+import { isEmpty, isValidImageUrl, isValidYouTubeEmbedUrl } from 'src/app/shared/utils/utils';
 import { DTOUpdateBannerRequest } from '../../shared/dto/DTOUpdateBannerRequest.dto';
 import { StaffService } from '../../shared/service/staff.service';
 import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
@@ -367,6 +367,10 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
 
   // Hàm thêm mới banner
   addBanner() {
+    if(this.permission !== 'Admin' && this.permission !== 'EventManager'){
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
+    }
     if (this.checkUpdatable()) {
       const banneURL: string = this.childBannerTypeDrawer.value.Code === 0
         ? this.childImgDrawer.imageHandle.ImgUrl
@@ -485,10 +489,20 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
         this.notiService.Show('Vui lòng chọn hình ảnh', 'error');
         return false;
       }
+
+      if (!isValidImageUrl(this.childImgDrawer.imageHandle.ImgUrl)) {
+        this.notiService.Show('Sai định dạng hình ảnh. Vui lòng nhập lại theo định dạng .jpg / .png / .svg', 'error');
+        return false;
+      }
     }
     if (this.childBannerTypeDrawer.value.Code === 1) {
       if (isEmpty(this.childVideoURLdrawer.valueTextBox)) {
         this.notiService.Show('Vui lòng nhập đường dẫn video', 'error');
+        return false;
+      }
+
+      if (!isValidYouTubeEmbedUrl(this.childVideoURLdrawer.valueTextBox)) {
+        this.notiService.Show('Sai định dạng video. Vui lòng nhập lại', 'error');
         return false;
       }
     }

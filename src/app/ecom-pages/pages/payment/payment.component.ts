@@ -98,7 +98,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
   constructor(private cartService: CartService,private userService: UserService ,private router: Router,private paymentService: PaymentService, private notiService: NotiService){
     this.APIGetProvince();
-    this.codeCustomer = userService.codeCustomer
+    this.codeCustomer = Number(localStorage.getItem("codeCustomer"))
   }
 
   ngOnInit(): void {

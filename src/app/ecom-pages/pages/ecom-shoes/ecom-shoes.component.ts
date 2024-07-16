@@ -32,6 +32,7 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
   valueRange: [number, number] = [0, 30];
   minPrice: number = this.valueRange[0]
   maxPrice:number = 15000000
+  isSale:boolean = false
 
   headerChangeSubscription: Subscription
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
@@ -39,6 +40,14 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
   isLoading: boolean = false
   keySearch: string = ""
   selectedSort: any
+
+  brandCount: number = 3
+  isShowMoreBrand: boolean = false
+
+  categoryCount: number = 3
+  isShowMoreCategory: boolean = false
+
+  isShowLoadMore: boolean = true
 
   listGender:any[] = [
     {id: 0, text:"For all", checked: false},
@@ -138,6 +147,12 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
       }catch{
 
       }finally{
+
+        if(this.ListProduct.length < this.productFilter.take){
+          this.isShowLoadMore = false
+        }else{
+          this.isShowLoadMore = true
+        }
         this.isLoading = false
       }
      
@@ -166,7 +181,6 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
       this.productService.getListBrand().pipe(takeUntil(this.destroy)).subscribe(data => {
         try {
           this.listBrand = data.ObjectReturn.Data;
-          console.log(this.listBrand);
           resolve(); 
         } catch (error) {
           reject(error); 
@@ -208,6 +222,18 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     this.productFilter.filter.filters = []
     const filter:CompositeFilterDescriptor = {logic: 'and', filters: []}
     
+    const filterCustom: CompositeFilterDescriptor = { logic: 'and', filters: [] }
+    filterCustom.filters = []
+    if(this.isSale == true){
+      this.ListProduct.forEach((product) => {
+        if (product.PriceAfterDiscount < product.Price) {
+          console.log(product);
+            filterCustom.filters.push({ field: "Code", operator: 'eq', value: product.Code })
+        }
+      });
+    }
+
+
     const filterStatus: CompositeFilterDescriptor = {logic: 'and', filters: []}
     filterStatus.filters = []
     filterStatus.filters.push({field: "Status", operator: 'eq', value: 0})
@@ -243,8 +269,6 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     const filterSearch: CompositeFilterDescriptor = {logic: 'or', filters: []}
     filterSearch.filters = []
     filterSearch.filters.push({field: "Name", operator: 'contains', value: this.keySearch})
-
-
   
     if(filterStatus.filters.length > 0){
       filter.filters.push(filterStatus)
@@ -265,7 +289,9 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
       filter.filters.push(filterSearch)
     }
 
-    console.log(this.productFilter);
+    if (filterCustom.filters.length > 0) {
+      filter.filters.push(filterCustom)
+    }
 
     this.productFilter.filter.filters.push(filter)
     this.APIGetListProduct()
@@ -288,6 +314,35 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
   handleLoadMore(){
     this.productFilter.take += 12
     this.handleApplyFilter()
+  }
+
+  handleShowMoreBrand():void{
+    this.isShowMoreBrand = !this.isShowMoreBrand;
+    this.brandCount = this.isShowMoreBrand ? this.listBrand.length : 3;
+
+  }
+
+  handleCheckBrand(Code: number):boolean{
+    const item = this.listBrandSelected.find(item => item.Code == Code)
+    if(item){
+      return true
+    }else{
+      return false
+    }
+  }
+
+  handleShowMoreCategory():void{
+    this.isShowMoreCategory = !this.isShowMoreCategory;
+    this.categoryCount = this.isShowMoreCategory ? this.listProductType.length : 3;
+  }
+
+  handleCheckCategory(Code: number):boolean{
+    const item = this.listCategorySelected.find(item => item.Code == Code)
+    if(item){
+      return true
+    }else{
+      return false
+    }
   }
 
   ngOnDestroy(): void {
