@@ -17,6 +17,7 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
 import { DTOUpdateStaffRequest } from '../../shared/dto/DTOUpdateStaffRequest.dto';
 import { DTORole } from '../../shared/dto/DTORole.dto';
+import { isAlphabetWithSingleSpace, isValidPhoneNumber } from 'src/app/shared/utils/utils';
 
 interface Gender {
   Code: number
@@ -44,8 +45,10 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   listPageSize: number[] = [5, 10, 15];
   codeStaffSelected: number;
   newAddress: string;
+  staffSelected: DTOStaff;
+  dateChange: Date;
   isUpdate: boolean = false;
-  listRoles: DTORole[] = [];
+  listRole: string[];
   listGender: Gender[] = [
     {
       Code: 0,
@@ -100,44 +103,48 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   defaultValueProvince: DTOProvince = { province_id: "", province_name: 'Chọn tỉnh, thành phố', province_type: "" }
   defaultValueWard: DTOWard = { district_id: "", ward_id: "", ward_name: "Chọn huận, huyện", ward_type: "" }
   defaulValueDistrict: DTODistrict = { district_id: "", district_name: "Chọn thị xã, trấn", district_type: "", province_id: "", lat: "", lng: "" }
+  defaultValueRole: string = "-- Chức danh --"
 
-  provinceBiding: DTOProvince;
-  districtBiding: DTODistrict;
-  wardBiding: DTOWard;
-  roadBiding: string;
+  provinceBinding: DTOProvince;
+  districtBinding: DTODistrict;
+  wardBinding: DTOWard;
+  roadBinding: string;
   isDisabled: boolean = true;
   specialAddress: string;
+  roleBinding: string;
 
   // variables FilterDescriptor
   filterAllStaff: FilterDescriptor = { "field": "Status", "operator": "gte", "value": 0, "ignoreCase": true };
-  filterStaffActive: FilterDescriptor = { "field": "Status", "operator": "eq", "value": 0, "ignoreCase": true };
-  filterStaffDisable: FilterDescriptor = { "field": "Status", "operator": "eq", "value": 1, "ignoreCase": true };
+  filterEventManager: FilterDescriptor = { "field": "Permission", "operator": "eq", "value": 'EventManager', "ignoreCase": true };
+  filterBillManager: FilterDescriptor = { "field": "Permission", "operator": "eq", "value": 'BillManager', "ignoreCase": true };
+  filterProductManager: FilterDescriptor = { "field": "Permission", "operator": "eq", "value": 'ProductManager', "ignoreCase": true };
 
   filterSearch: CompositeFilterDescriptor = { logic: 'or', filters: [] };
   filterAllStatistics: CompositeFilterDescriptor = { logic: 'or', filters: [this.filterAllStaff] };
 
-    // variable Statistics
-    valueTotalStaff: number = 100;
-    valueTotalStaffActive: number = 50;
-    valueTotalStaffDisable: number = 50;
-  
+  // variable Statistics
+  valueTotalStaff: number = 100;
+  valueTotalEventManager: number = 50;
+  valueTotalBillManager: number = 50;
+  valueTotalProductManager: number = 50;
+
   // Role của tài khoản đang được đăng nhập
   permission: string;
 
-    // variables ViewChild
-    @ViewChild('id') childId!: TextInputComponent;
-    @ViewChild('name') childName!: TextInputComponent;
-    @ViewChild('email') childEmail!: TextInputComponent;
-    @ViewChild('phonenumber') childPhoneNumber!: TextInputComponent;
-    @ViewChild('gender') childGender!: TextDropdownComponent;
-    @ViewChild('birthday') childBirthday!: DatepickerComponent;
-    @ViewChild('image') childImage!: ImportImageComponent;
-    @ViewChild('province') childProvince!: TextDropdownComponent;
-    @ViewChild('district') childDistrict!: TextDropdownComponent;
-    @ViewChild('ward') childWard!: TextDropdownComponent;
-    @ViewChild('specific') childSpecific!: TextInputComponent;
-    @ViewChild('road') childRoad!: TextInputComponent;
-
+  // variables ViewChild
+  @ViewChild('id') childId!: TextInputComponent;
+  @ViewChild('name') childName!: TextInputComponent;
+  @ViewChild('email') childEmail!: TextInputComponent;
+  @ViewChild('phonenumber') childPhoneNumber!: TextInputComponent;
+  @ViewChild('gender') childGender!: TextDropdownComponent;
+  @ViewChild('birthday') childBirthday!: DatepickerComponent;
+  @ViewChild('image') childImage!: ImportImageComponent;
+  @ViewChild('province') childProvince!: TextDropdownComponent;
+  @ViewChild('district') childDistrict!: TextDropdownComponent;
+  @ViewChild('ward') childWard!: TextDropdownComponent;
+  @ViewChild('specific') childSpecific!: TextInputComponent;
+  @ViewChild('road') childRoad!: TextInputComponent;
+  @ViewChild('role') childRole!: TextDropdownComponent;
 
   constructor(private staffService: StaffService,
     private notiService: NotiService) { }
@@ -189,21 +196,25 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       callback(obj.ObjectReturn.Total);
     });
   }
-    // Lấy các thống kê về sản phẩm
-    getStatistics() {
-      let state: State = { filter: { logic: "and", filters: [] } };
-  
-      // Đối với tổng số khách hàng
-      this.filterStatistics(state, (total) => this.valueTotalStaff = total);
-  
-      // Đối với tổng số tài khoản hoạt động
-      state.filter.filters = [this.filterStaffActive]
-      this.filterStatistics(state, (total) => this.valueTotalStaffActive = total);
-  
-      // Đối với tổng số tài khoản bị vô hiệu hóa
-      state.filter.filters = [this.filterStaffDisable]
-      this.filterStatistics(state, (total) => this.valueTotalStaffDisable = total);
-    }
+  // Lấy các thống kê về sản phẩm
+  getStatistics() {
+    let state: State = { filter: { logic: "and", filters: [] } };
+
+    // Đối với tổng số khách hàng
+    this.filterStatistics(state, (total) => this.valueTotalStaff = total);
+
+    // Đối với tổng số tài khoản event manager
+    state.filter.filters = [this.filterEventManager]
+    this.filterStatistics(state, (total) => this.valueTotalEventManager = total);
+
+    // Đối với tổng số tài khoản bị bill manager
+    state.filter.filters = [this.filterBillManager]
+    this.filterStatistics(state, (total) => this.valueTotalBillManager = total);
+
+    // Đối với tổng số tài khoản bị product manager
+    state.filter.filters = [this.filterProductManager]
+    this.filterStatistics(state, (total) => this.valueTotalProductManager = total);
+  }
 
   // Kiểm tra giới tính
   checkGender(idGender: number) {
@@ -282,8 +293,8 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   handleChangeProvince(obj: any): void {
     this.provinceSelected = obj;
     this.APIGetProvince();
-    this.districtBiding = this.defaulValueDistrict;
-    this.wardBiding = this.defaultValueWard;
+    this.districtBinding = this.defaulValueDistrict;
+    this.wardBinding = this.defaultValueWard;
     this.wardSelected = null;
     if (this.provinceSelected) {
       this.districtSelected = null
@@ -333,6 +344,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     }
   }
 
+
   setNewAddress() {
     this.newAddress = [
       this.childProvince.value.province_name,
@@ -341,6 +353,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       this.childRoad.valueTextBox,
       this.childSpecific.valueTextBox
     ].filter(Boolean).join(', ');
+    // console.log(this.newAddress);
   }
 
   // Set filter tất cả
@@ -375,16 +388,16 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     }
   }
 
-    // Push các filter statistics vào filterAllStatistics
-    pushStatisticsToAllStatistics(filter: any, value: any) {
-      if (value.isSelected) {
-        this.filterAllStatistics.filters.push(filter);
-      }
-      else {
-        this.filterAllStatistics.filters = this.filterAllStatistics.filters.filter(item => item !== filter);
-      }
-      this.setFilterData();
+  // Push các filter statistics vào filterAllStatistics
+  pushStatisticsToAllStatistics(filter: any, value: any) {
+    if (value.isSelected) {
+      this.filterAllStatistics.filters.push(filter);
     }
+    else {
+      this.filterAllStatistics.filters = this.filterAllStatistics.filters.filter(item => item !== filter);
+    }
+    this.setFilterData();
+  }
 
   // Sự kiện khi chọn vào hàng bất kỳ của grid
   onSelectionChange(e: SelectionEvent): void {
@@ -393,26 +406,38 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.isDisableDistrict = true;
     this.isDisableWard = true;
     this.isUpdate = true;
-    const selectedCustomer = e.selectedRows[0]?.dataItem; // Là object Customer sau khi chọn 1 row của grid
-    this.bindSelectedCustomerToForm(selectedCustomer);
+    const selectedStaff = e.selectedRows[0]?.dataItem; // Là object Customer sau khi chọn 1 row của grid
+    this.bindSelectedStaffToForm(selectedStaff);
   }
 
   //Biding address
   getSpecialAddress(address: string): string {
-    this.provinceBiding = { province_id: "", province_name: address.split(',')[0], province_type: "" }
-    this.provinceSelected = this.provinceBiding;
-    this.districtBiding = { province_id: "", district_id: "", district_name: address.split(',')[1], district_type: "", lat: "", lng: "" }
-    this.districtSelected = this.districtBiding;
-    this.wardBiding = { district_id: "", ward_id: "", ward_name: address.split(',')[2], ward_type: "" }
-    this.wardSelected = this.wardBiding;
-    this.roadBiding = address.split(',')[3];
-    console.log(this.roadBiding);
+    this.provinceBinding = { province_id: "", province_name: address.split(',')[0], province_type: "" }
+    this.provinceSelected = this.provinceBinding;
+    this.districtBinding = { province_id: "", district_id: "", district_name: address.split(',')[1], district_type: "", lat: "", lng: "" }
+    this.districtSelected = this.districtBinding;
+    this.wardBinding = { district_id: "", ward_id: "", ward_name: address.split(',')[2], ward_type: "" }
+    this.wardSelected = this.wardBinding;
+    this.roadBinding = address.split(',')[3];
 
     return address.split(',')[4];
   }
 
+  formatDateToString = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0, nên cần +1
+    const day = date.getDate().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  getDateChange(date: Date) {
+    this.dateChange = date;
+  }
+
   // Binding thông tin nhân viên được chọn lên form
-  bindSelectedCustomerToForm(staff: DTOStaff) {
+  bindSelectedStaffToForm(staff: DTOStaff) {
+    this.staffSelected = staff;
     this.specialAddress = this.getSpecialAddress(staff.Address);
     this.childId.valueTextBox = staff.IdStaff;
     this.childName.valueTextBox = staff.Name;
@@ -420,42 +445,46 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.childPhoneNumber.valueTextBox = staff.PhoneNumber;
     this.childGender.value = { Code: staff.Gender, Gender: this.checkGender(staff.Gender) };
     this.childBirthday.datePicker.writeValue(new Date(staff.Birthday));
+    this.childBirthday.defaultDate = (new Date(staff.Birthday));
     if (!staff.ImageUrl) {
       this.childImage.imageHandle = new DTOImageProduct();
     }
     else {
       this.childImage.setImgURL(staff.ImageUrl);
     }
-    this.childRoad.valueTextBox = this.roadBiding;
+    this.childRoad.valueTextBox = this.roadBinding;
     this.childSpecific.valueTextBox = this.specialAddress;
+    this.childRole.value = staff.Permission;
+    this.isDisabled = true;
+    this.setNewAddress();
   }
 
-    // Sự kiện click vào button ... tool box
-    onClickToolBox(obj: DTOStaff, event: Event) {
-      if(this.permission === 'Admin'){
-        if (this.codeStaffSelected === obj.Code) {
-          // console.log(this.codeStaffSelected);
-          this.codeStaffSelected = null;
-        }
-        else {
-          this.codeStaffSelected = obj.Code;
-          // console.log(this.codeStaffSelected);
-        }
-    
-        // Remove 'active' class from all cells
-        const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
-        cells.forEach(cell => cell.classList.remove('active'));
-    
-        // Add 'active' class to the clicked cell
-        const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
-        if (cell) {
-          cell.classList.add('active');
-        }
+  // Sự kiện click vào button ... tool box
+  onClickToolBox(obj: DTOStaff, event: Event) {
+    if (this.permission === 'Admin') {
+      if (this.codeStaffSelected === obj.Code) {
+        // console.log(this.codeStaffSelected);
+        this.codeStaffSelected = null;
       }
-      else{
-        this.notiService.Show('Bạn không có thẩm quyền để điều chỉnh', 'warning');
+      else {
+        this.codeStaffSelected = obj.Code;
+        // console.log(this.codeStaffSelected);
+      }
+
+      // Remove 'active' class from all cells
+      const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
+      cells.forEach(cell => cell.classList.remove('active'));
+
+      // Add 'active' class to the clicked cell
+      const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
+      if (cell) {
+        cell.classList.add('active');
       }
     }
+    else {
+      this.notiService.Show('Bạn không có thẩm quyền để điều chỉnh', 'warning');
+    }
+  }
 
   // Lấy danh sách các action để đổi trạng thái
   getListChangeStatus(status: number) {
@@ -473,25 +502,17 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   }
 
   // Lấy danh sách các role
-  getListRole(){
-    // this.staffService.getListRoles().pipe(takeUntil(this.destroy)).subscribe((data) => {
-    //   try {
-    //     if (data) {
-
-    //       this.listRoles = data
-    //     } else {
-    //       this.notiService.Show("Error when fetching data", "error")
-    //     }
-    //   } catch {
-
-    //   } finally {
-    //     this.isLoadingProvince = false
-    //   }
-    // })
-    // console.log(this.listRoles);
+  getListRole() {
+    this.staffService.getListRoleStaff().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        if (res.ObjectReturn.Data) {
+          this.listRole = res.ObjectReturn.Data.map((item: { Name: string, NormalizedName: string }) => item.Name);
+        }
+      }
+    })
   }
 
-    // Cập nhật trạng thái của nhân viên
+  // Cập nhật trạng thái của nhân viên
   updateStatusStaff(staff: DTOStaff, codeStatus: any) {
     const requestStaff: DTOStaff = staff;
     requestStaff.Status = codeStatus.value;
@@ -501,25 +522,187 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       Staff: requestStaff,
       Properties: properties,
     }
-    
+
+    this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      console.log(request);
+      this.getListStaff();
+      this.getStatistics();
+      if (res.StatusCode === 0) {
+        this.notiService.Show('Cập nhật trạng thái thành công', 'success');
+      }
+    })
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="8"]')) {
+      this.codeStaffSelected = null;
+    }
+    // if (!(event.target as HTMLElement).closest('td.k-table-td') && !(event.target as HTMLElement).closest('.form') && !(event.target as HTMLElement).closest('component-button')) {
+    //   this.selectedCodeStaff = [];
+    // }
+  }
+
+  // Xóa toàn bộ thông tin trên form
+  clearDetailStaff() {
+    this.childId.valueTextBox = '';
+    this.childName.valueTextBox = '';
+    this.childEmail.valueTextBox = '';
+    this.childPhoneNumber.valueTextBox = '';
+    this.childGender.resetValue();
+    this.childBirthday.datePicker.writeValue(null);
+    this.provinceBinding = this.defaultValueProvince;
+    this.provinceSelected = this.defaultValueProvince;
+    this.districtBinding = this.defaulValueDistrict;
+    this.districtSelected = this.defaulValueDistrict;
+    this.wardBinding = this.defaultValueWard;
+    this.wardSelected = this.defaultValueWard;
+    this.childRole.value = this.defaultValueRole;
+    this.childRoad.valueTextBox = '';
+    this.childSpecific.valueTextBox = '';
+    this.selectedCodeStaff = [];
+    this.childImage.imageHandle = new DTOImageProduct();
+    this.isDisabled = false;
+    this.isUpdate = false;
+
+  }
+
+  // Cập nhật thông tin nhân viên
+  updateStaff() {
+    this.setNewAddress();
+    const requestUpdateStaff: DTOStaff = {
+      Code: this.staffSelected.Code,
+      IdStaff: this.childId.valueTextBox,
+      Name: this.childName.valueTextBox,
+      ImageUrl: this.childImage.imageHandle.ImgUrl,
+      Gender: this.childGender.value.Code,
+      PhoneNumber: this.childPhoneNumber.valueTextBox,
+      Email: this.childEmail.valueTextBox,
+      Birthday: null,
+      Address: this.newAddress,
+      Permission: this.childRole.value,
+      Status: this.staffSelected.Status,
+      CodeAccount: this.staffSelected.CodeAccount,
+      StatusAccountStr: this.staffSelected.StatusAccountStr,
+    }
+    if(this.dateChange && this.dateChange !== null){
+      requestUpdateStaff.Birthday = this.formatDateToString(this.dateChange)
+    } else {
+      requestUpdateStaff.Birthday = this.formatDateToString(this.childBirthday.defaultDate)
+    }
+    const properties: string[] = ["IdStaff", "Name", "ImageUrl", "Gender", "Birthday", "PhoneNumber", "Email", "Address", "Permission"];
+
+    const request: DTOUpdateStaffRequest = {
+      Staff: requestUpdateStaff,
+      Properties: properties,
+    }
+    console.log(request);
+      if (this.checkValueForm("update")) {
       this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-        console.log(request);
         this.getListStaff();
         this.getStatistics();
-        if(res.StatusCode === 0){
-          this.notiService.Show('Cập nhật trạng thái thành công', 'success');
+        if (res.StatusCode === 0) {
+          this.notiService.Show('Cập nhật thành công', 'success');
         }
       })
+    } else {
+      return;
+    }
+  }
+
+  checkValueForm(type: string) {
+    if (this.childId.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin ID", "error");
+      return false;
+    }
+    if (!isAlphabetWithSingleSpace(this.childName.valueTextBox) || this.childName.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin họ tên", "error");
+      return false;
+    }
+    if (this.childEmail.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin Email", "error");
+      return false;
+    }
+    if (this.childGender.value == "-- Giới tính --") {
+      this.notiService.Show("Vui lòng chọn giới tính", "error");
+      return false;
+    }
+    if(type == "add"){
+      if (this.dateChange == null) {
+        this.notiService.Show("Vui lòng nhập lại thông tin ngày sinh", "error");
+        return false;
+      }
+    }
+    if (this.childProvince.value == "Chọn tỉnh, thành phố") {
+      this.notiService.Show("Vui lòng chọn tỉnh, thành phố", "error");
+      return false;
+    }
+    if (this.childDistrict.value == "Chọn huận, huyện") {
+      this.notiService.Show("Vui lòng chọn huận, huyện", "error");
+      return false;
+    }
+    if (this.childWard.value == "Chọn thị xã, trấn") {
+      this.notiService.Show("Vui lòng chọn thị xã, trấn", "error");
+      return false;
+    }
+    if (this.childRoad.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin đường", "error");
+      return false;
+    }
+    if (this.childSpecific.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin địa chỉ cụ thể", "error");
+      return false;
+    }
+    if (this.childRole.value == "-- Chức danh --") {
+      this.notiService.Show("Vui lòng chọn chức danh", "error");
+      return false;
+    }
+    if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
+      return false;
+    }
+    return true;
+  }
+
+    // Thêm mới nhân viên
+    addStaff() {
+      this.setNewAddress();
+      const requestUpdateStaff: DTOStaff = {
+        Code: 0,
+        IdStaff: this.childId.valueTextBox,
+        Name: this.childName.valueTextBox,
+        ImageUrl: this.childImage.imageHandle.ImgUrl,
+        Gender: this.childGender.value.Code,
+        Birthday: this.formatDateToString(this.dateChange),
+        PhoneNumber: this.childPhoneNumber.valueTextBox,
+        Email: this.childEmail.valueTextBox,
+        Address: this.newAddress,
+        Permission: this.childRole.value,
+        Status: 0,
+        CodeAccount: 0,
+        StatusAccountStr: "",
+      }
+      const properties: string[] = ["Code","IdStaff", "Name", "ImageUrl", "Gender", "Birthday", "PhoneNumber", "Email", "Address", "Permission"];
+  
+      const request: DTOUpdateStaffRequest = {
+        Staff: requestUpdateStaff,
+        Properties: properties,
+      }
+      console.log(request);
+      if (this.checkValueForm("add")) {
+        this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+          this.getListStaff();
+          this.getStatistics();
+          if (res.StatusCode === 0) {
+            this.notiService.Show('Thêm mới thành công', 'success');
+          }
+        })
+      } else {
+        return;
+      }
     }
 
-    @HostListener('document:click', ['$event'])
-    onClick(event: MouseEvent) {
-      if (!(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="8"]')) {
-        this.codeStaffSelected = null;
-      }
-      if (!(event.target as HTMLElement).closest('td.k-table-td') && !(event.target as HTMLElement).closest('.form') && !(event.target as HTMLElement).closest('component-button')) {
-        this.selectedCodeStaff = [];
-        // this.clearDetailCustomer(null);
-      }
-    }
+  test(res: any) {
+    console.log(res);
+  }
 }

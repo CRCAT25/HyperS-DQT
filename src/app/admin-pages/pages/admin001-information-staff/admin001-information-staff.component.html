@@ -7,25 +7,34 @@
                 textField="Tổng số lượng tài khoản"
                 (getSelected)="pushStatisticsToAllStatistics(filterAllStaff, $event)"></component-statistics>
 
-            <!-- Số lượng tài khoản hoạt động -->
-            <component-statistics #accountActive textField="Tài khoản đang hoạt động"
-                [valueField]="valueTotalStaffActive" color="#09880E"
-                (getSelected)="pushStatisticsToAllStatistics(filterStaffActive, $event)"></component-statistics>
+            <!-- Số lượng tài khoản bill manager -->
+            <component-statistics #accountActive textField="Bill Manager"
+                [valueField]="valueTotalBillManager" color="#09880E"
+                (getSelected)="pushStatisticsToAllStatistics(filterBillManager, $event)"></component-statistics>
 
-            <!-- Số lượng tài khoản vô hiệu hóa -->
-            <component-statistics #accountActive textField="Tài khoản bị vô hiệu hóa"
-                [valueField]="valueTotalStaffDisable" color="#FF1D1D"
-                (getSelected)="pushStatisticsToAllStatistics(filterStaffDisable, $event)"></component-statistics>
+            <!-- Số lượng tài khoản event manager -->
+            <component-statistics #accountActive textField="Event Manager"
+                [valueField]="valueTotalEventManager" color="#FF1D1D"
+                (getSelected)="pushStatisticsToAllStatistics(filterEventManager, $event)"></component-statistics>
+
+             <!-- Số lượng tài khoản product manager -->
+            <component-statistics #accountActive textField="Product Manager"
+                [valueField]="valueTotalProductManager" color="#FFB47E"
+                (getSelected)="pushStatisticsToAllStatistics(filterProductManager, $event)"></component-statistics>
 
         </div>
 
         <div class="box-button">
             <component-button *ngIf="isUpdate" class="button-update" [color]="'rgb(37, 87, 160)'" [bgColor]="'white'" [text]="'Cập nhật'" [classIconFontAwesome]="'fa-floppy-disk'"
-                [borderColor]="'rgb(37, 87, 160)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                [borderColor]="'rgb(37, 87, 160)'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="updateStaff()">
+            </component-button>
+
+            <component-button *ngIf="isUpdate" class="button-stop" [color]="'red'" [bgColor]="'white'" [text]="'Ngưng cập nhật'" [classIconFontAwesome]="'fa-xmark'"
+                [borderColor]="'red'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="clearDetailStaff()">
             </component-button>
 
             <component-button class="button-add" [color]="'#09880E'" [bgColor]="'white'" [text]="'Thêm mới nhân viên'"
-                [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'">
+                [borderColor]="'#09880E'" [rounded]="3" [borderWidth]="2" [borderStyle]="'solid'" [value]="1" (sendValue)="addStaff()">
             </component-button>
 
 
@@ -48,13 +57,13 @@
                     <component-text-input placeholder="Nhập Email..." #email [widthTextBox]="260" [widthBlock]="370"
                         label="Email"></component-text-input>
 
-                    <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260"
+                    <component-text-input placeholder="Nhập số điện thoại..." #phonenumber [widthTextBox]="260" [disabled]="isDisabled"
                         [widthBlock]="370" typeValue="number" label="Số điện thoại"></component-text-input>
 
                 </div>
 
                 <div class="block-2">
-                    <component-datepicker #birthday [minDate]="minDate" [maxDate]="maxDate"
+                    <component-datepicker #birthday [minDate]="minDate" [maxDate]="maxDate" (datePicked)="getDateChange($event)"
                         label="Ngày sinh"></component-datepicker>
                     <!-- Giới tính -->
                     <component-text-dropdown #gender [widthTextBox]="260" [widthBlock]="370" label="Giới tính"
@@ -65,13 +74,14 @@
                     <component-text-dropdown #province [label]="'Tỉnh, thành phố'" [isLoading]="isLoadingProvince"
                         [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listProvince"
                         textField="province_name" valueField="province_name" [hasEmitValueChange]="1"
-                        (valueChange)="handleChangeProvince($event)" [value]="provinceBiding"
+                        (valueChange)="handleChangeProvince($event)" [value]="provinceBinding"
                         [defaultItem]="defaultValueProvince"></component-text-dropdown>
+
                     <component-text-dropdown #district [label]="'Quận, huyện'" [isLoading]="isLoadingDistrict"
                         [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listDistrict"
                         textField="district_name" valueField="district_name" [hasEmitValueChange]="1"
                         (valueChange)="handleChangeDistrict($event)" [disabled]="isDisableDistrict"
-                        [value]="districtBiding" [defaultItem]="defaulValueDistrict"></component-text-dropdown>
+                        [value]="districtBinding" [defaultItem]="defaulValueDistrict"></component-text-dropdown>
 
                 </div>
 
@@ -79,17 +89,19 @@
                     <component-text-dropdown #ward [label]="'Xã, thị trấn'" [isLoading]="isLoadingWard"
                         [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listWard"
                         textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
-                        (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard" [value]="wardBiding"
+                        (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard" [value]="wardBinding"
                         [defaultItem]="defaultValueWard"></component-text-dropdown>
+
                     <component-text-input #road [label]="'Đường'" [widthBlock]="370"
                         [widthTextBox]="260"></component-text-input>
+
                     <component-text-input #specific [label]="'Địa chỉ cụ thể'" [widthBlock]="370"
                         [widthTextBox]="260"></component-text-input>
-                    <component-text-dropdown #ward [label]="'Xã, thị trấn'" [isLoading]="isLoadingWard"
-                        [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listWard"
-                        textField="ward_name" valueField="ward_name" [hasEmitValueChange]="1"
-                        (valueChange)="handleChangeWard($event)" [disabled]="isDisableWard" [value]="wardBiding"
-                        [defaultItem]="defaultValueWard"></component-text-dropdown>
+
+                    <component-text-dropdown #role [label]="'Chức danh'"
+                        [widthBlock]="370" [widthTextBox]="260" [heightTextBox]="30" [listItem]="listRole"
+                        [hasEmitValueChange]="1"
+                        [defaultItem]="defaultValueRole"></component-text-dropdown>
                 </div>
 
                 <div class="block-4">
@@ -127,8 +139,8 @@
             <kendo-grid-column title="Hình ảnh" [width]="90">
                 <ng-template kendoGridCellTemplate let-item>
                     <div class="column-2">
-                        <img *ngIf="item.ImageURL" [src]="item.ImageURL" alt="">
-                        <img *ngIf="!item.ImageURL" [src]="imageNull.ImgUrl" alt="">
+                        <img *ngIf="item.ImageUrl" [src]="item.ImageUrl" alt="">
+                        <img *ngIf="!item.ImageUrl" [src]="imageNull.ImgUrl" alt="">
                     </div>
                 </ng-template>
             </kendo-grid-column>
