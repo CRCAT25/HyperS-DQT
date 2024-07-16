@@ -32,9 +32,9 @@ export class LoginComponent {
   APILogin(username: string ,password: string):void{
     this.isLoading = true
     this.accoutService.login(username, password).pipe(takeUntil(this.destroy)).subscribe(data => {
+      console.log(data);
       try{
         if(data.StatusCode == 0 && data.ObjectReturn.ResultLogin.Succeeded == true && data.ErrorString == ""){
-          console.log("Hello world");
           localStorage.setItem('token', data.ObjectReturn.ResultToken.Token)
           localStorage.setItem('codeCustomer', data.ObjectReturn.ResultCus)
           if(data.ObjectReturn.ResultRedirect == "jkwt"){
@@ -46,7 +46,7 @@ export class LoginComponent {
           this.cartService.emitCartUpdated()
           this.notiService.Show("Login Successfully!", "success")
         }else{
-          this.notiService.Show(data.ErrorString, "error")
+          this.notiService.Show("user or password not correct!", "error")
         }
       }catch{
         this.notiService.Show(data.ErrorString, "error")

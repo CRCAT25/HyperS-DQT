@@ -104,6 +104,7 @@ export class EcomProfileComponent implements OnInit {
   APIGetProductByID(id: string):void{
     this.productService.getProductByIDProduct(id).pipe(takeUntil(this.destroy)).subscribe(data => {
       console.log(data);
+      this.handleProductClick(data.ObjectReturn.Data[0])
     })
   }
 
@@ -293,6 +294,7 @@ export class EcomProfileComponent implements OnInit {
   }
 
   handleProductClick(product: DTOProduct){
+    console.log(product);
     localStorage.setItem('productSelected', JSON.stringify(product))
     this.navigateToDetail()
   }
@@ -301,8 +303,12 @@ export class EcomProfileComponent implements OnInit {
     this.router.navigate(['ecom/product-detail'])
   }
 
+  hanldeRepurchase(item: DTOBillInfo){
+    this.APIGetProductByID(item.IDProduct)
+  }
+
   log(item: any){
-    // console.log(item);
-    this.APIGetProductByID("NIKE17583")
+    console.log(item);
+
   }
 }

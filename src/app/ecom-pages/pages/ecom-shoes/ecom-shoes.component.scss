@@ -24,6 +24,24 @@
     z-index: 9999;
   }
   
+  .show-more{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration-line: underline;
+    cursor: pointer;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+
+  .no-data{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 700px;
+    font-size: 30px;
+  }
+  
   .main{
     overflow: hidden;
       .content{

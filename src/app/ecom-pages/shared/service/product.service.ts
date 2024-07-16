@@ -83,7 +83,7 @@ export class ProductService {
 
   getProductByIDProduct(id: string):Observable<DTOResponse>{
     const httpOption = this.getHttpOptions();
-    const body = id
-    return this.httpClient.post<DTOResponse>(this.urlGetProductByID,'NIKE17583', httpOption).pipe()
+    const body = {id: id}
+    return this.httpClient.post<DTOResponse>(this.urlGetProductByID, body, httpOption).pipe()
   }
 }

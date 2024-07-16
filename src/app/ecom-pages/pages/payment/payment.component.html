@@ -2,12 +2,12 @@
     <div class="content">
         <div class="info-area">
             <div (click)="log()" class="title">
-                Payment
+                Payment 
             </div>
             <div class="form-area">
                 <div class="textbox">
                     <div class="title-item">
-                        <div class="title">Order phone number</div>
+                        <div class="title">Order phone number <span [ngStyle]="{'color': 'red'}">*</span></div>
                         <div *ngIf="codeCustomer" class="checkbox-order">
                             <div class="title">Buy for others</div>
                             <input [(ngModel)]="isBuyOther" type="checkbox" kendoCheckBox>
@@ -17,16 +17,16 @@
                     <kendo-textbox [disabled]="!!codeCustomer" [(ngModel)]="numberPhone" class="input" placeholder="Your phone"></kendo-textbox>
                 </div> 
                 <div *ngIf="isBuyOther" class="textbox">
-                    <div class="title">Recipient's phone</div>
+                    <div class="title">Recipient's phone <span [ngStyle]="{'color': 'red'}">*</span></div>
                     <kendo-textbox [(ngModel)]="recipientPhone" class="input" placeholder="Your phone"></kendo-textbox>
                 </div> 
                 <div class="textbox">
-                    <div class="title">Recipient's name</div>
+                    <div class="title">Recipient's name <span [ngStyle]="{'color': 'red'}">*</span></div>
                     <kendo-textbox [(ngModel)]="name" class="input" placeholder="Your name"></kendo-textbox>
                 </div> 
             
                 <div class="textbox">
-                    <div class="title">Province</div>
+                    <div class="title">Province <span [ngStyle]="{'color': 'red'}">*</span></div>
                     <kendo-dropdownlist  
                         [loading]="isLoadingProvince"
                         [data]="dataProvineFilter"
@@ -40,7 +40,7 @@
                        ></kendo-dropdownlist>
                 </div> 
                 <div class="textbox">
-                    <div class="title">District</div>
+                    <div class="title">District <span [ngStyle]="{'color': 'red'}">*</span></div>
                     <kendo-dropdownlist  
                         [loading]="isLoadingDistrict"
                         [data]="dataDistrictFilter"
@@ -55,7 +55,7 @@
                        ></kendo-dropdownlist>
                 </div> 
                 <div class="textbox">
-                    <div class="title">Ward</div>
+                    <div class="title">Ward <span [ngStyle]="{'color': 'red'}">*</span></div>
                     <kendo-dropdownlist  
                         [loading]="isLoadingWard"
                         [data]="dataWardFilter"
@@ -70,18 +70,18 @@
                        ></kendo-dropdownlist>
                 </div> 
                 <div class="textbox">
-                    <div class="title">Road</div>
+                    <div class="title">Road <span [ngStyle]="{'color': 'red'}">*</span></div>
                     <kendo-textbox [(ngModel)]="road" [disabled]="isDisableSpecific" class="input" placeholder="Your specific address"></kendo-textbox>
                 </div> 
 
                 <div class="textbox">
-                    <div class="title">Specific address</div>
+                    <div class="title">Specific address <span [ngStyle]="{'color': 'red'}">*</span></div>
                     <kendo-textbox [(ngModel)]="specific" [disabled]="isDisableSpecific" class="input" placeholder="Your specific address"></kendo-textbox>
                 </div> 
 
                 <div class="payment-method-select-area">
                     <div class="title title-method">
-                        Payment method
+                        Payment method <span [ngStyle]="{'color': 'red'}">*</span>
                     </div>
                     <div *ngIf="codeCustomer != 0" class="area-button-method">
                         <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethodUser" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">

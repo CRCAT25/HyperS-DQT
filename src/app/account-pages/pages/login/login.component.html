@@ -27,7 +27,7 @@
                             <input type="checkbox">
                             <div>Stay my account</div>
                         </div>
-                        <div class="forgot-area">
+                        <div (click)="handleNavigate('account/forgot')" class="forgot-area">
                             Forgot password
                         </div>
                     
@@ -42,6 +42,12 @@
                         </div>
                         <div (click)="handleNavigate('account/signup')" class="btn-sign">
                             Sign up
+                        </div>
+                    </div>
+
+                    <div (click)="handleNavigate('ecom/home')" class="backToHome">
+                        <div>
+                            Back to home
                         </div>
                     </div>
                     <div class="text">

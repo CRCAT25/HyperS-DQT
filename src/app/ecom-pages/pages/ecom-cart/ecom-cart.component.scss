@@ -170,6 +170,10 @@
                                         width: 200px;
                                         font-weight: 600;
                                         .name{
+                                            width: 200px;
+                                            white-space: nowrap;
+                                            text-overflow: ellipsis;
+                                            overflow: hidden;
                                             font-weight: bold;
                                             font-size: 25px;
                                         }
@@ -233,6 +237,7 @@
                                             border-color: #BDC2D2;
                                             border-radius: 5px;
                                             text-align: center;
+                                            pointer-events: none;
                                         }
         
                                        

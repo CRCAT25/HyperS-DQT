@@ -45,7 +45,7 @@ export class SignupComponent implements OnDestroy {
     this.isLoading = true
     this.authService.signup(info).pipe(takeUntil(this.destroy)).subscribe((data) => {
       console.log(data);
-      if(data.ObjectReturn.Succeeded == true){
+      if(data.ObjectReturn.Result?.Succeeded == true){
         this.type = 'thanks'
       }
       this.isLoading = false
