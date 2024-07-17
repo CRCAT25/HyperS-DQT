@@ -1,14 +1,22 @@
 <div class="component-dashboard">
+  <div class="box-datePicker">
+    <div class="labelDatePicker">Chọn tháng, năm:</div>
+    <kendo-datepicker class="datePicker"
+    [min]="minDatePicker"
+    bottomView="year"
+    topView="decade"
+    format="MMMM yyyy"
+    [value]="currentDate"
+    (valueChange)="getChangeMonth($event)"
+  ></kendo-datepicker>
+  </div>
   <div class="row-dashboard1">
     <div class="box-dashboard1">
-      <kendo-chart title="THỐNG KÊ TÌNH TRẠNG ĐƠN HÀNG">
+      <div class="title" text="">THỐNG KÊ TÌNH TRẠNG ĐƠN HÀNG</div>
+      <kendo-chart class="chart-pie">
         <kendo-chart-legend position="bottom"></kendo-chart-legend>
         <kendo-chart-series>
-          <kendo-chart-series-item 
-            type="pie" 
-            [data]="pieData" 
-            field="value" 
-            categoryField="category"
+          <kendo-chart-series-item type="pie" [data]="pieData" field="value" categoryField="category"
             [labels]="{ visible: true, content: labelContent }">
             <kendo-chart-series-item-tooltip>
               <ng-template kendoTooltipTemplate let-dataItem="dataItem">
@@ -18,10 +26,10 @@
           </kendo-chart-series-item>
         </kendo-chart-series>
       </kendo-chart>
-      
+
     </div>
     <div class="box-dashboard2">
-      <div class="box-button">
+      <!-- <div class="box-button">
         <div class="button-show-month">
           <button kendoButton #anchor (click)="onToggle()">
             <i class="fa-solid fa-calendar-days"></i>
@@ -32,30 +40,47 @@
       <kendo-popup class="popup-month" [anchor]="anchor.element" [popupAlign]="popupAlign" [anchorAlign]="anchorAlign"
         (anchorViewportLeave)="show = false" *ngIf="show">
         <div class="show-button-month">
-          <component-button class="button-month" *ngFor="let month of listMonth" [classIconFontAwesome]="''" 
-          [text]="'Tháng '+month" [width]="85" [rounded]="0" [bgColor]="'#F1F1F1'" [color]="'black'" [fontWeight]="0"
-          (sendValue)="getChangeMonth($event, month)" [value]="1"
-          ></component-button>
+          <component-button class="button-month" *ngFor="let month of listMonth" [classIconFontAwesome]="''"
+            [text]="'Tháng '+month" [width]="85" [rounded]="0" [bgColor]="'#F1F1F1'" [color]="'black'" [fontWeight]="0" color="#6081F6"
+             [value]="1"></component-button>
         </div>
-      </kendo-popup>
-      <kendo-chart class="chart-dashboard-year">
+      </kendo-popup> -->
+      <kendo-chart class="chart-dashboard-month">
+        <kendo-chart-title text="THỐNG KÊ DOANH THU THEO THÁNG"></kendo-chart-title>
         <kendo-chart-series>
-          <kendo-chart-series-item type="column" [data]="listResponeWeek" field="TotalIncome" categoryField="WeekLabel" color="#6081F6">
-            <kendo-chart-series-item-tooltip format="Tổng doanh thu: {{formatCurrency(0)}}" >
+          <kendo-chart-series-item type="column" [data]="listResponeWeek" field="TotalIncome" categoryField="WeekLabel"
+            color="#6081F6">
+            <kendo-chart-series-item-tooltip>
+              <ng-template kendoChartSeriesTooltipTemplate let-value="value">
+                Tổng doanh thu: {{formatCurrency(value)}}
+              </ng-template>
             </kendo-chart-series-item-tooltip>
           </kendo-chart-series-item>
         </kendo-chart-series>
       </kendo-chart>
     </div>
 
-  </div> 
+  </div>
   <div class="row-dashboard2">
     <div class="box-dashboard3">
       <!-- <div class="title-chart-year">THỐNG KÊ DOANH THU THEO NĂM</div> -->
-      <kendo-chart class="chart-dashboard-year" >
+      <!-- <kendo-chart class="chart-dashboard-year" >
         <kendo-chart-series>
           <kendo-chart-series-item type="column" [data]="listResponeMonth" field="TotalIncome" categoryField="MonthLabel" color="#6081F6">
             <kendo-chart-series-item-tooltip format="Tổng doanh thu: {{formatCurrency(0)}}" >
+            </kendo-chart-series-item-tooltip>
+          </kendo-chart-series-item>
+        </kendo-chart-series>
+      </kendo-chart> -->
+      <kendo-chart class="chart-dashboard-year">
+        
+        <kendo-chart-title text="THỐNG KÊ DOANH THU THEO NĂM"></kendo-chart-title>
+        <kendo-chart-series>
+          <kendo-chart-series-item type="line" [data]="listResponeMonth" field="TotalIncome" categoryField="MonthLabel" color="#26333F">
+            <kendo-chart-series-item-tooltip>
+              <ng-template kendoChartSeriesTooltipTemplate let-value="value">
+                Tổng doanh thu: {{formatCurrency(value)}}
+              </ng-template>
             </kendo-chart-series-item-tooltip>
           </kendo-chart-series-item>
         </kendo-chart-series>

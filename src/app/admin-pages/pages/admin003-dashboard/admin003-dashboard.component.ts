@@ -28,6 +28,7 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
   currentDate: Date = new Date();
   minDate: Date = new Date(1900, 1, 1);
   maxDate: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
+  minDatePicker: Date = new Date(2023, 12, 1);
 
   toggleText = "Hide";
   show = false;
@@ -39,7 +40,9 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
   listResponeMonth: DTOAnalysticResponseMonth[];
   listResponeWeek: DTOAnalysticResponseWeek[];
   monthSelected: number = this.currentDate.getMonth() +1;
+  yearSelected: number = this.currentDate.getFullYear();
   textChooseMonth: string =  "Tháng "+ this.monthSelected;
+  valueDate: Date;
 
   pieData = [
     { category: "0-14", value: 0.2545 },
@@ -116,11 +119,20 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
     this.toggleText = this.show ? "Hidе" : "Show";
   }
 
-  getChangeMonth(value: any, month: number) {
-    this.monthSelected = month;
-    this.textChooseMonth = value.text;
-    this.show = false;
+  // getChangeMonth(value: any, month: number) {
+  //   this.monthSelected = month;
+  //   this.textChooseMonth = value.text;
+  //   this.show = false;
+  //   console.log(this.valueDate.getMonth()+1);
+  //   this.getDashboardByFilterMonth();
+  // }
+
+  getChangeMonth(date: Date) {
+    this.monthSelected = date.getMonth()+1;
+    this.yearSelected = date.getFullYear();
+    // this.textChooseMonth = value.text;
     this.getDashboardByFilterMonth();
+    this.getDashboardByFilterYear();
   }
 
   getTitleTotalBill(value: number, type: string): number {
@@ -167,11 +179,37 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+    // Lấy thống kê doanh thu theo filter month
+    getDashboardByFilterMonth() {
+      const request: DTOGetAnalysticRequest = {
+        Month: this.monthSelected,
+        Year: this.yearSelected,
+        IsMonthSort: true
+      }
+  
+      this.dashBoardService.filterDashboard(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          if (res.ObjectReturn) {
+            this.listResponeWeek = res.ObjectReturn;
+            this.listResponeWeek.forEach((weekData: DTOAnalysticResponseWeek) => {
+              weekData.WeekLabel = `Tuần ${weekData.Week}`;
+            });
+            console.log(this.listResponeWeek);
+  
+          } else {
+            console.error('ObjectReturn is null or undefined');
+          }
+        } else {
+          console.error('Error status code:', res.StatusCode);
+        }
+      });
+    }
+
   // Lấy thống kê doanh thu theo filter year
   getDashboardByFilterYear() {
     const request: DTOGetAnalysticRequest = {
       Month: 7,
-      Year: 2024,
+      Year: this.yearSelected,
       IsMonthSort: false
     }
 
@@ -192,33 +230,4 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  // Lấy thống kê doanh thu theo filter year
-  getDashboardByFilterMonth() {
-    const request: DTOGetAnalysticRequest = {
-      Month: this.monthSelected,
-      Year: 2024,
-      IsMonthSort: true
-    }
-
-    this.dashBoardService.filterDashboard(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-      if (res.StatusCode === 0) {
-        if (res.ObjectReturn) {
-          this.listResponeWeek = res.ObjectReturn;
-          this.listResponeWeek.forEach((weekData: DTOAnalysticResponseWeek) => {
-            weekData.WeekLabel = `Tuần ${weekData.Week}`;
-          });
-          console.log(this.listResponeWeek);
-
-        } else {
-          console.error('ObjectReturn is null or undefined');
-        }
-      } else {
-        console.error('Error status code:', res.StatusCode);
-      }
-    });
-  }
-
-
-
 }

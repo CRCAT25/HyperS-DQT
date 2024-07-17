@@ -691,13 +691,19 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       Properties: properties,
     }
     console.log(request);
+
+      const exsitsedIdStaff = this.listStaff.data.find((item: DTOStaff) => item.IdStaff == this.childId.valueTextBox);
       const existedPhoneNumber = this.listStaff.data.find((item: DTOStaff) => item.PhoneNumber == this.childPhoneNumber.valueTextBox);
       const existedEmail = this.listStaff.data.find((item: DTOStaff) => item.Email == this.childEmail.valueTextBox);
+
       if (existedPhoneNumber) {
         this.notiService.Show('Số điện thoại đã tồn tại', 'error');
         return;
       } else if (existedEmail) {
         this.notiService.Show('Email đã tồn tại', 'error');
+        return;
+      } else if (exsitsedIdStaff){
+        this.notiService.Show('Mẫ nhân viên đã tồn tại', 'error');
         return;
       }
       this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {

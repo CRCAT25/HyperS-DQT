@@ -3,9 +3,24 @@
 ::ng-deep {
     app-admin003-dashboard {
         padding: 10px;
-
+        
         .component-dashboard {
             height: calc(100% - 40px);
+
+            .box-datePicker{
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                font-weight: 600;
+                gap: 20px;
+                font-size: 15px;
+
+                .datePicker{
+                    border: 2px solid rgb(180, 180, 180);
+                    width: 200px;
+                }
+            }
+
             .row-dashboard1 {
                 padding: 10px;
                 padding-bottom: 5px;
@@ -14,9 +29,24 @@
                 display: flex;
                 overflow-x: scroll;
                 gap: 10px;
+
                 .box-dashboard1{
                     width: 800px;
                     background-color: rgb(255, 255, 255);
+                    padding-top: 20px;
+
+                    .title{
+                        width: 100%;
+                        font-weight: 600;
+                        font-size: 16px;
+                        display: flex;
+                        justify-content: center;
+                    }
+
+                    .chart-pie{
+                        margin-top: 10px;
+                        height: calc(100% - 28px);
+                    }
                 }
 
                 .box-dashboard2{
@@ -43,8 +73,12 @@
 
                     }
 
-                    .chart-dashboard-year{
-                        height: calc(100% - 32px - 25px);
+                    .chart-dashboard-month{
+                        height: calc(100%);
+
+                        text{
+                            font-weight: 600 !important;
+                        }
                     }
 
                     kendo-popup{
@@ -75,11 +109,15 @@
                 padding: 10px;
                 padding-bottom: 0px;
                 padding-top: 0px;
-                height: calc(100% - 415px);
+                height: calc(100% - 415px - 38px);
                 background-color: #dbdbdb;
 
                 .chart-dashboard-year{
-                    height: 410px;
+                    height: 372px;
+
+                    text{
+                        font-weight: 600 !important;
+                    }
                 }
             }
         }
