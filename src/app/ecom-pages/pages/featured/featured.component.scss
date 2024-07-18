@@ -2,7 +2,7 @@
 
 
 .pop-thanks{
-  height: 100vh;
+  height: calc(100% - 50px);
   width: 100%;
   position: absolute;
   background-color: rgba(179, 179, 179, 0.24);
@@ -12,6 +12,7 @@
   display: flex;
 
   .card {
+    height: 250px;
     overflow: hidden;
     position: relative;
     text-align: left;
