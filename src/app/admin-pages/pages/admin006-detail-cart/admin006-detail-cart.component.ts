@@ -27,6 +27,8 @@ import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CouponService } from '../../shared/service/coupon.service';
 import { DTOCoupon } from '../../shared/dto/DTOCoupon.dto';
 import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
+import { StaffService } from '../../shared/service/staff.service';
 
 
 interface PaymentMethod {
@@ -52,161 +54,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   listProduct: DTOProduct[] = [];
   listOfSize: DTOSize[] = [];
   listProductsInCart: DTOProductInCart[] = [];
-  listProductsInCartTest: DTOProductInCart[] = [
-    {
-      "Product": {
-        "Code": 125,
-        "IdProduct": "AestzP001123",
-        "Name": "PROTEST02",
-        "CodeProductType": 2,
-        "ProductType": "Sneakers",
-        "CodeBrand": 5,
-        "BrandName": "Vans",
-        "Price": 40000,
-        "Description": null,
-        "Stock": 28,
-        "Sold": 24,
-        "Color": "Xanh dương",
-        "Gender": 2,
-        "Discount": null,
-        "PriceAfterDiscount": 40000,
-        "Status": 0,
-        "ThumbnailImg": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/e4a3fabb-5cda-46cd-9a12-4f9cc3840ab5/air-force-1-07-shoes-NMmm1B.png",
-        "ListOfImage": [
-          {
-            "Code": 510,
-            "IdImage": null,
-            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/e4a3fabb-5cda-46cd-9a12-4f9cc3840ab5/air-force-1-07-shoes-NMmm1B.png",
-            "IsThumbnail": false
-          },
-          {
-            "Code": 511,
-            "IdImage": null,
-            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-            "IsThumbnail": false
-          },
-          {
-            "Code": 512,
-            "IdImage": null,
-            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/57558712-5ebe-4abb-9984-879f9e896b4c/air-force-1-07-easyon-shoes-lpjTWM.png",
-            "IsThumbnail": true
-          },
-          {
-            "Code": 513,
-            "IdImage": null,
-            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-            "IsThumbnail": false
-          },
-          {
-            "Code": 514,
-            "IdImage": null,
-            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-            "IsThumbnail": false
-          },
-          {
-            "Code": 509,
-            "IdImage": null,
-            "ImgUrl": "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/0084df47-cf15-41d5-aab6-984460364e41/court-vision-low-next-nature-shoes-N2fFHb.png",
-            "IsThumbnail": false
-          }
-        ],
-        "ListOfSize": [
-          {
-            "Code": 1,
-            "Size": 35,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 2,
-            "Size": 36,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 3,
-            "Size": 37,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 4,
-            "Size": 38,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 5,
-            "Size": 39,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 6,
-            "Size": 40,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 7,
-            "Size": 41,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 8,
-            "Size": 42,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 9,
-            "Size": 43,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 10,
-            "Size": 44,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 11,
-            "Size": 45,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 12,
-            "Size": 46,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 13,
-            "Size": 47,
-            "Stock": 0,
-            "Sold": 0
-          },
-          {
-            "Code": 14,
-            "Size": 48,
-            "Stock": 0,
-            "Sold": 0
-          }
-        ]
-      },
-      "Quantity": 1,
-      "SizeSelected": {
-        "Code": 6,
-        "Size": 40,
-        "Stock": 0,
-        "Sold": 0
-      },
-      "TotalPriceOfProduct": 40000
-    }
-  ];
   isLoading: boolean = true;
   listStatus: DTOStatus[] = listStatusOfBillInfo;
   isClickButton: { [key: number]: boolean } = {};
@@ -345,6 +192,20 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   listDTOProduct: DTOProduct[];
   originalListDTOProduct: DTOProduct[];
 
+  // Role của tài khoản đang được đăng nhập
+  permission: string;
+  listPermissionAvaiable: string[] = ['Admin', 'BillManager'];
+
+
+  constructor(private billService: BillService,
+    private notiService: NotiService,
+    private paymentService: PaymentService,
+    private productService: ProductAdminService,
+    private productAdminService: ProductAdminService,
+    private couponService: CouponService,
+    private staffService: StaffService
+  ) { }
+
 
   ngOnInit(): void {
     if (this.isAdd == false) {
@@ -355,21 +216,28 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.getListProduct();
   }
 
+  // Lấy quyền truy cập
+  getPermission() {
+    this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        const staff: DTOStaff = res.ObjectReturn.Data[0];
+        this.permission = staff.Permission;
+      }
+    })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
+  }
+
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
   }
-
-
-  constructor(private billService: BillService,
-    private notiService: NotiService,
-    private paymentService: PaymentService,
-    private productService: ProductAdminService,
-    private productAdminService: ProductAdminService,
-    private couponService: CouponService) { }
-
-
-
 
   getListBillInfo() {
     this.itemBill = this.itemData;

@@ -48,6 +48,7 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Danh sách số trang có thể đổi
   listPageSize: number[] = [10, 20, 30];
+  listPermissionAvaiable: string[] = ['Admin', 'ProductManager'];
 
 
   // ViewChild
@@ -80,6 +81,14 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
         this.permission = staff.Permission;
       }
     })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   // Lấy danh sách các thương hiệu
@@ -191,11 +200,6 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Quản lý brand: thêm mới hoặc cập nhật
   manageBrand(action: 'add' | 'update') {
-    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-      return;
-    }
-
     if (!this.checkValidFormBrand()) {
       return;
     }
@@ -238,11 +242,6 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Quản lý loại sản phẩm: thêm mới hoặc cập nhật
   manageProductType(action: 'add' | 'update') {
-    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-      return;
-    }
-
     if (!this.checkValidFormProductType()) {
       return;
     }

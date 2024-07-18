@@ -1,4 +1,4 @@
-<div class="header-filter">
+<div class="header-filter" *ngIf="checkPermission()">
     <!-- <component-dropdown-action class="testStatus" [listItem]="listStatus"></component-dropdown-action> -->
 
     <div class="countWaitingCheck" (click)="returnNowDate()">

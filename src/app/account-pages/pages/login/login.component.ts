@@ -30,6 +30,9 @@ export class LoginComponent {
   }
 
   APILogin(username: string ,password: string):void{
+    localStorage.removeItem('breadcrumb');
+    localStorage.removeItem('moduleName');
+    localStorage.removeItem('routerLink');
     this.isLoading = true
     this.accoutService.login(username, password).pipe(takeUntil(this.destroy)).subscribe(data => {
       console.log(data);

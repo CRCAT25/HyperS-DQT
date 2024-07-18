@@ -1,4 +1,4 @@
-<div class="app-admin009-detail-product" *ngIf="productSelected">
+<div class="app-admin009-detail-product" *ngIf="productSelected && checkPermission()">
     <!-- Header -->
     <div class="header-button">
         <div class="label-current-status" [style.color]="checkCurrentStatus(productSelected.Status) | statusColor">

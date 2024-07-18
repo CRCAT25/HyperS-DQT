@@ -21,6 +21,8 @@ import { Router } from '@angular/router';
 import { DTOProcessToPayment } from 'src/app/ecom-pages/shared/dto/DTOProcessToPayment';
 import { DTOUpdateBill } from '../../shared/dto/DTOUpdateBill.dto';
 import { isValidNumber } from 'src/app/shared/utils/utils';
+import { StaffService } from '../../shared/service/staff.service';
+import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 
 @Component({
   selector: 'app-admin006-manage-cart',
@@ -42,7 +44,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   listBillWaitingAllDate: GridDataResult;
   listBillNowDate: GridDataResult;
   pageSize: number = 5;
-  listPageSize: number[] = [5,10,15];
+  listPageSize: number[] = [5, 10, 15];
   idButton: number;
   isClickButton: { [key: number]: boolean } = {};
   tempID: number;
@@ -188,13 +190,14 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   }
 
 
-
+  // Role của tài khoản đang được đăng nhập
+  permission: string;
+  listPermissionAvaiable: string[] = ['Admin', 'BillManager'];
 
 
   constructor(private billService: BillService,
     private notiService: NotiService,
-    private layoutService: LayoutService,
-    private router: Router,
+    private staffService: StaffService,
   ) { }
   ngOnInit(): void {
     this.getListBill();
@@ -203,6 +206,24 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.getListBillWaitingAllDate();
     this.isShowAlertStatus = !this.isShowAlertStatus;
 
+  }
+
+  // Lấy quyền truy cập
+  getPermission() {
+    this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        const staff: DTOStaff = res.ObjectReturn.Data[0];
+        this.permission = staff.Permission;
+      }
+    })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   log() {
@@ -412,18 +433,18 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
     }
 
-    if((event.target as HTMLElement).closest('.buttonAccept')){
+    if ((event.target as HTMLElement).closest('.buttonAccept')) {
       setTimeout(() => {
-      if(this.resultAdd == 0){
+        if (this.resultAdd == 0) {
           this.getListBill();
           this.setFilterExpStatus();
           this.getListBillWaitingAllDate();
-        setTimeout(() => {
-          this.isDetail = false;
-          this.resultAdd = 1;
-        }, 2000);
-      }
-    }, 500);
+          setTimeout(() => {
+            this.isDetail = false;
+            this.resultAdd = 1;
+          }, 2000);
+        }
+      }, 500);
 
     }
 
@@ -707,8 +728,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   updateStatusBill(bill: DTOBill, obj: any) {
     if (obj.value >= 1) {
       let requestUpdateBill: DTOUpdateBill;
-      if(obj.value == 3 || obj.value == 9 || obj.value == 13 || obj.value == 20 || obj.value == 21){
-        if(this.reasonFail){
+      if (obj.value == 3 || obj.value == 9 || obj.value == 13 || obj.value == 20 || obj.value == 21) {
+        if (this.reasonFail) {
           requestUpdateBill = {
             CodeBill: bill.Code,
             Status: obj.value,
@@ -729,37 +750,37 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       }
 
 
-      if(requestUpdateBill){
+      if (requestUpdateBill) {
         // if(obj.value == 22){
-          // let timeDifference = this.currentDate.getTime() - bill.CreateAt.getTime();
-          // const hoursDifference = timeDifference / (1000 * 60 * 60);
-          // if(hoursDifference >= 24){
-            requestUpdateBill.ListOfBillInfo.forEach(billInf => {
-              billInf.Status = obj.value;
-            });
-      
-            console.log(requestUpdateBill);
-      
-            const request: DTOUpdateBillRequest = {
-              DTOUpdateBill: requestUpdateBill,
-              DTOProceedToPayment: null
-            }
-            
-            this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-              if (res.StatusCode === 0) {
-                bill.Status = obj.value;
-                this.notiService.Show("Cập nhật trạng thái thành công", "success")
-                this.getListBillWaitingAllDate();
-                this.getListBill();
-                this.setFilterExpStatus();
-                this.isShowAlert = false;
-              }
-            }, error => {
-              console.error('Error:', error);
-            });
-          // } else {
-          //   this.notiService.Show("Thời gian tạo đơn chưa đủ 24 tiếng", "success")
-          // }
+        // let timeDifference = this.currentDate.getTime() - bill.CreateAt.getTime();
+        // const hoursDifference = timeDifference / (1000 * 60 * 60);
+        // if(hoursDifference >= 24){
+        requestUpdateBill.ListOfBillInfo.forEach(billInf => {
+          billInf.Status = obj.value;
+        });
+
+        console.log(requestUpdateBill);
+
+        const request: DTOUpdateBillRequest = {
+          DTOUpdateBill: requestUpdateBill,
+          DTOProceedToPayment: null
+        }
+
+        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+          if (res.StatusCode === 0) {
+            bill.Status = obj.value;
+            this.notiService.Show("Cập nhật trạng thái thành công", "success")
+            this.getListBillWaitingAllDate();
+            this.getListBill();
+            this.setFilterExpStatus();
+            this.isShowAlert = false;
+          }
+        }, error => {
+          console.error('Error:', error);
+        });
+        // } else {
+        //   this.notiService.Show("Thời gian tạo đơn chưa đủ 24 tiếng", "success")
+        // }
         // }
       }
     }
