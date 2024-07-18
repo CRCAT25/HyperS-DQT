@@ -68,6 +68,11 @@ export class LoginComponent {
     this.router.navigate([route])
   }
 
+  handleBackToHome():void{
+    localStorage.removeItem("codeCustomer")
+    this.handleNavigate('ecom/home')
+  }
+
   handleLogin(user: string, pass: string){
     this.APILogin(user, pass)
   }
