@@ -94,6 +94,7 @@ export class HeaderAdminComponent implements OnInit {
     this.router.navigate([route])
   }
 
+  //ChangePass
   UpdatePassword(): void {
     console.log(this.childOldPass.nativeElement.value);
     const changePassword: DTOChangePassword = {
@@ -116,8 +117,10 @@ export class HeaderAdminComponent implements OnInit {
           if (data.ObjectReturn.Errors.length > 0) {
             this.notiService.Show(data.ObjectReturn.Errors[0].Description, 'error')
           } else {
-            this.notiService.Show("Thay đổi mật khẩu thành công!", 'sucess')
-            this.handleNavigate('account/login')
+            this.notiService.Show("Thay đổi mật khẩu thành công!", 'success')
+            setTimeout(() => {
+              this.handleNavigate('account/login')
+            }, 2000);
           }
         })
       } else {
