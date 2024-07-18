@@ -380,7 +380,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.processToPayment.ListProduct = this.listProductPayment
     this.processToPayment.PaymentMethod = this.paymenMethodSelected.id
     this.processToPayment.TotalBill = this.totalPrice
-    console.log(this.processToPayment);
     this.APIPayment(this.processToPayment)
   }
 
