@@ -200,6 +200,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     private staffService: StaffService,
   ) { }
   ngOnInit(): void {
+    this.getPermission();
     this.getListBill();
     this.setFilterExpStatus();
     this.getListBillNowDate();
