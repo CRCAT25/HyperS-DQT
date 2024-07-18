@@ -55,12 +55,13 @@ export class EcomProductDetailsComponent implements OnInit {
     }finally{
       this.isLoading = false
     }
-
     this.APIGetProductByID(this.idProduct)
+
+
   }
 
   ngOnInit(): void {
-   
+
   }
 
   APIGetProductByID(id: number){
@@ -88,8 +89,13 @@ export class EcomProductDetailsComponent implements OnInit {
   APIAddProductToCart(cart: DTOAddToCart){
     this.productService.addProductToCart(cart).pipe(takeUntil(this.destroy)).subscribe(data => {
       if(data.StatusCode == 0 && data.ErrorString == ""){
-        this.cartService.emitCartUpdated()
-        this.cartService.setTotalItemProduct(this.codeCustomer)
+        if(this.codeCustomer){
+          this.cartService.setTotalItemProduct(this.codeCustomer)
+        }else{
+          this.cartService.emitCartUpdated()
+        }
+
+
         this.notificationService.Show("Yay 🥰, check your bag", "success")
       }else{
         this.notificationService.Show("Error when add your bag!", "eror")

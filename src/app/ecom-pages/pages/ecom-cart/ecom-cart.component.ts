@@ -108,6 +108,8 @@ export class EcomCartComponent implements OnInit{
       }else{
         this.notificationService.Show(data.ErrorString, "error")
       }
+      this.listItemSelected = []
+      this.handleCalPrice()
       this.isLoading = false
     })
 

@@ -7,6 +7,7 @@ import { AuthService } from '../../shared/services/account.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DTOSignup } from '../../shared/dto/DTOSignup';
+import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 
 @Component({
   selector: 'app-signup',
@@ -29,7 +30,7 @@ export class SignupComponent implements OnDestroy {
 
   type: string = "signup"
 
-  constructor(private router: Router, private authService: AuthService){
+  constructor(private router: Router, private authService: AuthService, private notiService: NotiService){
     this.formInfoSignUp = new FormGroup({
       name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]),
@@ -44,10 +45,16 @@ export class SignupComponent implements OnDestroy {
   APISignup(info: DTOSignup):void{
     this.isLoading = true
     this.authService.signup(info).pipe(takeUntil(this.destroy)).subscribe((data) => {
-      console.log(data);
-      if(data.ObjectReturn.Result?.Succeeded == true){
-        this.type = 'thanks'
+      if(data.ErrorString == ""){
+        console.log(data);
+        if(data.ObjectReturn.Result?.Succeeded == true){
+          this.type = 'thanks'
+        }
+      }else{
+        this.notiService.Show(data.ErrorString, "error")
       }
+
+
       this.isLoading = false
     })
   }

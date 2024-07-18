@@ -53,8 +53,15 @@ export class FeaturedComponent implements OnDestroy {
     if(this.router.url == '/ecom/home?status=success'){
       this.isOpenPopThanks = true
     } 
-    this.cartService.emitCartUpdated()
-    this.cartService.setTotalItemProduct(this.codeCustomer)
+
+    if(this.codeCustomer){
+      this.cartService.setTotalItemProduct(this.codeCustomer)
+      this.cartService.emitCartUpdated()
+    }else{
+      this.cartService.emitCartUpdated()
+    }
+
+
   }
 
 
