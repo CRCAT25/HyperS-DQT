@@ -208,6 +208,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.getPermission();
     if (this.isAdd == false) {
       this.getListBillInfo();
     }
