@@ -126,6 +126,7 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
       Status: "Giá giảm dần",
     }
   ];
+  listPermissionAvaiable: string[] = ['Admin', 'ProductManager', 'BillManager'];
 
   // variable Object
   defaultPrice: DropDownPrice = {
@@ -226,6 +227,14 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
         this.permission = staff.Permission;
       }
     })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   // Set cho breadcrumb, routerLink
@@ -527,25 +536,20 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
       this.setLayoutStorage('Quản lý sản phẩm/Chi tiết sản phẩm/Sản phẩm ' + product.Name, 'admin/detail-product');
     }
     if (obj.value >= 0) {
-      if(this.permission === 'Admin' || this.permission === 'ProductManager'){
-        product.Status = obj.value;
-        const request: DTOUpdateProductRequest = {
-          Product: product,
-          Properties: ["Status"]
+      product.Status = obj.value;
+      const request: DTOUpdateProductRequest = {
+        Product: product,
+        Properties: ["Status"]
+      }
+      this.productAdminService.updateProduct(request).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          this.notiService.Show("Cập nhật trạng thái thành công", "success")
+          this.getStatistics();
+          this.getListProduct();
         }
-        this.productAdminService.updateProduct(request).subscribe((res: DTOResponse) => {
-          if (res.StatusCode === 0) {
-            this.notiService.Show("Cập nhật trạng thái thành công", "success")
-            this.getStatistics();
-            this.getListProduct();
-          }
-        }, error => {
-          console.error('Error:', error);
-        });
-      }
-      else{
-        this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-      }
+      }, error => {
+        console.error('Error:', error);
+      });
     }
   }
 
@@ -564,16 +568,11 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
   }
 
   goToDetail(res: any, code: number) {
-    if(this.permission === 'Admin' || this.permission === 'ProductManager'){
-      if (code === 0) {
-        this.setLayoutStorage('Quản lý sản phẩm/Thêm mới sản phẩm', 'admin/detail-product')
-      }
-      localStorage.setItem('productSelected', code + '');
-      this.router.navigate(['admin/detail-product']);
+    if (code === 0) {
+      this.setLayoutStorage('Quản lý sản phẩm/Thêm mới sản phẩm', 'admin/detail-product')
     }
-    else{
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-    }
+    localStorage.setItem('productSelected', code + '');
+    this.router.navigate(['admin/detail-product']);
   }
 
   ngOnDestroy(): void {

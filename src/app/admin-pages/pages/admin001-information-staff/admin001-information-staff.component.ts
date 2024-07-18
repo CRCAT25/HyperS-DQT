@@ -59,6 +59,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       Gender: 'Nữ',
     }
   ];
+  listPermissionAvaiable: string[] = ['Admin']
 
   defaultGender: Gender = {
     Code: -1,
@@ -167,6 +168,14 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
         this.permission = staff.Permission;
       }
     })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   ngOnDestroy(): void {
@@ -462,28 +471,23 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
 
   // Sự kiện click vào button ... tool box
   onClickToolBox(obj: DTOStaff, event: Event) {
-    if (this.permission === 'Admin') {
-      if (this.codeStaffSelected === obj.Code) {
-        // console.log(this.codeStaffSelected);
-        this.codeStaffSelected = null;
-      }
-      else {
-        this.codeStaffSelected = obj.Code;
-        // console.log(this.codeStaffSelected);
-      }
-
-      // Remove 'active' class from all cells
-      const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
-      cells.forEach(cell => cell.classList.remove('active'));
-
-      // Add 'active' class to the clicked cell
-      const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
-      if (cell) {
-        cell.classList.add('active');
-      }
+    if (this.codeStaffSelected === obj.Code) {
+      // console.log(this.codeStaffSelected);
+      this.codeStaffSelected = null;
     }
     else {
-      this.notiService.Show('Bạn không có thẩm quyền để điều chỉnh', 'warning');
+      this.codeStaffSelected = obj.Code;
+      // console.log(this.codeStaffSelected);
+    }
+
+    // Remove 'active' class from all cells
+    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
+    cells.forEach(cell => cell.classList.remove('active'));
+
+    // Add 'active' class to the clicked cell
+    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
+    if (cell) {
+      cell.classList.add('active');
     }
   }
 
@@ -670,28 +674,28 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   addStaff() {
     this.setNewAddress();
     if (this.checkValueForm("add")) {
-    const requestUpdateStaff: DTOStaff = {
-      Code: 0,
-      IdStaff: this.childId.valueTextBox,
-      Name: this.childName.valueTextBox,
-      ImageUrl: this.childImage.imageHandle.ImgUrl,
-      Gender: this.childGender.value.Code,
-      Birthday: this.formatDateToString(this.dateChange),
-      PhoneNumber: this.childPhoneNumber.valueTextBox,
-      Email: this.childEmail.valueTextBox,
-      Address: this.newAddress,
-      Permission: this.childRole.value,
-      Status: 0,
-      CodeAccount: 0,
-      StatusAccountStr: "",
-    }
-    const properties: string[] = ["Code", "IdStaff", "Name", "ImageUrl", "Gender", "Birthday", "PhoneNumber", "Email", "Address", "Permission"];
+      const requestUpdateStaff: DTOStaff = {
+        Code: 0,
+        IdStaff: this.childId.valueTextBox,
+        Name: this.childName.valueTextBox,
+        ImageUrl: this.childImage.imageHandle.ImgUrl,
+        Gender: this.childGender.value.Code,
+        Birthday: this.formatDateToString(this.dateChange),
+        PhoneNumber: this.childPhoneNumber.valueTextBox,
+        Email: this.childEmail.valueTextBox,
+        Address: this.newAddress,
+        Permission: this.childRole.value,
+        Status: 0,
+        CodeAccount: 0,
+        StatusAccountStr: "",
+      }
+      const properties: string[] = ["Code", "IdStaff", "Name", "ImageUrl", "Gender", "Birthday", "PhoneNumber", "Email", "Address", "Permission"];
 
-    const request: DTOUpdateStaffRequest = {
-      Staff: requestUpdateStaff,
-      Properties: properties,
-    }
-    console.log(request);
+      const request: DTOUpdateStaffRequest = {
+        Staff: requestUpdateStaff,
+        Properties: properties,
+      }
+      console.log(request);
 
       const exsitsedIdStaff = this.listStaff.data.find((item: DTOStaff) => item.IdStaff == this.childId.valueTextBox);
       const existedPhoneNumber = this.listStaff.data.find((item: DTOStaff) => item.PhoneNumber == this.childPhoneNumber.valueTextBox);
@@ -703,7 +707,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       } else if (existedEmail) {
         this.notiService.Show('Email đã tồn tại', 'error');
         return;
-      } else if (exsitsedIdStaff){
+      } else if (exsitsedIdStaff) {
         this.notiService.Show('Mẫ nhân viên đã tồn tại', 'error');
         return;
       }

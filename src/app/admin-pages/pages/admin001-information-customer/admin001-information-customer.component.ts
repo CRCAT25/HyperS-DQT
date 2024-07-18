@@ -61,6 +61,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   listCustomer: GridDataResult;
   listPageSize: number[] = [5, 10, 15];
   selectedCodeCustomer: number[];
+  listPermissionAvaiable: string[] = ['Admin', 'ProductManager'];
 
   // variables object
   defaultGender: Gender = {
@@ -112,13 +113,21 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   }
 
   // Lấy quyền truy cập
-  getPermission(){
+  getPermission() {
     this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-      if(res.StatusCode === 0){
+      if (res.StatusCode === 0) {
         const staff: DTOStaff = res.ObjectReturn.Data[0];
         this.permission = staff.Permission;
       }
     })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   // Lấy danh sách khách hàng
@@ -189,26 +198,21 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
 
   // Sự kiện click vào button ... tool box
   onClickToolBox(obj: DTOCustomer, event: Event) {
-    if(this.permission === 'Admin'){
-      if (this.codeCustomerSelected === obj.Code) {
-        this.codeCustomerSelected = null;
-      }
-      else {
-        this.codeCustomerSelected = obj.Code;
-      }
-  
-      // Remove 'active' class from all cells
-      const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
-      cells.forEach(cell => cell.classList.remove('active'));
-  
-      // Add 'active' class to the clicked cell
-      const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
-      if (cell) {
-        cell.classList.add('active');
-      }
+    if (this.codeCustomerSelected === obj.Code) {
+      this.codeCustomerSelected = null;
     }
-    else{
-      this.notiService.Show('Bạn không có thẩm quyền để điều chỉnh', 'warning');
+    else {
+      this.codeCustomerSelected = obj.Code;
+    }
+
+    // Remove 'active' class from all cells
+    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="11"]');
+    cells.forEach(cell => cell.classList.remove('active'));
+
+    // Add 'active' class to the clicked cell
+    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="11"]');
+    if (cell) {
+      cell.classList.add('active');
     }
   }
 
@@ -293,7 +297,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
 
   // format ngày từ string sang string. Ví dụ: "2003-09-25" sang "25-09-2003"
   formatDisplayDate(date: string) {
-    if(isEmpty(date)){
+    if (isEmpty(date)) {
       return '';
     }
     const dateSplit = date.split('-');
@@ -306,10 +310,10 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
     this.childName.valueTextBox = customer.Name;
     this.childEmail.valueTextBox = customer.Email;
     this.childPhoneNumber.valueTextBox = customer.PhoneNumber;
-    if(customer.Gender !== 0 && customer.Gender !== 1){
+    if (customer.Gender !== 0 && customer.Gender !== 1) {
       this.childGender.value = this.defaultGender;
     }
-    else{
+    else {
       this.childGender.value = { Code: customer.Gender, Gender: this.checkGender(customer.Gender) };
     }
     this.childBirthday.datePicker.writeValue(new Date(customer.Birth));
@@ -322,7 +326,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   }
 
   // Xóa toàn bộ thông tin trên form
-  clearDetailCustomer(res: any){
+  clearDetailCustomer(res: any) {
     this.childId.valueTextBox = '';
     this.childName.valueTextBox = '';
     this.childEmail.valueTextBox = '';

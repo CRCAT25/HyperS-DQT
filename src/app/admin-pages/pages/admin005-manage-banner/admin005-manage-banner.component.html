@@ -1,4 +1,4 @@
-<kendo-drawer-container>
+<kendo-drawer-container *ngIf="checkPermission()">
     <kendo-drawer #drawer [mode]="expandMode" [position]="positionDrawer" [width]="widthDrawer" [(expanded)]="expanded">
         <ng-template kendoDrawerTemplate>
             <div class="drawer-custom-container">

@@ -65,6 +65,7 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
   listBannerType: DTOBannerType[] = listBannerType;
   // Danh sách số trang có thể đổi
   listPageSize: number[] = [10, 20, 30];
+  listPermissionAvaiable: string[] = ['Admin', 'EventManager'];
 
 
   // Item mặc định của dropdown chọn trang hiển thị
@@ -150,6 +151,14 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
         this.permission = staff.Permission;
       }
     })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   // Lấy danh sách các banner
@@ -345,10 +354,6 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
 
   // Mở drawer
   openDrawer(type: 'structure' | 'update' | 'add') {
-    if(this.permission !== 'Admin' && this.permission === 'EventManager' && type === 'add'){
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-      return;
-    }
     this.childDrawer.toggle();
     this.imgStructure = this.imgDefault;
     this.selectedBannerTypeDrawer = this.defaultBannerType;
@@ -367,10 +372,6 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
 
   // Hàm thêm mới banner
   addBanner() {
-    if(this.permission !== 'Admin' && this.permission !== 'EventManager'){
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-      return;
-    }
     if (this.checkUpdatable()) {
       const banneURL: string = this.childBannerTypeDrawer.value.Code === 0
         ? this.childImgDrawer.imageHandle.ImgUrl
@@ -403,7 +404,6 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
 
   // Hàm cập nhật banner
   updateBanner() {
-    if(this.permission === 'Admin' || this.permission === 'EventManager'){
       if (this.checkUpdatable()) {
         const banner: DTOBanner = {
           Code: this.selectedBannerToUpdate.Code,
@@ -430,15 +430,10 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
           this.notiService.Show('Lỗi hệ thống: ' + error, 'error');
         })
       }
-    }
-    else{
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-    }
   }
 
   // Cập nhật trạng thái của banner
   updateStatusBanner(res: any, banner: DTOBanner) {
-    if(this.permission === 'Admin' || this.permission === 'EventManager'){
       if (res.value === 1) {
         banner.Status = 0;
         const req: DTOUpdateBannerRequest = {
@@ -460,10 +455,6 @@ export class Admin005ManageBannerComponent implements OnInit, OnDestroy {
         this.listPositionOfPageDrawer = this.findListPositionFromPage(banner.Page);
         this.getBannerTypeDrawer(this.findBannerTypeFromBanner(banner));
       }
-    }
-    else{
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-    }
   }
 
   // Kiểm tra input hợp lệ hay không

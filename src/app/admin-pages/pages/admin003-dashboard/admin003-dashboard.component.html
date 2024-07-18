@@ -1,4 +1,4 @@
-<div class="component-dashboard">
+<div class="component-dashboard" *ngIf="checkPermission()">
   <div class="box-datePicker">
     <div class="labelDatePicker">Chọn tháng, năm:</div>
     <kendo-datepicker class="datePicker"

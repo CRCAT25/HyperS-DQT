@@ -97,6 +97,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
   listCouponType: DTOCouponType[] = listCouponType;
   // Danh sách nhóm khách hàng áp dụng
   listGroupCustomer: DTOGroupCustomer[] = listGroupCustomer;
+  listPermissionAvaiable: string[] = ['Admin', 'EventManager'];
 
 
   // Đối tượng áp dụng mặc định
@@ -208,6 +209,14 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
         this.permission = staff.Permission;
       }
     })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   // Lấy danh sách coupon
@@ -504,58 +513,48 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
       this.reviewCoupon = coupon;
       return;
     }
-    if (this.permission === 'Admin' || this.permission === 'EventManager') {
-      if (newStatus.value === 2) coupon.Status = 1;
-      if (newStatus.value === 3) coupon.Status = 2;
-      if (newStatus.value === 4) coupon.Status = 3;
+    if (newStatus.value === 2) coupon.Status = 1;
+    if (newStatus.value === 3) coupon.Status = 2;
+    if (newStatus.value === 4) coupon.Status = 3;
 
-      const req: DTOUpdateCouponRequest = {
-        Coupon: coupon,
-        Properties: ['Status']
+    const req: DTOUpdateCouponRequest = {
+      Coupon: coupon,
+      Properties: ['Status']
+    }
+    this.couponService.updateCoupon(req).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+      if (res.StatusCode === 0) {
+        this.notiService.Show('Cập nhật trạng thái thành công', 'success');
+        this.getListCoupon();
       }
-      this.couponService.updateCoupon(req).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-        if (res.StatusCode === 0) {
-          this.notiService.Show('Cập nhật trạng thái thành công', 'success');
-          this.getListCoupon();
-        }
-      }, (error => {
-        this.notiService.Show(`Cập nhật trạng thái bị lỗi ${error}`, 'error');
-      }))
-    }
-    else {
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-    }
+    }, (error => {
+      this.notiService.Show(`Cập nhật trạng thái bị lỗi ${error}`, 'error');
+    }))
   }
 
   // Đóng drawer
   toggleDrawerToAdd() {
-    if (this.permission === 'Admin' || this.permission === 'EventManager') {
-      this.selectedCoupon = {
-        Code: -1,
-        IdCoupon: '',
-        Description: '',
-        StartDate: null,
-        EndDate: null,
-        Quantity: 0,
-        RemainingQuantity: 0,
-        MinBillPrice: 0,
-        MaxBillDiscount: 0,
-        Status: 0,
-        Stage: 0,
-        CouponType: -1,
-        DirectDiscount: 0,
-        PercentDiscount: 0,
-        ApplyTo: -1
-      };
-      this.childDrawer.toggle();
-      this.startDateCoupon = null;
-      this.endDateCoupon = null;
-      this.selectedCouponType = -1;
-      this.reviewCoupon = null;
-    }
-    else {
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-    }
+    this.selectedCoupon = {
+      Code: -1,
+      IdCoupon: '',
+      Description: '',
+      StartDate: null,
+      EndDate: null,
+      Quantity: 0,
+      RemainingQuantity: 0,
+      MinBillPrice: 0,
+      MaxBillDiscount: 0,
+      Status: 0,
+      Stage: 0,
+      CouponType: -1,
+      DirectDiscount: 0,
+      PercentDiscount: 0,
+      ApplyTo: -1
+    };
+    this.childDrawer.toggle();
+    this.startDateCoupon = null;
+    this.endDateCoupon = null;
+    this.selectedCouponType = -1;
+    this.reviewCoupon = null;
   }
 
   // Chọn loại khuyến mãi
@@ -596,65 +595,59 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
 
   // Cập nhật chi tiết khuyến mãi
   updateDetailCoupon() {
-    if (this.permission === 'Admin' || this.permission === 'EventManager') {
-      if (this.checkUpdatable()) {
-        this.reviewCoupon = {
-          Code: this.selectedCoupon.Code,
-          IdCoupon: this.childIdCoupon.valueTextBox,
-          Description: this.childDescription.value,
-          StartDate: this.formatDateToString(this.startDateCoupon),
-          EndDate: this.formatDateToString(this.endDateCoupon),
-          Quantity: parseInt(this.childQuantity.valueTextBox),
-          RemainingQuantity: parseInt(this.childRemainingQuantity.valueTextBox),
-          MinBillPrice: parseInt(this.childMinBillPrice.valueTextBox),
-          MaxBillDiscount: this.childMaxBillPrice ? parseInt(this.childMaxBillPrice.valueTextBox) : null,
-          Status: this.selectedCoupon.Status,
-          Stage: this.selectedCoupon.Stage,
-          CouponType: this.childCouponType.value.Code,
-          DirectDiscount: this.childDirectDiscount ? parseInt(this.childDirectDiscount.valueTextBox) : null,
-          PercentDiscount: this.childPercentDiscount ? parseInt(this.childPercentDiscount.valueTextBox) : null,
-          ApplyTo: this.childApplyTo.value.Code
-        }
-        const req: DTOUpdateCouponRequest = {
-          Coupon: this.reviewCoupon,
-          Properties: [
-            'IdCoupon',
-            'Description',
-            'StartDate',
-            'EndDate',
-            'Quantity',
-            'RemainingQuantity',
-            'MinBillPrice',
-            'MaxBillDiscount',
-            'CouponType',
-            'DirectDiscount',
-            'PercentDiscount',
-            'ApplyTo'
-          ]
-        }
-        console.log(req);
-        this.couponService.updateCoupon(req).subscribe((res: DTOResponse) => {
-          if (res.StatusCode === 0) {
-            this.notiService.Show('Cập nhật thành công', 'success');
-            this.toggleDrawerToAdd();
-            this.getListCoupon();
-          }
-          else {
-            this.notiService.Show('Lỗi: ' + res.ErrorString, 'error');
-          }
-        }, err => {
-          this.notiService.Show('Lỗi hệ thống ' + err, 'error');
-        })
+    if (this.checkUpdatable()) {
+      this.reviewCoupon = {
+        Code: this.selectedCoupon.Code,
+        IdCoupon: this.childIdCoupon.valueTextBox,
+        Description: this.childDescription.value,
+        StartDate: this.formatDateToString(this.startDateCoupon),
+        EndDate: this.formatDateToString(this.endDateCoupon),
+        Quantity: parseInt(this.childQuantity.valueTextBox),
+        RemainingQuantity: parseInt(this.childRemainingQuantity.valueTextBox),
+        MinBillPrice: parseInt(this.childMinBillPrice.valueTextBox),
+        MaxBillDiscount: this.childMaxBillPrice ? parseInt(this.childMaxBillPrice.valueTextBox) : null,
+        Status: this.selectedCoupon.Status,
+        Stage: this.selectedCoupon.Stage,
+        CouponType: this.childCouponType.value.Code,
+        DirectDiscount: this.childDirectDiscount ? parseInt(this.childDirectDiscount.valueTextBox) : null,
+        PercentDiscount: this.childPercentDiscount ? parseInt(this.childPercentDiscount.valueTextBox) : null,
+        ApplyTo: this.childApplyTo.value.Code
       }
-    }
-    else {
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      const req: DTOUpdateCouponRequest = {
+        Coupon: this.reviewCoupon,
+        Properties: [
+          'IdCoupon',
+          'Description',
+          'StartDate',
+          'EndDate',
+          'Quantity',
+          'RemainingQuantity',
+          'MinBillPrice',
+          'MaxBillDiscount',
+          'CouponType',
+          'DirectDiscount',
+          'PercentDiscount',
+          'ApplyTo'
+        ]
+      }
+      console.log(req);
+      this.couponService.updateCoupon(req).subscribe((res: DTOResponse) => {
+        if (res.StatusCode === 0) {
+          this.notiService.Show('Cập nhật thành công', 'success');
+          this.toggleDrawerToAdd();
+          this.getListCoupon();
+        }
+        else {
+          this.notiService.Show('Lỗi: ' + res.ErrorString, 'error');
+        }
+      }, err => {
+        this.notiService.Show('Lỗi hệ thống ' + err, 'error');
+      })
     }
   }
 
   // Thêm mới khuyến mãi
   addCoupon() {
-    if (this.permission === 'Admin' || this.permission === 'EventManager') {
       if (this.checkUpdatable()) {
         this.reviewCoupon = {
           Code: 0,
@@ -703,20 +696,15 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
           this.notiService.Show('Lỗi hệ thống ' + err, 'error');
         })
       }
-    }
-    else {
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-    }
   }
 
   // Cập nhật trạng thái bên trong drawer
   updateStatusDrawer(res: any) {
-    if(this.permission === 'Admin' || this.permission === 'EventManager'){
       if (res.value === 1 && !this.checkUpdatable()) {
         this.notiService.Show('Vui lòng nhập đủ thông tin để gửi duyệt', 'error');
         return;
       }
-  
+
       if (this.checkUpdatable()) {
         const buildCoupon = (): DTOCoupon => ({
           Code: this.selectedCoupon.Code === -1 ? 0 : this.selectedCoupon.Code,
@@ -735,9 +723,9 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
           PercentDiscount: this.childPercentDiscount ? parseInt(this.childPercentDiscount.valueTextBox) : null,
           ApplyTo: this.childApplyTo.value.Code
         });
-  
+
         this.reviewCoupon = buildCoupon();
-  
+
         const req: DTOUpdateCouponRequest = {
           Coupon: this.reviewCoupon,
           Properties: [
@@ -747,7 +735,7 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
             'PercentDiscount', 'ApplyTo', 'Status'
           ]
         };
-  
+
         this.couponService.updateCoupon(req).subscribe(
           (res: DTOResponse) => {
             if (res.StatusCode === 0) {
@@ -763,10 +751,6 @@ export class Admin004ManageCouponComponent implements OnInit, OnDestroy {
           }
         );
       }
-    }
-    else{
-      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-    }
   }
 
   // Lấy số lượng và set số lượng còn lại bằng số lượng
