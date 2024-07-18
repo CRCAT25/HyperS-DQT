@@ -20,9 +20,7 @@ export class CartService {
 
   constructor(private httpClient: HttpClient) { }
 
-  emitCartUpdated(): void {
-    this.cartUpdate.emit();
-  }
+
 
   getHttpOptions() {
     return {
@@ -31,6 +29,10 @@ export class CartService {
         'Access-Control-Allow-Origin': '*'  // Thêm tiêu đề Access-Control-Allow-Origin
       })
     }
+  }
+
+  emitCartUpdated(): void {
+    this.cartUpdate.emit();
   }
   
 
