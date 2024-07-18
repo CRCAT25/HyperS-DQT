@@ -163,6 +163,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
       if (res.StatusCode === 0) {
         const staff: DTOStaff = res.ObjectReturn.Data[0];
+        console.log(staff);
         this.permission = staff.Permission;
       }
     })
@@ -624,8 +625,8 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       this.notiService.Show("Vui lòng nhập lại thông tin Email theo dạng @ .com", "error");
       return false;
     }
-    if (this.childGender.value.Gender == "-- Giới tính --") {
-      this.notiService.Show("Vui lòng chọn giới tính", "error");
+    if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
       return false;
     }
     if (type == "add") {
@@ -633,6 +634,10 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
         this.notiService.Show("Vui lòng nhập lại thông tin ngày sinh", "error");
         return false;
       }
+    }
+    if (this.childGender.value.Gender == "-- Giới tính --") {
+      this.notiService.Show("Vui lòng chọn giới tính", "error");
+      return false;
     }
     if (this.childProvince.value == "Chọn tỉnh, thành phố") {
       this.notiService.Show("Vui lòng chọn tỉnh, thành phố", "error");
@@ -656,10 +661,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     }
     if (this.childRole.value == "-- Chức danh --") {
       this.notiService.Show("Vui lòng chọn chức danh", "error");
-      return false;
-    }
-    if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
-      this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
       return false;
     }
     return true;

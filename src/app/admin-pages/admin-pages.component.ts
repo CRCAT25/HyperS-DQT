@@ -81,6 +81,7 @@ export class AdminPagesComponent implements OnInit, OnDestroy {
       if (res.StatusCode === 0) {
         if(res.ObjectReturn.Data){
           this.listRole = res.ObjectReturn.Data.map((item: {Name: string, NormalizedName: string}) => item.Name);
+          this.listRole = this.listRole.filter(item => item !== 'Customer')
         }
       }
     })
