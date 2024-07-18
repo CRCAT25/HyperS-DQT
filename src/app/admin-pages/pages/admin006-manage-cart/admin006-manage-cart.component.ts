@@ -737,9 +737,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
             requestUpdateBill.ListOfBillInfo.forEach(billInf => {
               billInf.Status = obj.value;
             });
-      
-            console.log(requestUpdateBill);
-      
+            
             const request: DTOUpdateBillRequest = {
               DTOUpdateBill: requestUpdateBill,
               DTOProceedToPayment: null
