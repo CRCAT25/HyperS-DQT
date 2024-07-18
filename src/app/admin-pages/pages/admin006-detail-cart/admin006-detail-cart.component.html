@@ -230,7 +230,7 @@
                                         <div [style.color]="formatStatus(dataItem.Status) | statusColor">
                                             {{formatStatus(dataItem.Status)}}
                                         </div>
-                                         <div *ngIf="dataItem.Note !== ''">{{dataItem.Note}}</div>
+                                         <div class="text-note" *ngIf="dataItem.Note !== ''" [title]="dataItem.Note">{{dataItem.Note}}</div>
                                     </div>
                                 </ng-template>
                             </kendo-grid-column>

@@ -300,8 +300,9 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
 
   filterProductActive: FilterDescriptor = { field: 'Status', operator: 'eq', value: 0, ignoreCase: true };
-  filterCouponActive: FilterDescriptor = { field: 'Status', operator: 'eq', value: 2, ignoreCase: true };
+  filterCouponApplying: FilterDescriptor = { field: 'Status', operator: 'eq', value: 2, ignoreCase: true };
   filterCouponAllCount: FilterDescriptor = { field: 'ApplyTo', operator: 'eq', value: 0, ignoreCase: true };
+  filterCouponActiving: FilterDescriptor = { field: 'Stage', operator: 'eq', value: 1, ignoreCase: true };
 
   gridStateProduct: State = {
     sort: [
@@ -328,8 +329,9 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     filter: {
       logic: "and",
       filters: [
-        this.filterCouponActive,
-        this.filterCouponAllCount
+        this.filterCouponApplying,
+        this.filterCouponAllCount,
+        this.filterCouponActiving
       ]
     }
   }
@@ -462,6 +464,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
         return 'Từ chối đổi hàng';
       case 21:
         return 'Từ chối trả hàng';
+      case 22:
+        return 'Hoàn tất đơn hàng';
       default:
         return 'Unknow';
     }
@@ -505,10 +509,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       } catch {
 
       } finally {
-        this.isLoadingDistrict = false
+
       }
 
     })
+    this.isLoadingDistrict = false
   }
 
   APIGetWard(idDistrict: string): void {
@@ -523,10 +528,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       } catch {
 
       } finally {
-        this.isLoadingWard = false
       }
 
     })
+    this.isLoadingWard = false
+
   }
 
   handleChangeProvince(obj: any): void {
@@ -664,7 +670,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
   //Check show alert
   clickDropDownAction(item: DTOBillInfo, value: any) {
-    if(this.itemBill.Status !== 22){
+    if (this.itemBill.Status !== 22) {
       this.itemBillInfo = item;
       this.objItemStatus = value
       this.isShowAlert = !this.isShowAlert;
@@ -745,7 +751,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.listProductsInCart.forEach(item => {
         this.totalPrictOfBill += item.TotalPriceOfProduct;
       });
-      if(this.idCoupon && this.idCoupon !== null){
+      if (this.idCoupon && this.idCoupon !== null) {
         this.searchIdCoupon(this.idCoupon);
       }
     }
@@ -825,27 +831,29 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
         .subscribe({
           next: item => {
             if (item.RemainingQuantity > 0) {
-              if(this.totalPrictOfBill >= item.MinBillPrice){
-                  this.idCoupon = item.IdCoupon;
-                  if(item.DirectDiscount){
-                    this.priceCoupon = item.DirectDiscount;
-                  } else if(item.PercentDiscount){
-                    this.priceCoupon = (this.totalPrictOfBill * item.PercentDiscount) / 100;
-                  }
-    
-                  if(item.MaxBillDiscount){
-                    this.maxCoupon = item.MaxBillDiscount;
-                  }
-    
-                  if(this.priceCoupon > this.maxCoupon){
-                    this.numberCoupon = this.maxCoupon;
-                  } else {
-                    this.numberCoupon = this.priceCoupon;
-                  }
-    
-                  this.totalPrictOfBill -= this.numberCoupon;
+              if (this.totalPrictOfBill >= item.MinBillPrice) {
+                this.idCoupon = item.IdCoupon;
+                if (item.DirectDiscount) {
+                  this.priceCoupon = item.DirectDiscount;
+                } else if (item.PercentDiscount) {
+                  this.priceCoupon = (this.totalPrictOfBill * item.PercentDiscount) / 100;
+                }
+
+                if (item.MaxBillDiscount) {
+                  this.maxCoupon = item.MaxBillDiscount;
+                }
+
+                if (this.priceCoupon > this.maxCoupon) {
+                  this.numberCoupon = this.maxCoupon;
+                } else {
+                  this.numberCoupon = this.priceCoupon;
+                }
+
+                this.totalPrictOfBill -= this.numberCoupon;
+                this.notiService.Show("Thêm voucher thành công", "success");
+
               } else {
-                this.notiService.Show("Yêu cầu đơn tối thiểu là: "+ this.formatCurrency(item.MinBillPrice), "warning");
+                this.notiService.Show("Yêu cầu đơn tối thiểu là: " + this.formatCurrency(item.MinBillPrice), "warning");
               }
             } else {
               this.notiService.Show("Số lượng không đủ", "warning");
@@ -1015,11 +1023,11 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.listProductsInCart.forEach(item => {
       this.totalPrictOfBill += item.TotalPriceOfProduct;
     });
-    if(this.listProductsInCart.length == 0){
+    if (this.listProductsInCart.length == 0) {
       this.isDisabledVoucher = true;
       this.numberCoupon = 0;
     } else {
-      if(this.idCoupon && this.idCoupon !== null){
+      if (this.idCoupon && this.idCoupon !== null) {
         this.searchIdCoupon(this.idCoupon);
       }
     }
@@ -1053,6 +1061,10 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       return false;
     }
     if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
+      this.notiService.Show("Vui lòng nhập lại thông tin số người nhận", "error");
+      return false;
+    }
+    if (!isValidPhoneNumber(this.childOrdererPhoneNumber.valueTextBox) || this.childOrdererPhoneNumber.valueTextBox == "") {
       this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
       return false;
     }
@@ -1187,7 +1199,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   updateStatusBillInfo(obj: any) {
     if (obj.value >= 1) {
       this.checkStatusBill(obj.value);
-      alert(this.setStatusBill)
+      // alert(this.setStatusBill)
       let requestUpdateBill: DTOUpdateBill;
       this.itemBill.Status = obj.value;
       if (obj.value == 13 || obj.value == 14 || obj.value == 15 || obj.value == 20 || obj.value == 21) {

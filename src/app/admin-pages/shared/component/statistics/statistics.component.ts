@@ -32,7 +32,7 @@ export class StatisticsComponent implements OnChanges, OnInit {
   currentCount: number = 0;
   
   ngOnInit(): void {
-    this.boxShadow = `${this.hexToRgba(this.color, 0.3)} 0px 5px 10px`;
+    this.boxShadow = `${this.hexToRgba(this.color, 0.2)} 0px 5px 10px`;
     this.isSelected = this.isSelectedDefault;
   }
 

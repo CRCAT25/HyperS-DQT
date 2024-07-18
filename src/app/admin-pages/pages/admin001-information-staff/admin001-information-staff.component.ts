@@ -17,7 +17,7 @@ import { TextDropdownComponent } from 'src/app/shared/component/text-dropdown/te
 import { ImportImageComponent } from '../../shared/component/import-image/import-image.component';
 import { DTOUpdateStaffRequest } from '../../shared/dto/DTOUpdateStaffRequest.dto';
 import { DTORole } from '../../shared/dto/DTORole.dto';
-import { isAlphabetWithSingleSpace, isValidPhoneNumber } from 'src/app/shared/utils/utils';
+import { isAlphabetWithSingleSpace, isValidEmail, isValidPhoneNumber } from 'src/app/shared/utils/utils';
 
 interface Gender {
   Code: number
@@ -109,7 +109,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   districtBinding: DTODistrict;
   wardBinding: DTOWard;
   roadBinding: string;
-  isDisabled: boolean = true;
+  isDisabled: boolean = false;
   specialAddress: string;
   roleBinding: string;
 
@@ -352,7 +352,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       this.childWard.value.ward_name,
       this.childRoad.valueTextBox,
       this.childSpecific.valueTextBox
-    ].filter(Boolean).join(', ');
+    ].filter(Boolean).join(',');
     // console.log(this.newAddress);
   }
 
@@ -507,6 +507,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       if (res.StatusCode === 0) {
         if (res.ObjectReturn.Data) {
           this.listRole = res.ObjectReturn.Data.map((item: { Name: string, NormalizedName: string }) => item.Name);
+          this.listRole = this.listRole.filter((item) => item !== "Admin" && item !== "Customer")
         }
       }
     })
@@ -585,7 +586,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       CodeAccount: this.staffSelected.CodeAccount,
       StatusAccountStr: this.staffSelected.StatusAccountStr,
     }
-    if(this.dateChange && this.dateChange !== null){
+    if (this.dateChange && this.dateChange !== null) {
       requestUpdateStaff.Birthday = this.formatDateToString(this.dateChange)
     } else {
       requestUpdateStaff.Birthday = this.formatDateToString(this.childBirthday.defaultDate)
@@ -597,7 +598,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       Properties: properties,
     }
     console.log(request);
-      if (this.checkValueForm("update")) {
+    if (this.checkValueForm("update")) {
       this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
         this.getListStaff();
         this.getStatistics();
@@ -619,15 +620,15 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       this.notiService.Show("Vui lòng nhập lại thông tin họ tên", "error");
       return false;
     }
-    if (this.childEmail.valueTextBox == "") {
-      this.notiService.Show("Vui lòng nhập lại thông tin Email", "error");
+    if (this.childEmail.valueTextBox == "" || !isValidEmail(this.childEmail.valueTextBox)) {
+      this.notiService.Show("Vui lòng nhập lại thông tin Email theo dạng @ .com", "error");
       return false;
     }
-    if (this.childGender.value == "-- Giới tính --") {
+    if (this.childGender.value.Gender == "-- Giới tính --") {
       this.notiService.Show("Vui lòng chọn giới tính", "error");
       return false;
     }
-    if(type == "add"){
+    if (type == "add") {
       if (this.dateChange == null) {
         this.notiService.Show("Vui lòng nhập lại thông tin ngày sinh", "error");
         return false;
@@ -664,43 +665,58 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     return true;
   }
 
-    // Thêm mới nhân viên
-    addStaff() {
-      this.setNewAddress();
-      const requestUpdateStaff: DTOStaff = {
-        Code: 0,
-        IdStaff: this.childId.valueTextBox,
-        Name: this.childName.valueTextBox,
-        ImageUrl: this.childImage.imageHandle.ImgUrl,
-        Gender: this.childGender.value.Code,
-        Birthday: this.formatDateToString(this.dateChange),
-        PhoneNumber: this.childPhoneNumber.valueTextBox,
-        Email: this.childEmail.valueTextBox,
-        Address: this.newAddress,
-        Permission: this.childRole.value,
-        Status: 0,
-        CodeAccount: 0,
-        StatusAccountStr: "",
-      }
-      const properties: string[] = ["Code","IdStaff", "Name", "ImageUrl", "Gender", "Birthday", "PhoneNumber", "Email", "Address", "Permission"];
-  
-      const request: DTOUpdateStaffRequest = {
-        Staff: requestUpdateStaff,
-        Properties: properties,
-      }
-      console.log(request);
-      if (this.checkValueForm("add")) {
-        this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-          this.getListStaff();
-          this.getStatistics();
-          if (res.StatusCode === 0) {
-            this.notiService.Show('Thêm mới thành công', 'success');
-          }
-        })
-      } else {
+  // Thêm mới nhân viên
+  addStaff() {
+    this.setNewAddress();
+    if (this.checkValueForm("add")) {
+    const requestUpdateStaff: DTOStaff = {
+      Code: 0,
+      IdStaff: this.childId.valueTextBox,
+      Name: this.childName.valueTextBox,
+      ImageUrl: this.childImage.imageHandle.ImgUrl,
+      Gender: this.childGender.value.Code,
+      Birthday: this.formatDateToString(this.dateChange),
+      PhoneNumber: this.childPhoneNumber.valueTextBox,
+      Email: this.childEmail.valueTextBox,
+      Address: this.newAddress,
+      Permission: this.childRole.value,
+      Status: 0,
+      CodeAccount: 0,
+      StatusAccountStr: "",
+    }
+    const properties: string[] = ["Code", "IdStaff", "Name", "ImageUrl", "Gender", "Birthday", "PhoneNumber", "Email", "Address", "Permission"];
+
+    const request: DTOUpdateStaffRequest = {
+      Staff: requestUpdateStaff,
+      Properties: properties,
+    }
+    console.log(request);
+
+      const exsitsedIdStaff = this.listStaff.data.find((item: DTOStaff) => item.IdStaff == this.childId.valueTextBox);
+      const existedPhoneNumber = this.listStaff.data.find((item: DTOStaff) => item.PhoneNumber == this.childPhoneNumber.valueTextBox);
+      const existedEmail = this.listStaff.data.find((item: DTOStaff) => item.Email == this.childEmail.valueTextBox);
+
+      if (existedPhoneNumber) {
+        this.notiService.Show('Số điện thoại đã tồn tại', 'error');
+        return;
+      } else if (existedEmail) {
+        this.notiService.Show('Email đã tồn tại', 'error');
+        return;
+      } else if (exsitsedIdStaff){
+        this.notiService.Show('Mẫ nhân viên đã tồn tại', 'error');
         return;
       }
+      this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
+        this.getListStaff();
+        this.getStatistics();
+        if (res.StatusCode === 0) {
+          this.notiService.Show('Thêm mới thành công', 'success');
+        }
+      })
+    } else {
+      return;
     }
+  }
 
   test(res: any) {
     console.log(res);
