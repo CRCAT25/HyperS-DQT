@@ -54,14 +54,21 @@
                         }
     
                         .image-show{
-                            width: 600px;
+                            width: 500px;
                             height: 700px;
-    
-                            img{
-                                width: 100%;
-                                height: 100%;
-                                border-radius: 10px;
+
+                            .image{
+                                height: 730px;
+                                width: 500px;
+                                img{
+                                    width: 100%;
+                                    height: 100%;
+                                    border-radius: 10px;
+                                    object-fit: cover;
+                                }
                             }
+    
+                          
                         }
                     }
     
@@ -178,6 +185,11 @@
                     }
                     
                 }
+            }
+
+            .list-product-area{
+                width: 100%;
+                padding: 0 30px;
             }
         
             

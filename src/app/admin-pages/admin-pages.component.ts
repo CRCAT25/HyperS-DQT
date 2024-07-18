@@ -7,6 +7,7 @@ import { DTOResponse } from '../in-layout/Shared/dto/DTORespone';
 import { StaffService } from './shared/service/staff.service';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
+import { NotiService } from '../ecom-pages/shared/service/noti.service';
 
 @Component({
   selector: 'app-admin-pages',
@@ -21,7 +22,12 @@ export class AdminPagesComponent implements OnInit, OnDestroy {
   // Danh sách các quyền của nhân viên
   listRole: string[];
 
-  constructor(private router: Router, private layoutService: LayoutService, private staffService: StaffService) { }
+  constructor(
+    private router: Router, 
+    private layoutService: LayoutService, 
+    private staffService: StaffService,
+    private notiService: NotiService
+  ) { }
 
   ngOnInit(): void {
     this.getCurrentStaff();
@@ -59,6 +65,12 @@ export class AdminPagesComponent implements OnInit, OnDestroy {
       if (res.StatusCode === 0) {
         const staff: DTOStaff = res.ObjectReturn.Data[0];
         this.permission = staff.Permission;
+
+        if(staff.Status === 1){
+          this.router.navigate(['account/login']);
+          localStorage.clear();
+          this.notiService.Show('Tài khoản đã bị vô hiệu hóa', 'error');
+        }
       }
     })
   }

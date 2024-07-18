@@ -1,0 +1,25 @@
+.content-new-product{
+    margin-bottom: 50px;
+    width: 100%;
+    margin-top: 100px;
+    display: block;
+    .title{
+      width: 100%;
+      font-size: 30px;
+      margin: 0 ;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .card{
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 30px;
+      height: 500px;
+      padding: 0 5px;
+      
+       
+      
+    }
+}

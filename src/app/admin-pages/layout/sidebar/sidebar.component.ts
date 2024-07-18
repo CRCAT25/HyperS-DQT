@@ -21,6 +21,8 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router, private layoutService: LayoutService, private staffService: StaffService) { }
 
   ngOnInit(): void {
+    this.getCurrentStaff();
+
     const breadcrumbLS: string = localStorage.getItem('breadcrumb');
     if(!breadcrumbLS) return;
     const listBreadCrumbSplit: string[] = breadcrumbLS.split('/')
@@ -56,8 +58,6 @@ export class SidebarComponent implements OnInit {
       const childProductModule: DTOModule = productModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
       if(childProductModule) childProductModule.IsSelected = true;
     }
-
-    this.getCurrentStaff();
   }
 
 
@@ -151,7 +151,7 @@ export class SidebarComponent implements OnInit {
   }
 
   logOut(){
-    localStorage.removeItem('token');
+    localStorage.clear();
     this.router.navigate(['account/login']);
   }
 }

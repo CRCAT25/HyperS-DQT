@@ -34,6 +34,8 @@ export class EcomProfileComponent implements OnInit {
   isLoading: boolean = true
   errorString: string = ""
 
+  billInfoSelected: DTOBillInfo
+
   openPopErr: boolean = false
   action: number = 0
 
@@ -94,6 +96,8 @@ export class EcomProfileComponent implements OnInit {
         this.notiService.Show("Cancel order successfully", "success")
         this.APIGetListBillCustomer()
         this.expanded = false
+
+        console.log(info);
       }else{
         console.log(data.ErrorString);
         this.notiService.Show("Error: " + data.ErrorString, "error")
@@ -112,11 +116,25 @@ export class EcomProfileComponent implements OnInit {
     this.errorString = data;
     if(this.action == 1){
       this.handleCancelOrder()
+    }else{
+      if(this.action == 2){
+        this.handleReturnAndChangeBillInfo(this.billInfoSelected, 'change');
+      }
+      if(this.action == 3){
+        this.handleReturnAndChangeBillInfo(this.billInfoSelected, 'return');
+      }
     }
+    
   }
 
   handleActionCancelOrder(){
     this.action = 1
+    this.openPopErr = true
+  }
+
+  handleActionChangeBillInfo(item: DTOBillInfo, status: number){
+    this.billInfoSelected = item
+    this.action = status
     this.openPopErr = true
   }
 
@@ -253,6 +271,7 @@ export class EcomProfileComponent implements OnInit {
     this.billSelected.ListBillInfo.forEach(element => {
       element.Status = 2
     });
+
     const updateBill:DTOUpdateBill = {
       CodeBill: this.billSelected.Code,
       Status: 2,
@@ -276,6 +295,7 @@ export class EcomProfileComponent implements OnInit {
       else if(func == "change"){
         item.Status = 14
       }
+      item.Note = this.errorString
 
     }
 
@@ -285,6 +305,8 @@ export class EcomProfileComponent implements OnInit {
       ListOfBillInfo: this.billSelected.ListBillInfo,
       Note: ""
     }
+
+    console.log(updateBill);
     const processToPayment: DTOProcessToPayment = null
     const updateBillRes: DTOUpdateBillRequest = {
       DTOUpdateBill: updateBill,

@@ -1,0 +1,10 @@
+<div class="content-new-product">
+    <div class="title">
+        Also like
+    </div>
+    <div class="card">
+        <div class="item" *ngFor="let product of listProduct">
+            <app-ecom-product-card [product]="product"></app-ecom-product-card>
+        </div>
+    </div>
+</div>

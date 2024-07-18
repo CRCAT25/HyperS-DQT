@@ -74,7 +74,7 @@
                                             <div class="area-2">
                                                 <div class="btn-return-area">
                                                     <div *ngIf="item.Status == 8">
-                                                        <div (click)="handleReturnAndChangeBillInfo(item, 'return')"  class="button button-return">
+                                                        <div (click)="handleActionChangeBillInfo(item, 3)"  class="button button-return">
                                                             <i class="fa-solid fa-reply"></i>
                                                             <div class="text">
                                                                 {{'return' | uppercase}}
@@ -82,7 +82,7 @@
                                                         </div>
                                                     </div>
                                                    
-                                                    <div (click)="handleReturnAndChangeBillInfo(item, 'change')"  *ngIf="item.Status == 8" class="button button-change">
+                                                    <div (click)="handleActionChangeBillInfo(item, 2)"  *ngIf="item.Status == 8" class="button button-change">
                                                         <i class="fa-solid fa-arrows-rotate"></i>
                                                         <div class="text">
                                                             {{'change' | uppercase}}
@@ -167,11 +167,11 @@
                     </div>
                 </div>
                 <div class="body">
-                    <div class="address-area">
+                    <!-- <div class="address-area">
                         <div class="btn-add-address">
                             + Add Address
                         </div>
-                    </div>
+                    </div> -->
                     <div class="order-area">
                         <div class="title">
                             Order tracking

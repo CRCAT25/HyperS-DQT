@@ -44,10 +44,7 @@ export class HeaderComponent implements OnInit {
     this.cartUpdateSubscription = this.cartService.cartUpdate.subscribe(() => {
       this.updateTotalItemCart();
     });
-
-    // Cập nhật totalItemCart lần đầu khi component được khởi tạo
-    if(this.codeCustomer){
-      console.log(this.codeCustomer);
+    if(this.codeCustomer != 0){
       this.APIGetCountInCart(this.codeCustomer);
     }else{
       this.updateTotalItemCart();

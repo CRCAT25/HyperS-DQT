@@ -73,7 +73,7 @@
                             <div  class="final-price">
                                 {{item.Product.PriceAfterDiscount | number: '1.0-0'}} vnd
                             </div>
-                            <div class="origin-price">
+                            <div *ngIf="item.Product.PriceAfterDiscount < item.Product.Price" class="origin-price">
                                 {{item.Product.Price | number: '1.0-0'}} vnd
                             </div>
                         </div>
