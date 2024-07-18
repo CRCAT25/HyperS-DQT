@@ -6,6 +6,8 @@ import { AuthService } from '../../shared/services/account.service';
 import { takeUntil } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { DTOChangePassword } from '../../shared/dto/DTOChangePassword';
+import { Location } from '@angular/common';
+import { DTOError } from '../../shared/dto/DTOError';
 
 @Component({
   selector: 'app-forgot-password',
@@ -24,10 +26,12 @@ export class ForgotPasswordComponent implements OnInit {
 
   changePassword: DTOChangePassword = {
     Email : this.username,
-    OldPassword: "",
+    OldPassword: null,
     NewPassword: "",
     Token: this.token
   }
+
+  
 
   showPassword: string = 'password'
   showRePassword: string = "password"
@@ -37,15 +41,17 @@ export class ForgotPasswordComponent implements OnInit {
     private accoutService: AuthService, 
     private notiService: NotiService,
     private cartService: CartService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private location : Location
   ){}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.username = params['username'];
-      this.token = params['token'];
+      this.token = params['token']
     });
-    if(this.token){
+
+    if(this.token && this.username){
       this.changePassword.Token = this.token
       this.changePassword.Email = this.username
       this.type = 2
@@ -56,6 +62,7 @@ export class ForgotPasswordComponent implements OnInit {
   APIForget(username: string):void{
     this.isLoading = true
     this.accoutService.forgotPassword(username).pipe(takeUntil(this.destroy)).subscribe(data => {
+      console.log(data);
       if(data.ErrorString != ""){
         this.notiService.Show(data.ErrorString, 'error')
       }else{
@@ -67,12 +74,18 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   APIChangePassword(info:DTOChangePassword):void{
+
     this.isLoading = true
     this.accoutService.changePassword(info).pipe(takeUntil(this.destroy)).subscribe(data => {
       if(data.ErrorString != ""){
         this.notiService.Show(data.ErrorString, 'error')
+      }else if(data.ObjectReturn.Errors.length != 0){
+        let listErrors: DTOError[] = data.ObjectReturn.Errors
+        listErrors.forEach(element => {
+          this.notiService.Show(element.Description, 'error')
+        });
       }else{
-        this.notiService.Show("Change password succeeded!", 'sucess')
+        this.notiService.Show("Change password succeeded!", 'success')
         this.handleNavigate('account/login')
       }
       this,this.isLoading = false

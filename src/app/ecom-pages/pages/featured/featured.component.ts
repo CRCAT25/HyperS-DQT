@@ -25,6 +25,7 @@ export class FeaturedComponent implements OnDestroy {
 
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
   codeCustomer: number
+  token: string
   isLoading: boolean = false
 
   isOpenPopThanks: boolean = false
@@ -45,7 +46,7 @@ export class FeaturedComponent implements OnDestroy {
   )
     {
     this.APIGetListProductDesc(this.filterProductDesc)
-    this.codeCustomer = Number(localStorage.getItem('codeCustomer'))
+
     this.APIGetListBanner()
   }
 
@@ -54,9 +55,21 @@ export class FeaturedComponent implements OnDestroy {
       this.isOpenPopThanks = true
     } 
 
+    this.route.queryParams.subscribe(params => {
+      this.codeCustomer = params['codeCustomer'];
+      this.token = params['token'];
+    });
+
+    if(this.codeCustomer && this.token){
+      localStorage.setItem('token', this.token)
+      localStorage.setItem('codeCustomer', String(this.codeCustomer))
+    }else{
+      this.codeCustomer = Number(localStorage.getItem('codeCustomer'))
+    }
+    
+
     if(this.codeCustomer){
       this.cartService.setTotalItemProduct(this.codeCustomer)
-      this.cartService.emitCartUpdated()
     }else{
       this.cartService.emitCartUpdated()
     }
@@ -100,9 +113,7 @@ export class FeaturedComponent implements OnDestroy {
       });
 
 
-      this.src = this.dataBanner1.BannerUrl + '?controls=0&showinfo=0&modestbranding=1&mute=1&autoplay=1&loop=1&playlist=6Pjw7uFmJDg&modestbranding=1&iv_load_policy=3&fs=0&rel=0'
-      console.log(this.src);
-      
+      this.src = this.dataBanner1.BannerUrl + '?controls=0&showinfo=0&modestbranding=1&mute=1&autoplay=1&loop=1&playlist=6Pjw7uFmJDg&modestbranding=1&iv_load_policy=3&fs=0&rel=0'      
       this.isLoading = false
     })
   }

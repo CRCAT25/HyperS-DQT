@@ -202,7 +202,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
           }
 
         }else{
-          this.notiService.Show("Error when payment", "error")
+          this.notiService.Show(data.ErrorString, "error")
         }
       }catch{
 
@@ -225,7 +225,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   APIApplyCoupon(info: DTOApplyCouponRequest){
-    console.log(info);
     this.paymentService.applyCoupon(info).pipe(takeUntil(this.destroy)).subscribe(data => {
       if(data.StatusCode == 0 && data.ErrorString == ""){
         this.appliedCoupon = data.ObjectReturn.Data[0]
@@ -341,15 +340,22 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   handlePayment():void{
-    if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected){
+    if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected || !this.road){
+      this.notiService.Show("Please enter infomation", "error")
+      
+    }else{
+      console.log(this.isBuyOther);
+
       if(this.isBuyOther){
         if(!this.recipientPhone){
-          this.notiService.Show("Payment error", "error")
+          this.notiService.Show("Please enter infomation", "error")
           return
         }
-      }else{
-        this.notiService.Show("Payment error", "error")
+        console.log(this.recipientPhone.length);
+        if(this.recipientPhone.length > 10){
+          this.notiService.Show("Phone number error", "error")
           return
+        }
       }
     }
   
