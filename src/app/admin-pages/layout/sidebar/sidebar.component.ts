@@ -127,7 +127,7 @@ export class SidebarComponent implements OnInit {
   // Sự kiện khi chọn vào submodule
   onSelectSubModule(sub: DTOModule, item: DTOModule): void {
     if (sub.ModuleName === 'Thông tin nhân viên') {
-      if (this.checkPermissionModule()) {
+      if (this.currentStaff.Permission !== 'Admin') {
         this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
         return;
       }
