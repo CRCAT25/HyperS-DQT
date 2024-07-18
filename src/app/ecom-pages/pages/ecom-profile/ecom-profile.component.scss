@@ -226,6 +226,9 @@
                 }
 
                 .header-2{
+                    display: flex;
+                    gap: 15px;
+                    
                     .btn-logout{
                         cursor: pointer;
                         width: 100px;

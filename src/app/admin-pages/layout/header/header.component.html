@@ -31,24 +31,24 @@
                         <div class="input-password">
                             <div class="label-input">Nhập mât khẩu cũ</div>
                             <div class="box-input-old-password">
-                                <input [type]="showOldPass">
-                                <i #oldPass  *ngIf="!isShowOldPass" class="fa-regular fa-eye" (click)="handleChangeShowPassword(0)"></i>
+                                <input #oldPass [type]="showOldPass">
+                                <i *ngIf="!isShowOldPass" class="fa-regular fa-eye" (click)="handleChangeShowPassword(0)"></i>
                                 <i *ngIf="isShowOldPass" class="fa-solid fa-eye" (click)="handleChangeShowPassword(0)"></i>
                             </div>
                         </div>
                         <div class="input-password">
                             <div class="label-input">Nhập mât khẩu mới</div>
                             <div class="box-input-new-password">
-                                <input [type]="showNewPass">
-                                <i #newPass *ngIf="!isShowNewPass" class="fa-regular fa-eye" (click)="handleChangeShowPassword(1)"></i>
+                                <input #newPass [type]="showNewPass">
+                                <i *ngIf="!isShowNewPass" class="fa-regular fa-eye" (click)="handleChangeShowPassword(1)"></i>
                                 <i *ngIf="isShowNewPass" class="fa-solid fa-eye" (click)="handleChangeShowPassword(1)"></i>
                             </div>
                         </div>
                         <div class="input-password">
                             <div class="label-input">Nhập lại mât khẩu mới</div>
                             <div class="box-input-new-password2">
-                                <input [type]="showNewPass2">
-                                <i #newPass2  *ngIf="!isShowNewPass2" class="fa-regular fa-eye" (click)="handleChangeShowPassword(2)"></i>
+                                <input #newPass2 [type]="showNewPass2">
+                                <i *ngIf="!isShowNewPass2" class="fa-regular fa-eye" (click)="handleChangeShowPassword(2)"></i>
                                 <i *ngIf="isShowNewPass2" class="fa-solid fa-eye" (click)="handleChangeShowPassword(2)"></i>
                             </div>
                         </div>
@@ -63,12 +63,12 @@
                 <ng-container *ngIf="footerPopUpCheck.innerHTML.trim().length === 0">
                     <div class="footerDefault">
                         <div class="button-no-change">
-                            <component-button [text]="'Không đổi'" [classIconFontAwesome]="''" [width]="230"  [height]="58" [rounded]="0" 
+                            <component-button [text]="'Không đổi'" [classIconFontAwesome]="''" [width]="200"  [height]="58" [rounded]="0" 
                         [bgColor]="'#FFFFFF'" [color]="'#959DB3'" [size]="16" [value]="1" (sendValue)="onClickButtonNoChange()"></component-button>
                         </div>
                         <div class="button-accept">
-                            <component-button [text]="'Thay đổi'" [classIconFontAwesome]="'fa-wrench'" [width]="230" [height]="58" [rounded]="0" 
-                            [bgColor]="'#6C6C6C'" [color]="'#FFFFFF'" [size]="16" [value]="1" (sendValue)="UpdatePassword()"></component-button>
+                            <component-button [text]="'Thay đổi'" [classIconFontAwesome]="'fa-wrench'" [width]="280" [height]="58" [rounded]="0" 
+                            [bgColor]="'black'" [color]="'#FFFFFF'" [size]="16" [value]="1" (sendValue)="UpdatePassword()"></component-button>
                         </div>
                     </div>
                 </ng-container>

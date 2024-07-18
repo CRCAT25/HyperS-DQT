@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DTOChangePassword } from 'src/app/account-pages/shared/dto/DTOChangePassword';
 import { AuthService } from 'src/app/account-pages/shared/services/account.service';
 import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
-import { TextInputComponent } from 'src/app/shared/component/text-input/text-input.component';
 import { StaffService } from '../../shared/service/staff.service';
 import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
@@ -31,12 +30,12 @@ export class HeaderAdminComponent implements OnInit {
   ) { }
 
   //ViewChild input
-  @ViewChild('oldPass') childOldPass!: TextInputComponent;
-  @ViewChild('newPass') childNewPass!: TextInputComponent;
-  @ViewChild('newPass2') childNewPass2!: TextInputComponent;
+  @ViewChild('oldPass') childOldPass: ElementRef;
+  @ViewChild('newPass') childNewPass: ElementRef;
+  @ViewChild('newPass2') childNewPass2: ElementRef;
 
   ngOnInit(): void {
-    // throw new Error('Method not implemented.');
+    this.getInfoStaff();
   }
 
   // Lấy giá trị trong searchbar ở header
@@ -64,14 +63,14 @@ export class HeaderAdminComponent implements OnInit {
         this.showOldPass = 'password'
       }
     } else if (type == 1) {
-      this.isShowNewPass = true;
+      this.isShowNewPass = !this.isShowNewPass;
       if (this.showNewPass == 'password') {
         this.showNewPass = 'text'
       } else {
         this.showNewPass = 'password'
       }
     } else if (type == 2) {
-      this.isShowNewPass2 = true;
+      this.isShowNewPass2 = !this.isShowNewPass2;
       if (this.showNewPass2 == 'password') {
         this.showNewPass2 = 'text'
       } else {
@@ -96,23 +95,26 @@ export class HeaderAdminComponent implements OnInit {
   }
 
   UpdatePassword(): void {
+    console.log(this.childOldPass.nativeElement.value);
     const changePassword: DTOChangePassword = {
-      Email: this.infoStaff.PhoneNumber,
-      OldPassword: this.childOldPass.valueTextBox,
-      NewPassword: this.childNewPass.valueTextBox,
+      Email: this.infoStaff.Email,
+      OldPassword: this.childOldPass.nativeElement.value,
+      NewPassword: this.childNewPass.nativeElement.value,
       Token: null
     }
-    if (this.childOldPass.valueTextBox == null) {
+    if (this.childOldPass.nativeElement.value == "") {
       this.notiService.Show("Vui lòng nhập mật khẩu cũ", 'warning')
-    } else if (this.childNewPass.valueTextBox == null) {
+    } else if (this.childNewPass.nativeElement.value == "") {
       this.notiService.Show("Vui lòng nhập mật khẩu mới", 'warning')
-    } else if (this.childNewPass2.valueTextBox == null) {
+    } else if (this.childNewPass2.nativeElement.value == "") {
       this.notiService.Show("Vui lòng nhập lại mật khẩu mới", 'warning')
     } else {
-      if (this.childNewPass.valueTextBox == this.childNewPass2.valueTextBox) {
+      if (this.childNewPass.nativeElement.value == this.childNewPass2.nativeElement.value) {
         this.accoutService.changePassword(changePassword).pipe(takeUntil(this.destroy)).subscribe(data => {
-          if (data.ErrorString != "") {
-            this.notiService.Show(data.ErrorString, 'error')
+          console.log(data);
+          console.log(data.ObjectReturn);
+          if (data.ObjectReturn.Errors.length > 0) {
+            this.notiService.Show(data.ObjectReturn.Errors[0].Description, 'error')
           } else {
             this.notiService.Show("Thay đổi mật khẩu thành công!", 'sucess')
             this.handleNavigate('account/login')
