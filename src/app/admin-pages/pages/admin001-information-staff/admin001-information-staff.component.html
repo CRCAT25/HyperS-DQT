@@ -1,5 +1,4 @@
 <div class="admin001-info-staff" *ngIf="checkPermission()">
-    <app-loading class="loading" [isLoading]="isLoading"></app-loading>
     <div class="header-filter-statistics">
         <div class="box-filter">
             <div class="label-filter">LỌC DỮ LIỆU</div>
@@ -126,7 +125,7 @@
 
     <div class="grid-custom-container">
         <kendo-grid [data]="listStaff" kendoGridSelectBy="Code" [selectedKeys]="selectedCodeStaff"
-            (selectionChange)="onSelectionChange($event)" [skip]="gridState.skip" [loading]="isLoading"
+            (selectionChange)="onSelectionChange($event)" [skip]="gridState.skip"
             [selectable]="{ mode: 'single' }" (pageChange)="onPageChange($event)" [pageSize]="gridState.take"
             [pageable]="{
                 type: 'numeric',
@@ -228,5 +227,5 @@
             </ng-template>
         </kendo-grid>
     </div>
-    <div class="loading-background"></div>
+    <app-loading class="loading" *ngIf="isLoading" [isLoading]="isLoading"></app-loading>
 </div>

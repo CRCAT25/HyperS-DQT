@@ -1,5 +1,4 @@
 <div class="admin006-manage-cart" *ngIf="checkPermission()">
-    <app-loading class="loading" [isLoading]="isLoading"></app-loading>
     <div class="header-filter" >
         <!-- <component-dropdown-action class="testStatus" [listItem]="listStatus"></component-dropdown-action> -->
     
@@ -68,7 +67,7 @@
         <div class="grid-custom-container">
             <kendo-grid [pageable]="true" [data]="listBillPage" [selectable]="{ checkboxOnly: true }"
                 (selectionChange)="onSelectionChange($event)" (pageChange)="onPageChange($event)" [skip]="gridState.skip"
-                [pageSize]="gridState.take" [loading]="isLoading">
+                [pageSize]="gridState.take" >
                 <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
     
                 <kendo-grid-column field="Code" title="Mã đơn" class="column-Code" [width]="100"></kendo-grid-column>
@@ -172,4 +171,6 @@
     <ng-container *ngIf="isAdd">
         <app-admin006-detail-cart [isAdd]="isAdd" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>
     </ng-container>
+    <app-loading class="loading" *ngIf="isLoading" [isLoading]="isLoading"></app-loading>
+
 

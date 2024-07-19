@@ -453,6 +453,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
       this.isAdd = !this.isAdd;
     }
     if ((event.target as HTMLElement).closest('.button-addBill')) {
+      this.isLoading = true;
       setTimeout(() => {
         console.log(this.resultAdd);
         if (this.resultAdd == 0) {
@@ -463,6 +464,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.isAdd = false;
             this.resultAdd = 1;
+            this.isLoading = false;
           }, 500);
         }
       }, 2000);
@@ -764,7 +766,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
               DTOUpdateBill: requestUpdateBill,
               DTOProceedToPayment: null
             }
-            
+
+            this.isLoading = true;
             this.billService.updateBill(request).subscribe((res: DTOResponse) => {
               if (res.StatusCode === 0) {
                 bill.Status = obj.value;
@@ -773,6 +776,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
                 this.getListBill();
                 this.setFilterExpStatus();
                 this.isShowAlert = false;
+                this.isLoading = false;
               }
             }, error => {
               console.error('Error:', error);
