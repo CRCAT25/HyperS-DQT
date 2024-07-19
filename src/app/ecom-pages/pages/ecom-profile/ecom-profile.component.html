@@ -1,4 +1,4 @@
-<app-loading [isLoading]="isLoading"></app-loading>
+    <app-loading [isLoading]="isLoading"></app-loading>
 <app-popup-exchange-return [(expanded)]="openPopErr" (outError)="receiveData($event)"></app-popup-exchange-return>
 
 <kendo-drawer-container>
@@ -31,6 +31,12 @@
 
                         <div class="item startDate">
                             Created at: <span>{{formatDateTime(billSelected?.CreateAt)}}</span>
+                        </div>
+                        <div *ngIf="billSelected?.Status != 17" class="startDate">
+                            Status payment: <span>Done</span>
+                        </div>
+                        <div *ngIf="billSelected?.Status == 17" class="startDate">
+                            Status payment:  <span [ngStyle]="{'color': 'red' }"> Due date {{addMinutesAndFormat(billSelected?.CreateAt, 15)}}</span>
                         </div>
 
                         <div class="item-status">
@@ -119,7 +125,11 @@
                                     Cancel Order
                                 </div>
                             </div>
-                          
+                            <div *ngIf="billSelected.Status == 17">
+                                <div (click)="handleRePayment(billSelected?.PaymentUrl)"  class="btn-payment">
+                                    Payment
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -201,6 +211,12 @@
             
                                     <div class="startDate">
                                         Start Date: <span>{{formatDateTime(item.CreateAt)}}</span>
+                                    </div>
+                                    <div *ngIf="item.Status != 17" class="startDate">
+                                        Status payment: <span>Done</span>
+                                    </div>
+                                    <div *ngIf="item.Status == 17" class="startDate">
+                                        Status payment: <span>{{addMinutesAndFormat(item.CreateAt, 15)}}</span>
                                     </div>
             
                                     <div [ngStyle]="{'color': handleGetStatusBillByCode(item.Status).Color}" class="status-area">

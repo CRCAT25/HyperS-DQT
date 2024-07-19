@@ -250,8 +250,29 @@ export class EcomProfileComponent implements OnInit {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   }
+
+  addMinutesAndFormat(dateTimeStr: any, minutes: number) {
+    const date = new Date(dateTimeStr);
+    date.setMinutes(date.getMinutes() + minutes);
+  
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutesFormatted = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+  
+    return `${day}/${month}/${year} ${hours}:${minutesFormatted}:${seconds}`;
+  }
+  
+  
+
+  
 
   getBill(code:number){
     this.expanded = true
@@ -327,6 +348,10 @@ export class EcomProfileComponent implements OnInit {
 
   hanldeRepurchase(item: DTOBillInfo){
     this.APIGetProductByID(item.IDProduct)
+  }
+
+  handleRePayment(url: string):void{
+    window.location.href = url
   }
 
   log(item: any){
