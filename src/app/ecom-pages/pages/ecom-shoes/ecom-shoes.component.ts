@@ -148,7 +148,7 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
 
       }finally{
 
-        if(this.ListProduct.length < this.productFilter.take){
+        if(this.ListProduct.length <= this.productFilter.take){
           this.isShowLoadMore = false
         }else{
           this.isShowLoadMore = true
@@ -227,8 +227,7 @@ export class EcomShoesComponent implements OnInit, OnDestroy {
     if(this.isSale == true){
       this.ListProduct.forEach((product) => {
         if (product.PriceAfterDiscount < product.Price) {
-          console.log(product);
-            filterCustom.filters.push({ field: "Code", operator: 'eq', value: product.Code })
+          filterCustom.filters.push({ field: "Code", operator: 'eq', value: product.Code })
         }
       });
     }
