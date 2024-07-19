@@ -66,13 +66,64 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  checkPermissionModule() {
-    if (this.currentStaff.Permission === 'Admin' || this.currentStaff.Permission === 'BillManager') {
+  // checkPermissionModule() {
+  //   if (this.currentStaff.Permission === 'Admin') {
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  // 
+  checkPermissionModule(module: string) {
+    const permission = this.currentStaff.Permission;
+    if (module === 'Quản lý tài khoản') {
       return true;
+    }
+    if (module === 'Quản lý sản phẩm') {
+      return true;
+    }
+    if (module === 'Thông tin khách hàng') {
+      if (permission === 'Admin') {
+        return true;
+      }
+    }
+    if (module === 'Thông tin nhân viên') {
+      if (permission === 'Admin') {
+        return true;
+      }
+    }
+    if (module === 'Danh sách sản phẩm') {
+      if (permission === 'Admin' || permission === 'ProductManager' || permission === 'BillManager') {
+        return true;
+      }
+    }
+    if (module === 'Thương hiệu và phân loại') {
+      if (permission === 'Admin' || permission === 'ProductManager') {
+        return true;
+      }
+    }
+    if (module === 'Dashboard') {
+      if (permission === 'Admin') {
+        return true;
+      }
+    }
+    if (module === 'Quản lý khuyến mãi') {
+      if (permission === 'Admin' || permission === 'EventManager') {
+        return true;
+      }
+    }
+    if (module === 'Quản lý banner') {
+      if (permission === 'Admin' || permission === 'EventManager') {
+        return true;
+      }
+    }
+    if (module === 'Đơn hàng') {
+      if (permission === 'Admin' || permission === 'BillManager') {
+        return true;
+      }
     }
     return false;
   }
-
 
   // Lấy danh sách các module và submodule
   getListModuleAndSub() {
@@ -88,11 +139,9 @@ export class SidebarComponent implements OnInit {
 
   // Sự kiện khi chọn vào item drawer
   onSelectItemDrawer(item: DTOModule): void {
-    if (item.ModuleName === 'Dashboard') {
-      if (!this.checkPermissionModule()) {
-        this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-        return;
-      }
+    if (!this.checkPermissionModule(item.ModuleName) && !item.IsChild) {
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
     }
 
     // Ngoại lệ đối với Quản lý tài khoản và quản lý sản phẩm. Dùng để đóng expand khi chọn các item khác trừ những item nào có subModule
@@ -126,11 +175,9 @@ export class SidebarComponent implements OnInit {
 
   // Sự kiện khi chọn vào submodule
   onSelectSubModule(sub: DTOModule, item: DTOModule): void {
-    if (sub.ModuleName === 'Thông tin nhân viên') {
-      if (this.currentStaff.Permission !== 'Admin') {
-        this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
-        return;
-      }
+    if (!this.checkPermissionModule(sub.ModuleName)) {
+      this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+      return;
     }
 
     this.clearSelectedModule();
@@ -175,6 +222,15 @@ export class SidebarComponent implements OnInit {
         this.currentStaff = res.ObjectReturn.Data[0];
       }
     })
+  }
+
+  // Đổi tên thành tên tiếng việt dựa trên role
+  showNameVNByRole(role: string){
+    if(role === 'Admin') return 'Quản lý';
+    if(role === 'BillManager') return 'Kiểm duyệt đơn hàng';
+    if(role === 'ProductManager') return 'Kiểm duyệt sản phẩm';
+    if(role === 'EventManager') return 'Kiểm duyệt sự kiện';
+    return 'Nhân viên'
   }
 
   logOut() {

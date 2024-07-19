@@ -61,7 +61,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   listCustomer: GridDataResult;
   listPageSize: number[] = [5, 10, 15];
   selectedCodeCustomer: number[];
-  listPermissionAvaiable: string[] = ['Admin', 'ProductManager'];
+  listPermissionAvaiable: string[] = ['Admin'];
 
   // variables object
   defaultGender: Gender = {
