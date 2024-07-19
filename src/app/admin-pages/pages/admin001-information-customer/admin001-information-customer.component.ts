@@ -61,7 +61,7 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
   listCustomer: GridDataResult;
   listPageSize: number[] = [5, 10, 15];
   selectedCodeCustomer: number[];
-  listPermissionAvaiable: string[] = ['Admin', 'ProductManager'];
+  listPermissionAvaiable: string[] = ['Admin'];
 
   // variables object
   defaultGender: Gender = {
@@ -260,7 +260,6 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
     this.pushToGridState(null, this.filterSearch);
     this.pushToGridState(null, this.filterAllStatistics);
     this.getListCustomer();
-    console.log(this.gridState);
   }
 
   // Set filter search
@@ -327,14 +326,14 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
 
   // Xóa toàn bộ thông tin trên form
   clearDetailCustomer(res: any) {
-    this.childId.valueTextBox = '';
-    this.childName.valueTextBox = '';
-    this.childEmail.valueTextBox = '';
-    this.childPhoneNumber.valueTextBox = '';
-    this.childGender.resetValue();
-    this.childBirthday.datePicker.writeValue(null);
-    this.selectedCodeCustomer = [];
-    this.childImage.imageHandle = new DTOImageProduct();
+    if(this.childId) this.childId.valueTextBox = '';
+    if(this.childName) this.childName.valueTextBox = '';
+    if(this.childEmail) this.childEmail.valueTextBox = '';
+    if(this.childPhoneNumber) this.childPhoneNumber.valueTextBox = '';
+    if(this.childGender) this.childGender.resetValue();
+    if(this.childBirthday) this.childBirthday.datePicker.writeValue(null);
+    if(this.selectedCodeCustomer) this.selectedCodeCustomer = [];
+    if(this.childImage) this.childImage.imageHandle = new DTOImageProduct();
   }
 
   ngOnDestroy(): void {

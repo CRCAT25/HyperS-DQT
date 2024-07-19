@@ -9,6 +9,12 @@
         height: 100%;
         position: relative;
 
+        .admin006-manage-cart{
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         app-admin006-detail-cart{
             z-index: 10;
             width: 100%;

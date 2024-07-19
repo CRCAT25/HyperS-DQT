@@ -148,7 +148,7 @@ app-sidebar-admin {
 
             .header-drawer {
                 display: flex;
-                height: 70px;
+                height: 60px;
                 padding: 4px 5px;
                 gap: 16px;
                 border-bottom: 1px solid #fff;
@@ -173,11 +173,15 @@ app-sidebar-admin {
                         font-weight: 600;
                         font-size: 16px;
                     }
+
+                    .position{
+                        font-size: 13px !important;
+                    }
                 }
             }
 
             .footer-drawer {
-                height: 50px;
+                height: 60px;
 
                 .button-sign-out {
                     width: 90%;

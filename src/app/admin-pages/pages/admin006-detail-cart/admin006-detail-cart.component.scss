@@ -83,8 +83,8 @@
         .bg-detail-cart {
             // width: calc(100vw - 268px);
             width: calc(100% + 40px);
-            height: 885px;
-            min-height: 885px;
+            height: calc(100vh - 60px);
+            min-height: calc(100vh - 60px);
             bottom: 0;
             right: 20px;
             top: -10px;
@@ -224,7 +224,6 @@
                                 display: flex;
                                 justify-content: space-between;
                                 width: 430px;
-
                                 kendo-combobox{
                                     box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
                                     border: 1px solid rgb(128, 128, 128);
