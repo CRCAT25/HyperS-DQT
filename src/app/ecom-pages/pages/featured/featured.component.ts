@@ -20,7 +20,13 @@ export class FeaturedComponent implements OnDestroy {
   ListProductDesc: DTOProduct[] =[]
   filterProductDesc: State = {
     take: 10,
-    sort: [{field: 'code', dir: 'desc'}]
+    sort: [{field: 'code', dir: 'desc'}],
+    filter: {
+      logic: 'and',
+      filters: [
+        {field: "Status", operator: 'eq', value: 0}
+      ]
+    }
   }
 
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1)
