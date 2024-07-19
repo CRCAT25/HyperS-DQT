@@ -12,6 +12,16 @@
             height: 100%;
             position: relative;
 
+            app-loading{
+                width: calc(100% + 40px);
+                height: calc(100vh - 60px);
+                min-height: calc(100vh - 60px);
+                bottom: 0;
+                right: -20px;
+                position: absolute;
+                z-index: 10;
+            }
+
             .header-filter-statistics {
                 display: flex;
                 justify-content: space-between;
@@ -155,7 +165,7 @@
             }
 
             .grid-custom-container {
-                height: calc(100vh - 61px - 78px - 187px - 56px - 30px - 40px);
+                height: calc(100vh - 61px - 78px - 187px - 56px - 30px - 40px - 20px);
 
                 kendo-grid {
                     height: 100%;
@@ -179,7 +189,7 @@
                     th.k-table-th[aria-colindex="7"] {
                         .k-link {
                             display: flex;
-                            justify-content: end;
+                            justify-content: flex-end;
                         }
                     }
 

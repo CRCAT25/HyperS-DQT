@@ -9,6 +9,15 @@
         height: 100%;
         position: relative;
 
+        app-loading{
+            width: calc(100% + 40px);
+            height: calc(100vh - 60px);
+            min-height: calc(100vh - 60px);
+            bottom: 0;
+            right: -20px;
+            position: absolute;
+        }
+
         .admin006-manage-cart{
             display: flex;
             flex-direction: column;

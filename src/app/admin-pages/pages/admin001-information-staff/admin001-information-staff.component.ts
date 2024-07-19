@@ -38,7 +38,7 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   maxDate: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
   valueSearch: string;
   pageSize: number = 5;
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   listStaff: GridDataResult;
   selectedCodeStaff: number[];
   imageNull: DTOImageProduct = new DTOImageProduct();
@@ -692,21 +692,23 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       const existedPhoneNumber = this.listStaff.data.find((item: DTOStaff) => item.PhoneNumber == this.childPhoneNumber.valueTextBox);
       const existedEmail = this.listStaff.data.find((item: DTOStaff) => item.Email == this.childEmail.valueTextBox);
 
-      if (existedPhoneNumber) {
-        this.notiService.Show('Số điện thoại đã tồn tại', 'error');
+      if (exsitsedIdStaff) {
+        this.notiService.Show('Mã nhân viên đã tồn tại', 'error');
         return;
       } else if (existedEmail) {
         this.notiService.Show('Email đã tồn tại', 'error');
         return;
-      } else if (exsitsedIdStaff) {
-        this.notiService.Show('Mẫ nhân viên đã tồn tại', 'error');
+      } else if (existedPhoneNumber) {
+        this.notiService.Show('Số điện thoại đã tồn tại', 'error');
         return;
       }
+      this.isLoading = true;
       this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
         this.getListStaff();
         this.getStatistics();
         if (res.StatusCode === 0) {
           this.notiService.Show('Thêm mới thành công', 'success');
+          this.isLoading = false;
         }
       })
     } else {
