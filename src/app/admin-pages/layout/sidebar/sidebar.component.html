@@ -9,8 +9,8 @@
           <img [src]="currentStaff?.ImageUrl || ''" alt="">
         </div>
         <div class="tag-name">
-          <div class="name">{{currentStaff ? currentStaff.Name : 'Tài khoản ẩn danh'}}</div>
-          <div class="position">{{currentStaff ? currentStaff.Permission : 'Nhân viên mặc định'}}</div>
+          <div class="name">{{currentStaff ? currentStaff.Name : 'Tài khoản lỗi'}}</div>
+          <div class="position">{{currentStaff ? showNameVNByRole(currentStaff.Permission) : 'Nhân viên'}}</div>
         </div>
       </div>
     </ng-template>

@@ -83,8 +83,8 @@
         .bg-detail-cart {
             // width: calc(100vw - 268px);
             width: calc(100% + 40px);
-            height: 885px;
-            min-height: 885px;
+            height: calc(100vh - 60px);
+            min-height: calc(100vh - 60px);
             bottom: 0;
             right: 20px;
             top: -10px;

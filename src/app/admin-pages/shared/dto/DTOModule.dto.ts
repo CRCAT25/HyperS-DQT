@@ -97,7 +97,7 @@ export const listModule: DTOModule[] = [
     },
     {
         RouteLink: '/admin/manage-banner',
-        ModuleName: 'Quản lý BANNER',
+        ModuleName: 'Quản lý banner',
         ClassIconFontAwesome: 'fa-pager',
         IsChild: false,
         IsSelected: false,

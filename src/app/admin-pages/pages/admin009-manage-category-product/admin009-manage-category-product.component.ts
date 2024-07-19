@@ -161,11 +161,11 @@ export class Admin009ManageCategoryProductComponent implements OnInit, OnDestroy
 
   // Reset thông tin trong form thương hiệu và loại sản phẩm
   resetForm() {
-    this.childIdBrand.resetValue();
-    this.childNameBrand.resetValue();
-    this.childImgBrand.setImgURL(this.imgDefault);
-    this.childIdProductType.resetValue();
-    this.childNameProductType.resetValue();
+    if(this.childIdBrand) this.childIdBrand.resetValue();
+    if(this.childNameBrand) this.childNameBrand.resetValue();
+    if(this.childImgBrand) this.childImgBrand.setImgURL(this.imgDefault);
+    if(this.childIdProductType) this.childIdProductType.resetValue();
+    if(this.childNameProductType) this.childNameProductType.resetValue();
   }
 
   // Kiếm tra các input của form brand có hợp lệ hay không
