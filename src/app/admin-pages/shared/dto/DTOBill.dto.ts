@@ -13,6 +13,7 @@ export class DTOBill {
     CouponApplied: string = "Không có";
     CouponDiscount: number;
     TotalBill: number;
+    PaymentUrl:string;
     Note: string;
 }
 
