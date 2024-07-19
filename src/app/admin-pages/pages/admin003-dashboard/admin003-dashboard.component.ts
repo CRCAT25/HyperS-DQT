@@ -128,14 +128,6 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
     this.toggleText = this.show ? "Hidе" : "Show";
   }
 
-  // getChangeMonth(value: any, month: number) {
-  //   this.monthSelected = month;
-  //   this.textChooseMonth = value.text;
-  //   this.show = false;
-  //   console.log(this.valueDate.getMonth()+1);
-  //   this.getDashboardByFilterMonth();
-  // }
-
   getChangeMonth(date: Date) {
     this.monthSelected = date.getMonth()+1;
     this.yearSelected = date.getFullYear();
@@ -161,7 +153,6 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
       if (res.StatusCode === 0) {
         if (res.ObjectReturn) {
           this.listTotalStatusBill = res.ObjectReturn;
-          console.log(this.listTotalStatusBill);
           this.pieData = [];
 
           // Push các giá trị từ billStatus vào pieData
@@ -178,7 +169,6 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
           this.pieData.push({ category: 'Đơn bị hủy hoặc giao thất bại', value: remainingTotal });
 
 
-          console.log(this.pieData); // Kiểm tra pieData mới
         } else {
           console.error('ObjectReturn is null or undefined');
         }
@@ -203,7 +193,6 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
             this.listResponeWeek.forEach((weekData: DTOAnalysticResponseWeek) => {
               weekData.WeekLabel = `Tuần ${weekData.Week}`;
             });
-            console.log(this.listResponeWeek);
   
           } else {
             console.error('ObjectReturn is null or undefined');
@@ -229,7 +218,6 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
           this.listResponeMonth.forEach((monthData: DTOAnalysticResponseMonth) => {
             monthData.MonthLabel = `Tháng ${monthData.Month}`;
           });
-          console.log(this.listResponeMonth);
 
         } else {
           console.error('ObjectReturn is null or undefined');

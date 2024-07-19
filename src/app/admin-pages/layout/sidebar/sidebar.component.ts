@@ -89,7 +89,7 @@ export class SidebarComponent implements OnInit {
   // Sự kiện khi chọn vào item drawer
   onSelectItemDrawer(item: DTOModule): void {
     if (item.ModuleName === 'Dashboard') {
-      if (this.checkPermissionModule()) {
+      if (!this.checkPermissionModule()) {
         this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
         return;
       }

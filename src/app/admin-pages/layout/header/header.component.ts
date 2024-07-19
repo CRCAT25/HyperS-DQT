@@ -38,11 +38,6 @@ export class HeaderAdminComponent implements OnInit {
     this.getInfoStaff();
   }
 
-  // Lấy giá trị trong searchbar ở header
-  getValueSearchHeader(valueSearch: string) {
-    console.log(valueSearch);
-  }
-
   //Mở popUp thay đổi mật khẩu
   onClickButtonChange(){
     this.isChangePass = true;
@@ -84,7 +79,6 @@ export class HeaderAdminComponent implements OnInit {
     this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
       if (res.StatusCode === 0) {
         const staff: DTOStaff = res.ObjectReturn.Data[0];
-        console.log(staff);
         this.infoStaff = staff;
       }
     })
@@ -112,8 +106,6 @@ export class HeaderAdminComponent implements OnInit {
     } else {
       if (this.childNewPass.nativeElement.value == this.childNewPass2.nativeElement.value) {
         this.accoutService.changePassword(changePassword).pipe(takeUntil(this.destroy)).subscribe(data => {
-          console.log(data);
-          console.log(data.ObjectReturn);
           if (data.ObjectReturn.Errors.length > 0) {
             this.notiService.Show(data.ObjectReturn.Errors[0].Description, 'error')
           } else {

@@ -164,7 +164,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.staffService.getCurrentStaffInfo().pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
       if (res.StatusCode === 0) {
         const staff: DTOStaff = res.ObjectReturn.Data[0];
-        console.log(staff);
         this.permission = staff.Permission;
       }
     })
@@ -197,7 +196,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.staffService.getListStaff(this.gridState).pipe(takeUntil(this.destroy)).subscribe(list => {
       this.listStaff = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
       this.isLoading = false;
-      console.log(this.listStaff);
     })
   }
 
@@ -363,7 +361,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       this.childRoad.valueTextBox,
       this.childSpecific.valueTextBox
     ].filter(Boolean).join(',');
-    // console.log(this.newAddress);
   }
 
   // Set filter tất cả
@@ -372,7 +369,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     this.pushToGridState(null, this.filterSearch);
     this.pushToGridState(null, this.filterAllStatistics);
     this.getListStaff();
-    console.log(this.gridState);
   }
 
   // Set filter search
@@ -472,12 +468,10 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   // Sự kiện click vào button ... tool box
   onClickToolBox(obj: DTOStaff, event: Event) {
     if (this.codeStaffSelected === obj.Code) {
-      // console.log(this.codeStaffSelected);
       this.codeStaffSelected = null;
     }
     else {
       this.codeStaffSelected = obj.Code;
-      // console.log(this.codeStaffSelected);
     }
 
     // Remove 'active' class from all cells
@@ -530,7 +524,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     }
 
     this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
-      console.log(request);
       this.getListStaff();
       this.getStatistics();
       if (res.StatusCode === 0) {
@@ -602,7 +595,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
       Staff: requestUpdateStaff,
       Properties: properties,
     }
-    console.log(request);
     if (this.checkValueForm("update")) {
       this.staffService.updateStaff(request).pipe(takeUntil(this.destroy)).subscribe((res: DTOResponse) => {
         this.getListStaff();
@@ -695,7 +687,6 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
         Staff: requestUpdateStaff,
         Properties: properties,
       }
-      console.log(request);
 
       const exsitsedIdStaff = this.listStaff.data.find((item: DTOStaff) => item.IdStaff == this.childId.valueTextBox);
       const existedPhoneNumber = this.listStaff.data.find((item: DTOStaff) => item.PhoneNumber == this.childPhoneNumber.valueTextBox);
@@ -721,9 +712,5 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
     } else {
       return;
     }
-  }
-
-  test(res: any) {
-    console.log(res);
   }
 }
