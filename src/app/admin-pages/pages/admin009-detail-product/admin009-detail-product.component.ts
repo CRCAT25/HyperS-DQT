@@ -96,6 +96,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     'Gender',
     'Color',
   ]
+  listPermissionAvaiable: string[] = ['Admin', 'ProductManager', 'BillManager'];
 
   // variable ViewChilds
   @ViewChild('id') childId!: TextInputComponent;
@@ -114,8 +115,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
   @ViewChild('discount') childDiscount!: TextInputComponent;
 
   constructor(
-    private productAdminService: ProductAdminService, 
-    private notiService: NotiService, 
+    private productAdminService: ProductAdminService,
+    private notiService: NotiService,
     private router: Router,
     private staffService: StaffService
   ) { }
@@ -137,6 +138,14 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
     })
   }
 
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
+  }
+
   // Lấy sản phẩm được chọn
   getProductSelected() {
     const code = localStorage.getItem('productSelected');
@@ -148,8 +157,8 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
       this.productSelected.Color = '-- Màu sắc --';
       this.productSelected.CodeBrand = -1;
       this.productSelected.CodeProductType = -1;
-      if(this.childStartSize) this.childStartSize.valueTextBox = '35';
-      if(this.childEndSize) this.childEndSize.valueTextBox = '48';
+      if (this.childStartSize) this.childStartSize.valueTextBox = '35';
+      if (this.childEndSize) this.childEndSize.valueTextBox = '48';
     }
     else {
       this.productAdminService.getProductByCode(parseInt(code)).pipe(takeUntil(this.destroy)).subscribe((product: DTOResponse) => {
@@ -187,7 +196,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Cật nhật sản phẩm
   updateProduct(product: DTOProduct, obj: any, properties: string[], action: string) {
-    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }
@@ -210,7 +219,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Xóa toàn bộ thông tin sản phẩm
   clearDetailProduct(res: any) {
-    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }
@@ -272,7 +281,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Khôi phục lại thông tin sản phẩm
   restoreProduct(res: any) {
-    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }
@@ -392,7 +401,7 @@ export class Admin009DetailProductComponent implements OnInit, OnDestroy {
 
   // Thêm sản phẩm mới
   manageProduct(type: string) {
-    if(this.permission !== 'Admin' && this.permission !== 'ProductManager'){
+    if (this.permission !== 'Admin' && this.permission !== 'ProductManager') {
       this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
       return;
     }

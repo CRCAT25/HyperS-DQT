@@ -5,6 +5,7 @@ import { LayoutService } from '../../shared/service/layout.service';
 import { StaffService } from '../../shared/service/staff.service';
 import { DTOResponse } from 'src/app/in-layout/Shared/dto/DTORespone';
 import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
+import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 
 @Component({
   selector: 'app-sidebar-admin',
@@ -18,13 +19,18 @@ export class SidebarComponent implements OnInit {
   listModuleAndSub: DTOModule[] = [];
   currentStaff: DTOStaff;
 
-  constructor(private router: Router, private layoutService: LayoutService, private staffService: StaffService) { }
+  constructor(
+    private router: Router,
+    private layoutService: LayoutService,
+    private staffService: StaffService,
+    private notiService: NotiService
+  ) { }
 
   ngOnInit(): void {
     this.getCurrentStaff();
 
     const breadcrumbLS: string = localStorage.getItem('breadcrumb');
-    if(!breadcrumbLS) return;
+    if (!breadcrumbLS) return;
     const listBreadCrumbSplit: string[] = breadcrumbLS.split('/')
     const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
     const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
@@ -56,8 +62,15 @@ export class SidebarComponent implements OnInit {
       productModule.IsExpanded = true;
       productModule.IsSelected = true;
       const childProductModule: DTOModule = productModule.SubModule.find(item => item.ModuleName === listBreadCrumbSplit[1]);
-      if(childProductModule) childProductModule.IsSelected = true;
+      if (childProductModule) childProductModule.IsSelected = true;
     }
+  }
+
+  checkPermissionModule() {
+    if (this.currentStaff.Permission === 'Admin' || this.currentStaff.Permission === 'BillManager') {
+      return true;
+    }
+    return false;
   }
 
 
@@ -75,6 +88,13 @@ export class SidebarComponent implements OnInit {
 
   // Sự kiện khi chọn vào item drawer
   onSelectItemDrawer(item: DTOModule): void {
+    if (item.ModuleName === 'Dashboard') {
+      if (this.checkPermissionModule()) {
+        this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+        return;
+      }
+    }
+
     // Ngoại lệ đối với Quản lý tài khoản và quản lý sản phẩm. Dùng để đóng expand khi chọn các item khác trừ những item nào có subModule
     if (item.ModuleName !== 'Quản lý tài khoản' && item.ModuleName !== 'Quản lý sản phẩm') {
       const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
@@ -106,6 +126,13 @@ export class SidebarComponent implements OnInit {
 
   // Sự kiện khi chọn vào submodule
   onSelectSubModule(sub: DTOModule, item: DTOModule): void {
+    if (sub.ModuleName === 'Thông tin nhân viên') {
+      if (this.currentStaff.Permission !== 'Admin') {
+        this.notiService.Show('Bạn không có đủ thẩm quyền', 'warning');
+        return;
+      }
+    }
+
     this.clearSelectedModule();
     item.IsSelected = true;
     sub.IsSelected = true;
@@ -150,7 +177,7 @@ export class SidebarComponent implements OnInit {
     })
   }
 
-  logOut(){
+  logOut() {
     localStorage.clear();
     this.router.navigate(['account/login']);
   }

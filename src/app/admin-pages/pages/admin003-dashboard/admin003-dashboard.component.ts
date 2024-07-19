@@ -51,6 +51,7 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
     { category: "55-64", value: 0.0911 },
     { category: "65+", value: 0.094 },
   ];
+  listPermissionAvaiable: string[] = ['Admin'];
 
   seriesData: Model[] = [
     {
@@ -90,6 +91,14 @@ export class Admin003DashboardComponent implements OnInit, OnDestroy {
         this.permission = staff.Permission;
       }
     })
+  }
+
+  // Kiểm tra có permission có thể truy cập hay không
+  checkPermission() {
+    if (this.listPermissionAvaiable.includes(this.permission)) {
+      return true;
+    }
+    return false;
   }
 
   ngOnDestroy(): void {

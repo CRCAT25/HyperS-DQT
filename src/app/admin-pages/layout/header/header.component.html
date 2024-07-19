@@ -2,11 +2,78 @@
     <div class="bread-crumb">
         <component-breadcrumb></component-breadcrumb>
     </div>
+    <div class="button-change-password">
+        <component-button [text]="'Thay đổi mật khẩu'" [classIconFontAwesome]="'fa-wrench'" 
+        [color]="'#6C6C6C'" [bgColor]="'white'" [borderColor]="'#6C6C6C'" [rounded]="3" [borderWidth]="2" 
+        [borderStyle]="'solid'" [value]="1" (sendValue)="onClickButtonChange()"
+        ></component-button>
+    </div>
     <!-- <div class="seach-bar">
         <component-search-bar 
         placeholder="Tìm kiếm theo tên danh mục..." 
         (getValue)="getValueSearchHeader($event)"
         [width]="500"/>
     </div> -->
+    <div *ngIf="isChangePass" class="popup-change-password">
+        <div class="PopUp">
+            <div class="headerPopUp">
+                <div class="contentHeader">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span class="textHeader">Thay đổi mật khẩu</span>
+                </div>
+            </div>
+            
+            <div class="contentPopUp">
+                <div #contentPopupCheck>
+                </div>
+                <ng-container *ngIf="contentPopupCheck.innerHTML.trim().length === 0">
+                    <div class="contentDefault">
+                        <div class="input-password">
+                            <div class="label-input">Nhập mât khẩu cũ</div>
+                            <div class="box-input-old-password">
+                                <input #oldPass [type]="showOldPass">
+                                <i *ngIf="!isShowOldPass" class="fa-regular fa-eye" (click)="handleChangeShowPassword(0)"></i>
+                                <i *ngIf="isShowOldPass" class="fa-solid fa-eye" (click)="handleChangeShowPassword(0)"></i>
+                            </div>
+                        </div>
+                        <div class="input-password">
+                            <div class="label-input">Nhập mât khẩu mới</div>
+                            <div class="box-input-new-password">
+                                <input #newPass [type]="showNewPass">
+                                <i *ngIf="!isShowNewPass" class="fa-regular fa-eye" (click)="handleChangeShowPassword(1)"></i>
+                                <i *ngIf="isShowNewPass" class="fa-solid fa-eye" (click)="handleChangeShowPassword(1)"></i>
+                            </div>
+                        </div>
+                        <div class="input-password">
+                            <div class="label-input">Nhập lại mât khẩu mới</div>
+                            <div class="box-input-new-password2">
+                                <input #newPass2 [type]="showNewPass2">
+                                <i *ngIf="!isShowNewPass2" class="fa-regular fa-eye" (click)="handleChangeShowPassword(2)"></i>
+                                <i *ngIf="isShowNewPass2" class="fa-solid fa-eye" (click)="handleChangeShowPassword(2)"></i>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            
+            <div class="footerPopUp">
+                <div #footerPopUpCheck>
+                    <ng-content select=".button-popup"></ng-content>
+                </div>
+                <ng-container *ngIf="footerPopUpCheck.innerHTML.trim().length === 0">
+                    <div class="footerDefault">
+                        <div class="button-no-change">
+                            <component-button [text]="'Không đổi'" [classIconFontAwesome]="''" [width]="200"  [height]="58" [rounded]="0" 
+                        [bgColor]="'#FFFFFF'" [color]="'#959DB3'" [size]="16" [value]="1" (sendValue)="onClickButtonNoChange()"></component-button>
+                        </div>
+                        <div class="button-accept">
+                            <component-button [text]="'Thay đổi'" [classIconFontAwesome]="'fa-wrench'" [width]="280" [height]="58" [rounded]="0" 
+                            [bgColor]="'black'" [color]="'#FFFFFF'" [size]="16" [value]="1" (sendValue)="UpdatePassword()"></component-button>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
 </div>
 

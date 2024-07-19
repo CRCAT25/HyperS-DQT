@@ -1,4 +1,4 @@
-<div class="app-admin009-manage-category-product">
+<div class="app-admin009-manage-category-product" *ngIf="checkPermission()">
     <!-- Phần thương hiệu -->
     <div class="block-brand">
         <component-form [text]="'Thương hiệu'">

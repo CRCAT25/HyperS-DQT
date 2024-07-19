@@ -81,7 +81,8 @@
         font-size: 14px;
 
         .bg-detail-cart {
-            width: calc(100vw - 268px);
+            // width: calc(100vw - 268px);
+            width: calc(100% + 40px);
             height: 885px;
             min-height: 885px;
             bottom: 0;

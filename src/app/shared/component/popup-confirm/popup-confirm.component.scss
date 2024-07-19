@@ -3,7 +3,8 @@
 ::ng-deep{
     component-popup-confirm{
         .backgroundPopUp{
-            width: calc(100vw - 268px);
+            // width: calc(100vw - 268px);
+            width: calc(100% + 40px);
             height: 100vh;
             position: absolute;
             bottom: 0;
