@@ -200,6 +200,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     private staffService: StaffService,
   ) { }
   ngOnInit(): void {
+    this.getPermission();
     this.getListBill();
     this.setFilterExpStatus();
     this.getListBillNowDate();
@@ -752,35 +753,33 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
       if (requestUpdateBill) {
         // if(obj.value == 22){
-        // let timeDifference = this.currentDate.getTime() - bill.CreateAt.getTime();
-        // const hoursDifference = timeDifference / (1000 * 60 * 60);
-        // if(hoursDifference >= 24){
-        requestUpdateBill.ListOfBillInfo.forEach(billInf => {
-          billInf.Status = obj.value;
-        });
-
-        console.log(requestUpdateBill);
-
-        const request: DTOUpdateBillRequest = {
-          DTOUpdateBill: requestUpdateBill,
-          DTOProceedToPayment: null
-        }
-
-        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-          if (res.StatusCode === 0) {
-            bill.Status = obj.value;
-            this.notiService.Show("Cập nhật trạng thái thành công", "success")
-            this.getListBillWaitingAllDate();
-            this.getListBill();
-            this.setFilterExpStatus();
-            this.isShowAlert = false;
-          }
-        }, error => {
-          console.error('Error:', error);
-        });
-        // } else {
-        //   this.notiService.Show("Thời gian tạo đơn chưa đủ 24 tiếng", "success")
-        // }
+          // let timeDifference = this.currentDate.getTime() - bill.CreateAt.getTime();
+          // const hoursDifference = timeDifference / (1000 * 60 * 60);
+          // if(hoursDifference >= 24){
+            requestUpdateBill.ListOfBillInfo.forEach(billInf => {
+              billInf.Status = obj.value;
+            });
+            
+            const request: DTOUpdateBillRequest = {
+              DTOUpdateBill: requestUpdateBill,
+              DTOProceedToPayment: null
+            }
+            
+            this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+              if (res.StatusCode === 0) {
+                bill.Status = obj.value;
+                this.notiService.Show("Cập nhật trạng thái thành công", "success")
+                this.getListBillWaitingAllDate();
+                this.getListBill();
+                this.setFilterExpStatus();
+                this.isShowAlert = false;
+              }
+            }, error => {
+              console.error('Error:', error);
+            });
+          // } else {
+          //   this.notiService.Show("Thời gian tạo đơn chưa đủ 24 tiếng", "success")
+          // }
         // }
       }
     }

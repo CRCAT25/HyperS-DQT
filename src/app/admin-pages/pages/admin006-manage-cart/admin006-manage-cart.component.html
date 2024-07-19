@@ -1,190 +1,174 @@
-<div class="header-filter" *ngIf="checkPermission()">
-    <!-- <component-dropdown-action class="testStatus" [listItem]="listStatus"></component-dropdown-action> -->
-
-    <div class="countWaitingCheck" (click)="returnNowDate()">
-        <div class="numberCountBill" [style.background-color]="'red'">{{countBillNowDate}}</div>
-        <div class="labelWaitingCheck">Đơn mới hôm nay</div>
-    </div>
-    <div class="countWaitingCheck" (click)="showAlertAllDate()">
-        <!-- <div class="numberCount">{{statusCounts[2] !== undefined ? statusCounts[2] : 0}}</div> -->
-        <div class="numberCount">{{countBillWaiting}}</div>
-        <div class="labelWaitingCheck" >Đơn chờ xác nhận</div>
-    </div>
-    <div class="label-filter" (click)="log()">Lọc trạng thái</div>
-    <kendo-multiselect #multielect [data]="listFilterStatus" textField="Status" valueField="Code"
-        [checkboxes]="{ checkOnClick: false }" [autoClose]="false" (valueChange)="setFilterStatus($event)"
-        [(ngModel)]="valueMulti">
-
-        <ng-template kendoMultiSelectHeaderTemplate let-dataItem>
-            <div [style.padding-left.px]="7" [style.margin-top.px]="5" [style.display]="'flex'" [style.height.px]="20">
-                <span [style.width.px]="170" [style.fontSize.px]="14" [style.fontWeight]="600">Trạng thái đơn</span>
-                <span [style.fontSize.px]="14" [style.fontWeight]="600">Đơn theo bộ lọc</span>
-                <div [style.width.px]="305" [style.display]="'flex'" [style.justify-content]="'flex-end'"
-                    [style.fontSize.px]="14" [style.fontWeight]="600"><span>Tất cả số lượng đơn</span></div>
-
-
-            </div>
-        </ng-template>
-
-        <ng-template kendoMultiSelectItemTemplate let-dataItem>
-            <div class="row-status" [style.display]="'flex'" [style.width]="'100%'">
-                <span [style.width.px]="187">{{ dataItem.Status}}</span>
-                <div class="countOfStatus" [ngStyle]="{ 'color': statusCounts[dataItem.Code] > 0 ? 'red' : 'inherit' }">
-                    {{ statusCounts[dataItem.Code] || 0 }} đơn
-                </div>
-                <!-- <div class="countOfStatus" [style.width.px]="683" [style.display]="'flex'" [style.justify-content]="'flex-end'" [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code] > 0 ? 'red' : 'inherit' }">
-                    {{ statusCountsAllDate[dataItem.Code] || 0 }} đơn từ ngày {{statusCountsAllDate[dataItem.Code]}}
-                </div> -->
-                <div class="countOfStatus" [style.width.px]="345" [style.display]="'flex'"
-                    [style.justify-content]="'flex-end'"
-                    [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code]?.count > 0 ? 'red' : 'inherit' }">
-                    <span>{{ statusCountsAllDate[dataItem.Code]?.count || 0 }} đơn từ ngày 
-                        {{formattedCreateAtNoTime(statusCountsAllDate[dataItem.Code]?.earliestDate) || 'N/A' }}</span>
-                </div>
-            </div>
-        </ng-template>
-    </kendo-multiselect>
-
-</div>
-<div class="headerSearch">
-    <div class="group-filter">
-        <p class="titlePage">DANH SÁCH ĐƠN HÀNG</p>
-        <p class="resetFilter" (click)="resetFilter()">Xóa bộ lọc</p>
-        <component-search-bar #search class="searchBar" (getValue)="setFilterSearch($event)"
-            placeholder="Tìm kiếm theo tên hoặc số điện thoại" [width]="500"></component-search-bar>
-        <div class="timeStartEnd">
-            <component-datepicker #rangeDateStart [minDate]="minDate" [maxDate]="endDate" [defaultDate]="startDate"
-                (datePicked)="getDateFromDatePicker($event, 'start')"></component-datepicker>
-            <div class="line"></div>
-            <component-datepicker #rangeDateEnd [minDate]="startDate" [maxDate]="maxDate" [defaultDate]="endDate"
-                (datePicked)="getDateFromDatePicker($event, 'end')"></component-datepicker>
+<div class="admin006-manage-cart" *ngIf="checkPermission()">
+    <div class="header-filter" >
+        <!-- <component-dropdown-action class="testStatus" [listItem]="listStatus"></component-dropdown-action> -->
+    
+        <div class="countWaitingCheck" (click)="returnNowDate()">
+            <div class="numberCountBill" [style.background-color]="'red'">{{countBillNowDate}}</div>
+            <div class="labelWaitingCheck">Đơn mới hôm nay</div>
         </div>
-    </div>
-    <component-button class="button-add"  [color]="'#09880E'" [bgColor]="'white'" [borderColor]="'#09880E'" [borderWidth]="2" [borderStyle]="'solid'"></component-button>
-</div>
-<div class="showList">
-    <div class="grid-custom-container">
-        <kendo-grid [pageable]="true" [data]="listBillPage" [selectable]="{ checkboxOnly: true }"
-            (selectionChange)="onSelectionChange($event)" (pageChange)="onPageChange($event)" [skip]="gridState.skip"
-            [pageSize]="gridState.take" [loading]="isLoading">
-            <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
-
-            <kendo-grid-column field="Code" title="Mã đơn" class="column-Code" [width]="100"></kendo-grid-column>
-            <kendo-grid-column field="CustomerName" title="Tên khách hàng" [width]="170"></kendo-grid-column>
-            <kendo-grid-column field="ShippingAddress" title="Địa chỉ giao hàng" class="column-ShippingAddress"
-                [width]="350"></kendo-grid-column>
-            <kendo-grid-column field="PhoneNumber" title="Số điện thoại" class="column-PhoneNumber"
-                [width]="120"></kendo-grid-column>
-            <kendo-grid-column field="CreateAt" title="Ngày khởi tạo" [width]="130">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <div class="column-CreateAt">
-                        {{formattedCreateAt(dataItem.CreateAt)}}
-                    </div>
-                </ng-template>
-            </kendo-grid-column>
-            <kendo-grid-column field="PaymentMethod" title="Phương thức" [width]="120">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <div class="column-PaymentMethod">
-                        {{formatPaymentMethod(dataItem.PaymentMethod)}}
-                    </div>
-                </ng-template>
-            </kendo-grid-column>
-            <!-- <kendo-grid-column field="Voucher" title="Voucher" [width]="140">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <div class="column-Voucher">
-                        {{dataItem.Voucher}}
-                    </div>
-                </ng-template>
-            </kendo-grid-column> -->
-            <kendo-grid-column field="TotalBill" title="Tổng tiền" class="column-TotalBill" [width]="140">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <div>
-                        {{formatCurrency(dataItem.TotalBill)}}
-                    </div>
-                </ng-template>
-            </kendo-grid-column>
-            <kendo-grid-column title="Trạng thái" [width]="170">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <div class="column-Status">
-                        <div [style.color]="formatStatus(dataItem.Status) | statusColor">
-                            {{formatStatus(dataItem.Status)}}
-                        </div>
-                        <!-- <div *ngIf="dataItem.Note !== ''">{{dataItem.Note}}</div> -->
-                    </div>
-                </ng-template>
-            </kendo-grid-column>
-            <kendo-grid-column class="column-button" [width]="50">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <div class="block-Action">
-                        <div (click)="ClickButtonAction(dataItem.Code, $event, dataItem.Status)"
-                            class="block-buttonAction">
-                            <component-button class="button-action" [value]="dataItem.Code" text=""
-                                classIconFontAwesome="fa-ellipsis" [width]="30" [height]="30">
-                            </component-button>
-                        </div>
-                        <div *ngIf="isClickButton[dataItem.Code]" class="dropDown-action" tabindex="0">
-                            <component-dropdown-action (sendValue)="clickDropDownAction(dataItem, $event)"
-                                [listItem]="listNextStatus"></component-dropdown-action>
-                        </div>
-                    </div>
-                </ng-template>
-            </kendo-grid-column>
-
-
-
-
-            <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
-                <kendo-pager-page-sizes pagerGrid [pageSizes]="[5,10,15]"></kendo-pager-page-sizes>
-                <div class="pager-buttons">
-                    <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
-                    <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
-                    <kendo-pager-next-buttons></kendo-pager-next-buttons>
+        <div class="countWaitingCheck" (click)="showAlertAllDate()">
+            <!-- <div class="numberCount">{{statusCounts[2] !== undefined ? statusCounts[2] : 0}}</div> -->
+            <div class="numberCount">{{countBillWaiting}}</div>
+            <div class="labelWaitingCheck" >Đơn chờ xác nhận</div>
+        </div>
+        <div class="label-filter" (click)="log()">Lọc trạng thái</div>
+        <kendo-multiselect #multielect [data]="listFilterStatus" textField="Status" valueField="Code"
+            [checkboxes]="{ checkOnClick: false }" [autoClose]="false" (valueChange)="setFilterStatus($event)"
+            [(ngModel)]="valueMulti">
+    
+            <ng-template kendoMultiSelectHeaderTemplate let-dataItem>
+                <div [style.padding-left.px]="7" [style.margin-top.px]="5" [style.display]="'flex'" [style.height.px]="20">
+                    <span [style.width.px]="170" [style.fontSize.px]="14" [style.fontWeight]="600">Trạng thái đơn</span>
+                    <span [style.fontSize.px]="14" [style.fontWeight]="600">Đơn theo bộ lọc</span>
+                    <div [style.width.px]="305" [style.display]="'flex'" [style.justify-content]="'flex-end'"
+                        [style.fontSize.px]="14" [style.fontWeight]="600"><span>Tất cả số lượng đơn</span></div>
+    
+    
                 </div>
             </ng-template>
-        </kendo-grid>
-
-
+    
+            <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                <div class="row-status" [style.display]="'flex'" [style.width]="'100%'">
+                    <span [style.width.px]="187">{{ dataItem.Status}}</span>
+                    <div class="countOfStatus" [ngStyle]="{ 'color': statusCounts[dataItem.Code] > 0 ? 'red' : 'inherit' }">
+                        {{ statusCounts[dataItem.Code] || 0 }} đơn
+                    </div>
+                    <!-- <div class="countOfStatus" [style.width.px]="683" [style.display]="'flex'" [style.justify-content]="'flex-end'" [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code] > 0 ? 'red' : 'inherit' }">
+                        {{ statusCountsAllDate[dataItem.Code] || 0 }} đơn từ ngày {{statusCountsAllDate[dataItem.Code]}}
+                    </div> -->
+                    <div class="countOfStatus" [style.width.px]="345" [style.display]="'flex'"
+                        [style.justify-content]="'flex-end'"
+                        [ngStyle]="{ 'color': statusCountsAllDate[dataItem.Code]?.count > 0 ? 'red' : 'inherit' }">
+                        <span>{{ statusCountsAllDate[dataItem.Code]?.count || 0 }} đơn từ ngày 
+                            {{formattedCreateAtNoTime(statusCountsAllDate[dataItem.Code]?.earliestDate) || 'N/A' }}</span>
+                    </div>
+                </div>
+            </ng-template>
+        </kendo-multiselect>
+    
+    </div>
+    <div class="headerSearch">
+        <div class="group-filter">
+            <p class="titlePage">DANH SÁCH ĐƠN HÀNG</p>
+            <p class="resetFilter" (click)="resetFilter()">Xóa bộ lọc</p>
+            <component-search-bar #search class="searchBar" (getValue)="setFilterSearch($event)"
+                placeholder="Tìm kiếm theo tên hoặc số điện thoại" [width]="500"></component-search-bar>
+            <div class="timeStartEnd">
+                <component-datepicker #rangeDateStart [minDate]="minDate" [maxDate]="endDate" [defaultDate]="startDate"
+                    (datePicked)="getDateFromDatePicker($event, 'start')"></component-datepicker>
+                <div class="line"></div>
+                <component-datepicker #rangeDateEnd [minDate]="startDate" [maxDate]="maxDate" [defaultDate]="endDate"
+                    (datePicked)="getDateFromDatePicker($event, 'end')"></component-datepicker>
+            </div>
+        </div>
+        <component-button class="button-add"  [color]="'#09880E'" [bgColor]="'white'" [borderColor]="'#09880E'" [borderWidth]="2" [borderStyle]="'solid'"></component-button>
+    </div>
+    <div class="showList">
+        <div class="grid-custom-container">
+            <kendo-grid [pageable]="true" [data]="listBillPage" [selectable]="{ checkboxOnly: true }"
+                (selectionChange)="onSelectionChange($event)" (pageChange)="onPageChange($event)" [skip]="gridState.skip"
+                [pageSize]="gridState.take" [loading]="isLoading">
+                <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+    
+                <kendo-grid-column field="Code" title="Mã đơn" class="column-Code" [width]="100"></kendo-grid-column>
+                <kendo-grid-column field="CustomerName" title="Tên khách hàng" [width]="170"></kendo-grid-column>
+                <kendo-grid-column field="ShippingAddress" title="Địa chỉ giao hàng" class="column-ShippingAddress"
+                    [width]="350"></kendo-grid-column>
+                <kendo-grid-column field="PhoneNumber" title="Số điện thoại" class="column-PhoneNumber"
+                    [width]="120"></kendo-grid-column>
+                <kendo-grid-column field="CreateAt" title="Ngày khởi tạo" [width]="130">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div class="column-CreateAt">
+                            {{formattedCreateAt(dataItem.CreateAt)}}
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column field="PaymentMethod" title="Phương thức" [width]="120">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div class="column-PaymentMethod">
+                            {{formatPaymentMethod(dataItem.PaymentMethod)}}
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+                <!-- <kendo-grid-column field="Voucher" title="Voucher" [width]="140">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div class="column-Voucher">
+                            {{dataItem.Voucher}}
+                        </div>
+                    </ng-template>
+                </kendo-grid-column> -->
+                <kendo-grid-column field="TotalBill" title="Tổng tiền" class="column-TotalBill" [width]="140">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div>
+                            {{formatCurrency(dataItem.TotalBill)}}
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column title="Trạng thái" [width]="170">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div class="column-Status">
+                            <div [style.color]="formatStatus(dataItem.Status) | statusColor">
+                                {{formatStatus(dataItem.Status)}}
+                            </div>
+                            <!-- <div *ngIf="dataItem.Note !== ''">{{dataItem.Note}}</div> -->
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+                <kendo-grid-column class="column-button" [width]="50">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <div class="block-Action">
+                            <div (click)="ClickButtonAction(dataItem.Code, $event, dataItem.Status)"
+                                class="block-buttonAction">
+                                <component-button class="button-action" [value]="dataItem.Code" text=""
+                                    classIconFontAwesome="fa-ellipsis" [width]="30" [height]="30">
+                                </component-button>
+                            </div>
+                            <div *ngIf="isClickButton[dataItem.Code]" class="dropDown-action" tabindex="0">
+                                <component-dropdown-action (sendValue)="clickDropDownAction(dataItem, $event)"
+                                    [listItem]="listNextStatus"></component-dropdown-action>
+                            </div>
+                        </div>
+                    </ng-template>
+                </kendo-grid-column>
+    
+    
+    
+    
+                <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+                    <kendo-pager-page-sizes pagerGrid [pageSizes]="[5,10,15]"></kendo-pager-page-sizes>
+                    <div class="pager-buttons">
+                        <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+                        <kendo-pager-numeric-buttons [buttonCount]="3"></kendo-pager-numeric-buttons>
+                        <kendo-pager-next-buttons></kendo-pager-next-buttons>
+                    </div>
+                </ng-template>
+            </kendo-grid>
+    
+    
+        </div>
     </div>
 </div>
-<div *ngIf="isShowAlert" class="popUp">
-    <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="objItemStatus.icon"
-        [text]="objItemStatus.text" (sendValue)="updateStatusBill(itemBill,$event)" (sendReason)="receive($event)"
-        [value]="objItemStatus.value"></component-popup-confirm>
-</div>
+    <div *ngIf="isShowAlert" class="popUp">
+        <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="objItemStatus.icon"
+            [text]="objItemStatus.text" (sendValue)="updateStatusBill(itemBill,$event)" (sendReason)="receive($event)"
+            [value]="objItemStatus.value"></component-popup-confirm>
+    </div>
+    
+    <div *ngIf="isShowAlertStatus" class="popUp">
+        <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="'fa-arrow-rotate-left'"
+            [text]="'Quay lại'" [value]="">
+    
+            <div class="content-popup">
+                <div class="contentQuestion">Có tổng cộng <span> {{countBillWaiting}} </span>đơn chờ xác nhận</div>
+                <div class="contentWarning">Kể từ ngày {{earliestDate}} đến ngày {{nowDate}}! Bạn có muốn quay lại?</div>
+            </div>
+        </component-popup-confirm>
+    </div>
+    
+    <ng-container *ngIf="isDetail">
+        <app-admin006-detail-cart [listData]="listBillInfo" [itemData]="itemBill" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>
+    </ng-container>
+    <ng-container *ngIf="isAdd">
+        <app-admin006-detail-cart [isAdd]="isAdd" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>
+    </ng-container>
 
-<div *ngIf="isShowAlertStatus" class="popUp">
-    <component-popup-confirm [textHeader]="'Thông báo'" [classIconFontAwesome]="'fa-arrow-rotate-left'"
-        [text]="'Quay lại'" [value]="">
-
-        <div class="content-popup">
-            <div class="contentQuestion">Có tổng cộng <span> {{countBillWaiting}} </span>đơn chờ xác nhận</div>
-            <div class="contentWarning">Kể từ ngày {{earliestDate}} đến ngày {{nowDate}}! Bạn có muốn quay lại?</div>
-        </div>
-    </component-popup-confirm>
-</div>
-
-<ng-container *ngIf="isDetail">
-    <app-admin006-detail-cart [listData]="listBillInfo" [itemData]="itemBill" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>
-</ng-container>
-<ng-container *ngIf="isAdd">
-    <app-admin006-detail-cart [isAdd]="isAdd" (sendValue)="getResultAdd($event)"></app-admin006-detail-cart>
-</ng-container>
-<!-- <component-text-area [label]="'Lí do hủy đơn:'"
-[labelWidth]="100"
-[height]="47"
-[width]="180"
-[fontsize]="15"
-></component-text-area>
-<br><br><br>
-<component-text-input [label]="'Mã người dùng'"></component-text-input>
-<br><br><br>
-<component-import-image [imgWidth]="150" [imgHeight]="150" [rounded]="3" [text]="'Ảnh sản phẩm'"></component-import-image>
-<br><br><br>
-
-<component-text-dropdown [listItem]="listStatus" textField="Status" valueField="Code"></component-text-dropdown>
-
-<component-dropdown-action [listItem]="listStatus" [rounded]="3"></component-dropdown-action>
-<br><br><br>
-
-<component-popup-confirm></component-popup-confirm>
-<component-form><div class="content-form"></div></component-form> -->
