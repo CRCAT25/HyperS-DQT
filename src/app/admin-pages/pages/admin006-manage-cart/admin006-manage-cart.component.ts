@@ -435,6 +435,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
 
     if ((event.target as HTMLElement).closest('.buttonAccept')) {
+      this.isLoading = true;
       setTimeout(() => {
         if (this.resultAdd == 0) {
           this.getListBill();
@@ -443,10 +444,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.isDetail = false;
             this.resultAdd = 1;
-          }, 2000);
+          }, 1000);
         }
-      }, 500);
-
+      }, 1500);
+      this.isLoading = false;
     }
 
     if ((event.target as HTMLElement).closest('.button-add')) {
@@ -464,10 +465,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.isAdd = false;
             this.resultAdd = 1;
-            this.isLoading = false;
           }, 500);
         }
       }, 2000);
+      this.isLoading = false;
     }
   }
 
@@ -738,6 +739,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
             Status: obj.value,
             ListOfBillInfo: bill.ListBillInfo,
             Note: this.reasonFail,
+            TotalBill: bill.TotalBill
           }
         } else {
           this.notiService.Show("Vui lòng nhập lí do", "warning")
@@ -749,6 +751,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           Status: obj.value,
           ListOfBillInfo: bill.ListBillInfo,
           Note: bill.Note,
+          TotalBill: bill.TotalBill
         }
       }
 

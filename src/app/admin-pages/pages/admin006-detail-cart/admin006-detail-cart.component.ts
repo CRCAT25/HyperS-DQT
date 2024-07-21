@@ -29,6 +29,8 @@ import { DTOCoupon } from '../../shared/dto/DTOCoupon.dto';
 import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DTOStaff } from '../../shared/dto/DTOStaff.dto';
 import { StaffService } from '../../shared/service/staff.service';
+import { AccountService } from '../../shared/service/account.service';
+import { DTOCustomer } from 'src/app/shared/dto/DTOCustomer.dto';
 
 
 interface PaymentMethod {
@@ -85,6 +87,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   numberCoupon: number = 0;
   isDisabledVoucher: boolean = true;
   nowDate: Date = new Date();
+  hasAccount: boolean = false;
+  hasRecipient: boolean = false;
   PaymentMethodDropDown: PaymentMethod[] = [
     {
       Code: 0,
@@ -116,13 +120,17 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   wardSelected: DTOWard
 
   defaultValueProvince: DTOProvince = { province_id: "", province_name: 'Chọn tỉnh, thành phố', province_type: "" }
-  defaultValueWard: DTOWard = { district_id: "", ward_id: "", ward_name: "Chọn huận, huyện", ward_type: "" }
   defaulValueDistrict: DTODistrict = { district_id: "", district_name: "Chọn thị xã, trấn", district_type: "", province_id: "", lat: "", lng: "" }
+  defaultValueWard: DTOWard = { district_id: "", ward_id: "", ward_name: "Chọn huận, huyện", ward_type: "" }
 
   provinceBiding: string;
   districtBiding: string;
   wardBiding: string;
   roadBiding: string;
+
+  provinceDTOBiding: DTOProvince;
+  districtDTOBiding: DTODistrict;
+  wardDTOBiding: DTOWard;
   isDisabled: boolean = true;
 
   // oldProvinceBiding: string;
@@ -144,9 +152,12 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   @ViewChild('road') childRoad!: TextInputComponent;
   @ViewChild('coupon') childCoupon!: ComboBoxComponent;
   @ViewChild('search') childSearch!: SearchBarComponent;
+  @ViewChild('ordererPhoneNumberSearch') childOrderSearch!: SearchBarComponent;
+
 
 
   filterProductActive: FilterDescriptor = { field: 'Status', operator: 'eq', value: 0, ignoreCase: true };
+  filterCustomerActive: FilterDescriptor = { field: 'StatusAccount', operator: 'eq', value: 0, ignoreCase: true };
   filterCouponApplying: FilterDescriptor = { field: 'Status', operator: 'eq', value: 2, ignoreCase: true };
   filterCouponAllCount: FilterDescriptor = { field: 'ApplyTo', operator: 'eq', value: 0, ignoreCase: true };
   filterCouponActiving: FilterDescriptor = { field: 'Stage', operator: 'eq', value: 1, ignoreCase: true };
@@ -183,6 +194,21 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     }
   }
 
+  gridStateCustomer: State = {
+    sort: [
+      {
+        "field": "Code",
+        "dir": "asc"
+      }
+    ],
+    filter: {
+      logic: "and",
+      filters: [
+        this.filterCustomerActive
+      ]
+    }
+  }
+
 
 
   listCouponAPI: GridDataResult;
@@ -191,6 +217,10 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   listProductAPI: GridDataResult;
   listDTOProduct: DTOProduct[];
   originalListDTOProduct: DTOProduct[];
+
+  listCustomerAPI: GridDataResult;
+  listDTOCustomer: DTOCustomer[];
+  itemCustomner: DTOCustomer;
 
   // Role của tài khoản đang được đăng nhập
   permission: string;
@@ -203,7 +233,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     private productService: ProductAdminService,
     private productAdminService: ProductAdminService,
     private couponService: CouponService,
-    private staffService: StaffService
+    private staffService: StaffService,
+    private customerService: AccountService
   ) { }
 
 
@@ -215,6 +246,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     this.APIGetProvince();
     this.getListCoupon();
     this.getListProduct();
+    this.getListCustomer();
   }
 
   // Lấy quyền truy cập
@@ -242,14 +274,25 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
   getListBillInfo() {
     this.itemBill = this.itemData;
+    console.log(this.itemBill.TotalBill);
     this.listBillInfo = this.listData;
     this.specialAddress = this.getSpecialAddress(this.itemBill.ShippingAddress);
   }
 
+  //biding string địa chỉ
   getSpecialAddress(address: string): string {
     this.provinceBiding = address.split(',')[0];
     this.districtBiding = address.split(',')[1];
     this.wardBiding = address.split(',')[2];
+    this.roadBiding = address.split(',')[3];
+    return address.split(',')[4];
+  }
+
+  //biding dto địa chỉ
+  getDTOAddress(address: string): string {
+    this.provinceDTOBiding = { province_id: "", province_name: address.split(',')[0], province_type: "" };
+    this.districtDTOBiding =  { district_id: "", district_name: address.split(',')[1], district_type: "", province_id: "", lat: "", lng: "" }
+    this.wardDTOBiding = { district_id: "", ward_id: "", ward_name: address.split(',')[2], ward_type: "" };
     this.roadBiding = address.split(',')[3];
     return address.split(',')[4];
   }
@@ -407,7 +450,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   handleChangeProvince(obj: any): void {
     this.provinceSelected = obj;
     this.APIGetProvince();
-    this.districtBiding = this.defaulValueDistrict.district_name;
+    this.districtDTOBiding = this.defaulValueDistrict;
+    this.wardDTOBiding = this.defaultValueWard;
     this.wardSelected = null;
     if (this.provinceSelected) {
       this.districtSelected = null
@@ -428,7 +472,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
   handleChangeDistrict(obj: any): void {
     this.districtSelected = obj;
     this.APIGetDistrict(this.provinceSelected.province_id)
-    this.wardBiding = this.defaultValueWard.ward_name;
     this.wardSelected = null;
     if (this.districtSelected) {
       this.wardSelected = null
@@ -674,12 +717,58 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Lấy danh sách account khách hàng
+  getListCustomer() {
+    this.isLoading = true;
+    this.customerService.getListCustomer(this.gridStateCustomer).pipe(takeUntil(this.destroy)).subscribe(list => {
+      this.listCustomerAPI = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+      this.listDTOCustomer = this.listCustomerAPI.data;
+      this.isLoading = false;
+    });
+  }
+
+  //get boolean checkbox recipient
+  handleCheckHasRecipient(value: any) {
+    if (value) {
+      this.hasRecipient = !this.hasRecipient;
+    }
+  }
+
+
+  //Search số điện thoại của account có sẫn
+  handleFilterCustomer(value: string) {
+    this.childName.valueTextBox = "";
+    this.provinceDTOBiding = this.defaultValueProvince;
+    this.districtDTOBiding = this.defaulValueDistrict;
+    this.wardDTOBiding = this.defaultValueWard;
+    this.childRoad.valueTextBox = "";
+    this.childSpecific.valueTextBox = "";
+    if (value !== "") {
+      this.isLoading = true;
+      this.customerService.getCustomerInfo(value).pipe(takeUntil(this.destroy)).subscribe(list => {
+        // this.listCustomerAPI = { data: list.ObjectReturn.Data, total: list.ObjectReturn.Total };
+        if (list.ObjectReturn.Data.length > 0) {
+          this.notiService.Show("Khách hàng đã có tài khoản", "success");
+          this.itemCustomner = list.ObjectReturn.Data[0];
+          this.childName.valueTextBox = this.itemCustomner.Name;
+          this.specialAddress = this.getDTOAddress(list.ObjectReturn.Data[0].Address);
+          this.childRoad.valueTextBox = this.roadBiding;
+          this.childSpecific.valueTextBox = this.specialAddress;
+          console.log(this.itemCustomner);
+          this.isLoading = false;
+        } else {
+          this.notiService.Show("Khách hàng chưa có tài khoản", "warning");
+        }
+      });
+    }
+  }
 
   // Search product trong combobox
   handleFilter(value: string) {
-    if (value && this.listProductsInCart.length > 0) {
+    // alert(value);
+    if (value) {
       this.listDTOProduct = this.originalListDTOProduct.filter(product =>
-        product.Name.toLowerCase().includes(value.toLowerCase())
+        product.Name.toLowerCase().includes(value.toLowerCase()) || product.IdProduct.toLowerCase().includes(value.toLowerCase())
       );
     } else {
       this.listDTOProduct = [...this.originalListDTOProduct];
@@ -909,6 +998,16 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.notiService.Show("Vui lòng nhập lại thông tin họ tên", "error");
       return false;
     }
+    if (!isValidPhoneNumber(this.childOrderSearch.valueSearch) || this.childOrderSearch.valueSearch == "") {
+        this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
+        return false;
+    }
+    if (this.hasRecipient) {
+      if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
+        this.notiService.Show("Vui lòng nhập lại thông tin số người nhận", "error");
+        return false;
+      }
+    }
     if (this.childProvince.value == "Chọn tỉnh, thành phố") {
       this.notiService.Show("Vui lòng chọn tỉnh, thành phố", "error");
       return false;
@@ -929,14 +1028,6 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.notiService.Show("Vui lòng nhập lại thông tin địa chỉ cụ thể", "error");
       return false;
     }
-    if (!isValidPhoneNumber(this.childPhoneNumber.valueTextBox) || this.childPhoneNumber.valueTextBox == "") {
-      this.notiService.Show("Vui lòng nhập lại thông tin số người nhận", "error");
-      return false;
-    }
-    if (!isValidPhoneNumber(this.childOrdererPhoneNumber.valueTextBox) || this.childOrdererPhoneNumber.valueTextBox == "") {
-      this.notiService.Show("Vui lòng nhập lại thông tin số điện thoại", "error");
-      return false;
-    }
     if (this.listProductsInCart.length <= 0) {
       this.notiService.Show("Vui lòng thêm sản phẩm", "error");
       return false;
@@ -947,19 +1038,43 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
   //Add Bill
   addBill() {
-    const requestAddBill: DTOProcessToPayment = {
-      CustomerName: this.childName.valueTextBox,
-      OrdererPhoneNumber: this.childOrdererPhoneNumber.valueTextBox,
-      PhoneNumber: this.childPhoneNumber.valueTextBox,
-      ShippingAddress: this.newAddress,
-      PaymentMethod: 0,
-      CouponApplied: this.idCoupon,
-      // PaymentMethod: this.childMethod.value.Code,
-      ListProduct: this.listProductsInCart,
-      TotalBill: this.totalPrictOfBill,
-      IsGuess: true,
+    let phoneNumber: string;
+    if (this.hasRecipient) {
+      phoneNumber = this.childPhoneNumber.valueTextBox;
+    } else {
+      phoneNumber = this.childOrderSearch.valueSearch;
     }
 
+    this.setNewAddress();
+    let requestAddBill: DTOProcessToPayment;
+
+    if(this.idCoupon && this.idCoupon !== ""){
+      requestAddBill = {
+        CustomerName: this.childName.valueTextBox,
+        OrdererPhoneNumber: this.childOrderSearch.valueSearch,
+        PhoneNumber: phoneNumber,
+        ShippingAddress: this.newAddress,
+        PaymentMethod: 0,
+        CouponApplied: this.idCoupon,
+        // PaymentMethod: this.childMethod.value.Code,
+        ListProduct: this.listProductsInCart,
+        TotalBill: this.totalPrictOfBill,
+        IsGuess: true,
+      }
+    } else {
+      requestAddBill = {
+        CustomerName: this.childName.valueTextBox,
+        OrdererPhoneNumber: this.childOrderSearch.valueSearch,
+        PhoneNumber: phoneNumber,
+        ShippingAddress: this.newAddress,
+        PaymentMethod: 0,
+        CouponApplied: "",
+        // PaymentMethod: this.childMethod.value.Code,
+        ListProduct: this.listProductsInCart,
+        TotalBill: this.totalPrictOfBill,
+        IsGuess: true,
+      }
+    }
     console.log(requestAddBill);
 
     const request: DTOUpdateBillRequest = {
@@ -970,6 +1085,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
 
     if (this.checkValueForm()) {
       this.billService.updateBill(request).subscribe((res: DTOResponse) => {
+        console.log(res);
         if (res.StatusCode === 0) {
           this.notiService.Show("Thêm mới thành công", "success")
           this.sendValue.emit(0)
@@ -1084,6 +1200,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
             Status: this.setStatusBill,
             ListOfBillInfo: this.itemBill.ListBillInfo,
             Note: reasonBill,
+            TotalBill: this.itemBill.TotalBill
           }
 
           requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
@@ -1098,18 +1215,30 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
           return;
         }
       } else {
+        let newTotalBill: number = this.itemBill.TotalBill;
         requestUpdateBill = {
           CodeBill: this.itemBill.Code,
           Status: this.setStatusBill,
           ListOfBillInfo: this.itemBill.ListBillInfo,
           Note: this.itemBill.Note,
+          TotalBill: newTotalBill
         }
 
-        requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
-          if (billInfo.Code == this.itemBillInfo.Code) {
-            billInfo.Status = obj.value;
-          }
-        })
+        if (obj.value == 12) {
+          requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
+            if (billInfo.Code == this.itemBillInfo.Code) {
+              billInfo.Status = obj.value;
+              newTotalBill -= billInfo.TotalPrice;
+            }
+          })
+        } else {
+          requestUpdateBill.ListOfBillInfo.forEach(billInfo => {
+            if (billInfo.Code == this.itemBillInfo.Code) {
+              billInfo.Status = obj.value;
+            }
+          })
+        }
+        requestUpdateBill.TotalBill = newTotalBill;
       }
 
       if (requestUpdateBill) {
@@ -1117,8 +1246,8 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
           DTOUpdateBill: requestUpdateBill,
           DTOProceedToPayment: null
         }
-        this.billService.updateBill(request).subscribe((res: DTOResponse) => {
-          console.log(res);
+        this.billService.updateBillStaff(request).subscribe((res: DTOResponse) => {
+          console.log(request);
           if (res.StatusCode === 0) {
             this.notiService.Show("Cập nhật trạng thái thành công", "success")
             // this.getListBillInfo();

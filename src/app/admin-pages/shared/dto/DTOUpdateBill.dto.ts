@@ -5,4 +5,5 @@ export class DTOUpdateBill {
     Status: number;
     ListOfBillInfo: DTOBillInfo[];
     Note: string;
+    TotalBill: number;
 }

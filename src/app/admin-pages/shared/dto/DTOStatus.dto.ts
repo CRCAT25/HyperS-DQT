@@ -461,14 +461,14 @@ export const listStatusOfBillInfo: DTOStatus[] = [
     },
     {
         Code: 10,
-        Status: "Đơn hàng đang trả về",
+        Status: "Trả về",
         Icon: "fa-rotate-left",
         IsChecked: false,
         ListNextStatus:
             [
                 {
                     Code: 11,
-                    Status: "Xác nhận đã nhận hàng",
+                    Status: "Xác nhận nhận hàng",
                     Icon: "fa-box-open",
                     IsChecked: false
                 }
@@ -476,14 +476,14 @@ export const listStatusOfBillInfo: DTOStatus[] = [
     },
     {
         Code: 11,
-        Status: "Xác nhận đã nhận hàng",
+        Status: "Xác nhận nhận hàng",
         Icon: "fa-box-open",
         IsChecked: false,
         ListNextStatus:
             [
                 {
                     Code: 12,
-                    Status: "Đã hoàn tiền",
+                    Status: "Hoàn tiền",
                     Icon: "fa-circle-check",
                     IsChecked: false,
                 },
@@ -497,7 +497,7 @@ export const listStatusOfBillInfo: DTOStatus[] = [
     },
     {
         Code: 12,
-        Status: "Đã hoàn tiền",
+        Status: "Hoàn tiền",
         Icon: "fa-circle-check",
         IsChecked: false,
 
@@ -538,7 +538,7 @@ export const listStatusOfBillInfo: DTOStatus[] = [
             [
                 {
                     Code: 10,
-                    Status: "Đang trả về",
+                    Status: "Trả về",
                     Icon: "fa-cart-flatbed",
                     IsChecked: false
                 },
