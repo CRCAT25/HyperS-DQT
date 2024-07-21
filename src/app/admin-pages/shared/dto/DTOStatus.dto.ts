@@ -453,7 +453,7 @@ export const listStatusOfBillInfo: DTOStatus[] = [
     },
     {
         Code: 10,
-        Status: "Đơn hàng đang trả về",
+        Status: "Trả về",
         Icon: "fa-rotate-left",
         IsChecked: false,
         ListNextStatus:

@@ -13,7 +13,7 @@ export class NotiService {
       case "success":
         this.notificationService.show({
           content: content,
-          hideAfter: 6000,
+          hideAfter: 3000,
           position: { horizontal: "left", vertical: "bottom" },
           animation: { type: "fade", duration: 400 },
           type: { style: "success", icon: true },
@@ -22,7 +22,7 @@ export class NotiService {
       case "warning":
         this.notificationService.show({
           content: content,
-          hideAfter: 600,
+          hideAfter: 3000,
           position: { horizontal: "left", vertical: "bottom" },
           animation: { type: "fade", duration: 400 },
           type: { style: "warning", icon: true },
@@ -31,7 +31,7 @@ export class NotiService {
       case "error":
         this.notificationService.show({
           content: content,
-          hideAfter: 600,
+          hideAfter: 3000,
           position: { horizontal: "left", vertical: "bottom" },
           animation: { type: "fade", duration: 400 },
           type: { style: "error", icon: true },
