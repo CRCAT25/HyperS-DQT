@@ -24,6 +24,7 @@ export class EcomProductDetailsComponent implements OnInit {
   sizeSelected: number = -1
   dataProductSend: DTOGuessCartProduct = {Code: 0, SelectedSize: 0, Quantity: 0}
   isLoading: boolean = false
+
   codeCustomer: number
 
   addToCart: DTOAddToCart = {
@@ -87,19 +88,25 @@ export class EcomProductDetailsComponent implements OnInit {
   }
 
   APIAddProductToCart(cart: DTOAddToCart){
+    this.isLoading = true
     this.productService.addProductToCart(cart).pipe(takeUntil(this.destroy)).subscribe(data => {
-      if(data.StatusCode == 0 && data.ErrorString == ""){
-        if(this.codeCustomer){
-          this.cartService.setTotalItemProduct(this.codeCustomer)
+      try{
+        if(data.StatusCode == 0 && data.ErrorString == ""){
+          if(this.codeCustomer){
+            this.cartService.setTotalItemProduct(this.codeCustomer)
+          }else{
+            this.cartService.emitCartUpdated()
+          }
+          this.notificationService.Show("Yay 🥰, check your bag", "success")
         }else{
-          this.cartService.emitCartUpdated()
+          this.notificationService.Show("Error when add your bag!", "eror")
         }
+      }catch{
 
-
-        this.notificationService.Show("Yay 🥰, check your bag", "success")
-      }else{
-        this.notificationService.Show("Error when add your bag!", "eror")
+      }finally{
+        this.isLoading = false
       }
+     
     })
   }
 

@@ -15,7 +15,10 @@ import { NotiService } from 'src/app/ecom-pages/shared/service/noti.service';
 })
 export class SidebarComponent implements OnInit {
   expandDrawer = true;
-  listItemsDrawer: DTOModule[] = [
+  listItemsDrawer: DTOModule[] = listModule;
+  listModuleAndSub: DTOModule[] = [];
+  currentStaff: DTOStaff;
+  listOriginModule: DTOModule[] = [
     {
       RouteLink: '/admin',
       ModuleName: 'Quản lý tài khoản',
@@ -109,9 +112,8 @@ export class SidebarComponent implements OnInit {
       IsExpanded: false,
       BreadCrumb: 'Đơn hàng'
     }
-  ];
-  listModuleAndSub: DTOModule[] = [];
-  currentStaff: DTOStaff;
+  ]
+
 
   constructor(
     private router: Router,
@@ -126,11 +128,10 @@ export class SidebarComponent implements OnInit {
     const breadcrumbLS: string = localStorage.getItem('breadcrumb');
     if (!breadcrumbLS) return;
     const listBreadCrumbSplit: string[] = breadcrumbLS.split('/')
-    const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
-    const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
+    const accountModule = this.listOriginModule.find(item => item.ModuleName === 'Quản lý tài khoản');
+    const productModule = this.listOriginModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
 
-
-    const cartModule = listModule.find(item => item.ModuleName === 'Đơn hàng');
+    const cartModule = this.listOriginModule.find(item => item.ModuleName === 'Đơn hàng');
     if (!!!localStorage.getItem('moduleName')) {
       this.onSelectItemDrawer(cartModule);
       localStorage.setItem('breadcrumb', 'Đơn hàng');
@@ -159,13 +160,6 @@ export class SidebarComponent implements OnInit {
       if (childProductModule) childProductModule.IsSelected = true;
     }
   }
-
-  // checkPermissionModule() {
-  //   if (this.currentStaff.Permission === 'Admin') {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 
   // 
   checkPermissionModule(module: string) {
@@ -221,7 +215,7 @@ export class SidebarComponent implements OnInit {
 
   // Lấy danh sách các module và submodule
   getListModuleAndSub() {
-    listModule.forEach(module => {
+    this.listOriginModule.forEach(module => {
       this.listModuleAndSub.push(module);
       if (module.SubModule) {
         module.SubModule.forEach(sub => {
@@ -240,12 +234,12 @@ export class SidebarComponent implements OnInit {
 
     // Ngoại lệ đối với Quản lý tài khoản và quản lý sản phẩm. Dùng để đóng expand khi chọn các item khác trừ những item nào có subModule
     if (item.ModuleName !== 'Quản lý tài khoản' && item.ModuleName !== 'Quản lý sản phẩm') {
-      const accountModule = listModule.find(item => item.ModuleName === 'Quản lý tài khoản');
+      const accountModule = this.listOriginModule.find(item => item.ModuleName === 'Quản lý tài khoản');
       accountModule.IsExpanded = false;
       accountModule.IsSelected = false;
       accountModule.SubModule.forEach(sub => sub.IsSelected = false);
 
-      const productModule = listModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
+      const productModule = this.listOriginModule.find(item => item.ModuleName === 'Quản lý sản phẩm');
       productModule.IsExpanded = false;
       productModule.IsSelected = false;
       productModule.SubModule.forEach(sub => sub.IsSelected = false);
@@ -287,7 +281,7 @@ export class SidebarComponent implements OnInit {
 
   // Dùng để xóa IsSelected của từng module
   clearSelectedModule() {
-    listModule.forEach(module => {
+    this.listOriginModule.forEach(module => {
       module.IsSelected = false;
       if (module.SubModule) {
         module.SubModule.forEach(sub => {
@@ -300,7 +294,7 @@ export class SidebarComponent implements OnInit {
   // Lấy danh sách các module con
   getSubModule(moduleName: string): DTOModule[] | undefined {
     // Tìm module có ModuleName khớp
-    const module = listModule.find(mod => mod.ModuleName === moduleName);
+    const module = this.listOriginModule.find(mod => mod.ModuleName === moduleName);
     // Kiểm tra nếu module tồn tại và có SubModule
     if (module && module.SubModule) {
       return module.SubModule;
