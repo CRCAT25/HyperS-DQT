@@ -374,9 +374,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
   handlePayment():void{
     if(!this.name || !this.numberPhone || !this.provinceSelected || !this.districtSelected || !this.wardSelected || !this.specific || !this.paymenMethodSelected || !this.road){
       this.notiService.Show("Please enter infomation", "error")
-      
+      return
     }else{
-      console.log(this.isBuyOther);
 
       if(this.isBuyOther){
         if(!this.recipientPhone){
