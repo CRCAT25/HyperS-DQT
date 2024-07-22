@@ -193,8 +193,9 @@ export class EcomProfileComponent implements OnInit {
         return { Code: Code, Text: "Refuse to exchange", Icon: "fa-exclamation", Color: "#cc3300" }
       case 21:
         return { Code: Code, Text: "Refuse to return", Icon: "fa-exclamation", Color: "#cc3300" }
-      case 21:
+      case 22:
         return { Code: Code, Text: "Fulfill the order", Icon: "fa-check", Color: "#339900" }
+       
     }
     return result
   }

@@ -87,13 +87,16 @@
                     <div *ngIf="codeCustomer != 0" class="area-button-method">
                         <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethodUser" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">
                             <div>
-                                <div  class="area">
+                                <div class="area">
                                     <i class="fa-solid {{p.icon}}"></i>
                                     <div>{{p.text}}</div>
                                 </div>
-                                <div class="radio">
-                                    a
+                                <div class="radio-area">
+                                    <div class="radio">
+
+                                    </div>
                                 </div>
+                               
                             </div>
                            
                         </div>
@@ -101,7 +104,7 @@
                     <div *ngIf="!codeCustomer" class="area-button-method">
                         <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethodGuess" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">
                             <div>
-                                <div  class="area">
+                                <div class="area">
                                     <i class="fa-solid {{p.icon}}"></i>
                                     <div>{{p.text}}</div>
                                 </div>
