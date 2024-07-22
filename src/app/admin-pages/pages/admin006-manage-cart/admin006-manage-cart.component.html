@@ -65,15 +65,15 @@
     </div>
     <div class="showList">
         <div class="grid-custom-container">
-            <kendo-grid [pageable]="true" [data]="listBillPage" [selectable]="{ checkboxOnly: true }"
+            <kendo-grid [pageable]="true" [data]="listBillPage"
                 (selectionChange)="onSelectionChange($event)" (pageChange)="onPageChange($event)" [skip]="gridState.skip"
                 [pageSize]="gridState.take" >
-                <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column>
+                <!-- <kendo-grid-checkbox-column [showSelectAll]="true" [width]="40"></kendo-grid-checkbox-column> -->
     
                 <kendo-grid-column field="Code" title="Mã đơn" class="column-Code" [width]="100"></kendo-grid-column>
-                <kendo-grid-column field="CustomerName" title="Tên khách hàng" [width]="170"></kendo-grid-column>
+                <kendo-grid-column field="CustomerName" class="column-Name" title="Tên khách hàng" [width]="190"></kendo-grid-column>
                 <kendo-grid-column field="ShippingAddress" title="Địa chỉ giao hàng" class="column-ShippingAddress"
-                    [width]="350"></kendo-grid-column>
+                    [width]="370"></kendo-grid-column>
                 <kendo-grid-column field="OrdererPhoneNumber" title="Số điện thoại" class="column-PhoneNumber"
                     [width]="120"></kendo-grid-column>
                 <kendo-grid-column field="CreateAt" title="Ngày khởi tạo" [width]="130">
