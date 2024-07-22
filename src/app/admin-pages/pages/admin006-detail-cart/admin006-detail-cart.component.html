@@ -415,7 +415,7 @@
             <div class="box-totalBill">
                 <div class="row-voucher" *ngIf="!isAdd">
                     <span class="label-voucher">Voucher</span>
-                    <span *ngIf="itemBill.CouponApplied" class="voucher">{{itemBill.CouponApplied}}</span>
+                    <span *ngIf="itemBill.CouponApplied" class="voucher" title="{{itemBill.CouponApplied}}">{{itemBill.CouponApplied}}</span>
                     <span *ngIf="!itemBill.CouponApplied" class="voucher">Không có</span>
                 </div>
                 <div class="row-voucher" *ngIf="!isAdd">

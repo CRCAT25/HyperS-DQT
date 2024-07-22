@@ -217,7 +217,7 @@
 
                                 component-text-input{
                                    input:disabled{
-                                        background-color: rgb(212, 212, 212);
+                                        background-color: rgb(235, 235, 235);
                                    }
                                 }
 
@@ -510,6 +510,9 @@
     
                             .voucher {
                                 font-size: 15px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                max-width: 112px;
                             }  
                         }
 
