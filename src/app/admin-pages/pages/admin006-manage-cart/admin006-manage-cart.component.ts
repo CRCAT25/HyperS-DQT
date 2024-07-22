@@ -445,7 +445,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.isDetail = false;
             this.resultAdd = 1;
-          }, 1000);
+          }, 500);
         }
       }, 1500);
       this.isLoading = false;

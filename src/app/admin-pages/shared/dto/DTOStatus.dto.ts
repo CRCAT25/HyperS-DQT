@@ -183,7 +183,7 @@ export const listAction: DTOStatus[] = [
                 },
                 {
                     Code: 22,
-                    Status: "Hoàn tất đơn",
+                    Status: "Hoàn tất đơn hàng",
                     Icon: "fa-circle-check",
                     IsChecked: false
                 }
@@ -292,7 +292,7 @@ export const listAction: DTOStatus[] = [
                 },
                 {
                     Code: 22,
-                    Status: "Hoàn tất đơn",
+                    Status: "Hoàn tất đơn hàng",
                     Icon: "fa-circle-check",
                     IsChecked: false
                 }
@@ -332,7 +332,7 @@ export const listAction: DTOStatus[] = [
                 // },
                 {
                     Code: 22,
-                    Status: "Hoàn tất đơn",
+                    Status: "Hoàn tất đơn hàng",
                     Icon: "fa-circle-check",
                     IsChecked: false
                 }
@@ -557,10 +557,55 @@ export const listStatusOfBillInfo: DTOStatus[] = [
         ListNextStatus:
             [
                 {
+                    Code: 5,
+                    Status: "Đóng gói",
+                    Icon: "fa-box",
+                    IsChecked: false
+                }
+            ]
+    },
+    {
+        Code: 5,
+        Status: "Đang đóng gói",
+        Icon: "fa-box",
+        IsChecked: false,
+        ListNextStatus:
+            [
+                {
+                    Code: 6,
+                    Status: "Đã đóng gói",
+                    Icon: "fa-boxes-stacked",
+                    IsChecked: false
+                }
+            ]
+    },
+    {
+        Code: 6,
+        Status: "Đã đóng gói",
+        Icon: "fa-boxes-stacked",
+        IsChecked: false,
+        ListNextStatus:
+            [
+                {
+                    Code: 7,
+                    Status: "Vận chuyển",
+                    Icon: "fa-cart-flatbed",
+                    IsChecked: false,
+                }
+            ]
+    },
+    {
+        Code: 7,
+        Status: "Đang vận chuyển",
+        Icon: "fa-cart-flatbed",
+        IsChecked: false,
+        ListNextStatus:
+            [
+                {
                     Code: 19,
                     Status: "Đã đổi hàng",
                     Icon: "fa-circle-check",
-                    IsChecked: false,
+                    IsChecked: false
                 }
             ]
     }
@@ -814,7 +859,7 @@ export const listStatus: DTOStatus[] = [
                 },
                 {
                     Code: 22,
-                    Status: "Hoàn tất đơn",
+                    Status: "Hoàn tất đơn hàng",
                     Icon: "fa-circle-check",
                     IsChecked: false
                 }
@@ -923,7 +968,7 @@ export const listStatus: DTOStatus[] = [
                 },
                 {
                     Code: 22,
-                    Status: "Hoàn tất đơn",
+                    Status: "Hoàn tất đơn hàng",
                     Icon: "fa-circle-check",
                     IsChecked: false
                 }
@@ -963,7 +1008,7 @@ export const listStatus: DTOStatus[] = [
                 // },
                 {
                     Code: 22,
-                    Status: "Hoàn tất đơn",
+                    Status: "Hoàn tất đơn hàng",
                     Icon: "fa-circle-check",
                     IsChecked: false
                 }
