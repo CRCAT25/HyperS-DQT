@@ -1,3 +1,5 @@
+<app-loading [isLoading]="isLoading"></app-loading>
+
 <div class="main">
     <div class="content">
         <div class="info-area">
@@ -12,7 +14,6 @@
                             <div class="title">Buy for others</div>
                             <input [(ngModel)]="isBuyOther" type="checkbox" kendoCheckBox>
                         </div>
-                        
                     </div>
                     <kendo-textbox [disabled]="!!codeCustomer" [(ngModel)]="numberPhone" class="input" placeholder="Your phone"></kendo-textbox>
                 </div> 
@@ -85,19 +86,35 @@
                     </div>
                     <div *ngIf="codeCustomer != 0" class="area-button-method">
                         <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethodUser" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">
-                            <div  class="area">
-                                <i class="fa-solid {{p.icon}}"></i>
-                                <div>{{p.text}}</div>
+                            <div>
+                                <div  class="area">
+                                    <i class="fa-solid {{p.icon}}"></i>
+                                    <div>{{p.text}}</div>
+                                </div>
+                                <div class="radio">
+                                    a
+                                </div>
                             </div>
+                           
                         </div>
                     </div>
                     <div *ngIf="!codeCustomer" class="area-button-method">
                         <div (click)="handleSelectedPaymentMethod(p)" *ngFor="let p of listPaymentMethodGuess" [ngClass]="paymenMethodSelected?.id == p.id ? 'method-selected' : 'method'">
-                            <div  class="area">
-                                <i class="fa-solid {{p.icon}}"></i>
-                                <div>{{p.text}}</div>
+                            <div>
+                                <div  class="area">
+                                    <i class="fa-solid {{p.icon}}"></i>
+                                    <div>{{p.text}}</div>
+                                </div>
+                                <div class="radio-area">
+                                    <div class="radio">
+
+                                    </div>
+                                </div>
+                               
                             </div>
+                           
                         </div>
+                       
                     </div>
                 </div>
 
@@ -106,7 +123,30 @@
                         Coupon
                     </div>
                     <kendo-textbox (blur)="APIApplyCoupon(applyCouponRequest)" [(ngModel)]="applyCouponRequest.IdCoupon" class="input" placeholder="Type your coupon"></kendo-textbox>
-                    
+                    <div [ngClass]="appliedCoupon.IdCoupon || errorCoupon ? 'info-coupon' : ''" >
+                        <div  *ngIf="appliedCoupon.IdCoupon" class="info">
+                            <div class="nav">
+                                Coupon: <span>{{appliedCoupon.IdCoupon}}</span>
+                            </div>
+                            <div class="nav">
+                                Type coupon: <span>{{getStringTypeCoupon(appliedCoupon.CouponType)}}</span>
+                            </div>
+                            <div>
+                                <div *ngIf="appliedCoupon.CouponType == 0" class="nav">
+                                    Value discount: <span>{{appliedCoupon.PercentDiscount}}</span>%
+                                </div>
+                                <div *ngIf="appliedCoupon.CouponType == 1" class="nav">
+                                    Value discount: <span>{{appliedCoupon.DirectDiscount | number: '1.0-0'}}vnd</span>
+                                </div>
+                            </div>
+                            <div class="apply">
+                                Applied!
+                            </div>
+                        </div>
+                        <div *ngIf="errorCoupon" class="error">
+                            {{errorCoupon}} 
+                        </div>
+                    </div>
                 </div>
             </div>
             

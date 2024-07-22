@@ -74,6 +74,7 @@
                     .form-area{
                         margin-top: 30px;
                         .textbox{
+                            
                             margin: 20px 0;
                             .title{
                                 font-size: 18px;
@@ -81,8 +82,17 @@
                             }
     
                             .k-input-inner{
+                                
                                 font-size: 20px !important;
                                 height: 45px;
+                            }
+
+                            kendo-textbox{
+                                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+                            }
+
+                            kendo-dropdownlist {
+                                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
                             }
                         }
 
@@ -97,12 +107,15 @@
                                 justify-self: start;
                                 gap: 20px;
 
+                               
+                                
+
                                 .method-selected{
                                     display: flex;
                                     align-items: center;
                                     justify-content: center;
                                     width: 200px;
-                                    height: 80px;
+                                    height: 100px;
                                     border-radius: 10px;
                                     border: 3px solid $color-main;
                                     cursor: pointer;
@@ -112,6 +125,9 @@
                                         color: $color-main;
                                     }
                                     .area{
+                                        // display: flex;
+                                        // align-items: center;
+                                        // justify-content: center;
                                         .fa-solid{
                                             margin-bottom: 10px;
                                             font-size: 20px;
@@ -120,13 +136,27 @@
                                             justify-content: center;
                                         }
                                     }
+                                    .radio-area{
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        .radio{
+                                            border: 2px solid rgb(199, 199, 199);
+                                            margin-top: 10px;
+                                            width: 15px;
+                                            height: 15px;
+                                            background-color: $color-main;
+                                            border-radius: 100px;
+                                         
+                                        }
+                                    }
                                 }
                                 .method{
                                     display: flex;
                                     align-items: center;
                                     justify-content: center;
                                     width: 200px;
-                                    height: 80px;
+                                    height: 100px;
                                     border-radius: 10px;
                                     border: 3px solid rgb(199, 199, 199);
                                     cursor: pointer;
@@ -147,6 +177,23 @@
                                             justify-content: center;
                                         }
                                     }
+
+                                    .radio-area{
+                                        // width: 200px;
+                                        // height: 15px;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        .radio{
+                                            border: 2px solid rgb(199, 199, 199);
+                                            margin-top: 10px;
+                                            width: 15px;
+                                            height: 15px;
+                                          
+                                            border-radius: 100px;
+                                         
+                                        }
+                                    }
                                 }
                                
                             }
@@ -156,6 +203,30 @@
                             .title-method{
                                 font-size: 18px;
                                 margin-bottom: 10px;
+                            }
+
+                            .info-coupon{
+                                margin: 20px 0;
+                                font-size: 18px;
+                                padding: 20px;
+                                border-radius: 5px;
+                                box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+                                .nav{
+                                    margin-bottom: 10px;
+                                    font-weight: bold;
+                                    span{
+                                        font-weight: 300;
+                                    }
+                                }
+
+                                .apply{
+                                    color: #5cb85c;
+                                    font-weight: bold;
+                                }
+                    
+                               .error{
+                                color: red;
+                               } 
                             }
                         }
                     }                    
