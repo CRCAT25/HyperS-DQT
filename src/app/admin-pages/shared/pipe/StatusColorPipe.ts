@@ -22,7 +22,7 @@ export class StatusColorPipe implements PipeTransform {
       case 'Đã xác nhận':
         return '#1D4CF2';
       case 'Đang đóng gói':
-        return '#09880E';
+        return '#EC7C2B';
       case 'Đã đóng gói':
         return '#7717C2';
       case 'Đang vận chuyển':
