@@ -270,31 +270,33 @@ export class Admin009ManageProductComponent implements OnInit, OnDestroy {
 
   // Lấy các thống kê về sản phẩm
   getStatistics() {
-    // Khởi tạo state tạm để filter
-    let state: State = { filter: { logic: "and", filters: [] } };
+    setTimeout(() => {
+      // Khởi tạo state tạm để filter
+      let state: State = { filter: { logic: "and", filters: [] } };
 
-    // Đối với tổng số sản phẩm
-    this.filterStatistics(state, (total) => this.valueTotalProduct = total);
+      // Đối với tổng số sản phẩm
+      this.filterStatistics(state, (total) => this.valueTotalProduct = total);
 
-    // Đối với số lượng sản phẩm hoạt động
-    state.filter.filters = [this.filterProductActive]
-    this.filterStatistics(state, (total) => this.valueProductStatusActive = total);
+      // Đối với số lượng sản phẩm hoạt động
+      state.filter.filters = [this.filterProductActive]
+      this.filterStatistics(state, (total) => this.valueProductStatusActive = total);
 
-    // Đối với số lượng sản phẩm vô hiệu hóa
-    state.filter.filters = [this.filterProductDisable]
-    this.filterStatistics(state, (total) => this.valueProductStatusDisable = total);
+      // Đối với số lượng sản phẩm vô hiệu hóa
+      state.filter.filters = [this.filterProductDisable]
+      this.filterStatistics(state, (total) => this.valueProductStatusDisable = total);
 
-    // Đối với số lượng sản phẩm Unisex
-    state.filter.filters = [this.filterGenderUnisex]
-    this.filterStatistics(state, (total) => this.valueProductUnisex = total);
+      // Đối với số lượng sản phẩm Unisex
+      state.filter.filters = [this.filterGenderUnisex]
+      this.filterStatistics(state, (total) => this.valueProductUnisex = total);
 
-    // Đối với số lượng sản phẩm cho Nam
-    state.filter.filters = [this.filterGenderMale]
-    this.filterStatistics(state, (total) => this.valueProductMale = total);
+      // Đối với số lượng sản phẩm cho Nam
+      state.filter.filters = [this.filterGenderMale]
+      this.filterStatistics(state, (total) => this.valueProductMale = total);
 
-    // Đối với số lượng sản phẩm cho Nữ
-    state.filter.filters = [this.filterGenderFeMale]
-    this.filterStatistics(state, (total) => this.valueProductFemale = total);
+      // Đối với số lượng sản phẩm cho Nữ
+      state.filter.filters = [this.filterGenderFeMale]
+      this.filterStatistics(state, (total) => this.valueProductFemale = total);
+    }, 300);
   }
 
   /**

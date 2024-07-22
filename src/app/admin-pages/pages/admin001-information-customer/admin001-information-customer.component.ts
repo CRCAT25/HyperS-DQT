@@ -141,18 +141,20 @@ export class Admin001InformationCustomerComponent implements OnInit, OnDestroy {
 
   // Lấy các thống kê về sản phẩm
   getStatistics() {
-    let state: State = { filter: { logic: "and", filters: [] } };
+    setTimeout(() => {
+      let state: State = { filter: { logic: "and", filters: [] } };
 
-    // Đối với tổng số khách hàng
-    this.filterStatistics(state, (total) => this.valueTotalCustomer = total);
-
-    // Đối với tổng số tài khoản hoạt động
-    state.filter.filters = [this.filterCustomerActive]
-    this.filterStatistics(state, (total) => this.valueTotalCustomerActive = total);
-
-    // Đối với tổng số tài khoản bị vô hiệu hóa
-    state.filter.filters = [this.filterCustomerDisable]
-    this.filterStatistics(state, (total) => this.valueTotalCustomerDisable = total);
+      // Đối với tổng số khách hàng
+      this.filterStatistics(state, (total) => this.valueTotalCustomer = total);
+  
+      // Đối với tổng số tài khoản hoạt động
+      state.filter.filters = [this.filterCustomerActive]
+      this.filterStatistics(state, (total) => this.valueTotalCustomerActive = total);
+  
+      // Đối với tổng số tài khoản bị vô hiệu hóa
+      state.filter.filters = [this.filterCustomerDisable]
+      this.filterStatistics(state, (total) => this.valueTotalCustomerDisable = total);
+    }, 300)
   }
 
   /**
