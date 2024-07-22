@@ -48,7 +48,7 @@ export class EcomProfileComponent implements OnInit {
   @ViewChild('oldPass') childOldPass: ElementRef;
   @ViewChild('newPass') childNewPass: ElementRef;
   @ViewChild('newPass2') childNewPass2: ElementRef;
-  
+
   billInfoSelected: DTOBillInfo
 
   openPopErr: boolean = false
@@ -195,7 +195,7 @@ export class EcomProfileComponent implements OnInit {
         return { Code: Code, Text: "Refuse to return", Icon: "fa-exclamation", Color: "#cc3300" }
       case 22:
         return { Code: Code, Text: "Fulfill the order", Icon: "fa-check", Color: "#339900" }
-       
+
     }
     return result
   }
@@ -276,22 +276,22 @@ export class EcomProfileComponent implements OnInit {
   addMinutesAndFormat(dateTimeStr: any, minutes: number) {
     const date = new Date(dateTimeStr);
     date.setMinutes(date.getMinutes() + minutes);
-  
+
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutesFormatted = date.getMinutes().toString().padStart(2, '0');
     const seconds = date.getSeconds().toString().padStart(2, '0');
-  
+
     return `${day}/${month}/${year} ${hours}:${minutesFormatted}:${seconds}`;
   }
-  
-  
 
-  
 
- 
+
+
+
+
   getBill(code: number) {
     this.expanded = true
     const data = this.listBill.find(item => item.Code == code)
@@ -309,36 +309,41 @@ export class EcomProfileComponent implements OnInit {
     this.isChangePass = false;
   }
 
-    //ShowPassword
-    handleChangeShowPassword(type: number): void {
-      if (type == 0) {
-        this.isShowOldPass = !this.isShowOldPass;
-        if (this.showOldPass == 'password') {
-          this.showOldPass = 'text'
-        } else {
-          this.showOldPass = 'password'
-        }
-      } else if (type == 1) {
-        this.isShowNewPass = !this.isShowNewPass;
-        if (this.showNewPass == 'password') {
-          this.showNewPass = 'text'
-        } else {
-          this.showNewPass = 'password'
-        }
-      } else if (type == 2) {
-        this.isShowNewPass2 = !this.isShowNewPass2;
-        if (this.showNewPass2 == 'password') {
-          this.showNewPass2 = 'text'
-        } else {
-          this.showNewPass2 = 'password'
-        }
+  //ShowPassword
+  handleChangeShowPassword(type: number): void {
+    if (type == 0) {
+      this.isShowOldPass = !this.isShowOldPass;
+      if (this.showOldPass == 'password') {
+        this.showOldPass = 'text'
+      } else {
+        this.showOldPass = 'password'
+      }
+    } else if (type == 1) {
+      this.isShowNewPass = !this.isShowNewPass;
+      if (this.showNewPass == 'password') {
+        this.showNewPass = 'text'
+      } else {
+        this.showNewPass = 'password'
+      }
+    } else if (type == 2) {
+      this.isShowNewPass2 = !this.isShowNewPass2;
+      if (this.showNewPass2 == 'password') {
+        this.showNewPass2 = 'text'
+      } else {
+        this.showNewPass2 = 'password'
       }
     }
+  }
+
+  isPasswordValid(password: string): boolean {
+    const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+    return pattern.test(password);
+  }
 
   //ChangePass
   UpdatePassword(): void {
     const changePassword: DTOChangePassword = {
-      Email: this.profile.Email,  
+      Email: this.profile.Email,
       OldPassword: this.childOldPass.nativeElement.value,
       NewPassword: this.childNewPass.nativeElement.value,
       Token: null
@@ -349,18 +354,22 @@ export class EcomProfileComponent implements OnInit {
       this.notiService.Show("Vui lòng nhập mật khẩu mới", 'warning')
     } else if (this.childNewPass2.nativeElement.value == "") {
       this.notiService.Show("Vui lòng nhập lại mật khẩu mới", 'warning')
+    } else if(this.isPasswordValid(this.childNewPass.nativeElement.value) == false){
+      this.notiService.Show("Mật khẩu cần ít nhất một trong tổ hợp [a-z], [A-Z], [0-9] và kí tự đặc biệt", 'warning')
     } else {
       if (this.childNewPass.nativeElement.value == this.childNewPass2.nativeElement.value) {
+        this.isLoading = true;
         this.accountService.changePassword(changePassword).pipe(takeUntil(this.destroy)).subscribe(data => {
           console.log(data);
           console.log(data.ObjectReturn);
           if (data.ObjectReturn.Errors.length > 0) {
             this.notiService.Show(data.ObjectReturn.Errors[0].Description, 'error')
           } else {
+            this.isLoading = false;
             this.notiService.Show("Thay đổi mật khẩu thành công!", 'success')
             setTimeout(() => {
               this.logout();
-            }, 2000);
+            }, 1000);
           }
         })
       } else {
@@ -439,7 +448,7 @@ export class EcomProfileComponent implements OnInit {
     this.APIGetProductByID(item.IDProduct)
   }
 
-  handleRePayment(url: string):void{
+  handleRePayment(url: string): void {
     window.location.href = url
   }
 
