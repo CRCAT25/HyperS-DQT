@@ -5,8 +5,8 @@
                 <!-- Header của drawer -->
                 <div class="header-drawer">
                     <i class="fa-solid fa-angles-left icon-back" (click)="toggleDrawerToAdd()"></i>
-                    <div class="label-detail-coupon" *ngIf="selectedCoupon.Code !== 0">Chi tiết khuyến mãi</div>
-                    <div class="label-add-coupon" *ngIf="selectedCoupon.Code === 0">Thêm mới khuyến mãi</div>
+                    <div class="label-detail-coupon" *ngIf="selectedCoupon.Code !== -1">Chi tiết khuyến mãi</div>
+                    <div class="label-add-coupon" *ngIf="selectedCoupon.Code === -1">Thêm mới khuyến mãi</div>
                 </div>
 
                 <!-- Content của drawer -->
