@@ -781,6 +781,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
       this.idCoupon = id;
       this.numberCoupon = 0;
       this.totalPrictOfBill = 0;
+      this.maxCoupon = 0;
       this.listProductsInCart.forEach(item => {
         this.totalPrictOfBill += item.TotalPriceOfProduct;
       });
@@ -801,7 +802,7 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
                   this.maxCoupon = item.MaxBillDiscount;
                 }
 
-                if (this.priceCoupon > this.maxCoupon) {
+                if (this.priceCoupon > this.maxCoupon && this.maxCoupon > 0) {
                   this.numberCoupon = this.maxCoupon;
                 } else {
                   this.numberCoupon = this.priceCoupon;
