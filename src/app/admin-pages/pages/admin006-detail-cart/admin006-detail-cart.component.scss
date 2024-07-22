@@ -40,20 +40,23 @@
 
             .filter-Voucher{
                 display: flex;
-                justify-content: flex-start;
-                width: 120px;
+                // justify-content: flex-start;
+                width: 112px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 112px;
             }
 
             .filter-Min{
                 display: flex;
                 justify-content: center;
-                width: 70px;
+                width: 95px;
             }
 
             .filter-Max{
                 display: flex;
                 justify-content: flex-end;
-                width: 95px;
+                width: 70px;
             }
 
             .filter-IdProduct{
@@ -212,6 +215,30 @@
                                 flex-direction: column;
                                 gap: 15px;
 
+                                component-text-input{
+                                   input:disabled{
+                                        background-color: rgb(212, 212, 212);
+                                   }
+                                }
+
+                                .column-checkbox{
+                                    height: 30px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: flex-end;
+                                    gap: 20px;
+                                    
+                                    .k-rounded-md{
+                                        border-color: rgb(0, 0, 0) !important;
+                                        background-color: #ffffff !important;
+
+                                        &:checked{
+                                            border-color: white !important;
+                                            background-color: #09880E !important
+                                        }
+                                    }
+                                }
+
                                 component-text-area{
                                     padding-top: 8px;
                                     kendo-textarea{
@@ -220,14 +247,23 @@
                                 }
                             }
 
-                            .input-voucher{
+                            .input-voucher,
+                            .input-search-sdt{
                                 display: flex;
                                 justify-content: space-between;
                                 width: 430px;
+                                align-items: center;
+                                font-size: 13px;
+
                                 kendo-combobox{
                                     box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
                                     border: 1px solid rgb(128, 128, 128);
                                     width: 300px;
+                                }
+
+                                .k-input-inner{
+                                    font-size: 13px;
+                                    size: 11px;
                                 }
                             }
 

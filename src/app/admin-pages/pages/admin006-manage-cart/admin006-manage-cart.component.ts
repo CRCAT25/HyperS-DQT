@@ -1,3 +1,4 @@
+import { listAction } from './../../shared/dto/DTOStatus.dto';
 
 import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DTOStatus, listStatus, filteredStatusList } from '../../shared/dto/DTOStatus.dto';
@@ -36,7 +37,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
   maxDate: Date = new Date(this.currentDate.getFullYear() + 50, 12, 30);
   startDate: Date = this.currentDate;
   endDate: Date = this.currentDate;
-  listStatus: DTOStatus[] = listStatus;
+  listAction: DTOStatus[] = listAction;
   listFilterStatus: DTOStatus[] = filteredStatusList;
   destroy: ReplaySubject<any> = new ReplaySubject<any>(1);
   listBillPage: GridDataResult;
@@ -375,8 +376,8 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
 
   ClickButtonAction(id: number, event: Event, idStatus: number) {
-    const status = this.listStatus.find(status => status.Code === idStatus);
-    this.listNextStatus = status ? status.ListNextStatus : null;
+    const action = this.listAction.find(action => action.Code === idStatus);
+    this.listNextStatus = action ? action.ListNextStatus : null;
 
     if (this.tempID !== id) {
       this.isClickButton[this.tempID] = false;
@@ -435,6 +436,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     }
 
     if ((event.target as HTMLElement).closest('.buttonAccept')) {
+      this.isLoading = true;
       setTimeout(() => {
         if (this.resultAdd == 0) {
           this.getListBill();
@@ -443,10 +445,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.isDetail = false;
             this.resultAdd = 1;
-          }, 2000);
+          }, 1000);
         }
-      }, 500);
-
+      }, 1500);
+      this.isLoading = false;
     }
 
     if ((event.target as HTMLElement).closest('.button-add')) {
@@ -464,10 +466,10 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.isAdd = false;
             this.resultAdd = 1;
-            this.isLoading = false;
           }, 500);
         }
       }, 2000);
+      this.isLoading = false;
     }
   }
 
@@ -738,6 +740,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
             Status: obj.value,
             ListOfBillInfo: bill.ListBillInfo,
             Note: this.reasonFail,
+            TotalBill: bill.TotalBill
           }
         } else {
           this.notiService.Show("Vui lòng nhập lí do", "warning")
@@ -749,6 +752,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
           Status: obj.value,
           ListOfBillInfo: bill.ListBillInfo,
           Note: bill.Note,
+          TotalBill: bill.TotalBill
         }
       }
 
