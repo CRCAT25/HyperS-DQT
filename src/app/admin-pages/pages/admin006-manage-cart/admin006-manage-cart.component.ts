@@ -388,11 +388,11 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
     this.tempID = id;
 
     // Remove 'active' class from all cells
-    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="10"]');
+    const cells = document.querySelectorAll('td.k-table-td[aria-colindex="9"]');
     cells.forEach(cell => cell.classList.remove('active'));
 
     // Add 'active' class to the clicked cell
-    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="10"]');
+    const cell = (event.target as HTMLElement).closest('td.k-table-td[aria-colindex="9"]');
     if (cell) {
       cell.classList.add('active');
     }
@@ -401,7 +401,7 @@ export class Admin006ManageCartComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onClick(event: MouseEvent) {
-    if (this.tempID !== null && !(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="10"]')) {
+    if (this.tempID !== null && !(event.target as HTMLElement).closest('td.k-table-td[aria-colindex="9"]')) {
       this.isClickButton[this.tempID] = false;
     }
     if ((this.isShowAlert == true || this.isShowAlertStatus == true) && ((event.target as HTMLElement).closest('.buttonNoChange'))) {
