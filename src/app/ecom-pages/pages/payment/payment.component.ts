@@ -96,6 +96,11 @@ export class PaymentComponent implements OnInit, OnDestroy {
   dataCustomer: DTOCustomer[]
   isBuyOther: boolean = false
 
+  titleCoupon: string = ""
+  errorCoupon: string = ""
+
+  isLoading: boolean = false
+
   constructor(private cartService: CartService,private userService: UserService ,private router: Router,private paymentService: PaymentService, private notiService: NotiService){
     this.APIGetProvince();
     this.codeCustomer = Number(localStorage.getItem("codeCustomer"))
@@ -225,15 +230,39 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   APIApplyCoupon(info: DTOApplyCouponRequest){
+    this.appliedCoupon = {
+      IdCoupon: "",
+      MaxBillDiscount: 0,
+      CouponType: -1,
+      DirectDiscount: 0,
+      PercentDiscount: 0,
+    }
+
+    this.errorCoupon = ""
+
+    this.isLoading = true
     this.paymentService.applyCoupon(info).pipe(takeUntil(this.destroy)).subscribe(data => {
       if(data.StatusCode == 0 && data.ErrorString == ""){
         this.appliedCoupon = data.ObjectReturn.Data[0]
         this.handleCalTotalPrice()
       }else{
+        this.errorCoupon = data.ErrorString
+        this.handleCalTotalPrice()
         this.notiService.Show(data.ErrorString, "error")
       }
-       
+      this.isLoading = false
     })
+
+  }
+
+  getStringTypeCoupon(status: number): string{
+    if(status == 0){
+      return "Coupon discount precent"
+    }
+    if(status == 1){
+      return "Coupon direct discount"
+    }
+    return ""
   }
   
   handleCalTotalPrice():void{
@@ -247,6 +276,9 @@ export class PaymentComponent implements OnInit, OnDestroy {
     if(this.appliedCoupon.IdCoupon){
       if(this.appliedCoupon.CouponType == 0){
         this.priceCoupon = (this.priceSubTotal * (this.appliedCoupon.PercentDiscount / 100))
+      }
+      if(this.appliedCoupon.CouponType == 1){
+        this.priceCoupon = this.appliedCoupon.DirectDiscount
       }
     }
 

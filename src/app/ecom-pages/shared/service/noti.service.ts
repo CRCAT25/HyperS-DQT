@@ -13,27 +13,27 @@ export class NotiService {
       case "success":
         this.notificationService.show({
           content: content,
-          hideAfter: 6000,
+          hideAfter: 2000,
           position: { horizontal: "left", vertical: "bottom" },
-          animation: { type: "fade", duration: 400 },
+          animation: { type: "fade", duration: 200 },
           type: { style: "success", icon: true },
         });
         break
       case "warning":
         this.notificationService.show({
           content: content,
-          hideAfter: 600,
+          hideAfter: 2000,
           position: { horizontal: "left", vertical: "bottom" },
-          animation: { type: "fade", duration: 400 },
+          animation: { type: "fade", duration: 200 },
           type: { style: "warning", icon: true },
         });
         break
       case "error":
         this.notificationService.show({
           content: content,
-          hideAfter: 600,
+          hideAfter: 2000,
           position: { horizontal: "left", vertical: "bottom" },
-          animation: { type: "fade", duration: 400 },
+          animation: { type: "fade", duration: 200 },
           type: { style: "error", icon: true },
         });
         break
