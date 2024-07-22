@@ -206,22 +206,24 @@ export class Admin001InformationStaffComponent implements OnInit, OnDestroy {
   }
   // Lấy các thống kê về sản phẩm
   getStatistics() {
-    let state: State = { filter: { logic: "and", filters: [] } };
+    setTimeout(() => {
+      let state: State = { filter: { logic: "and", filters: [] } };
 
-    // Đối với tổng số khách hàng
-    this.filterStatistics(state, (total) => this.valueTotalStaff = total);
+      // Đối với tổng số khách hàng
+      this.filterStatistics(state, (total) => this.valueTotalStaff = total);
 
-    // Đối với tổng số tài khoản event manager
-    state.filter.filters = [this.filterEventManager]
-    this.filterStatistics(state, (total) => this.valueTotalEventManager = total);
+      // Đối với tổng số tài khoản event manager
+      state.filter.filters = [this.filterEventManager]
+      this.filterStatistics(state, (total) => this.valueTotalEventManager = total);
 
-    // Đối với tổng số tài khoản bị bill manager
-    state.filter.filters = [this.filterBillManager]
-    this.filterStatistics(state, (total) => this.valueTotalBillManager = total);
+      // Đối với tổng số tài khoản bị bill manager
+      state.filter.filters = [this.filterBillManager]
+      this.filterStatistics(state, (total) => this.valueTotalBillManager = total);
 
-    // Đối với tổng số tài khoản bị product manager
-    state.filter.filters = [this.filterProductManager]
-    this.filterStatistics(state, (total) => this.valueTotalProductManager = total);
+      // Đối với tổng số tài khoản bị product manager
+      state.filter.filters = [this.filterProductManager]
+      this.filterStatistics(state, (total) => this.valueTotalProductManager = total);
+    }, 300);
   }
 
   // Kiểm tra giới tính

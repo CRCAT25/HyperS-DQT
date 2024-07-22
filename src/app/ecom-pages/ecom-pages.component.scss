@@ -2,16 +2,33 @@
   app-ecom-pages{
     html{
       overflow: hidden;
+      position: relative;
     }
 
    
   }
-    .k-notification-group{
-        left: 20px !important;
-        bottom: 20px !important;
-        font-size: 50px !important;
-    }
+  .k-notification-group{
+      left: 20px !important;
+      bottom: 20px !important;
+      font-size: 50px !important;
+  } 
+  .content{
     
+  }  
+    
+  .copy{
+    
+    width: 100%;
+    margin-top: -20px;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.336);
+
+    p{
+      width: 98%;
+      margin: 0 1%;
+    }
+  }  
     
 }
 
