@@ -88,6 +88,12 @@ export class HeaderAdminComponent implements OnInit {
     this.router.navigate([route])
   }
 
+  
+  isPasswordValid(password: string): boolean {
+    const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+    return pattern.test(password);
+  }
+
   //ChangePass
   UpdatePassword(): void {
     console.log(this.childOldPass.nativeElement.value);
@@ -103,6 +109,8 @@ export class HeaderAdminComponent implements OnInit {
       this.notiService.Show("Vui lòng nhập mật khẩu mới", 'warning')
     } else if (this.childNewPass2.nativeElement.value == "") {
       this.notiService.Show("Vui lòng nhập lại mật khẩu mới", 'warning')
+    } else if(this.isPasswordValid(this.childNewPass.nativeElement.value) == false){
+      this.notiService.Show("Mật khẩu cần ít nhất một trong tổ hợp [a-z], [A-Z], [0-9] và kí tự đặc biệt", 'warning')
     } else {
       if (this.childNewPass.nativeElement.value == this.childNewPass2.nativeElement.value) {
         this.accoutService.changePassword(changePassword).pipe(takeUntil(this.destroy)).subscribe(data => {
@@ -112,7 +120,7 @@ export class HeaderAdminComponent implements OnInit {
             this.notiService.Show("Thay đổi mật khẩu thành công!", 'success')
             setTimeout(() => {
               this.handleNavigate('account/login')
-            }, 2000);
+            }, 1000);
           }
         })
       } else {
