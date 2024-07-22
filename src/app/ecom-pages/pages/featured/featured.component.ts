@@ -116,9 +116,8 @@ export class FeaturedComponent implements OnDestroy {
         if(element.Position == 3 && element.Status == 0){
           this.dataBanner3 = element
         }
+        
       });
-
-
       this.src = this.dataBanner1.BannerUrl + '?controls=0&showinfo=0&modestbranding=1&mute=1&autoplay=1&loop=1&playlist=6Pjw7uFmJDg&modestbranding=1&iv_load_policy=3&fs=0&rel=0'      
       this.isLoading = false
     })
