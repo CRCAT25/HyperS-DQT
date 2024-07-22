@@ -13,6 +13,7 @@ export class AccountService {
     private direct = 'https://hypersapi.onrender.com';
     private urlGetListCustomer = this.direct + "/api/Customer/GetListCustomer";
     private urlUpdateCustomer = this.direct + "/api/Customer/UpdateCustomer";
+    private urlGetCustomerInfo = this.direct + "/api/Customer/GetCustomerInfo";
 
     constructor(private httpClient: HttpClient) { }
 
@@ -56,4 +57,10 @@ export class AccountService {
                 })
             );
     }
+
+    getCustomerInfo(phoneNumber: string):Observable<DTOResponse>{
+        const httpOption = this.getHttpOptions();
+        const body = {PhoneNumber: phoneNumber}
+        return this.httpClient.post<DTOResponse>(this.urlGetCustomerInfo, body, httpOption).pipe()
+      }
 }

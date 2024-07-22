@@ -383,7 +383,8 @@ export class EcomProfileComponent implements OnInit {
       CodeBill: this.billSelected.Code,
       Status: 2,
       ListOfBillInfo: this.billSelected.ListBillInfo,
-      Note: this.errorString
+      Note: this.errorString,
+      TotalBill: this.billSelected.TotalBill
     }
     const processToPayment: DTOProcessToPayment = null
     const updateBillRes: DTOUpdateBillRequest = {
@@ -410,7 +411,8 @@ export class EcomProfileComponent implements OnInit {
       CodeBill: this.billSelected.Code,
       Status: 14,
       ListOfBillInfo: this.billSelected.ListBillInfo,
-      Note: ""
+      Note: "",
+      TotalBill: this.billSelected.TotalBill
     }
 
     console.log(updateBill);
