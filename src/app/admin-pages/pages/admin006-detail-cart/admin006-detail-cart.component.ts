@@ -1111,9 +1111,9 @@ export class Admin006DetailCartComponent implements OnInit, OnDestroy {
     if (status === 14 || status === 15) {
       this.setStatusBill = 14;
     }
-    // Case 2: status là 10 hoặc 11 hoặc 18
+    // Case 2: status là 5 hoặc 6 hoặc 7 hoặc 10 hoặc 11 hoặc 18
     // status !== 14 && status !== 15 && status !== 20 && status !== 21 && status !== 12 && status !== 13 && status !== 19
-    else if (status === 10 || status === 11 || status === 18) {
+    else if (status === 5 || status === 6 ||status === 7 || status === 10 || status === 11 || status === 18) {
       if (this.itemBill.ListBillInfo.find(item => item.Code !== this.itemBillInfo.Code && (item.Status === 14 || item.Status === 15))) {
         this.setStatusBill = 14;
       } else {
