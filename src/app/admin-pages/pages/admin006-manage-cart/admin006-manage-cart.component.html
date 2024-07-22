@@ -101,6 +101,8 @@
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div>
                             {{formatCurrency(dataItem.TotalBill)}}
+                            <!-- {{dataItem.TotalBill |  number: '1.0-0'}} đ -->
+
                         </div>
                     </ng-template>
                 </kendo-grid-column>
