@@ -77,6 +77,7 @@ import { SafePipePipe } from './ecom-pages/shared/pipe/safe-pipe.pipe';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
 import { EcomAlsoLikeComponent } from './ecom-pages/shared/component/ecom-also-like/ecom-also-like.component';
+import { CopyComponent } from './ecom-pages/shared/component/copy/copy.component';
 
 
 
@@ -136,6 +137,7 @@ import { EcomAlsoLikeComponent } from './ecom-pages/shared/component/ecom-also-l
     ForgotPasswordComponent,
     SafePipePipe,
     EcomAlsoLikeComponent,
+    CopyComponent,
   ],
   imports: [
     BrowserModule,
